@@ -24,6 +24,7 @@ This repository turns that thesis into executable checks:
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
 - An executable small-step `evaluate-semantics` command that emits contract-evaluation derivations and checks their denotation against the deterministic validator on golden and historical traces.
+- A compiled `monitor` command that runs deterministic bounded-memory runtime monitors over finite JSONL traces, with sliding-window witnesses for temporal response/sequence obligations and an observed memory envelope.
 - A `proof-obligations` command that instantiates well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity proof-goal templates against contracts, runtime traces, transformation pairs, and benchmark labels.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
@@ -32,7 +33,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 37 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 38 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -108,6 +109,11 @@ python3 -m telemetry_contracts.cli evaluate-semantics \
   --contract case_studies/gitlab_2017_database_outage/contract.json \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
   --strict --format markdown --fail-on never
+
+python3 -m telemetry_contracts.cli monitor \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --format markdown --fail-on never
 
 python3 -m telemetry_contracts.cli equivalence \
   --contract case_studies/gitlab_2017_database_outage/contract.json \
@@ -239,6 +245,7 @@ Supported checks include:
 - Cross-signal correlation policies requiring shared keys such as `trace_id` or `request_id` across configured signal kinds.
 - Temporal sequence checks over spans, metrics, and logs using timestamps and optional `group_by` incident windows.
 - Temporal properties under `temporal_properties`: `safety`, `bounded_response`, `absence`, `ordering`, and `deadline`, with selectors, field predicates, optional grouping keys, and concrete finding codes such as `telemetry.temporal_response`.
+- Runtime monitor compilation via `monitor`: required signal predicates become matched-bit monitors, safety/absence properties become per-event checks, bounded responses and temporal sequences keep active sliding-window witnesses, and ordering/deadline properties keep per-group prefix summaries. JSON/Markdown reports expose the compiled monitor counts, formal judgement, findings, and observed memory envelope.
 - Hyperproperties under `hyperproperties`: `pii_non_disclosure` checks raw sensitive fields reaching configured telemetry sinks, and `tenant_non_interference` checks pairwise that distinct tenants do not share configured isolation keys such as `trace_id` or `request_id`. Findings include concrete event-index witnesses (`telemetry.hyper_pii_disclosure`, `telemetry.hyper_tenant_interference`).
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`; transformation-preservation defaults may be declared under `metadata.transformation_preservation` with `approved_transformations` and `preserve_scenarios`.
@@ -275,6 +282,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 ## Architecture
 
 - `telemetry_contracts.core_semantics` implements the mechanizable small-step contract-evaluation model and reports denotation alignment with `validate_events`.
+- `telemetry_contracts.monitor` compiles contract clauses to deterministic runtime monitors for finite JSONL streams and reports bounded sliding-window state.
 - `telemetry_contracts.loader` loads JSON/YAML contracts, resolves relative `extends`/`inherits` chains, and reads JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
 - `telemetry_contracts.validator` checks emitted telemetry against signal, field, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications.
@@ -293,7 +301,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -380,6 +388,19 @@ python3 -m telemetry_contracts.cli evaluate-semantics \
 ```
 
 `reports/gitlab_2017_semantic_evaluation.md` records `aligned_with_checker=true`: the small-step denotation and `validate_events` both produce the same 14 finding signatures over 7 input events and 12 small steps, including temporal-property and strict closed-world rules. This is mechanized alignment evidence for this implementation and fixture, not a proof about all possible telemetry systems.
+
+Generate the checked-in compiled runtime-monitor report for the sampled/exported derivative:
+
+```bash
+python3 -m telemetry_contracts.cli monitor \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --format markdown \
+  --output reports/gitlab_2017_runtime_monitor.md \
+  --fail-on never
+```
+
+`reports/gitlab_2017_runtime_monitor.md` records `bounded-runtime-monitor-v1` over 4 reconstructed events, compiling 5 signal monitors and 2 temporal-property monitors. It reports the same bounded backup-alert `telemetry.temporal_response` counterexample as the batch validator, with an observed memory envelope of 2 active groups, 1 pending response, and 0 sequence-window events. This is finite-trace runtime-monitor evidence over checked-in reconstructed public facts, not a production memory guarantee for arbitrary traffic.
 
 Generate the checked-in proof-obligation report for the same public reconstruction, its strict drift derivative, the sampled/exported derivative, and the built-in benchmark labels:
 
@@ -484,6 +505,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Refinement and composition reports compare finite checked-in contracts. The checker is conservative about regex/arbitrary predicate implication and does not prove that an organization's private contract evolution was safe.
 - Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
 - The small-step semantic evaluator is an executable artifact aligned with the current checker through tests and reports; it is not a separately machine-checked theorem prover.
+- The compiled runtime monitor reports an implementation-level memory envelope over finite JSONL streams. Bounded-response and temporal-sequence state is window-bounded by declared timestamps and grouping keys, but the tool is not a formally verified streaming monitor for all possible collector delivery orders.
 - Proof-obligation reports are executable evidence checklists over finite artifacts. They are useful for review and reproducibility; dedicated contract-version refinement evidence is produced by the `refinement` command.
 
 ## Development

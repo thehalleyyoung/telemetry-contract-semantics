@@ -24,6 +24,7 @@ from .equivalence import compare_observational_equivalence, format_equivalence_m
 from .proof_obligations import format_proof_obligations_markdown, generate_proof_obligations_report
 from .refinement import check_contract_refinement, format_refinement_markdown
 from .composition import analyze_contract_composition, format_composition_markdown
+from .monitor import format_monitor_markdown, run_compiled_monitor
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -68,6 +69,13 @@ def main(argv: list[str] | None = None) -> int:
     semantics_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     semantics_parser.add_argument("--output")
     semantics_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
+    monitor_parser = subparsers.add_parser("monitor", help="run compiled bounded-memory runtime monitors over JSONL telemetry")
+    monitor_parser.add_argument("--contract", required=True)
+    monitor_parser.add_argument("--events", required=True)
+    monitor_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    monitor_parser.add_argument("--output")
+    monitor_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
     benchmark_parser = subparsers.add_parser("benchmark", help="run a benchmark suite from a JSON config")
     benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
@@ -198,6 +206,17 @@ def main(argv: list[str] | None = None) -> int:
                 return 0 if report["summary"]["aligned_with_checker"] else 1
             if not report["summary"]["aligned_with_checker"]:
                 return 1
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
+        if args.command == "monitor":
+            contract = load_contract(args.contract)
+            report = run_compiled_monitor(contract, load_jsonl(args.events))
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_monitor_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0
             return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
         if args.command == "explain":
             report = explain_finding(args.code, args.examples)

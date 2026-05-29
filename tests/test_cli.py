@@ -173,6 +173,29 @@ def test_cli_proof_obligations_reports_historical_evidence(capsys):
     assert '"formal_clause": "PRES.adequacy-signal"' in output
 
 
+def test_cli_monitor_reports_historical_temporal_response(capsys):
+    case = ROOT / "case_studies/gitlab_2017_database_outage"
+    code = main(
+        [
+            "monitor",
+            "--contract",
+            str(case / "contract.json"),
+            "--events",
+            str(case / "reconstructed_events_sampled_missing_alert.jsonl"),
+            "--format",
+            "json",
+            "--fail-on",
+            "never",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert '"bounded-runtime-monitor-v1"' in output
+    assert '"telemetry.temporal_response": 1' in output
+    assert '"max_pending_responses": 1' in output
+
+
 def test_cli_validate_public_hyperproperty_case_study(capsys):
     case = ROOT / "case_studies/current/owasp_securetea_signin"
     code = main(
