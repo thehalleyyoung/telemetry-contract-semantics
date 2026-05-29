@@ -1,13 +1,13 @@
 # Proof-obligation report: gitlab.com-database
 
 - Model: `telemetry-contract-proof-obligations-v1`
-- Features cataloged: 26
-- Obligations: 84
-- Discharged: 71
-- Violated: 10
+- Features cataloged: 27
+- Obligations: 99
+- Discharged: 82
+- Violated: 14
 - Pending templates: 3
-- Status counts: `{"discharged": 71, "pending": 3, "violated": 10}`
-- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 24, "preservation": 3, "refinement": 3, "satisfaction": 24, "well-formedness": 29}`
+- Status counts: `{"discharged": 82, "pending": 3, "violated": 14}`
+- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 31, "preservation": 3, "refinement": 3, "satisfaction": 31, "well-formedness": 30}`
 - Events: 7
 - Strict mode: `true`
 
@@ -24,6 +24,9 @@ A proof obligation is an executable template tying one telemetry-contract featur
   - Evidence: validate_contract_shape
 - **well-formedness:WF.alternative-obligation** `discharged` — alternative obligations / `WF.alternative-obligation`
   - Template: If contract service `gitlab.com-database` uses alternative obligations, every syntax premise for WF.alternative-obligation is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.assume-guarantee** `discharged` — assume-guarantee obligations / `WF.assume-guarantee`
+  - Template: If contract service `gitlab.com-database` uses assume-guarantee obligations, every syntax premise for WF.assume-guarantee is decidable before telemetry is read.
   - Evidence: validate_contract_shape
 - **well-formedness:WF.conditional** `discharged` — conditional requirements / `WF.conditional`
   - Template: If contract service `gitlab.com-database` uses conditional requirements, every syntax premise for WF.conditional is decidable before telemetry is read.
@@ -118,6 +121,31 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **satisfaction:ADEQ.required-signal** `discharged` — scenario adequacy / `ADEQ.required-signal`
   - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
   - Evidence: validate_events over 7 supplied events
+- **satisfaction:AG.alternative-disjunction** `discharged` — assume-guarantee obligations / `AG.alternative-disjunction`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:AG.collector-assumption** `violated` — assume-guarantee obligations / `AG.collector-assumption`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"ag.undocumented_transformation": 1}`
+- **satisfaction:AG.field-predicate** `violated` — assume-guarantee obligations / `AG.field-predicate`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"ag.predicate": 2}`
+- **satisfaction:AG.required-field** `violated` — assume-guarantee obligations / `AG.required-field`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"ag.missing_field": 3}`
+- **satisfaction:AG.required-signal** `discharged` — assume-guarantee obligations / `AG.required-signal`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:AG.scenario-adequacy** `violated` — assume-guarantee obligations / `AG.scenario-adequacy`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"ag.scenario_unanswerable": 1}`
+- **satisfaction:AG.temporal-property** `discharged` — assume-guarantee obligations / `AG.temporal-property`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
 - **satisfaction:SAT.allowed-values** `violated` — allowed values / `SAT.allowed-values`
   - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
   - Evidence: validate_events over 7 supplied events
@@ -208,13 +236,13 @@ A proof obligation is an executable template tying one telemetry-contract featur
 
 - **refinement:REF.requirement-preservation** `pending` — contract refinement / `REF.requirement-preservation`
   - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
-  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, assume-guarantee obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
 - **refinement:REF.privacy-nonweakening** `pending` — contract refinement / `REF.privacy-nonweakening`
   - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
-  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, assume-guarantee obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
 - **refinement:REF.assumption-compatibility** `pending` — contract refinement / `REF.assumption-compatibility`
   - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
-  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, assume-guarantee obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
 
 ### monitor-soundness
 
@@ -225,6 +253,27 @@ A proof obligation is an executable template tying one telemetry-contract featur
   - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
   - Evidence: evaluate_contract_semantics alignment
 - **monitor-soundness:MON.soundness.ADEQ.required-signal** `discharged` — scenario adequacy / `MON.soundness.ADEQ.required-signal`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.alternative-disjunction** `discharged` — assume-guarantee obligations / `MON.soundness.AG.alternative-disjunction`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.collector-assumption** `discharged` — assume-guarantee obligations / `MON.soundness.AG.collector-assumption`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.field-predicate** `discharged` — assume-guarantee obligations / `MON.soundness.AG.field-predicate`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.required-field** `discharged` — assume-guarantee obligations / `MON.soundness.AG.required-field`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.required-signal** `discharged` — assume-guarantee obligations / `MON.soundness.AG.required-signal`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.scenario-adequacy** `discharged` — assume-guarantee obligations / `MON.soundness.AG.scenario-adequacy`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.AG.temporal-property** `discharged` — assume-guarantee obligations / `MON.soundness.AG.temporal-property`
   - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
   - Evidence: evaluate_contract_semantics alignment
 - **monitor-soundness:MON.soundness.SAT.allowed-values** `discharged` — allowed values / `MON.soundness.SAT.allowed-values`
@@ -320,6 +369,7 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **hyperproperties** — clauses `WF.hyperproperty, HYP.pii-non-disclosure, HYP.tenant-non-interference`; families `well-formedness, satisfaction, monitor-soundness, refinement`
 - **alternative obligations** — clauses `WF.alternative-obligation, SAT.alternative-disjunction, ADEQ.alternative-observation`; families `well-formedness, satisfaction, preservation, refinement`
 - **strict closed world** — clauses `WF.strict-policy, STRICT.service-closed-world, STRICT.signal-closed-world, STRICT.field-closed-world, STRICT.transformation-documented`; families `well-formedness, satisfaction, preservation, refinement`
+- **assume-guarantee obligations** — clauses `WF.assume-guarantee, AG.required-signal, AG.required-field, AG.field-predicate, AG.alternative-disjunction, AG.scenario-adequacy, AG.temporal-property, AG.collector-assumption`; families `well-formedness, satisfaction, preservation, refinement`
 - **scenario adequacy** — clauses `SCENARIO.selection, SCENARIO.requirement-wf, ADEQ.required-signal, ADEQ.required-field`; families `satisfaction, preservation, monitor-soundness, refinement`
 - **transformation preservation** — clauses `PRES.runtime-obligation, PRES.adequacy-signal, PRES.adequacy-field`; families `preservation`
 - **static instrumentation evidence** — clauses `STATIC.signal-literal, STATIC.source-domain, STATIC.raw-sensitive-log, STATIC.correlation-evidence, STATIC.cardinality-risk`; families `satisfaction, monitor-soundness, benchmark-label-validity`

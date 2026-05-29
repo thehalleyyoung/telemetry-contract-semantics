@@ -13,7 +13,7 @@ def test_proof_obligations_discharge_checkout_with_benchmark():
         benchmark_config=str(ROOT / "benchmarks/builtin.json"),
     )
 
-    assert report["summary"]["features_cataloged"] == 26
+    assert report["summary"]["features_cataloged"] == 27
     assert report["summary"]["violated"] == 0
     assert report["summary"]["family_counts"]["well-formedness"] > 0
     assert report["summary"]["family_counts"]["satisfaction"] > 0
@@ -36,3 +36,4 @@ def test_proof_obligations_surface_historical_strict_and_preservation_evidence()
     assert "STRICT.signal-closed-world" in violated_clauses
     assert "STRICT.transformation-documented" in violated_clauses
     assert "PRES.adequacy-signal" in violated_clauses
+    assert "AG.required-field" in violated_clauses

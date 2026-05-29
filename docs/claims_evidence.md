@@ -19,6 +19,7 @@
 - Added proof-obligation templates in `telemetry_contracts.proof_obligations` and `telemetry-contracts proof-obligations`. `reports/gitlab_2017_proof_obligations.json` and `.md` instantiate well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity obligations against the GitLab 2017 reconstruction, strict drift derivative, sampled/exported derivative, and built-in benchmark labels.
 - Added executable finite-trace temporal properties for safety, bounded response, absence, ordering, and deadlines. `examples/temporal_logic/` contains paired passing/failing fixtures, and `reports/gitlab_2017_temporal_logic_validation.json` shows a bounded `telemetry.temporal_response` finding on the sampled/exported GitLab 2017 derivative when the backup-failure alert witness is removed.
 - Added finite-trace hyperproperties for PII non-disclosure and tenant non-interference. `examples/hyperproperties/` contains paired fixtures, and `reports/owasp_securetea_hyperproperties.json` records three bounded `telemetry.hyper_pii_disclosure` witnesses over reconstructed public-code SecureTea console-log telemetry.
+- Added assume-guarantee telemetry contracts and reports in `telemetry_contracts.assume_guarantee` and `telemetry-contracts report assume-guarantee`. The GitLab 2017 contract now separates service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations; `reports/gitlab_2017_assume_guarantee_sampled.md` records layer-specific counterexamples over the sampled/exported derivative.
 
 ## Bounded novelty claim
 
@@ -42,6 +43,7 @@ To make the novelty claim falsifiable, use this protocol on or after the retriev
 - Proof-obligation reports are finite-artifact evidence checklists. They do not prove universal monitor soundness, and refinement obligations remain pending templates until a dedicated refinement checker is implemented.
 - Temporal properties are checked over finite supplied artifacts with explicit timestamps and grouping keys; they do not constitute an unbounded temporal-logic model checker.
 - Hyperproperties are checked over finite supplied artifacts and pair/set witnesses; they do not prove universal non-interference or non-disclosure over all executions.
+- Assume-guarantee reports check declared layer obligations over finite supplied artifacts; they do not prove organizational accountability or production workflow behavior beyond those artifacts.
 - Strict-mode drift findings are over the checked-in finite derivative fixture; they do not imply GitLab emitted those private events or used the modeled collector transformations.
 - The benchmark does not establish recall over all possible observability failures.
 - Static checks are heuristic line/source checks, not full semantic instrumentation analysis.
@@ -131,6 +133,24 @@ python3 -m telemetry_contracts.cli report alternative-obligations \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
   --format markdown \
   --output reports/gitlab_2017_alternative_obligations.md
+python3 -m telemetry_contracts.cli report assume-guarantee \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format json \
+  --output reports/gitlab_2017_assume_guarantee.json \
+  --fail-on never
+python3 -m telemetry_contracts.cli report assume-guarantee \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --format json \
+  --output reports/gitlab_2017_assume_guarantee_sampled.json \
+  --fail-on never
+python3 -m telemetry_contracts.cli report assume-guarantee \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --format markdown \
+  --output reports/gitlab_2017_assume_guarantee_sampled.md \
+  --fail-on never
 python3 -m telemetry_contracts.cli validate \
   --contract case_studies/gitlab_2017_database_outage/contract.json \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
@@ -195,4 +215,4 @@ python3 -m telemetry_contracts.cli validate \
   --fail-on never > reports/owasp_securetea_hyperproperties.json
 ```
 
-The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json`, `case_studies/current/owasp_securetea_signin/metadata.json`, and `benchmarks/builtin.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 4 contracts, 21 runtime events, 22 total labeled findings, and 1.0 precision/recall for all labeled cases, including 3 `telemetry.hyper_pii_disclosure` findings. The GitLab temporal validation report records a `telemetry.temporal_response` finding on the degraded sampled/exported derivative. The GitLab transformation-preservation report records `pass=false`, 1 event removed, and 6 preservation findings: 2 newly introduced runtime obligation failures including the temporal response, 1 lost scenario signal, and 3 lost scenario fields. The checked-in semantic-evaluation report records `aligned_with_checker=true`, 7 input events, 6 service-relevant events, 12 small steps, 14 finding signatures, and no denotation mismatches against the deterministic checker. The checked-in proof-obligation report records 26 cataloged feature groups and 84 instantiated obligations over the same bounded public reconstruction artifacts: 71 discharged, 10 violated, and 3 pending refinement templates.
+The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json`, `case_studies/current/owasp_securetea_signin/metadata.json`, and `benchmarks/builtin.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 4 contracts, 21 runtime events, 22 total labeled findings, and 1.0 precision/recall for all labeled cases, including 3 `telemetry.hyper_pii_disclosure` findings. The GitLab temporal validation report records a `telemetry.temporal_response` finding on the degraded sampled/exported derivative. The GitLab assume-guarantee sampled report records 8 layer-partitioned obligations, 3 satisfied, 5 violated, and concrete `ag.*` findings assigning missing evidence to service, collector, and on-call layers while environment evidence is satisfied. The GitLab transformation-preservation report records `pass=false`, 1 event removed, and 6 preservation findings: 2 newly introduced runtime obligation failures including the temporal response, 1 lost scenario signal, and 3 lost scenario fields. The checked-in semantic-evaluation report records `aligned_with_checker=true`, 7 input events, 6 service-relevant events, 12 small steps, 14 finding signatures, and no denotation mismatches against the deterministic checker. The checked-in proof-obligation report records 27 cataloged feature groups and 99 instantiated obligations over the same bounded public reconstruction artifacts: 82 discharged, 14 violated, and 3 pending refinement templates.

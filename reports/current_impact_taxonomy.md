@@ -1,17 +1,25 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 78
-- Categories: `{"contract": 26, "diagnosability": 20, "input": 1, "operability": 3, "preservation": 4, "privacy-security": 8, "scenario": 2, "schema": 12, "static-coverage": 2}`
-- Default severities: `{"error": 73, "warning": 5}`
-- SARIF levels: `{"error": 73, "warning": 5}`
+- Rules: 86
+- Categories: `{"contract": 27, "diagnosability": 26, "input": 1, "operability": 3, "preservation": 5, "privacy-security": 8, "scenario": 2, "schema": 12, "static-coverage": 2}`
+- Default severities: `{"error": 81, "warning": 5}`
+- SARIF levels: `{"error": 81, "warning": 5}`
 
 ## Rule catalog
 
 | Code | Category | Severity | Formal clause | SARIF | CI fail-on | Disclosure | Owner | Remediation |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ag.alternative_missing | diagnosability | error | AG.alternative-disjunction | error | error | internal | contract service owner | Emit one of the layer-local alternative evidence paths. |
+| ag.missing_field | diagnosability | error | AG.required-field | error | error | internal | contract service owner | Attach the field required by the layer-local assume-guarantee obligation. |
+| ag.missing_signal | diagnosability | error | AG.required-signal | error | error | internal | contract service owner | Assign the layer owner and emit the signal required by the assume-guarantee obligation. |
+| ag.predicate | diagnosability | error | AG.field-predicate | error | error | internal | contract service owner | Emit a witness whose field value satisfies the layer-local predicate. |
+| ag.scenario_unanswerable | diagnosability | error | AG.scenario-adequacy | error | error | internal | contract service owner | Provide the minimum observations needed by the assigned incident-response layer. |
+| ag.temporal_property | diagnosability | error | AG.temporal-property | error | error | internal | contract service owner | Preserve the temporal property assigned to this layer. |
+| ag.undocumented_transformation | preservation | error | AG.collector-assumption | error | error | internal | contract service owner | Document or remove collector/exporter transformations observed in the finite trace. |
 | contract.allowed_values_type | contract | error | WF.allowed-values | error | error | internal | contract service owner | Declare allowed_values as an array. |
 | contract.alternative_obligation | contract | error | WF.alternative-obligation | error | error | internal | contract service owner | Declare each alternative obligation with an id and a non-empty any_of list of signal options. |
+| contract.assume_guarantee | contract | error | WF.assume-guarantee | error | error | internal | contract service owner | Declare assume-guarantee obligations under service_guarantees, collector_assumptions, environment_assumptions, or oncall_obligations with concrete finite-trace evidence. |
 | contract.conditional_requirement | contract | error | WF.conditional | error | error | internal | contract service owner | Declare conditional requirements with an if field condition and then fields list. |
 | contract.duplicate_field | contract | error | WF.unique-field | error | error | internal | contract service owner | Declare each field name in only one of fields, attributes, or tags for a signal. |
 | contract.duplicate_signal | contract | error | WF.unique-signal | error | error | internal | contract service owner | Keep one contract definition per signal name and kind. |

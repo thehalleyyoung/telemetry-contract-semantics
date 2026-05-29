@@ -1,6 +1,146 @@
 {
   "rules": [
     {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.alternative_missing",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.alternative-disjunction",
+      "remediation": "Emit one of the layer-local alternative evidence paths.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_signal",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-signal",
+      "remediation": "Assign the layer owner and emit the signal required by the assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.predicate",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.field-predicate",
+      "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.scenario_unanswerable",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.scenario-adequacy",
+      "remediation": "Provide the minimum observations needed by the assigned incident-response layer.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.temporal_property",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.temporal-property",
+      "remediation": "Preserve the temporal property assigned to this layer.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.undocumented_transformation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.collector-assumption",
+      "remediation": "Document or remove collector/exporter transformations observed in the finite trace.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "contract",
       "ci": {
         "baseline_key_fields": [
@@ -37,6 +177,26 @@
       "disclosure_sensitivity": "internal",
       "formal_clause": "WF.alternative-obligation",
       "remediation": "Declare each alternative obligation with an id and a non-empty any_of list of signal options.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.assume_guarantee",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.assume-guarantee",
+      "remediation": "Declare assume-guarantee obligations under service_guarantees, collector_assumptions, environment_assumptions, or oncall_obligations with concrete finite-trace evidence.",
       "sarif_level": "error",
       "service_owner": "contract service owner"
     },
@@ -1570,23 +1730,23 @@
   },
   "summary": {
     "categories": {
-      "contract": 26,
-      "diagnosability": 20,
+      "contract": 27,
+      "diagnosability": 26,
       "input": 1,
       "operability": 3,
-      "preservation": 4,
+      "preservation": 5,
       "privacy-security": 8,
       "scenario": 2,
       "schema": 12,
       "static-coverage": 2
     },
     "default_severities": {
-      "error": 73,
+      "error": 81,
       "warning": 5
     },
-    "rules": 78,
+    "rules": 86,
     "sarif_levels": {
-      "error": 73,
+      "error": 81,
       "warning": 5
     }
   }

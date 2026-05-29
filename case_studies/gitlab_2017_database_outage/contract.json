@@ -317,5 +317,93 @@
         }
       ]
     }
-  ]
+  ],
+  "assume_guarantee": {
+    "service_guarantees": [
+      {
+        "id": "destructive-command-guard-evidence",
+        "description": "Database service/runbook instrumentation should emit enough structured evidence to distinguish intended host, actual target role, correlation id, and guard result.",
+        "signal": "log",
+        "name": "database.destructive_command",
+        "fields": [
+          "target_host",
+          "intended_host",
+          "target_role",
+          "correlation_id",
+          "command_guard_result"
+        ]
+      },
+      {
+        "id": "restorable-production-backup-guarantee",
+        "description": "Recovery telemetry should guarantee that the selected restore source is verified, fresh, and from production backup evidence.",
+        "signal": "span",
+        "name": "disaster_recovery.restore_attempt",
+        "fields": [
+          "source",
+          "backup_age_hours",
+          "source_environment"
+        ],
+        "field": "source",
+        "equals": "verified_backup"
+      }
+    ],
+    "collector_assumptions": [
+      {
+        "id": "documented-transformations-only",
+        "description": "Collector/exporter output may be sampled only by transformations declared in metadata.transformation_preservation.",
+        "no_undocumented_transformations": true
+      },
+      {
+        "id": "backup-alert-preserved-in-export",
+        "description": "Collector/exporter sampling must preserve the bounded backup-failure alert response needed for restore-readiness evidence.",
+        "temporal_property": "backup-failure-alert-within-response-window"
+      }
+    ],
+    "environment_assumptions": [
+      {
+        "id": "backup-version-and-destination-evidence",
+        "description": "The backup environment should expose destination and database/tool version evidence for selecting a restorable backup.",
+        "signal": "metric",
+        "name": "backup.pg_dump.success",
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "database_version",
+          "tool_version"
+        ]
+      },
+      {
+        "id": "replication-lag-context-evidence",
+        "description": "The database environment should expose primary/replica lag context for stale-replica incident slices.",
+        "signal": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "fields": [
+          "primary_host",
+          "replica_host",
+          "incident_id"
+        ]
+      }
+    ],
+    "oncall_obligations": [
+      {
+        "id": "backup-alert-delivered-to-responders",
+        "description": "On-call diagnostic workflow should expose whether the backup failure alert was delivered to responders.",
+        "signal": "log",
+        "name": "backup.pg_dump.failed",
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "alert_route",
+          "alert_delivered"
+        ],
+        "field": "alert_delivered",
+        "equals": true
+      },
+      {
+        "id": "restore-readiness-question-answerable",
+        "description": "On-call incident evidence should answer the restore-readiness question declared by the contract.",
+        "scenario": "restore-readiness"
+      }
+    ]
+  }
 }

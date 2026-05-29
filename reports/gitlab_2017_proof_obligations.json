@@ -288,6 +288,25 @@
     },
     {
       "clauses": [
+        "WF.assume-guarantee",
+        "AG.required-signal",
+        "AG.required-field",
+        "AG.field-predicate",
+        "AG.alternative-disjunction",
+        "AG.scenario-adequacy",
+        "AG.temporal-property",
+        "AG.collector-assumption"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "assume-guarantee obligations"
+    },
+    {
+      "clauses": [
         "SCENARIO.selection",
         "SCENARIO.requirement-wf",
         "ADEQ.required-signal",
@@ -386,6 +405,16 @@
       "id": "well-formedness:WF.alternative-obligation",
       "status": "discharged",
       "template": "If contract service `gitlab.com-database` uses alternative obligations, every syntax premise for WF.alternative-obligation is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "WF.assume-guarantee",
+      "id": "well-formedness:WF.assume-guarantee",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses assume-guarantee obligations, every syntax premise for WF.assume-guarantee is decidable before telemetry is read."
     },
     {
       "evidence": "validate_contract_shape",
@@ -684,6 +713,399 @@
       "findings": [],
       "formal_clause": "ADEQ.required-signal",
       "id": "satisfaction:ADEQ.required-signal",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "AG.alternative-disjunction",
+      "id": "satisfaction:AG.alternative-disjunction",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.undocumented_transformation",
+          "contract_path": "$.assume_guarantee.collector_assumptions[0]",
+          "details": {
+            "approved_transformations": [
+              "sampling"
+            ],
+            "layer": "collector",
+            "obligation_id": "documented-transformations-only",
+            "undocumented_transformations": {
+              "tail_sampling": [
+                1
+              ]
+            }
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.collector-assumption",
+          "message": "collector/exporter assumption 'documented-transformations-only' observed undocumented collector transformations",
+          "path": "events[*].transformations",
+          "remediation": "Document or remove collector/exporter transformations observed in the finite trace.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "AG.collector-assumption",
+      "id": "satisfaction:AG.collector-assumption",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.predicate",
+          "contract_path": "$.assume_guarantee.service_guarantees[1]",
+          "details": {
+            "expected": "verified_backup",
+            "layer": "service",
+            "obligation_id": "restorable-production-backup-guarantee"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.field-predicate",
+          "message": "service emission guarantee 'restorable-production-backup-guarantee' predicate on field 'source' was not witnessed",
+          "path": "events[span=disaster_recovery.restore_attempt].source",
+          "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.predicate",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0]",
+          "details": {
+            "expected": true,
+            "layer": "oncall",
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.field-predicate",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' predicate on field 'alert_delivered' was not witnessed",
+          "path": "events[log=backup.pg_dump.failed].alert_delivered",
+          "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "AG.field-predicate",
+      "id": "satisfaction:AG.field-predicate",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.service_guarantees[0].fields",
+          "details": {
+            "layer": "service",
+            "matching_event_indices": [
+              1
+            ],
+            "obligation_id": "destructive-command-guard-evidence"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "service emission guarantee 'destructive-command-guard-evidence' requires field 'correlation_id' on log 'database.destructive_command'",
+          "path": "events[log=database.destructive_command].correlation_id",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.service_guarantees[0].fields",
+          "details": {
+            "layer": "service",
+            "matching_event_indices": [
+              1
+            ],
+            "obligation_id": "destructive-command-guard-evidence"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "service emission guarantee 'destructive-command-guard-evidence' requires field 'command_guard_result' on log 'database.destructive_command'",
+          "path": "events[log=database.destructive_command].command_guard_result",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+          "details": {
+            "layer": "oncall",
+            "matching_event_indices": [
+              3
+            ],
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'alert_delivered' on log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed].alert_delivered",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "AG.required-field",
+      "id": "satisfaction:AG.required-field",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "AG.required-signal",
+      "id": "satisfaction:AG.required-signal",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.scenario_unanswerable",
+          "contract_path": "$.assume_guarantee.oncall_obligations[1]",
+          "details": {
+            "layer": "oncall",
+            "missing_evidence": [
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "correlation_id",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].correlation_id",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              },
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "command_guard_result",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].command_guard_result",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              },
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    3
+                  ],
+                  "minimum_observation": {
+                    "field": "alert_delivered",
+                    "name": "backup.pg_dump.failed",
+                    "signal": "log"
+                  },
+                  "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",
+                "path": "events[log=backup.pg_dump.failed].alert_delivered",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ],
+            "obligation_id": "restore-readiness-question-answerable",
+            "scenario": "restore-readiness"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.scenario-adequacy",
+          "message": "on-call diagnostic obligation 'restore-readiness-question-answerable' requires scenario 'restore-readiness' to be answerable",
+          "path": "scenario[restore-readiness]",
+          "remediation": "Provide the minimum observations needed by the assigned incident-response layer.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "AG.scenario-adequacy",
+      "id": "satisfaction:AG.scenario-adequacy",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "AG.temporal-property",
+      "id": "satisfaction:AG.temporal-property",
       "status": "discharged",
       "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
     },
@@ -1539,7 +1961,7 @@
       "template": "If source trace T satisfies an obligation and approved transformation \u0394 produces T\u2032, then T\u2032 preserves the same obligation-local evidence."
     },
     {
-      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, assume-guarantee obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
       "family": "refinement",
       "feature": "contract refinement",
       "findings": [],
@@ -1549,7 +1971,7 @@
       "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
     },
     {
-      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, assume-guarantee obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
       "family": "refinement",
       "feature": "contract refinement",
       "findings": [],
@@ -1559,7 +1981,7 @@
       "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
     },
     {
-      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, assume-guarantee obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
       "family": "refinement",
       "feature": "contract refinement",
       "findings": [],
@@ -1595,6 +2017,76 @@
       "findings": [],
       "formal_clause": "MON.soundness.ADEQ.required-signal",
       "id": "monitor-soundness:MON.soundness.ADEQ.required-signal",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.alternative-disjunction",
+      "id": "monitor-soundness:MON.soundness.AG.alternative-disjunction",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.collector-assumption",
+      "id": "monitor-soundness:MON.soundness.AG.collector-assumption",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.field-predicate",
+      "id": "monitor-soundness:MON.soundness.AG.field-predicate",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.required-field",
+      "id": "monitor-soundness:MON.soundness.AG.required-field",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.required-signal",
+      "id": "monitor-soundness:MON.soundness.AG.required-signal",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.scenario-adequacy",
+      "id": "monitor-soundness:MON.soundness.AG.scenario-adequacy",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "assume-guarantee obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.AG.temporal-property",
+      "id": "monitor-soundness:MON.soundness.AG.temporal-property",
       "status": "discharged",
       "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
     },
@@ -1821,25 +2313,25 @@
   ],
   "service": "gitlab.com-database",
   "summary": {
-    "discharged": 71,
+    "discharged": 82,
     "events": 7,
     "family_counts": {
       "benchmark-label-validity": 1,
-      "monitor-soundness": 24,
+      "monitor-soundness": 31,
       "preservation": 3,
       "refinement": 3,
-      "satisfaction": 24,
-      "well-formedness": 29
+      "satisfaction": 31,
+      "well-formedness": 30
     },
-    "features_cataloged": 26,
-    "obligations": 84,
+    "features_cataloged": 27,
+    "obligations": 99,
     "pending": 3,
     "status_counts": {
-      "discharged": 71,
+      "discharged": 82,
       "pending": 3,
-      "violated": 10
+      "violated": 14
     },
     "strict": true,
-    "violated": 10
+    "violated": 14
   }
 }

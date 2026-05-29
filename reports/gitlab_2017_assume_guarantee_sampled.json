@@ -1,0 +1,1298 @@
+{
+  "findings": [
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "contract_path": "$.assume_guarantee.service_guarantees[0].fields",
+      "details": {
+        "layer": "service",
+        "matching_event_indices": [
+          1
+        ],
+        "obligation_id": "destructive-command-guard-evidence"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "message": "service emission guarantee 'destructive-command-guard-evidence' requires field 'correlation_id' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].correlation_id",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "contract_path": "$.assume_guarantee.service_guarantees[0].fields",
+      "details": {
+        "layer": "service",
+        "matching_event_indices": [
+          1
+        ],
+        "obligation_id": "destructive-command-guard-evidence"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "message": "service emission guarantee 'destructive-command-guard-evidence' requires field 'command_guard_result' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].command_guard_result",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.predicate",
+      "contract_path": "$.assume_guarantee.service_guarantees[1]",
+      "details": {
+        "expected": "verified_backup",
+        "layer": "service",
+        "obligation_id": "restorable-production-backup-guarantee"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.field-predicate",
+      "message": "service emission guarantee 'restorable-production-backup-guarantee' predicate on field 'source' was not witnessed",
+      "path": "events[span=disaster_recovery.restore_attempt].source",
+      "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.temporal_property",
+      "contract_path": "$.assume_guarantee.collector_assumptions[1]",
+      "details": {
+        "layer": "collector",
+        "obligation_id": "backup-alert-preserved-in-export",
+        "property_id": "backup-failure-alert-within-response-window",
+        "violations": [
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_response",
+            "contract_path": "$.temporal_properties[0].response",
+            "details": {
+              "group": [
+                "pg_dump_daily"
+              ],
+              "property": "backup-failure-alert-within-response-window",
+              "within_ms": 1500
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 3,
+            "formal_clause": "SAT.temporal-response",
+            "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+            "path": "event[3]",
+            "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          }
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "AG.temporal-property",
+      "message": "collector/exporter assumption 'backup-alert-preserved-in-export' requires temporal property 'backup-failure-alert-within-response-window' to hold",
+      "path": "event[3]",
+      "remediation": "Preserve the temporal property assigned to this layer.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_signal",
+      "contract_path": "$.assume_guarantee.oncall_obligations[0]",
+      "details": {
+        "layer": "oncall",
+        "name": "backup.pg_dump.failed",
+        "obligation_id": "backup-alert-delivered-to-responders",
+        "signal": "log"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-signal",
+      "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed]",
+      "remediation": "Assign the layer owner and emit the signal required by the assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+      "details": {
+        "layer": "oncall",
+        "matching_event_indices": [],
+        "obligation_id": "backup-alert-delivered-to-responders"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'backup_job_id' on log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed].backup_job_id",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+      "details": {
+        "layer": "oncall",
+        "matching_event_indices": [],
+        "obligation_id": "backup-alert-delivered-to-responders"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'destination' on log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed].destination",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+      "details": {
+        "layer": "oncall",
+        "matching_event_indices": [],
+        "obligation_id": "backup-alert-delivered-to-responders"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'alert_route' on log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed].alert_route",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.missing_field",
+      "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+      "details": {
+        "layer": "oncall",
+        "matching_event_indices": [],
+        "obligation_id": "backup-alert-delivered-to-responders"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.required-field",
+      "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'alert_delivered' on log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed].alert_delivered",
+      "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.predicate",
+      "contract_path": "$.assume_guarantee.oncall_obligations[0]",
+      "details": {
+        "expected": true,
+        "layer": "oncall",
+        "obligation_id": "backup-alert-delivered-to-responders"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.field-predicate",
+      "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' predicate on field 'alert_delivered' was not witnessed",
+      "path": "events[log=backup.pg_dump.failed].alert_delivered",
+      "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "ag.scenario_unanswerable",
+      "contract_path": "$.assume_guarantee.oncall_obligations[1]",
+      "details": {
+        "layer": "oncall",
+        "missing_evidence": [
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "correlation_id",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+            "path": "events[log=database.destructive_command].correlation_id",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "command_guard_result",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+            "path": "events[log=database.destructive_command].command_guard_result",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_signal",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "minimum_observation": {
+                "name": "backup.pg_dump.failed",
+                "signal": "log"
+              },
+              "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-signal",
+            "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+            "path": "events[log=backup.pg_dump.failed]",
+            "remediation": "Emit the signal needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          }
+        ],
+        "obligation_id": "restore-readiness-question-answerable",
+        "scenario": "restore-readiness"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "AG.scenario-adequacy",
+      "message": "on-call diagnostic obligation 'restore-readiness-question-answerable' requires scenario 'restore-readiness' to be answerable",
+      "path": "scenario[restore-readiness]",
+      "remediation": "Provide the minimum observations needed by the assigned incident-response layer.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "limitations": [
+    "The report checks finite supplied artifacts; it does not prove obligations over all production executions.",
+    "Collector-preservation assumptions that require before/after traces should be paired with the preservation command for transformation-local proof evidence."
+  ],
+  "model": {
+    "judgement": "A,T \u22a2 layer obligation \u21d3 satisfied | violated",
+    "layers": [
+      "service",
+      "collector",
+      "environment",
+      "oncall"
+    ],
+    "name": "assume-guarantee-telemetry-contracts-v1",
+    "relation": "An assume-guarantee telemetry contract partitions finite-trace obligations by accountable layer: service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations. A layer obligation is satisfied when its declared signal, scenario, temporal, alternative, or collector-transformation evidence is witnessed in the supplied finite trace; otherwise the report emits a layer-specific counterexample with event indices and missing fields."
+  },
+  "obligations": [
+    {
+      "contract_path": "$.assume_guarantee.service_guarantees[0]",
+      "description": "Database service/runbook instrumentation should emit enough structured evidence to distinguish intended host, actual target role, correlation id, and guard result.",
+      "evidence": {
+        "fields": [
+          "target_host",
+          "intended_host",
+          "target_role",
+          "correlation_id",
+          "command_guard_result"
+        ],
+        "matching_event_indices": [
+          2
+        ],
+        "missing_fields": [
+          "correlation_id",
+          "command_guard_result"
+        ],
+        "name": "database.destructive_command",
+        "observed_fields": [
+          "intended_host",
+          "target_host",
+          "target_role"
+        ],
+        "predicate_witnesses": [],
+        "signal": "log"
+      },
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.service_guarantees[0].fields",
+          "details": {
+            "layer": "service",
+            "matching_event_indices": [
+              1
+            ],
+            "obligation_id": "destructive-command-guard-evidence"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "service emission guarantee 'destructive-command-guard-evidence' requires field 'correlation_id' on log 'database.destructive_command'",
+          "path": "events[log=database.destructive_command].correlation_id",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.service_guarantees[0].fields",
+          "details": {
+            "layer": "service",
+            "matching_event_indices": [
+              1
+            ],
+            "obligation_id": "destructive-command-guard-evidence"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "service emission guarantee 'destructive-command-guard-evidence' requires field 'command_guard_result' on log 'database.destructive_command'",
+          "path": "events[log=database.destructive_command].command_guard_result",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "destructive-command-guard-evidence",
+      "layer": "service",
+      "layer_label": "service emission guarantee",
+      "required": true,
+      "status": "violated"
+    },
+    {
+      "contract_path": "$.assume_guarantee.service_guarantees[1]",
+      "description": "Recovery telemetry should guarantee that the selected restore source is verified, fresh, and from production backup evidence.",
+      "evidence": {
+        "fields": [
+          "source",
+          "backup_age_hours",
+          "source_environment"
+        ],
+        "matching_event_indices": [
+          4
+        ],
+        "missing_fields": [],
+        "name": "disaster_recovery.restore_attempt",
+        "observed_fields": [
+          "backup_age_hours",
+          "source",
+          "source_environment"
+        ],
+        "predicate_witnesses": [],
+        "signal": "span"
+      },
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.predicate",
+          "contract_path": "$.assume_guarantee.service_guarantees[1]",
+          "details": {
+            "expected": "verified_backup",
+            "layer": "service",
+            "obligation_id": "restorable-production-backup-guarantee"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.field-predicate",
+          "message": "service emission guarantee 'restorable-production-backup-guarantee' predicate on field 'source' was not witnessed",
+          "path": "events[span=disaster_recovery.restore_attempt].source",
+          "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "restorable-production-backup-guarantee",
+      "layer": "service",
+      "layer_label": "service emission guarantee",
+      "required": true,
+      "status": "violated"
+    },
+    {
+      "contract_path": "$.assume_guarantee.collector_assumptions[0]",
+      "description": "Collector/exporter output may be sampled only by transformations declared in metadata.transformation_preservation.",
+      "evidence": {
+        "approved_transformations": [
+          "sampling"
+        ],
+        "observed_transformations": {},
+        "undocumented_transformations": {}
+      },
+      "findings": [],
+      "id": "documented-transformations-only",
+      "layer": "collector",
+      "layer_label": "collector/exporter assumption",
+      "required": true,
+      "status": "satisfied"
+    },
+    {
+      "contract_path": "$.assume_guarantee.collector_assumptions[1]",
+      "description": "Collector/exporter sampling must preserve the bounded backup-failure alert response needed for restore-readiness evidence.",
+      "evidence": {
+        "temporal_property": "backup-failure-alert-within-response-window",
+        "violations": [
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_response",
+            "contract_path": "$.temporal_properties[0].response",
+            "details": {
+              "group": [
+                "pg_dump_daily"
+              ],
+              "property": "backup-failure-alert-within-response-window",
+              "within_ms": 1500
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 3,
+            "formal_clause": "SAT.temporal-response",
+            "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+            "path": "event[3]",
+            "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          }
+        ]
+      },
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.temporal_property",
+          "contract_path": "$.assume_guarantee.collector_assumptions[1]",
+          "details": {
+            "layer": "collector",
+            "obligation_id": "backup-alert-preserved-in-export",
+            "property_id": "backup-failure-alert-within-response-window",
+            "violations": [
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "telemetry.temporal_response",
+                "contract_path": "$.temporal_properties[0].response",
+                "details": {
+                  "group": [
+                    "pg_dump_daily"
+                  ],
+                  "property": "backup-failure-alert-within-response-window",
+                  "within_ms": 1500
+                },
+                "disclosure_sensitivity": "internal",
+                "event_index": 3,
+                "formal_clause": "SAT.temporal-response",
+                "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+                "path": "event[3]",
+                "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "AG.temporal-property",
+          "message": "collector/exporter assumption 'backup-alert-preserved-in-export' requires temporal property 'backup-failure-alert-within-response-window' to hold",
+          "path": "event[3]",
+          "remediation": "Preserve the temporal property assigned to this layer.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "backup-alert-preserved-in-export",
+      "layer": "collector",
+      "layer_label": "collector/exporter assumption",
+      "required": true,
+      "status": "violated"
+    },
+    {
+      "contract_path": "$.assume_guarantee.environment_assumptions[0]",
+      "description": "The backup environment should expose destination and database/tool version evidence for selecting a restorable backup.",
+      "evidence": {
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "database_version",
+          "tool_version"
+        ],
+        "matching_event_indices": [
+          3
+        ],
+        "missing_fields": [],
+        "name": "backup.pg_dump.success",
+        "observed_fields": [
+          "backup_job_id",
+          "database_version",
+          "destination",
+          "tool_version"
+        ],
+        "predicate_witnesses": [],
+        "signal": "metric"
+      },
+      "findings": [],
+      "id": "backup-version-and-destination-evidence",
+      "layer": "environment",
+      "layer_label": "environment assumption",
+      "required": true,
+      "status": "satisfied"
+    },
+    {
+      "contract_path": "$.assume_guarantee.environment_assumptions[1]",
+      "description": "The database environment should expose primary/replica lag context for stale-replica incident slices.",
+      "evidence": {
+        "fields": [
+          "primary_host",
+          "replica_host",
+          "incident_id"
+        ],
+        "matching_event_indices": [
+          1
+        ],
+        "missing_fields": [],
+        "name": "postgres.replication.lag_bytes",
+        "observed_fields": [
+          "incident_id",
+          "primary_host",
+          "replica_host"
+        ],
+        "predicate_witnesses": [],
+        "signal": "metric"
+      },
+      "findings": [],
+      "id": "replication-lag-context-evidence",
+      "layer": "environment",
+      "layer_label": "environment assumption",
+      "required": true,
+      "status": "satisfied"
+    },
+    {
+      "contract_path": "$.assume_guarantee.oncall_obligations[0]",
+      "description": "On-call diagnostic workflow should expose whether the backup failure alert was delivered to responders.",
+      "evidence": {
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "alert_route",
+          "alert_delivered"
+        ],
+        "matching_event_indices": [],
+        "missing_fields": [
+          "backup_job_id",
+          "destination",
+          "alert_route",
+          "alert_delivered"
+        ],
+        "name": "backup.pg_dump.failed",
+        "observed_fields": [],
+        "predicate_witnesses": [],
+        "signal": "log"
+      },
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_signal",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0]",
+          "details": {
+            "layer": "oncall",
+            "name": "backup.pg_dump.failed",
+            "obligation_id": "backup-alert-delivered-to-responders",
+            "signal": "log"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-signal",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed]",
+          "remediation": "Assign the layer owner and emit the signal required by the assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+          "details": {
+            "layer": "oncall",
+            "matching_event_indices": [],
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'backup_job_id' on log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed].backup_job_id",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+          "details": {
+            "layer": "oncall",
+            "matching_event_indices": [],
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'destination' on log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed].destination",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+          "details": {
+            "layer": "oncall",
+            "matching_event_indices": [],
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'alert_route' on log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed].alert_route",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.missing_field",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0].fields",
+          "details": {
+            "layer": "oncall",
+            "matching_event_indices": [],
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.required-field",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' requires field 'alert_delivered' on log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed].alert_delivered",
+          "remediation": "Attach the field required by the layer-local assume-guarantee obligation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.predicate",
+          "contract_path": "$.assume_guarantee.oncall_obligations[0]",
+          "details": {
+            "expected": true,
+            "layer": "oncall",
+            "obligation_id": "backup-alert-delivered-to-responders"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.field-predicate",
+          "message": "on-call diagnostic obligation 'backup-alert-delivered-to-responders' predicate on field 'alert_delivered' was not witnessed",
+          "path": "events[log=backup.pg_dump.failed].alert_delivered",
+          "remediation": "Emit a witness whose field value satisfies the layer-local predicate.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "backup-alert-delivered-to-responders",
+      "layer": "oncall",
+      "layer_label": "on-call diagnostic obligation",
+      "required": true,
+      "status": "violated"
+    },
+    {
+      "contract_path": "$.assume_guarantee.oncall_obligations[1]",
+      "description": "On-call incident evidence should answer the restore-readiness question declared by the contract.",
+      "evidence": {
+        "answerable": false,
+        "missing_evidence": [
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "correlation_id",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+            "path": "events[log=database.destructive_command].correlation_id",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "command_guard_result",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+            "path": "events[log=database.destructive_command].command_guard_result",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_signal",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "minimum_observation": {
+                "name": "backup.pg_dump.failed",
+                "signal": "log"
+              },
+              "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-signal",
+            "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+            "path": "events[log=backup.pg_dump.failed]",
+            "remediation": "Emit the signal needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          }
+        ],
+        "scenario": "restore-readiness"
+      },
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "ag.scenario_unanswerable",
+          "contract_path": "$.assume_guarantee.oncall_obligations[1]",
+          "details": {
+            "layer": "oncall",
+            "missing_evidence": [
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "correlation_id",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].correlation_id",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              },
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "command_guard_result",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].command_guard_result",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              },
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_signal",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "minimum_observation": {
+                    "name": "backup.pg_dump.failed",
+                    "signal": "log"
+                  },
+                  "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-signal",
+                "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+                "path": "events[log=backup.pg_dump.failed]",
+                "remediation": "Emit the signal needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ],
+            "obligation_id": "restore-readiness-question-answerable",
+            "scenario": "restore-readiness"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "AG.scenario-adequacy",
+          "message": "on-call diagnostic obligation 'restore-readiness-question-answerable' requires scenario 'restore-readiness' to be answerable",
+          "path": "scenario[restore-readiness]",
+          "remediation": "Provide the minimum observations needed by the assigned incident-response layer.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "restore-readiness-question-answerable",
+      "layer": "oncall",
+      "layer_label": "on-call diagnostic obligation",
+      "required": true,
+      "status": "violated"
+    }
+  ],
+  "service": "gitlab.com-database",
+  "summary": {
+    "by_layer": {
+      "collector": {
+        "satisfied": 1,
+        "violated": 1
+      },
+      "environment": {
+        "satisfied": 2
+      },
+      "oncall": {
+        "violated": 2
+      },
+      "service": {
+        "violated": 2
+      }
+    },
+    "findings": 11,
+    "findings_by_code": {
+      "ag.missing_field": 6,
+      "ag.missing_signal": 1,
+      "ag.predicate": 2,
+      "ag.scenario_unanswerable": 1,
+      "ag.temporal_property": 1
+    },
+    "not_applicable": 0,
+    "obligations": 8,
+    "pass": false,
+    "satisfied": 3,
+    "violated": 5
+  }
+}

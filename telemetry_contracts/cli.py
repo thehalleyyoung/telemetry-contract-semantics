@@ -14,6 +14,7 @@ from .semantics import describe_model, format_model_markdown
 from .preservation import check_transformation_preservation, format_preservation_markdown
 from .static_checker import check_sources
 from .alternatives import evaluate_alternative_obligations, format_alternative_obligations_markdown
+from .assume_guarantee import evaluate_assume_guarantee, format_assume_guarantee_markdown
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .core_semantics import evaluate_contract_semantics, format_core_semantics_markdown
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
@@ -129,6 +130,13 @@ def main(argv: list[str] | None = None) -> int:
     alternative_parser.add_argument("--output")
     alternative_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
+    ag_parser = report_subparsers.add_parser("assume-guarantee", help="partition telemetry obligations by service, collector, environment, and on-call layers")
+    ag_parser.add_argument("--contract", required=True)
+    ag_parser.add_argument("--events", required=True)
+    ag_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    ag_parser.add_argument("--output")
+    ag_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
     args = parser.parse_args(argv)
     try:
         if args.command == "import-otlp":
@@ -234,6 +242,9 @@ def main(argv: list[str] | None = None) -> int:
                 report = evaluate_alternative_obligations(contract, events)
                 serializable_report = {key: value for key, value in report.items() if key != "raw_findings"}
                 output = json.dumps(serializable_report, indent=2, sort_keys=True) if args.format == "json" else format_alternative_obligations_markdown(serializable_report)
+            elif args.report_command == "assume-guarantee":
+                report = evaluate_assume_guarantee(contract, events)
+                output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_assume_guarantee_markdown(report)
             else:
                 report = generate_incident_readiness_report(contract, events, args.scenario or None)
                 output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_incident_readiness_markdown(report)

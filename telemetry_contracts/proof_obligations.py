@@ -5,6 +5,7 @@ from collections import Counter, defaultdict
 from typing import Any
 
 from .benchmark import run_benchmark
+from .assume_guarantee import evaluate_assume_guarantee
 from .core_semantics import evaluate_contract_semantics
 from .findings import TAXONOMY, Finding
 from .preservation import check_transformation_preservation
@@ -54,6 +55,7 @@ FEATURE_CATALOG = [
     {"feature": "hyperproperties", "clauses": ["WF.hyperproperty", "HYP.pii-non-disclosure", "HYP.tenant-non-interference"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
     {"feature": "alternative obligations", "clauses": ["WF.alternative-obligation", "SAT.alternative-disjunction", "ADEQ.alternative-observation"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
     {"feature": "strict closed world", "clauses": ["WF.strict-policy", "STRICT.service-closed-world", "STRICT.signal-closed-world", "STRICT.field-closed-world", "STRICT.transformation-documented"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
+    {"feature": "assume-guarantee obligations", "clauses": ["WF.assume-guarantee", "AG.required-signal", "AG.required-field", "AG.field-predicate", "AG.alternative-disjunction", "AG.scenario-adequacy", "AG.temporal-property", "AG.collector-assumption"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
     {"feature": "scenario adequacy", "clauses": ["SCENARIO.selection", "SCENARIO.requirement-wf", "ADEQ.required-signal", "ADEQ.required-field"], "families": ["satisfaction", "preservation", "monitor-soundness", "refinement"]},
     {"feature": "transformation preservation", "clauses": ["PRES.runtime-obligation", "PRES.adequacy-signal", "PRES.adequacy-field"], "families": ["preservation"]},
     {"feature": "static instrumentation evidence", "clauses": ["STATIC.signal-literal", "STATIC.source-domain", "STATIC.raw-sensitive-log", "STATIC.correlation-evidence", "STATIC.cardinality-risk"], "families": ["satisfaction", "monitor-soundness", "benchmark-label-validity"]},
@@ -74,6 +76,8 @@ def generate_proof_obligations_report(
     """Instantiate proof-obligation templates against available artifacts."""
     wf_findings = validate_contract_shape(contract)
     runtime_findings = validate_events(contract, events, strict=strict) if events is not None else []
+    if events is not None and isinstance(contract.get("assume_guarantee"), dict):
+        runtime_findings.extend(_findings_from_dicts(evaluate_assume_guarantee(contract, events).get("findings", [])))
     semantics_report = evaluate_contract_semantics(contract, events, strict=strict) if events is not None else None
     preservation_report = (
         check_transformation_preservation(contract, source_events, transformed_events)
@@ -295,6 +299,23 @@ def _obligation(family: str, feature: str, clause: str, template: str, evidence:
     return _obligation_dict(family, feature, clause, template, evidence, [finding.to_dict() for finding in findings], pending=pending)
 
 
+def _findings_from_dicts(items: list[dict[str, Any]]) -> list[Finding]:
+    findings = []
+    for item in items:
+        findings.append(
+            Finding(
+                item.get("severity", "error"),
+                item.get("code", "input.load_error"),
+                item.get("message", ""),
+                item.get("path", ""),
+                item.get("contract_path"),
+                item.get("event_index"),
+                item.get("details"),
+            )
+        )
+    return findings
+
+
 def _obligation_dict(family: str, feature: str, clause: str, template: str, evidence: str, findings: list[dict[str, Any]], *, pending: bool) -> dict[str, Any]:
     if pending:
         status = "pending"
@@ -356,6 +377,8 @@ def _present_features(contract: dict[str, Any]) -> dict[str, bool]:
         features["alternative obligations"] = True
     if _strict_enabled(contract, None):
         features["strict closed world"] = True
+    if isinstance(contract.get("assume_guarantee"), dict) and contract["assume_guarantee"]:
+        features["assume-guarantee obligations"] = True
     if isinstance(contract.get("scenarios"), list) and contract["scenarios"]:
         features["scenario adequacy"] = True
     if isinstance(contract.get("metadata"), dict) and isinstance(contract["metadata"].get("transformation_preservation"), dict):
@@ -400,6 +423,7 @@ def _satisfaction_clauses(features: dict[str, bool], strict_enabled: bool) -> se
         "temporal logic properties": {"SAT.temporal-safety", "SAT.temporal-absence", "SAT.temporal-response", "SAT.temporal-order", "SAT.temporal-deadline"},
         "alternative obligations": {"SAT.alternative-disjunction"},
         "scenario adequacy": {"ADEQ.required-signal", "ADEQ.required-field", "ADEQ.alternative-observation"},
+        "assume-guarantee obligations": {"AG.required-signal", "AG.required-field", "AG.field-predicate", "AG.alternative-disjunction", "AG.scenario-adequacy", "AG.temporal-property", "AG.collector-assumption"},
     }
     for feature, feature_clauses in feature_to_clauses.items():
         if features.get(feature):

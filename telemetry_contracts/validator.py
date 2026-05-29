@@ -149,6 +149,9 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
     findings.extend(_validate_temporal_properties_shape(contract.get("temporal_properties")))
     findings.extend(_validate_hyperproperties_shape(contract.get("hyperproperties")))
     findings.extend(_validate_alternative_obligations_shape(contract.get("alternative_obligations")))
+    from .assume_guarantee import validate_assume_guarantee_shape
+
+    findings.extend(validate_assume_guarantee_shape(contract))
     return findings
 
 

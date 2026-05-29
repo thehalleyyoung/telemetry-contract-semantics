@@ -68,6 +68,115 @@
       ],
       "type": "object"
     },
+    "assumeGuarantee": {
+      "properties": {
+        "collector_assumptions": {
+          "items": {
+            "$ref": "#/$defs/assumeGuaranteeObligation"
+          },
+          "type": "array"
+        },
+        "environment_assumptions": {
+          "items": {
+            "$ref": "#/$defs/assumeGuaranteeObligation"
+          },
+          "type": "array"
+        },
+        "oncall_obligations": {
+          "items": {
+            "$ref": "#/$defs/assumeGuaranteeObligation"
+          },
+          "type": "array"
+        },
+        "service_guarantees": {
+          "items": {
+            "$ref": "#/$defs/assumeGuaranteeObligation"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "assumeGuaranteeObligation": {
+      "properties": {
+        "any_of": {
+          "items": {
+            "$ref": "#/$defs/alternativeOption"
+          },
+          "type": "array"
+        },
+        "approved_transformations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "description": {
+          "type": "string"
+        },
+        "equals": {},
+        "field": {
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "no_undocumented_transformations": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "present": {
+          "type": "boolean"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "scenario": {
+          "type": "string"
+        },
+        "signal": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        },
+        "temporal_property": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
     "baseSignal": {
       "properties": {
         "attributes": {
@@ -971,6 +1080,9 @@
         "$ref": "#/$defs/alternativeObligation"
       },
       "type": "array"
+    },
+    "assume_guarantee": {
+      "$ref": "#/$defs/assumeGuarantee"
     },
     "correlation": {
       "$ref": "#/$defs/correlationPolicy"

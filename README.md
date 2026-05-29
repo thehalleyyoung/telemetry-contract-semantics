@@ -11,6 +11,7 @@ This repository turns that thesis into executable checks:
 - Alternative-obligation checks that let one of several equivalent logs/spans/metrics satisfy a required evidence path without duplicate false positives.
 - Temporal-logic checks for safety invariants, bounded responses, absence properties, ordering, and deadlines over finite telemetry traces.
 - Hyperproperty checks for PII non-disclosure and tenant non-interference over finite sets/pairs of traces, producing privacy-risk witness findings.
+- Assume-guarantee reports that partition finite-trace obligations into service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations with layer-specific counterexamples.
 - Strict validation that treats a contract as a closed-world model and reports unexpected fields, undeclared signal names, unmodeled services, and undocumented collector transformations, with bounded escape hatches.
 - Observational-equivalence reports that compare two telemetry streams by incident-question answerability instead of byte equality.
 - Transformation-preservation checks that compare source and post-transform streams to catch approved sampling, redaction, omission, retention, or aggregation that destroys contract or incident-question evidence.
@@ -29,7 +30,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: `100_STEPS.md` currently has 33 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: `100_STEPS.md` currently has 34 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -66,6 +67,11 @@ python3 -m telemetry_contracts.cli report alternative-obligations \
   --contract case_studies/gitlab_2017_database_outage/contract.json \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
   --format markdown
+
+python3 -m telemetry_contracts.cli report assume-guarantee \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --format markdown --fail-on never
 
 python3 -m telemetry_contracts.cli import-otlp \
   --input examples/real_world/otel_checkout_missing_tenant.otlp.json \
@@ -226,12 +232,13 @@ Supported checks include:
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`; transformation-preservation defaults may be declared under `metadata.transformation_preservation` with `approved_transformations` and `preserve_scenarios`.
 - Alternative obligations under `alternative_obligations`, where a required finite disjunction passes when at least one declared option has a witness event containing all required fields; `minimum_observations` scenario entries may also use `any_of` for equivalent evidence paths.
+- Assume-guarantee obligations under `assume_guarantee`, grouped as `service_guarantees`, `collector_assumptions`, `environment_assumptions`, and `oncall_obligations`. `report assume-guarantee` checks signal/field witnesses, field predicates, scenarios, temporal properties, alternative evidence, and documented collector transformations, then reports which layer is accountable for each missing or non-preserved witness.
 - Strict validation via `validate --strict` or `metadata.strict_validation.enabled`. Strict mode adds closed-world obligations: each event service must match the modeled service or `allow_unmodeled_services`; each span/log/metric name must be declared in signal sections, scenarios, temporal sequences, or alternative obligations unless `allow_undeclared_signals` names it; emitted attributes/tags/fields must be declared unless `allowed_extra_fields` or `allow_unexpected_fields` permits them; collector transformations must appear in `metadata.transformation_preservation.approved_transformations` or `allow_collector_transformations`.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
 - Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
 - Transformation preservation for approved telemetry changes. `preservation` implements an obligation-local relation: if a runtime contract obligation or selected scenario witness is satisfied before transformation, it must remain satisfied after transformation. Reports identify new contract failures plus lost incident-question signals/fields, and checked-in GitLab 2017 reports demonstrate a sampled/exported derivative that removes the backup-failure alert witness.
-- Proof-obligation reports for the implemented contract language. `proof-obligations` catalogs 26 feature groups and instantiates templates for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity. When concrete artifacts are supplied, obligations are marked `discharged` or `violated`; refinement remains a template-only family until the dedicated refinement checker lands.
+- Proof-obligation reports for the implemented contract language. `proof-obligations` catalogs 27 feature groups and instantiates templates for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity. When concrete artifacts are supplied, obligations are marked `discharged` or `violated`; refinement remains a template-only family until the dedicated refinement checker lands.
 - Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
 
 ## Runtime event format
@@ -260,17 +267,18 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.validator` checks emitted telemetry against signal, field, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications.
 - `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
 - `telemetry_contracts.alternatives` evaluates finite disjunctions over semantically equivalent evidence paths and emits witness/counterexample reports.
+- `telemetry_contracts.assume_guarantee` evaluates layer-partitioned service, collector, environment, and on-call obligations over finite telemetry artifacts.
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` defines diagnosability adequacy for incident questions and verifies minimum observations against emitted telemetry.
 - `telemetry_contracts.equivalence` compares two traces by their scenario answerability signatures.
 - `telemetry_contracts.preservation` checks pre/post transformation preservation for runtime obligations and scenario witnesses.
-- `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, semantics, hyperproperty, preservation, and benchmark evidence.
+- `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, assume-guarantee, semantics, hyperproperty, preservation, and benchmark evidence.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -316,7 +324,7 @@ A benchmark config is JSON with a `cases` list. Each case points to a contract p
 - <https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/>
 - <https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/>
 
-The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence and temporal properties for backup-failure alert response and reconstruction ordering. `reports/gitlab_2017_temporal_logic_validation.json` shows that the degraded sampled/exported derivative now reports `telemetry.temporal_response` when the failed-backup metric has no `backup.pg_dump.failed` response witness within 1500ms.
+The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence, temporal properties for backup-failure alert response and reconstruction ordering, and assume-guarantee obligations assigning missing guard/backup evidence to service, collector, environment, or on-call layers. `reports/gitlab_2017_temporal_logic_validation.json` shows that the degraded sampled/exported derivative reports `telemetry.temporal_response` when the failed-backup metric has no `backup.pg_dump.failed` response witness within 1500ms; `reports/gitlab_2017_assume_guarantee_sampled.md` turns the same bounded derivative into layer-specific counterexamples.
 
 See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
 
@@ -372,7 +380,7 @@ python3 -m telemetry_contracts.cli proof-obligations \
   --output reports/gitlab_2017_proof_obligations.md
 ```
 
-`reports/gitlab_2017_proof_obligations.md` catalogs 26 feature groups and 84 instantiated obligations for those supplied artifacts: 71 discharged, 10 violated, and 3 pending refinement templates. The violations are bounded to the checked-in strict-drift and sampled/exported fixtures; the report does not claim access to GitLab private telemetry or prove universal monitor soundness.
+`reports/gitlab_2017_proof_obligations.md` catalogs 27 feature groups and 99 instantiated obligations for those supplied artifacts: 82 discharged, 14 violated, and 3 pending refinement templates. The violations are bounded to the checked-in strict-drift, assume-guarantee, and sampled/exported fixtures; the report does not claim access to GitLab private telemetry or prove universal monitor soundness.
 
 Generate the checked-in alternative-obligation witness report:
 
@@ -385,6 +393,19 @@ python3 -m telemetry_contracts.cli report alternative-obligations \
 ```
 
 The report records `pass=true`: the structured log witnesses the destructive-command location obligation, while the equivalent span option is absent without creating a duplicate false positive.
+
+Generate the checked-in assume-guarantee layer report for the sampled/exported derivative:
+
+```bash
+python3 -m telemetry_contracts.cli report assume-guarantee \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --format markdown \
+  --output reports/gitlab_2017_assume_guarantee_sampled.md \
+  --fail-on never
+```
+
+The report records 8 layer-partitioned obligations over the bounded public reconstruction: 3 satisfied and 5 violated. The environment evidence obligations are satisfied, while service, collector-preservation, and on-call obligations carry concrete `ag.*` counterexamples. These are evidence claims about the checked-in reconstructed artifacts, not claims about GitLab private telemetry.
 
 ## Current public-code case study
 
@@ -409,6 +430,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
 - Temporal-property monitoring is finite-trace and bounded by supplied timestamps/grouping keys; it is not an unbounded temporal-logic model checker.
 - Hyperproperty monitoring is finite-artifact and pair/set bounded by supplied JSONL events; it identifies concrete privacy-risk witnesses, not universal non-interference over all executions.
+- Assume-guarantee reports assign finite-artifact findings to declared layers; they do not prove organizational accountability or production workflow behavior beyond the supplied contract and trace.
 - Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
 - The small-step semantic evaluator is an executable artifact aligned with the current checker through tests and reports; it is not a separately machine-checked theorem prover.
 - Proof-obligation reports are executable evidence checklists over finite artifacts. They are useful for review and reproducibility, but refinement templates are not discharged until the future refinement checker is implemented.
