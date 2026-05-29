@@ -3,34 +3,91 @@
   "service": "checkout",
   "metadata": {
     "owner": "payments-platform",
-    "sampling": {"traces": "parent-based 10% minimum", "logs": "errors always"},
-    "retention": {"traces_days": 7, "metrics_days": 30, "logs_days": 14}
+    "sampling": {
+      "traces": "parent-based 10% minimum",
+      "logs": "errors always"
+    },
+    "retention": {
+      "traces_days": 7,
+      "metrics_days": 30,
+      "logs_days": 14
+    }
   },
-  "correlation": {"keys": ["trace_id", "request_id"], "require_on": ["spans", "logs", "metrics"]},
+  "correlation": {
+    "keys": [
+      "trace_id",
+      "request_id"
+    ],
+    "require_on": [
+      "spans",
+      "logs",
+      "metrics"
+    ]
+  },
   "spans": [
     {
       "name": "checkout.request",
       "required": true,
       "fields": {
-        "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+", "cardinality": {"max": 1000}},
-        "cart_id": {"type": "string", "required": true, "pattern": "cart-[0-9]+", "cardinality": {"max": 100000}},
-        "result": {"type": "string", "required": true, "allowed_values": ["ok", "failed"]},
-        "duration_ms": {"type": "number", "required": true, "min": 0, "max": 30000}
+        "tenant_id": {
+          "$ref": "#/field_definitions/tenant_id"
+        },
+        "cart_id": {
+          "$ref": "#/field_definitions/cart_id"
+        },
+        "result": {
+          "$ref": "#/field_definitions/result"
+        },
+        "duration_ms": {
+          "type": "number",
+          "required": true,
+          "min": 0,
+          "max": 30000
+        }
       }
     },
     {
       "name": "payment.authorize",
       "required": true,
       "fields": {
-        "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+"},
-        "payment_provider": {"type": "string", "required": true, "allowed_values": ["stripe", "adyen", "test"]},
-        "retry_count": {"type": "integer", "required": true, "min": 0, "max": 3},
-        "error_code": {"type": "string", "required": false, "pattern": "[A-Z_]+"},
-        "remediation_hint": {"type": "string", "required": false},
-        "retryable": {"type": "boolean", "required": false}
+        "tenant_id": {
+          "$ref": "#/field_definitions/tenant_id"
+        },
+        "payment_provider": {
+          "$ref": "#/field_definitions/payment_provider"
+        },
+        "retry_count": {
+          "type": "integer",
+          "required": true,
+          "min": 0,
+          "max": 3
+        },
+        "error_code": {
+          "$ref": "#/field_definitions/error_code",
+          "required": false
+        },
+        "remediation_hint": {
+          "type": "string",
+          "required": false
+        },
+        "retryable": {
+          "type": "boolean",
+          "required": false
+        }
       },
       "conditional_requirements": [
-        {"if": {"field": "error_code", "present": true}, "then": {"fields": ["remediation_hint", "retryable"]}}
+        {
+          "if": {
+            "field": "error_code",
+            "present": true
+          },
+          "then": {
+            "fields": [
+              "remediation_hint",
+              "retryable"
+            ]
+          }
+        }
       ]
     }
   ],
@@ -38,18 +95,31 @@
     {
       "name": "checkout.requests.total",
       "required": true,
-      "value": {"type": "number", "min": 0},
+      "value": {
+        "type": "number",
+        "min": 0
+      },
       "tags": {
-        "tenant_id": {"type": "string", "required": true, "cardinality": {"max": 1000}},
-        "result": {"type": "string", "required": true, "allowed_values": ["ok", "failed"]}
+        "tenant_id": {
+          "$ref": "#/field_definitions/tenant_id"
+        },
+        "result": {
+          "$ref": "#/field_definitions/result"
+        }
       }
     },
     {
       "name": "payment.authorization.latency_ms",
       "required": true,
-      "value": {"type": "number", "min": 0, "max": 30000},
+      "value": {
+        "type": "number",
+        "min": 0,
+        "max": 30000
+      },
       "tags": {
-        "payment_provider": {"type": "string", "required": true, "allowed_values": ["stripe", "adyen", "test"]}
+        "payment_provider": {
+          "$ref": "#/field_definitions/payment_provider"
+        }
       }
     }
   ],
@@ -58,28 +128,134 @@
       "name": "checkout.payment_failed",
       "required": true,
       "severity": "ERROR",
-      "severity_policy": {"min": "ERROR"},
+      "severity_policy": {
+        "min": "ERROR"
+      },
       "message_pattern": "payment authorization failed",
       "fields": {
-        "tenant_id": {"type": "string", "required": true},
-        "cart_id": {"type": "string", "required": true},
-        "error_code": {"type": "string", "required": true, "pattern": "[A-Z_]+"}
+        "tenant_id": {
+          "$ref": "#/field_definitions/tenant_id"
+        },
+        "cart_id": {
+          "$ref": "#/field_definitions/cart_id"
+        },
+        "error_code": {
+          "$ref": "#/field_definitions/error_code"
+        }
       }
     }
   ],
   "static_expectations": {
-    "spans": ["checkout.request", "payment.authorize"],
-    "metrics": ["checkout.requests.total", "payment.authorization.latency_ms"],
-    "logs": ["checkout.payment_failed"]
+    "spans": [
+      "checkout.request",
+      "payment.authorize"
+    ],
+    "metrics": [
+      "checkout.requests.total",
+      "payment.authorization.latency_ms"
+    ],
+    "logs": [
+      "checkout.payment_failed"
+    ]
   },
   "scenarios": [
     {
       "id": "payment-timeout",
       "question": "Can an on-call engineer diagnose which tenant, cart, provider, and retry count were involved when payment authorization times out?",
       "requires": [
-        {"signal": "span", "name": "payment.authorize", "fields": ["tenant_id", "payment_provider", "retry_count", "error_code"]},
-        {"signal": "log", "name": "checkout.payment_failed", "fields": ["tenant_id", "cart_id", "error_code"]},
-        {"signal": "metric", "name": "payment.authorization.latency_ms", "fields": ["payment_provider"]}
+        {
+          "signal": "span",
+          "name": "payment.authorize",
+          "fields": [
+            "tenant_id",
+            "payment_provider",
+            "retry_count",
+            "error_code"
+          ]
+        },
+        {
+          "signal": "log",
+          "name": "checkout.payment_failed",
+          "fields": [
+            "tenant_id",
+            "cart_id",
+            "error_code"
+          ]
+        },
+        {
+          "signal": "metric",
+          "name": "payment.authorization.latency_ms",
+          "fields": [
+            "payment_provider"
+          ]
+        }
+      ]
+    }
+  ],
+  "field_definitions": {
+    "tenant_id": {
+      "type": "string",
+      "required": true,
+      "pattern": "tenant-[a-z0-9-]+",
+      "cardinality": {
+        "max": 1000
+      }
+    },
+    "cart_id": {
+      "type": "string",
+      "required": true,
+      "pattern": "cart-[0-9]+",
+      "cardinality": {
+        "max": 100000
+      }
+    },
+    "result": {
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "ok",
+        "failed"
+      ]
+    },
+    "payment_provider": {
+      "type": "string",
+      "required": true,
+      "allowed_values": [
+        "stripe",
+        "adyen",
+        "test"
+      ]
+    },
+    "error_code": {
+      "type": "string",
+      "required": true,
+      "pattern": "[A-Z_]+"
+    }
+  },
+  "temporal_sequences": [
+    {
+      "id": "checkout-payment-failure-flow",
+      "group_by": [
+        "trace_id"
+      ],
+      "window_ms": 5000,
+      "steps": [
+        {
+          "kind": "span",
+          "name": "checkout.request"
+        },
+        {
+          "kind": "span",
+          "name": "payment.authorize"
+        },
+        {
+          "kind": "metric",
+          "name": "checkout.requests.total"
+        },
+        {
+          "kind": "log",
+          "name": "checkout.payment_failed"
+        }
       ]
     }
   ]

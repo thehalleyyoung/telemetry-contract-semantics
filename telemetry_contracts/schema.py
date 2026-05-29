@@ -14,10 +14,12 @@ CONTRACT_SCHEMA: dict[str, Any] = {
         "version": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
         "service": {"type": "string"},
         "metadata": {"type": "object"},
+        "field_definitions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/fieldSpec"}},
         "spans": {"type": "array", "items": {"$ref": "#/$defs/spanSignal"}},
         "metrics": {"type": "array", "items": {"$ref": "#/$defs/metricSignal"}},
         "logs": {"type": "array", "items": {"$ref": "#/$defs/logSignal"}},
         "correlation": {"$ref": "#/$defs/correlationPolicy"},
+        "temporal_sequences": {"type": "array", "items": {"$ref": "#/$defs/temporalSequence"}},
         "static_expectations": {"$ref": "#/$defs/staticExpectations"},
         "static_rules": {"type": "object"},
         "scenarios": {"type": "array", "items": {"$ref": "#/$defs/scenario"}},
@@ -30,6 +32,8 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                 {
                     "type": "object",
                     "properties": {
+                        "$ref": {"type": "string"},
+                        "ref": {"type": "string"},
                         "type": {"$ref": "#/$defs/primitive"},
                         "required": {"type": "boolean"},
                         "allowed_values": {"type": "array"},
@@ -131,6 +135,26 @@ CONTRACT_SCHEMA: dict[str, Any] = {
             "properties": {
                 "keys": {"type": "array", "items": {"type": "string"}},
                 "require_on": {"type": "array", "items": {"enum": ["spans", "logs", "metrics", "span", "log", "metric"]}},
+            },
+        },
+        "temporalSequence": {
+            "type": "object",
+            "required": ["steps"],
+            "properties": {
+                "id": {"type": "string"},
+                "required": {"type": "boolean"},
+                "window_ms": {"type": "number"},
+                "group_by": {"type": "array", "items": {"type": "string"}},
+                "steps": {"type": "array", "items": {"$ref": "#/$defs/temporalStep"}},
+            },
+        },
+        "temporalStep": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "kind": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                "signal": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                "name": {"type": "string"},
             },
         },
         "staticExpectations": {

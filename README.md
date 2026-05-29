@@ -68,11 +68,24 @@ A contract declares a service plus expected telemetry signals:
   "version": "1.0",
   "service": "checkout",
   "correlation": {"keys": ["trace_id", "request_id"], "require_on": ["spans", "logs"]},
+  "field_definitions": {
+    "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+"}
+  },
+  "temporal_sequences": [{
+    "id": "payment-failure-flow",
+    "group_by": ["trace_id"],
+    "window_ms": 5000,
+    "steps": [
+      {"kind": "span", "name": "checkout.request"},
+      {"kind": "span", "name": "payment.authorize"},
+      {"kind": "log", "name": "checkout.payment_failed"}
+    ]
+  }],
   "spans": [{
     "name": "payment.authorize",
     "required": true,
     "fields": {
-      "tenant_id": {"type": "string", "required": true},
+      "tenant_id": {"$ref": "#/field_definitions/tenant_id"},
       "auth_token": {"type": "string", "sensitivity": "token", "forbidden_patterns": ["bearer_token"]},
       "retry_count": {"type": "integer", "min": 0, "max": 3},
       "payment_provider": {"type": "string", "allowed_values": ["stripe", "adyen", "test"]},
@@ -92,6 +105,7 @@ Supported checks include:
 - Signal presence for spans, metrics, and logs.
 - Contract structure validation against the published JSON Schema in `docs/contract.schema.json`.
 - Required fields/tags/attributes.
+- Reusable `field_definitions` referenced with `$ref`/`ref`, with per-use overrides.
 - Primitive field types: string, integer, number, boolean, object, array, null.
 - Allowed values.
 - Regex patterns.
@@ -104,6 +118,7 @@ Supported checks include:
 - Conditional requirements, for example requiring `remediation_hint` and `retryable` whenever `error_code` is present.
 - Cardinality hints and bounded-cardinality policies as warnings.
 - Cross-signal correlation policies requiring shared keys such as `trace_id` or `request_id` across configured signal kinds.
+- Temporal sequence checks over spans, metrics, and logs using timestamps and optional `group_by` incident windows.
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Sampling and retention metadata as documented assumptions.
 
@@ -112,9 +127,9 @@ Supported checks include:
 Runtime validation reads newline-delimited JSON. Events are intentionally simple and collector-neutral:
 
 ```json
-{"kind":"span","service":"checkout","name":"payment.authorize","trace_id":"trace-123","attributes":{"tenant_id":"tenant-acme","payment_provider":"stripe","retry_count":2}}
-{"kind":"metric","service":"checkout","name":"payment.authorization.latency_ms","trace_id":"trace-123","value":812.7,"tags":{"payment_provider":"stripe"}}
-{"kind":"log","service":"checkout","name":"checkout.payment_failed","trace_id":"trace-123","severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
+{"kind":"span","service":"checkout","name":"payment.authorize","trace_id":"trace-123","timestamp_ms":1000,"attributes":{"tenant_id":"tenant-acme","payment_provider":"stripe","retry_count":2}}
+{"kind":"metric","service":"checkout","name":"payment.authorization.latency_ms","trace_id":"trace-123","timestamp_ms":1100,"value":812.7,"tags":{"payment_provider":"stripe"}}
+{"kind":"log","service":"checkout","name":"checkout.payment_failed","trace_id":"trace-123","timestamp_ms":1200,"severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
 ```
 
 Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output.

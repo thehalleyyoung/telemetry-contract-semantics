@@ -124,6 +124,9 @@
         },
         {
           "properties": {
+            "$ref": {
+              "type": "string"
+            },
             "allow_raw_sensitive": {
               "type": "boolean"
             },
@@ -170,6 +173,9 @@
             },
             "pii": {
               "type": "boolean"
+            },
+            "ref": {
+              "type": "string"
             },
             "regex": {
               "type": "string"
@@ -341,6 +347,66 @@
         }
       },
       "type": "object"
+    },
+    "temporalSequence": {
+      "properties": {
+        "group_by": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "id": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/temporalStep"
+          },
+          "type": "array"
+        },
+        "window_ms": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "steps"
+      ],
+      "type": "object"
+    },
+    "temporalStep": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "signal": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
     }
   },
   "$id": "https://example.org/telemetry-contracts/contract.schema.json",
@@ -348,6 +414,12 @@
   "properties": {
     "correlation": {
       "$ref": "#/$defs/correlationPolicy"
+    },
+    "field_definitions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/fieldSpec"
+      },
+      "type": "object"
     },
     "logs": {
       "items": {
@@ -384,6 +456,12 @@
     },
     "static_rules": {
       "type": "object"
+    },
+    "temporal_sequences": {
+      "items": {
+        "$ref": "#/$defs/temporalSequence"
+      },
+      "type": "array"
     },
     "version": {
       "anyOf": [

@@ -11,10 +11,10 @@
 - [x] Publish a formal JSON Schema for contract files and validate contracts against it in tests and CLI linting.
 - [ ] Define a versioned contract evolution policy with backwards-compatible additions, deprecations, and migration examples.
 - [x] Add cross-signal correlation semantics requiring trace IDs, span IDs, request IDs, or configured correlation keys across spans, logs, and metrics.
-- [ ] Implement temporal ordering checks for required span/log/metric sequences within an incident window.
+- [x] Implement temporal ordering checks for required span/log/metric sequences within an incident window.
 - [x] Implement conditional requirements such as “if error_code is present, emit remediation_hint and retryable”.
 - [ ] Add contract inheritance or composition for shared organization-wide telemetry requirements.
-- [ ] Support reusable field dictionaries for common attributes such as tenant_id, trace_id, region, build_sha, and deployment_environment.
+- [x] Support reusable field dictionaries for common attributes such as tenant_id, trace_id, region, build_sha, and deployment_environment.
 - [x] Add explicit severity policy validation for logs beyond exact matching, including minimum severity thresholds.
 - [ ] Validate sampling and retention metadata against machine-readable policy stubs instead of documenting them only.
 - [ ] Add schema-level privacy classifications with allowed transformations such as redacted, hashed, tokenized, bucketed, or omitted.

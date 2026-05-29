@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime, timezone
 from collections import defaultdict
 from typing import Any
 
@@ -58,6 +59,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
         findings.append(Finding("warning", "contract.version", "contract version should be 1", "$.version"))
     if not isinstance(contract.get("service"), str) or not contract.get("service"):
         findings.append(Finding("error", "contract.service", "contract must declare a non-empty service", "$.service"))
+    findings.extend(_validate_field_definitions_shape(contract))
     for section in ("spans", "metrics", "logs"):
         if section in contract and not isinstance(contract[section], list):
             findings.append(Finding("error", "contract.section_type", f"{section} must be a list", f"$.{section}"))
@@ -88,7 +90,8 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
             if "required" in spec and not isinstance(spec["required"], bool):
                 findings.append(Finding("error", "contract.required_type", "signal required flag must be a boolean", f"{signal_path}.required"))
             if section == "metrics" and isinstance(spec.get("value"), dict):
-                findings.extend(_validate_field_spec("value", spec["value"], f"{signal_path}.value"))
+                value_spec = _resolve_contract_field_spec("value", spec["value"], contract, f"{signal_path}.value", findings)
+                findings.extend(_validate_field_spec("value", value_spec, f"{signal_path}.value"))
             if section == "logs" and spec.get("message_pattern") is not None:
                 findings.extend(_validate_regex(str(spec["message_pattern"]), f"{signal_path}.message_pattern", "invalid log message regex"))
             if section == "logs":
@@ -101,8 +104,8 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                     findings.append(Finding("error", "contract.section_type", f"{container} must be an object", f"{signal_path}.{container}"))
                     continue
                 for field_name, field_spec in raw_fields.items():
-                    normalized_spec = field_spec if isinstance(field_spec, dict) else {"type": str(field_spec)}
                     field_path = f"{signal_path}.{container}.{field_name}"
+                    normalized_spec = _resolve_contract_field_spec(str(field_name), field_spec, contract, field_path, findings)
                     findings.extend(_validate_field_spec(str(field_name), normalized_spec, field_path))
                     if SENSITIVE_FIELD_NAMES.search(str(field_name)) and not _declares_sensitivity(normalized_spec):
                         findings.append(
@@ -114,6 +117,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                             )
                         )
     findings.extend(_validate_correlation_policy_shape(contract.get("correlation")))
+    findings.extend(_validate_temporal_sequences_shape(contract.get("temporal_sequences")))
     return findings
 
 
@@ -173,6 +177,62 @@ def _validate_conditional_requirement_shape(spec: dict[str, Any], signal_path: s
     return findings
 
 
+
+def _validate_field_definitions_shape(contract: dict[str, Any]) -> list[Finding]:
+    definitions = contract.get("field_definitions")
+    if definitions is None:
+        return []
+    if not isinstance(definitions, dict):
+        return [Finding("error", "contract.field_definitions", "field_definitions must be an object", "$.field_definitions")]
+    findings: list[Finding] = []
+    for name, raw_spec in definitions.items():
+        path = f"$.field_definitions.{name}"
+        spec = _resolve_contract_field_spec(str(name), raw_spec, contract, path, findings)
+        findings.extend(_validate_field_spec(str(name), spec, path))
+    return findings
+
+
+def _field_definitions(contract: dict[str, Any]) -> dict[str, Any]:
+    definitions = contract.get("field_definitions", {})
+    return definitions if isinstance(definitions, dict) else {}
+
+
+def _reference_name(ref: str) -> str:
+    prefixes = ("#/field_definitions/", "#/definitions/fields/", "field_definitions.")
+    for prefix in prefixes:
+        if ref.startswith(prefix):
+            return ref[len(prefix):]
+    return ref
+
+
+def _resolve_contract_field_spec(
+    field_name: str,
+    raw_spec: Any,
+    contract: dict[str, Any],
+    path: str,
+    findings: list[Finding] | None = None,
+    seen: tuple[str, ...] = (),
+) -> dict[str, Any]:
+    if not isinstance(raw_spec, dict):
+        return {"type": str(raw_spec)}
+    ref = raw_spec.get("$ref", raw_spec.get("ref"))
+    if ref is None:
+        return dict(raw_spec)
+    ref_name = _reference_name(str(ref))
+    definitions = _field_definitions(contract)
+    if ref_name in seen:
+        if findings is not None:
+            findings.append(Finding("error", "contract.field_ref_cycle", f"field reference cycle includes '{ref_name}'", path))
+        return {key: value for key, value in raw_spec.items() if key not in {"$ref", "ref"}}
+    if ref_name not in definitions:
+        if findings is not None:
+            findings.append(Finding("error", "contract.field_ref", f"field '{field_name}' references unknown field definition '{ref_name}'", path))
+        return {key: value for key, value in raw_spec.items() if key not in {"$ref", "ref"}}
+    base = _resolve_contract_field_spec(ref_name, definitions[ref_name], contract, f"$.field_definitions.{ref_name}", findings, (*seen, ref_name))
+    overrides = {key: value for key, value in raw_spec.items() if key not in {"$ref", "ref"}}
+    return {**base, **overrides}
+
+
 def _validate_severity_policy_shape(spec: dict[str, Any], signal_path: str) -> list[Finding]:
     policy = spec.get("severity_policy")
     if policy is None:
@@ -195,8 +255,9 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> l
                 continue
             if not isinstance(spec.get("name"), str) or not spec.get("name"):
                 continue
-            findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events))
+            findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events, contract))
     findings.extend(_validate_correlation_policy(contract, relevant_events))
+    findings.extend(_validate_temporal_sequences(contract, relevant_events))
     return findings
 
 
@@ -268,6 +329,145 @@ def _validate_correlation_policy(contract: dict[str, Any], events: list[dict[str
             )
         )
     return findings
+
+
+def _validate_temporal_sequences_shape(raw_sequences: Any) -> list[Finding]:
+    if raw_sequences is None:
+        return []
+    if not isinstance(raw_sequences, list):
+        return [Finding("error", "contract.temporal_sequence", "temporal_sequences must be an array", "$.temporal_sequences")]
+    findings: list[Finding] = []
+    for index, sequence in enumerate(raw_sequences):
+        path = f"$.temporal_sequences[{index}]"
+        if not isinstance(sequence, dict):
+            findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence must be an object", path))
+            continue
+        if sequence.get("id") is not None and not isinstance(sequence.get("id"), str):
+            findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence id must be a string", f"{path}.id"))
+        if "window_ms" in sequence and (not isinstance(sequence["window_ms"], (int, float)) or isinstance(sequence["window_ms"], bool) or sequence["window_ms"] <= 0):
+            findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence window_ms must be a positive number", f"{path}.window_ms"))
+        group_by = sequence.get("group_by", [])
+        if group_by and (not isinstance(group_by, list) or not all(isinstance(item, str) and item for item in group_by)):
+            findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence group_by must be an array of strings", f"{path}.group_by"))
+        steps = sequence.get("steps")
+        if not isinstance(steps, list) or not steps:
+            findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence steps must be a non-empty array", f"{path}.steps"))
+            continue
+        for step_index, step in enumerate(steps):
+            step_path = f"{path}.steps[{step_index}]"
+            if not isinstance(step, dict):
+                findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence step must be an object", step_path))
+                continue
+            kind = _normalize_signal_kind(step.get("kind", step.get("signal")))
+            if kind not in {"span", "log", "metric"}:
+                findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence step kind must be span, log, or metric", f"{step_path}.kind"))
+            if not isinstance(step.get("name"), str) or not step.get("name"):
+                findings.append(Finding("error", "contract.temporal_sequence", "temporal sequence step name must be a non-empty string", f"{step_path}.name"))
+    return findings
+
+
+def _validate_temporal_sequences(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+    raw_sequences = contract.get("temporal_sequences", []) or []
+    if not isinstance(raw_sequences, list):
+        return []
+    findings: list[Finding] = []
+    for index, sequence in enumerate(raw_sequences):
+        if not isinstance(sequence, dict) or sequence.get("required", True) is False:
+            continue
+        steps = sequence.get("steps")
+        if not isinstance(steps, list) or not steps:
+            continue
+        normalized_steps = [step for step in steps if isinstance(step, dict)]
+        if len(normalized_steps) != len(steps):
+            continue
+        path = f"$.temporal_sequences[{index}]"
+        groups = _temporal_groups(events, sequence.get("group_by", []), normalized_steps)
+        if not groups:
+            findings.append(Finding("error", "telemetry.temporal_missing_step", _temporal_message(sequence, "no events matched the required temporal sequence"), "events", path, details={"sequence": sequence.get("id", index)}))
+            continue
+        for group_key, group_events in groups.items():
+            findings.extend(_validate_temporal_group(sequence, normalized_steps, group_key, group_events, path))
+    return findings
+
+
+def _temporal_groups(events: list[dict[str, Any]], group_by: Any, steps: list[dict[str, Any]]) -> dict[tuple[Any, ...], list[dict[str, Any]]]:
+    keys = group_by if isinstance(group_by, list) and all(isinstance(item, str) for item in group_by) else []
+    groups: dict[tuple[Any, ...], list[dict[str, Any]]] = defaultdict(list)
+    for event in events:
+        if not any(_event_matches_step(event, step) for step in steps):
+            continue
+        if keys:
+            values: list[Any] = []
+            missing = False
+            for key in keys:
+                value, _ = _lookup_field(event, key)
+                if value is _MISSING:
+                    missing = True
+                    break
+                values.append(value)
+            if missing:
+                continue
+            group_key = tuple(values)
+        else:
+            group_key = ("__all__",)
+        groups[group_key].append(event)
+    return groups
+
+
+def _validate_temporal_group(sequence: dict[str, Any], steps: list[dict[str, Any]], group_key: tuple[Any, ...], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    timed_events = [(event, _event_timestamp_ms(event)) for event in events]
+    matched: list[tuple[dict[str, Any], float]] = []
+    cursor = float("-inf")
+    for step_index, step in enumerate(steps):
+        candidates = [
+            (event, timestamp)
+            for event, timestamp in timed_events
+            if timestamp is not None and timestamp >= cursor and _event_matches_step(event, step)
+        ]
+        if not candidates:
+            code = "telemetry.temporal_order" if any(_event_matches_step(event, step) for event in events) else "telemetry.temporal_missing_step"
+            return [Finding("error", code, _temporal_message(sequence, f"missing ordered step {step_index + 1} {step.get('name')!r}"), "events", f"{path}.steps[{step_index}]", details={"group": group_key})]
+        event, timestamp = min(candidates, key=lambda item: item[1])
+        matched.append((event, timestamp))
+        cursor = timestamp
+    window_ms = sequence.get("window_ms")
+    if isinstance(window_ms, (int, float)) and not isinstance(window_ms, bool) and matched[-1][1] - matched[0][1] > window_ms:
+        return [Finding("error", "telemetry.temporal_window", _temporal_message(sequence, f"sequence exceeded {window_ms}ms window"), "events", f"{path}.window_ms", details={"group": group_key, "elapsed_ms": matched[-1][1] - matched[0][1]})]
+    return []
+
+
+def _event_matches_step(event: dict[str, Any], step: dict[str, Any]) -> bool:
+    return event.get("kind") == _normalize_signal_kind(step.get("kind", step.get("signal"))) and event.get("name") == step.get("name")
+
+
+def _event_timestamp_ms(event: dict[str, Any]) -> float | None:
+    for key in ("timestamp_ms", "time_ms", "start_time_ms", "end_time_ms"):
+        value = event.get(key)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return float(value)
+    for key in ("time_unix_nano", "start_time_unix_nano", "end_time_unix_nano"):
+        value = event.get(key)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return float(value) / 1_000_000
+    value = event.get("timestamp") or event.get("time")
+    if isinstance(value, str):
+        try:
+            normalized = value.replace("Z", "+00:00")
+            parsed = datetime.fromisoformat(normalized)
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            return parsed.timestamp() * 1000
+        except ValueError:
+            return None
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return float(value)
+    return None
+
+
+def _temporal_message(sequence: dict[str, Any], problem: str) -> str:
+    label = sequence.get("id") if isinstance(sequence.get("id"), str) else "temporal sequence"
+    return f"{label}: {problem}"
+
 
 
 def _normalize_signal_kind(section_or_kind: Any) -> str:
@@ -347,7 +547,7 @@ def _validate_forbidden_pattern_specs(field_name: str, spec: dict[str, Any], pat
     return findings
 
 
-def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str, Any], events: list[dict[str, Any]], contract: dict[str, Any]) -> list[Finding]:
     findings: list[Finding] = []
     name = spec.get("name")
     path = f"$.{section}[{signal_index}]"
@@ -360,9 +560,10 @@ def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str,
     if kind == "log":
         findings.extend(_validate_log_patterns(spec, matches, path))
     if kind == "metric" and isinstance(spec.get("value"), dict):
+        value_spec = _resolve_contract_field_spec("value", spec["value"], contract, f"{path}.value")
         for event in matches:
-            findings.extend(_validate_field("value", spec["value"], event.get("value"), event, f"{path}.value"))
-    field_specs = _field_specs(spec)
+            findings.extend(_validate_field("value", value_spec, event.get("value"), event, f"{path}.value"))
+    field_specs = _field_specs(spec, contract)
     for event in matches:
         for field_name, field_spec in field_specs.items():
             value, value_path = _lookup_field(event, field_name)
@@ -428,16 +629,13 @@ def _condition_matches(condition: dict[str, Any], event: dict[str, Any]) -> bool
     return is_present if "present" not in condition else True
 
 
-def _field_specs(spec: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def _field_specs(spec: dict[str, Any], contract: dict[str, Any] | None = None) -> dict[str, dict[str, Any]]:
     merged: dict[str, dict[str, Any]] = {}
     for container in ("fields", "attributes", "tags"):
         raw = spec.get(container, {}) or {}
         if isinstance(raw, dict):
             for key, value in raw.items():
-                if isinstance(value, dict):
-                    merged[key] = value
-                else:
-                    merged[key] = {"type": str(value)}
+                merged[key] = _resolve_contract_field_spec(str(key), value, contract or {}, f"$.fields.{key}")
     return merged
 
 

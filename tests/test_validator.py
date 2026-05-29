@@ -227,3 +227,93 @@ def test_lint_reports_duplicate_signals_and_fields():
     finding_codes = codes(findings)
     assert "contract.duplicate_signal" in finding_codes
     assert "contract.duplicate_field" in finding_codes
+
+
+
+def test_reusable_field_definitions_are_resolved_and_linted():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "field_definitions": {
+            "tenant_id": {"type": "string", "pattern": "tenant-[a-z]+", "required": True},
+            "bounded_count": {"type": "integer", "min": 0, "max": 3},
+        },
+        "spans": [
+            {
+                "name": "request",
+                "fields": {
+                    "tenant_id": {"$ref": "#/field_definitions/tenant_id"},
+                    "retry_count": {"ref": "bounded_count", "max": 2},
+                },
+            }
+        ],
+        "metrics": [{"name": "attempts", "value": {"ref": "bounded_count"}}],
+    }
+
+    passing = [
+        {"kind": "span", "service": "svc", "name": "request", "fields": {"tenant_id": "tenant-acme", "retry_count": 2}},
+        {"kind": "metric", "service": "svc", "name": "attempts", "value": 1},
+    ]
+    assert validate_contract_shape(contract) == []
+    assert validate_events(contract, passing) == []
+
+    failing = [
+        {"kind": "span", "service": "svc", "name": "request", "fields": {"tenant_id": "acme", "retry_count": 3}},
+        {"kind": "metric", "service": "svc", "name": "attempts", "value": -1},
+    ]
+    finding_codes = codes(validate_events(contract, failing))
+    assert "telemetry.pattern" in finding_codes
+    assert "telemetry.numeric_max" in finding_codes
+    assert "telemetry.numeric_min" in finding_codes
+
+    bad_contract = {"version": "1.0", "service": "svc", "spans": [{"name": "request", "fields": {"tenant_id": {"ref": "missing"}}}]}
+    assert "contract.field_ref" in codes(validate_contract_shape(bad_contract))
+
+
+def test_temporal_sequences_require_ordered_steps_within_window():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "temporal_sequences": [
+            {
+                "id": "request-to-error",
+                "group_by": ["trace_id"],
+                "window_ms": 500,
+                "steps": [
+                    {"kind": "span", "name": "request"},
+                    {"kind": "metric", "name": "request.count"},
+                    {"kind": "log", "name": "request.failed"},
+                ],
+            }
+        ],
+        "spans": [{"name": "request"}],
+        "metrics": [{"name": "request.count"}],
+        "logs": [{"name": "request.failed"}],
+    }
+
+    passing = [
+        {"kind": "span", "service": "svc", "name": "request", "trace_id": "a", "timestamp_ms": 1000},
+        {"kind": "metric", "service": "svc", "name": "request.count", "trace_id": "a", "timestamp_ms": 1100, "value": 1},
+        {"kind": "log", "service": "svc", "name": "request.failed", "trace_id": "a", "timestamp_ms": 1200},
+    ]
+    assert validate_events(contract, passing) == []
+
+    out_of_order = [
+        {"kind": "span", "service": "svc", "name": "request", "trace_id": "a", "timestamp_ms": 1000},
+        {"kind": "log", "service": "svc", "name": "request.failed", "trace_id": "a", "timestamp_ms": 1050},
+        {"kind": "metric", "service": "svc", "name": "request.count", "trace_id": "a", "timestamp_ms": 1100, "value": 1},
+    ]
+    assert "telemetry.temporal_order" in codes(validate_events(contract, out_of_order))
+
+    too_slow = [
+        {"kind": "span", "service": "svc", "name": "request", "trace_id": "a", "timestamp_ms": 1000},
+        {"kind": "metric", "service": "svc", "name": "request.count", "trace_id": "a", "timestamp_ms": 1100, "value": 1},
+        {"kind": "log", "service": "svc", "name": "request.failed", "trace_id": "a", "timestamp_ms": 2000},
+    ]
+    assert "telemetry.temporal_window" in codes(validate_events(contract, too_slow))
+
+    missing_step = [
+        {"kind": "span", "service": "svc", "name": "request", "trace_id": "a", "timestamp_ms": 1000},
+        {"kind": "metric", "service": "svc", "name": "request.count", "trace_id": "a", "timestamp_ms": 1100, "value": 1},
+    ]
+    assert "telemetry.temporal_missing_step" in codes(validate_events(contract, missing_step))
