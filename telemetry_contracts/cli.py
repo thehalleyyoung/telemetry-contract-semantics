@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .findings import Finding, has_at_least
 from .loader import ContractLoadError, load_contract, load_jsonl
+from .otlp import load_otlp_json, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .static_checker import check_sources
 from .validator import validate_events
@@ -33,8 +34,17 @@ def main(argv: list[str] | None = None) -> int:
     scenario_parser.add_argument("--question")
     _common_output_args(scenario_parser)
 
+    otlp_parser = subparsers.add_parser("import-otlp", help="convert OTLP JSON export to telemetry-contracts JSONL")
+    otlp_parser.add_argument("--input", required=True)
+    otlp_parser.add_argument("--output", required=True)
+
     args = parser.parse_args(argv)
     try:
+        if args.command == "import-otlp":
+            events = load_otlp_json(args.input)
+            write_jsonl(events, args.output)
+            print(f"Wrote {len(events)} event(s) to {args.output}")
+            return 0
         contract = load_contract(args.contract)
         if args.command == "validate":
             findings = validate_events(contract, load_jsonl(args.events))
@@ -45,7 +55,7 @@ def main(argv: list[str] | None = None) -> int:
             findings = check_scenario(contract, events, choose_scenario(contract, args.id, args.question))
         else:  # pragma: no cover
             raise AssertionError(args.command)
-    except (ContractLoadError, FileNotFoundError) as exc:
+    except (ContractLoadError, FileNotFoundError, ValueError) as exc:
         findings = [Finding("error", "input.load_error", str(exc), "input")]
     _print_findings(findings, args.format)
     if args.fail_on == "never":

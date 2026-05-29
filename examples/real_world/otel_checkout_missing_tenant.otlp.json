@@ -1,0 +1,51 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {"key": "service.name", "value": {"stringValue": "checkout-api"}}
+        ]
+      },
+      "scopeSpans": [
+        {
+          "spans": [
+            {
+              "traceId": "abc123",
+              "spanId": "def456",
+              "name": "checkout.pay",
+              "attributes": [
+                {"key": "cart_id", "value": {"stringValue": "cart-42"}},
+                {"key": "payment_provider", "value": {"stringValue": "stripe"}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {"key": "service.name", "value": {"stringValue": "checkout-api"}}
+        ]
+      },
+      "scopeLogs": [
+        {
+          "logRecords": [
+            {
+              "traceId": "abc123",
+              "spanId": "def456",
+              "severityText": "ERROR",
+              "body": {"stringValue": "payment authorization failed"},
+              "attributes": [
+                {"key": "log.name", "value": {"stringValue": "checkout.payment_failed"}},
+                {"key": "error_class", "value": {"stringValue": "TimeoutError"}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -7,6 +7,7 @@ This repository turns that thesis into executable checks:
 - Runtime validation of JSONL telemetry events against contracts.
 - Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
+- OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - Passing and failing examples for a checkout/payment service.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
@@ -33,6 +34,14 @@ python3 -m telemetry_contracts.cli scenario \
   --contract examples/contracts/checkout.contract.json \
   --events examples/telemetry/passing.jsonl \
   --id payment-timeout
+
+python3 -m telemetry_contracts.cli import-otlp \
+  --input examples/real_world/otel_checkout_missing_tenant.otlp.json \
+  --output /tmp/checkout.otlp.jsonl
+
+python3 -m telemetry_contracts.cli validate \
+  --contract examples/real_world/otel_checkout_missing_tenant.contract.json \
+  --events /tmp/checkout.otlp.jsonl
 ```
 
 If installed as a package, the same CLI is available as `telemetry-contracts`.
@@ -102,6 +111,17 @@ Findings include severity, code, message, event path, contract path, and details
 4. Validate emitted telemetry against the contract.
 5. Add scenario checks for incident questions such as: “Can on-call identify tenant, cart, provider, retry count, and error class for a payment timeout?”
 
+## Real-world finding workflow
+
+The repo is designed to be run on real telemetry captures, not only synthetic fixtures. Export OTLP JSON from an OpenTelemetry Collector, convert it, then validate the converted JSONL:
+
+```bash
+python3 -m telemetry_contracts.cli import-otlp --input otlp-export.json --output captured.jsonl
+python3 -m telemetry_contracts.cli validate --contract service.contract.json --events captured.jsonl --format json
+```
+
+`examples/real_world/otel_checkout_missing_tenant.*` is a case-study fixture modeled on a common production observability bug: payment failure traces and logs exist, but neither carries the tenant identifier needed to scope blast radius. The validator confirms the bug by reporting `telemetry.missing_field` for `tenant_id`.
+
 ## LLM-process separation note
 
 The idea document suggests LLMs can help generate realistic incident questions, propose telemetry requirements, and mutate services to create diagnosability bugs. This repository keeps that process separate from the correctness mechanism: contracts are explicit files, telemetry is concrete JSONL, and pass/fail results come from deterministic validators. No model call is required to run or trust the checks.
@@ -109,7 +129,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 ## Limitations
 
 - Static checking is literal-based, not a full AST or OpenTelemetry semantic analysis.
-- The runtime format is a pragmatic JSONL interchange, not native OTLP ingestion.
+- OTLP support covers common JSON exports for spans, metrics, and logs; protobuf/gRPC collector ingestion is future work.
 - Cardinality is checked over the supplied sample window, not a production time series backend.
 - Sampling and retention are represented as contract metadata rather than verified against infrastructure.
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
