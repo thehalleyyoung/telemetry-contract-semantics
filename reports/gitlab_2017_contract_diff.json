@@ -1,0 +1,95 @@
+{
+  "base_service": "gitlab.com-database",
+  "candidate_service": "gitlab.com-database",
+  "findings": [
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "contract_diff.removed_obligation",
+      "contract_path": "$.logs[name='backup.pg_dump.failed'].fields.alert_delivered",
+      "details": {
+        "fingerprint": "required_field:log:backup.pg_dump.failed:alert_delivered",
+        "id": "log:backup.pg_dump.failed:alert_delivered",
+        "kind": "required_field"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "DIFF.obligation-removed",
+      "message": "candidate removes required field `alert_delivered` on log `backup.pg_dump.failed`",
+      "path": "$.logs[name='backup.pg_dump.failed'].fields.alert_delivered",
+      "remediation": "Confirm that removing the telemetry obligation is intentional and does not regress incident diagnosability.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    }
+  ],
+  "limitations": [
+    "The report compares two finite JSON contracts and does not inspect source-code diffs.",
+    "Predicate meaning is summarized structurally; regex or prose implication is not proved.",
+    "The report is designed for pull-request review triage; use refinement and validation commands for gate-specific checks."
+  ],
+  "model": {
+    "focus": [
+      "new required telemetry obligations",
+      "removed required telemetry obligations",
+      "changed privacy classifications or transformations",
+      "changed diagnosability claims"
+    ],
+    "name": "contract-diff-pr-v1",
+    "purpose": "Summarize contract changes that matter during pull-request review."
+  },
+  "sections": {
+    "changed_diagnosability_claims": [],
+    "changed_privacy_classifications": [],
+    "new_obligations": [],
+    "removed_obligations": [
+      {
+        "category": "refinement",
+        "ci": {
+          "baseline_key_fields": [
+            "code",
+            "path",
+            "contract_path",
+            "event_index"
+          ],
+          "default_fail_on": "warning",
+          "sarif_level": "warning"
+        },
+        "code": "contract_diff.removed_obligation",
+        "contract_path": "$.logs[name='backup.pg_dump.failed'].fields.alert_delivered",
+        "details": {
+          "fingerprint": "required_field:log:backup.pg_dump.failed:alert_delivered",
+          "id": "log:backup.pg_dump.failed:alert_delivered",
+          "kind": "required_field"
+        },
+        "disclosure_sensitivity": "internal",
+        "formal_clause": "DIFF.obligation-removed",
+        "message": "candidate removes required field `alert_delivered` on log `backup.pg_dump.failed`",
+        "path": "$.logs[name='backup.pg_dump.failed'].fields.alert_delivered",
+        "remediation": "Confirm that removing the telemetry obligation is intentional and does not regress incident diagnosability.",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      }
+    ]
+  },
+  "summary": {
+    "changed_diagnosability_claims": 0,
+    "changed_privacy_classifications": 0,
+    "findings": 1,
+    "findings_by_code": {
+      "contract_diff.removed_obligation": 1
+    },
+    "new_obligations": 0,
+    "pr_attention_required": true,
+    "removed_obligations": 1
+  }
+}

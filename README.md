@@ -16,6 +16,7 @@ This repository turns that thesis into executable checks:
 - Observational-equivalence reports that compare two telemetry streams by incident-question answerability instead of byte equality.
 - Transformation-preservation checks that compare source and post-transform streams to catch approved sampling, redaction, omission, retention, or aggregation that destroys contract or incident-question evidence.
 - Contract-refinement checks that compare a base and candidate contract for preserved required evidence, strengthened predicates, privacy non-weakening, strict-mode policy preservation, and compatible collector/environment/on-call assumptions.
+- Pull-request contract-diff reports that highlight new obligations, removed obligations, changed privacy classifications/transformations, and changed diagnosability claims between contract versions.
 - Contract composition/inheritance for shared organization or team policies, with parent-refinement checks so service contracts cannot silently weaken inherited evidence requirements.
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
@@ -35,7 +36,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 40 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 41 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -138,6 +139,11 @@ python3 -m telemetry_contracts.cli preservation \
 python3 -m telemetry_contracts.cli refinement \
   --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json \
   --candidate-contract case_studies/gitlab_2017_database_outage/contract.json \
+  --format markdown
+
+python3 -m telemetry_contracts.cli contract-diff \
+  --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json \
+  --candidate-contract case_studies/gitlab_2017_database_outage/refinement_candidate_weakened_contract.json \
   --format markdown
 
 python3 -m telemetry_contracts.cli compose-contract \
@@ -272,6 +278,7 @@ Supported checks include:
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
 - Transformation preservation for approved telemetry changes. `preservation` implements an obligation-local relation: if a runtime contract obligation or selected scenario witness is satisfied before transformation, it must remain satisfied after transformation. Reports identify new contract failures plus lost incident-question signals/fields, and checked-in GitLab 2017 reports demonstrate a sampled/exported derivative that removes the backup-failure alert witness.
 - Contract refinement for version and scope comparisons. `refinement` checks `C′ ⊑ C`: a candidate contract must preserve required base signals, fields, scenarios, temporal properties, alternative obligations, and service guarantees; predicate changes must be equal or stronger; privacy classifications and transformation policies must not expand allowed exposure; strict-mode escape hatches must not widen; and collector/environment/on-call assumptions must not become harder to satisfy. Reports include exact weakened-requirement, privacy, transformation, and assumption findings.
+- Pull-request contract diffs via `contract-diff`: compare two contract versions and summarize added/removed telemetry obligations, privacy metadata changes, and changed scenario/temporal/alternative diagnosability claims. JSON findings use `contract_diff.*` taxonomy codes so CI can review these separately from refinement gates.
 - Contract composition/inheritance via top-level `extends` or `inherits`. `load_contract` resolves relative parent policies deterministically (`C = P₁ ⊕ … ⊕ Pₙ ⊕ Δ`), merging shared fields, signal clauses, scenarios, temporal properties, alternatives, metadata, and assume-guarantee structure. `compose-contract` reports inherited, declared, overridden, and resolved signal keys and runs parent refinement checks to prove the resolved service contract preserves inherited evidence.
 - Proof-obligation reports for the implemented contract language. `proof-obligations` catalogs 27 feature groups and instantiates templates for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity. When concrete runtime/benchmark artifacts are supplied, non-refinement obligations are marked `discharged` or `violated`; use the dedicated `refinement` command for executable contract-version checks.
 - Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
@@ -311,6 +318,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.equivalence` compares two traces by their scenario answerability signatures.
 - `telemetry_contracts.preservation` checks pre/post transformation preservation for runtime obligations and scenario witnesses.
 - `telemetry_contracts.refinement` implements the executable finite-contract refinement relation and JSON/Markdown reports.
+- `telemetry_contracts.contract_diff` implements pull-request contract-diff summaries for obligation, privacy, and diagnosability-claim review.
 - `telemetry_contracts.composition` analyzes inherited contract denotations and parent-refinement evidence for `compose-contract`.
 - `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, assume-guarantee, semantics, hyperproperty, preservation, and benchmark evidence.
 - `telemetry_contracts.semconv` checks declared and observed signal names/attributes against bounded OpenTelemetry HTTP, database, messaging, and metric-unit conventions plus contract-local semantic policies.
@@ -364,7 +372,7 @@ A benchmark config is JSON with a `cases` list. Each case points to a contract p
 - <https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/>
 - <https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/>
 
-The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence, temporal properties for backup-failure alert response and reconstruction ordering, and assume-guarantee obligations assigning missing guard/backup evidence to service, collector, environment, or on-call layers. `reports/gitlab_2017_temporal_logic_validation.json` shows that the degraded sampled/exported derivative reports `telemetry.temporal_response` when the failed-backup metric has no `backup.pg_dump.failed` response witness within 1500ms; `reports/gitlab_2017_event_windows.md` localizes that response failure to `incident:slice_ms=2000` while leaving the absent alert signal in `global:contract=all`; `reports/gitlab_2017_assume_guarantee_sampled.md` turns the same bounded derivative into layer-specific counterexamples. `reports/gitlab_2017_refinement.json` shows that the reconstructed incident contract refines the checked-in broader team baseline, while `reports/gitlab_2017_refinement_weakened.json` shows a deliberate weakened candidate losing required alert-delivery evidence. `case_studies/gitlab_2017_database_outage/composed_contract.json` extends `org_incident_policy.contract.json`; `reports/gitlab_2017_composition.json` records `valid=true` with five inherited signal obligations and zero parent-refinement findings, and `reports/gitlab_2017_composed_validation.json` shows the composed contract produces the same bounded historical findings as the service contract over reconstructed events.
+The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence, temporal properties for backup-failure alert response and reconstruction ordering, and assume-guarantee obligations assigning missing guard/backup evidence to service, collector, environment, or on-call layers. `reports/gitlab_2017_temporal_logic_validation.json` shows that the degraded sampled/exported derivative reports `telemetry.temporal_response` when the failed-backup metric has no `backup.pg_dump.failed` response witness within 1500ms; `reports/gitlab_2017_event_windows.md` localizes that response failure to `incident:slice_ms=2000` while leaving the absent alert signal in `global:contract=all`; `reports/gitlab_2017_assume_guarantee_sampled.md` turns the same bounded derivative into layer-specific counterexamples. `reports/gitlab_2017_refinement.json` shows that the reconstructed incident contract refines the checked-in broader team baseline, while `reports/gitlab_2017_refinement_weakened.json` shows a deliberate weakened candidate losing required alert-delivery evidence. `reports/gitlab_2017_contract_diff.md` renders that weakened-candidate comparison as a PR-oriented diff and flags the removed `alert_delivered` obligation for review. `case_studies/gitlab_2017_database_outage/composed_contract.json` extends `org_incident_policy.contract.json`; `reports/gitlab_2017_composition.json` records `valid=true` with five inherited signal obligations and zero parent-refinement findings, and `reports/gitlab_2017_composed_validation.json` shows the composed contract produces the same bounded historical findings as the service contract over reconstructed events.
 
 See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
 
@@ -478,9 +486,16 @@ python3 -m telemetry_contracts.cli refinement \
   --format markdown \
   --output reports/gitlab_2017_refinement_weakened.md \
   --fail-on never
+
+python3 -m telemetry_contracts.cli contract-diff \
+  --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json \
+  --candidate-contract case_studies/gitlab_2017_database_outage/refinement_candidate_weakened_contract.json \
+  --format markdown \
+  --output reports/gitlab_2017_contract_diff.md \
+  --fail-on never
 ```
 
-The passing report records `refines=true` with zero findings for the reconstructed GitLab contract against a broader checked-in baseline. The weakened-candidate report records `refines=false` and a concrete `refinement.required_field_removed` finding for removed backup alert-delivery evidence. These are finite artifact comparisons over public incident-derived fixtures, not claims about GitLab private contract history.
+The passing report records `refines=true` with zero findings for the reconstructed GitLab contract against a broader checked-in baseline. The weakened-candidate report records `refines=false` and a concrete `refinement.required_field_removed` finding for removed backup alert-delivery evidence. The companion `contract-diff` report records one `contract_diff.removed_obligation` finding for the same `alert_delivered` field, formatted for pull-request review. These are finite artifact comparisons over public incident-derived fixtures, not claims about GitLab private contract history.
 
 Generate the checked-in composition/inheritance report over the same public reconstruction:
 

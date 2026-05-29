@@ -741,6 +741,86 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "contract_diff.diagnosability_claim_changed",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "DIFF.diagnosability-claim",
+      "remediation": "Review changed incident-question, temporal, alternative, or preservation claims against real fixtures.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "info",
+        "sarif_level": "note"
+      },
+      "code": "contract_diff.new_obligation",
+      "default_severity": "info",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "DIFF.obligation-added",
+      "remediation": "Review the new telemetry obligation and ensure fixtures, owners, and rollout plans cover it.",
+      "sarif_level": "note",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "contract_diff.privacy_changed",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "DIFF.privacy-change",
+      "remediation": "Review privacy-classification or transformation changes with the data owner before merging.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "contract_diff.removed_obligation",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "DIFF.obligation-removed",
+      "remediation": "Confirm that removing the telemetry obligation is intentional and does not regress incident diagnosability.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "input",
       "ci": {
         "baseline_key_fields": [
@@ -2011,24 +2091,26 @@
   "summary": {
     "categories": {
       "contract": 27,
-      "diagnosability": 26,
+      "diagnosability": 27,
       "input": 1,
       "operability": 3,
       "preservation": 5,
-      "privacy-security": 8,
-      "refinement": 9,
+      "privacy-security": 9,
+      "refinement": 11,
       "scenario": 2,
       "schema": 17,
       "static-coverage": 2
     },
     "default_severities": {
       "error": 90,
-      "warning": 10
+      "info": 1,
+      "warning": 13
     },
-    "rules": 100,
+    "rules": 104,
     "sarif_levels": {
       "error": 90,
-      "warning": 10
+      "note": 1,
+      "warning": 13
     }
   }
 }

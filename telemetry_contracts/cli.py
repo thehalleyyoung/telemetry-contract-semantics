@@ -23,6 +23,7 @@ from .validator import validate_contract_shape, validate_events
 from .equivalence import compare_observational_equivalence, format_equivalence_markdown
 from .proof_obligations import format_proof_obligations_markdown, generate_proof_obligations_report
 from .refinement import check_contract_refinement, format_refinement_markdown
+from .contract_diff import format_contract_diff_markdown, generate_contract_diff_report
 from .composition import analyze_contract_composition, format_composition_markdown
 from .monitor import format_monitor_markdown, run_compiled_monitor
 from .windows import format_event_window_markdown, generate_event_window_report
@@ -127,6 +128,13 @@ def main(argv: list[str] | None = None) -> int:
     refinement_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     refinement_parser.add_argument("--output")
     refinement_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
+    diff_parser = subparsers.add_parser("contract-diff", help="generate a pull-request contract-diff report between two contract versions")
+    diff_parser.add_argument("--base-contract", required=True)
+    diff_parser.add_argument("--candidate-contract", required=True)
+    diff_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    diff_parser.add_argument("--output")
+    diff_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="never")
 
     composition_parser = subparsers.add_parser("compose-contract", help="resolve inherited contract policies and verify parent refinement")
     composition_parser.add_argument("--contract", required=True)
@@ -284,6 +292,16 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "refinement":
             report = check_contract_refinement(load_contract(args.base_contract), load_contract(args.candidate_contract))
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_refinement_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
+        if args.command == "contract-diff":
+            report = generate_contract_diff_report(load_contract(args.base_contract), load_contract(args.candidate_contract))
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_contract_diff_markdown(report)
             if args.output:
                 Path(args.output).write_text(output + "\n", encoding="utf-8")
             else:

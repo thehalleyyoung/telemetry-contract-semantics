@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 100
-- Categories: `{"contract": 27, "diagnosability": 26, "input": 1, "operability": 3, "preservation": 5, "privacy-security": 8, "refinement": 9, "scenario": 2, "schema": 17, "static-coverage": 2}`
-- Default severities: `{"error": 90, "warning": 10}`
-- SARIF levels: `{"error": 90, "warning": 10}`
+- Rules: 104
+- Categories: `{"contract": 27, "diagnosability": 27, "input": 1, "operability": 3, "preservation": 5, "privacy-security": 9, "refinement": 11, "scenario": 2, "schema": 17, "static-coverage": 2}`
+- Default severities: `{"error": 90, "info": 1, "warning": 13}`
+- SARIF levels: `{"error": 90, "note": 1, "warning": 13}`
 
 ## Rule catalog
 
@@ -47,6 +47,10 @@
 | contract.temporal_sequence | contract | error | WF.temporal-sequence | error | error | internal | contract service owner | Declare temporal sequences with valid steps, kinds, group_by keys, and positive windows. |
 | contract.unit | schema | error | WF.unit | error | error | internal | contract service owner | Use a supported unit such as ms, bytes, percent, count, timestamp_ms, or usd. |
 | contract.version | contract | error | WF.version | error | error | internal | contract service owner | Declare contract version 1.0. |
+| contract_diff.diagnosability_claim_changed | diagnosability | warning | DIFF.diagnosability-claim | warning | warning | internal | contract service owner | Review changed incident-question, temporal, alternative, or preservation claims against real fixtures. |
+| contract_diff.new_obligation | refinement | info | DIFF.obligation-added | note | info | internal | contract service owner | Review the new telemetry obligation and ensure fixtures, owners, and rollout plans cover it. |
+| contract_diff.privacy_changed | privacy-security | warning | DIFF.privacy-change | warning | warning | responsible-disclosure | contract service owner | Review privacy-classification or transformation changes with the data owner before merging. |
+| contract_diff.removed_obligation | refinement | warning | DIFF.obligation-removed | warning | warning | internal | contract service owner | Confirm that removing the telemetry obligation is intentional and does not regress incident diagnosability. |
 | input.load_error | input | error | INPUT.parse | error | error | internal | contract service owner | Fix the referenced input path or file format. |
 | preservation.contract_obligation | preservation | error | PRES.runtime-obligation | error | error | internal | contract service owner | Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation. |
 | preservation.scenario_field | preservation | error | PRES.adequacy-field | error | error | internal | contract service owner | Keep the transformed field, or provide an approved surrogate that still answers the selected incident question. |
