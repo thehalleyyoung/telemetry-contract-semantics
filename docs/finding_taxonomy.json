@@ -1,0 +1,1253 @@
+{
+  "rules": [
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.allowed_values_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.allowed-values",
+      "remediation": "Declare allowed_values as an array.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.conditional_requirement",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.conditional",
+      "remediation": "Declare conditional requirements with an if field condition and then fields list.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.duplicate_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.unique-field",
+      "remediation": "Declare each field name in only one of fields, attributes, or tags for a signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.duplicate_signal",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.unique-signal",
+      "remediation": "Keep one contract definition per signal name and kind.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.field_definitions",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.field-definitions",
+      "remediation": "Declare reusable field definitions as an object of field specs.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.field_ref",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.field-reference",
+      "remediation": "Reference an existing field definition or inline the field spec.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.field_ref_cycle",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.field-reference-acyclic",
+      "remediation": "Remove cyclic field-definition references.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.field_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.field-type",
+      "remediation": "Use one of string, integer, number, boolean, object, array, or null.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.forbidden_patterns_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.forbidden-pattern",
+      "remediation": "Declare forbidden_patterns as a string, object, or array of strings/objects.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.invalid_regex",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.regex",
+      "remediation": "Fix the regular expression in the contract.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.numeric_bound_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.numeric-bound",
+      "remediation": "Declare min and max bounds as numbers.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.numeric_bounds",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.numeric-interval",
+      "remediation": "Ensure min is less than or equal to max.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.policy_stub",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.policy-stub",
+      "remediation": "Declare sampling and retention policy stubs with machine-readable rates, strategies, and day counts.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.privacy_policy",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "WF.privacy-policy",
+      "remediation": "Declare a known privacy classification and an allowed transformation such as redacted, hashed, tokenized, bucketed, or omitted.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.required_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.required-boolean",
+      "remediation": "Use a boolean for required flags.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.schema",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.schema",
+      "remediation": "Update the contract so it conforms to docs/contract.schema.json.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.section_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.signal-section",
+      "remediation": "Use arrays for spans, metrics, and logs sections.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "contract.sensitive_field_unclassified",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.privacy-classification",
+      "remediation": "Classify sensitive fields with sensitivity and forbid raw-secret patterns.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.service",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.service",
+      "remediation": "Add a non-empty service name.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.severity_policy",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.severity-policy",
+      "remediation": "Use a known log severity threshold such as WARN, ERROR, or FATAL.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.signal_name",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.signal-name",
+      "remediation": "Give each signal a stable telemetry name.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.signal_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.signal-object",
+      "remediation": "Describe each signal as an object.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.temporal_sequence",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.temporal-sequence",
+      "remediation": "Declare temporal sequences with valid steps, kinds, group_by keys, and positive windows.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.unit",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.unit",
+      "remediation": "Use a supported unit such as ms, bytes, percent, count, timestamp_ms, or usd.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "contract.version",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.version",
+      "remediation": "Declare contract version 1.0.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "input.load_error",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "INPUT.parse",
+      "remediation": "Fix the referenced input path or file format.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "preservation.contract_obligation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "PRES.runtime-obligation",
+      "remediation": "Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "preservation.scenario_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "PRES.adequacy-field",
+      "remediation": "Keep the transformed field, or provide an approved surrogate that still answers the selected incident question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "preservation.scenario_signal",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "PRES.adequacy-signal",
+      "remediation": "Keep at least one transformed signal witness for each selected diagnosability requirement.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-field",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_signal",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-signal",
+      "remediation": "Emit the signal needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "scenario",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.not_found",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SCENARIO.selection",
+      "remediation": "Add or select a scenario that matches the incident question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "scenario",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.requirement_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SCENARIO.requirement-wf",
+      "remediation": "Describe scenario requirements as objects.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "static.missing_correlation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.correlation-evidence",
+      "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "static-coverage",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "static.missing_instrumentation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.signal-literal",
+      "remediation": "Add source instrumentation with the expected stable telemetry name.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "static-coverage",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "static.no_sources",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.source-domain",
+      "remediation": "Pass source files or directories to the static checker.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "static.secret_logging",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.raw-sensitive-log",
+      "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "operability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.unbounded_label",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.cardinality-risk",
+      "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.allowed-values",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "operability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "telemetry.cardinality",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.cardinality-bound",
+      "remediation": "Bucket, hash, drop, or bound labels with excessive cardinality.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "operability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "telemetry.cardinality_policy",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.cardinality-policy",
+      "remediation": "Declare a max cardinality or explicitly allow unbounded values.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.conditional_missing_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.conditional-obligation",
+      "remediation": "When the triggering field is present, emit all fields required by the conditional requirement.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.correlation_mismatch",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.correlation-intersection",
+      "remediation": "Propagate at least one shared correlation key value across the required signal kinds.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.correlation_missing",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.correlation-presence",
+      "remediation": "Emit a trace_id, span_id, request_id, or configured correlation key on correlated signals.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.field_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.field-type",
+      "remediation": "Emit the field using the contract's declared primitive type.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.forbidden_pattern",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "SAT.forbidden-pattern",
+      "remediation": "Redact, hash, or omit values matching forbidden sensitive patterns.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.log_message",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.log-message",
+      "remediation": "Use a stable log message or event name matching the contract.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.log_severity",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.log-severity",
+      "remediation": "Emit the log at the severity required for alerting and search.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.log_severity_min",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.log-severity-threshold",
+      "remediation": "Raise the emitted log severity to meet the contract's minimum severity policy.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.required-field",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_signal",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.required-signal",
+      "remediation": "Emit the required span, metric, or log on the exercised path.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.numeric-upper-bound",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_min",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.numeric-lower-bound",
+      "remediation": "Investigate or clamp values below the declared minimum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.pattern",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.regex",
+      "remediation": "Normalize the field so it matches the declared pattern.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.pattern_type",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.regex-domain",
+      "remediation": "Emit a string value when a regex pattern is required.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.privacy_transformation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "SAT.privacy-preservation",
+      "remediation": "Emit the field using the transformation required by the contract privacy policy.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "telemetry.sensitive_unclassified",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "SAT.sensitive-classification",
+      "remediation": "Classify the field sensitivity and redact or hash the emitted value.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.sensitive_value",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "SAT.raw-sensitive-value",
+      "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_missing_step",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-presence",
+      "remediation": "Emit every event required by the temporal sequence in the grouped incident window.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_window",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-window",
+      "remediation": "Emit the temporal sequence within the declared bounded window.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.unit",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.unit",
+      "remediation": "Emit a value that satisfies the field's declared unit constraints.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    }
+  ],
+  "schema": "docs/finding_taxonomy.schema.json",
+  "schema_version": "1.0",
+  "semantics": {
+    "ci_mapping": "default_fail_on is the minimum severity a CI gate may use for this rule; sarif_level maps directly to SARIF result.level.",
+    "finding": "A finite witness that one telemetry-contract obligation failed or needs operator attention.",
+    "formal_clause": "Stable identifier for the well-formedness, satisfaction, adequacy, preservation, static, or input rule that justifies the finding."
+  },
+  "summary": {
+    "categories": {
+      "contract": 22,
+      "diagnosability": 13,
+      "input": 1,
+      "operability": 3,
+      "preservation": 3,
+      "privacy-security": 6,
+      "scenario": 2,
+      "schema": 9,
+      "static-coverage": 2
+    },
+    "default_severities": {
+      "error": 56,
+      "warning": 5
+    },
+    "rules": 61,
+    "sarif_levels": {
+      "error": 56,
+      "warning": 5
+    }
+  }
+}

@@ -22,7 +22,7 @@
         "findings_by_severity": {},
         "labels": null,
         "pass": true,
-        "runtime_ms": 2.366,
+        "runtime_ms": 1.018,
         "validation_pass": true
       },
       "pass": true,
@@ -43,6 +43,16 @@
       "findings": [
         {
           "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.allowed_values",
           "contract_path": "$.spans[0].fields.source",
           "details": {
@@ -62,6 +72,16 @@
         },
         {
           "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.numeric_max",
           "contract_path": "$.spans[0].fields.backup_age_hours",
           "disclosure_sensitivity": "internal",
@@ -76,6 +96,16 @@
         },
         {
           "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.allowed_values",
           "contract_path": "$.spans[0].fields.source_environment",
           "details": {
@@ -95,6 +125,16 @@
         },
         {
           "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.numeric_max",
           "contract_path": "$.metrics[0].value",
           "disclosure_sensitivity": "internal",
@@ -109,6 +149,16 @@
         },
         {
           "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.allowed_values",
           "contract_path": "$.metrics[1].value",
           "details": {
@@ -128,6 +178,16 @@
         },
         {
           "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.allowed_values",
           "contract_path": "$.logs[0].fields.target_role",
           "details": {
@@ -147,6 +207,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.missing_field",
           "contract_path": "$.logs[0].fields.correlation_id",
           "disclosure_sensitivity": "internal",
@@ -161,6 +231,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.missing_field",
           "contract_path": "$.logs[0].fields.command_guard_result",
           "disclosure_sensitivity": "internal",
@@ -175,6 +255,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "telemetry.missing_field",
           "contract_path": "$.logs[1].fields.alert_delivered",
           "disclosure_sensitivity": "internal",
@@ -189,6 +279,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "scenario.missing_field",
           "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
           "details": {
@@ -215,6 +315,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "scenario.missing_field",
           "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
           "details": {
@@ -241,6 +351,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "scenario.missing_field",
           "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
           "details": {
@@ -290,7 +410,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.122,
+        "runtime_ms": 0.873,
         "validation_pass": false
       },
       "pass": true,
@@ -311,6 +431,16 @@
       "findings": [
         {
           "category": "privacy-security",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "static.secret_logging",
           "details": {
             "line": "console.log('A password was submitted: ' + this.state.password);"
@@ -326,6 +456,16 @@
         },
         {
           "category": "privacy-security",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "static.secret_logging",
           "details": {
             "line": "console.log(json[\"cookie\"]);"
@@ -361,7 +501,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.437,
+        "runtime_ms": 1.229,
         "validation_pass": false
       },
       "pass": true,
@@ -387,6 +527,6 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 7.15
+    "runtime_ms": 4.833
   }
 }

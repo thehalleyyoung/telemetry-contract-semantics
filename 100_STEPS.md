@@ -43,7 +43,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 - [ ] 031. Add contract composition or inheritance for shared organization policies, with refinement tests proving service contracts do not silently weaken required evidence.
 - [ ] 032. Add optional and alternative signal obligations so semantically equivalent evidence paths can satisfy the same diagnosability requirement without duplicate false positives.
 - [ ] 033. Add strict-mode validation for unexpected fields, undeclared signal names, unmodeled services, and undocumented collector transformations, with documented escape hatches.
-- [ ] 034. Generate a machine-readable finding taxonomy with severity, category, formal clause, remediation, disclosure sensitivity, service owner, and CI/SARIF mapping.
+- [x] 034. Generate a machine-readable finding taxonomy with severity, category, formal clause, remediation, disclosure sensitivity, service owner, and CI/SARIF mapping.
 - [ ] 035. Add monitor compilation from contract clauses to bounded-memory runtime checks over finite traces and sliding windows, with determinism tests.
 - [ ] 036. Add event-window grouping by trace, request, tenant, deployment, scenario instance, and incident slice so findings are localized to actionable ownership units.
 - [ ] 037. Add OpenTelemetry semantic-convention linting that cites the relevant convention or local policy and proposes the exact attribute/name remediation.

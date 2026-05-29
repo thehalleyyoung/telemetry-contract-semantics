@@ -13,7 +13,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Incident-readiness value:** produce reports that list which incident questions are answerable, which evidence is missing, which service owner is affected, and which remediation is most direct.
 - **Privacy/security value:** flag likely PII, secrets, tenant identifiers, unsafe payload previews, high-cardinality labels, and non-preserving scrubbing or sampling claims.
 - **Research value:** define an executable trace semantics, contract satisfaction relation, refinement relation, and transformation-preservation obligations for observability data.
-- **Artifact value:** keep claims reproducible through tests, fixtures, public datasets, benchmark reports, checksums, retrieval dates, and a claims-to-evidence matrix.
+- **Artifact value:** keep claims reproducible through tests, fixtures, public datasets, benchmark reports, machine-readable finding-taxonomy coverage, checksums, retrieval dates, and a claims-to-evidence matrix.
 
 ## Formal objects and semantics
 
@@ -22,7 +22,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Observation:** a normalized span, log, metric point, exemplar, resource, scope, or provenance record with timestamps, attributes, units, severity, source JSON path, and disclosure classification.
 - **Trace:** a finite event structure containing observations plus causality from parent-child spans, span links, log attachments, exemplars, correlation IDs, request IDs, tenant IDs, and incident windows.
 - **Contract:** a finite specification of required observations, field predicates, temporal properties, hyperproperties, assumptions, guarantees, allowed transformations, ownership, severity, and remediation metadata.
-- **Finding:** a machine-readable witness that a semantic obligation failed, including evidence path, violated clause, severity, affected owner, remediation, disclosure sensitivity, and reproducibility metadata.
+- **Finding:** a machine-readable witness that a semantic obligation failed, including evidence path, violated clause, severity, affected owner, remediation, disclosure sensitivity, SARIF/CI mapping, and reproducibility metadata.
 - **Dataset:** a versioned collection of telemetry, source code, labels, transformations, provenance, license data, checksums, retrieval dates, validity threats, and claims it supports.
 
 ### Semantic relations

@@ -14,6 +14,7 @@ from .semantics import describe_model, format_model_markdown
 from .preservation import check_transformation_preservation, format_preservation_markdown
 from .static_checker import check_sources
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
+from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .validator import validate_contract_shape, validate_events
 from .equivalence import compare_observational_equivalence, format_equivalence_markdown
 
@@ -56,6 +57,11 @@ def main(argv: list[str] | None = None) -> int:
     benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
     benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     benchmark_parser.add_argument("--output")
+
+    taxonomy_parser = subparsers.add_parser("taxonomy", help="emit the machine-readable finding taxonomy and optional observed finding coverage")
+    taxonomy_parser.add_argument("--findings", action="append", default=[], help="JSON report containing findings or benchmark cases with findings")
+    taxonomy_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    taxonomy_parser.add_argument("--output")
 
     equivalence_parser = subparsers.add_parser("equivalence", help="compare two telemetry files by incident-question answerability")
     equivalence_parser.add_argument("--contract", required=True)
@@ -110,6 +116,15 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
+        if args.command == "taxonomy":
+            report = taxonomy_report(args.findings)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_taxonomy_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            observed = report.get("observed_findings")
+            return 1 if observed and observed["summary"]["unknown_codes"] else 0
         if args.command == "equivalence":
             contract = load_contract(args.contract)
             report = compare_observational_equivalence(contract, load_jsonl(args.left_events), load_jsonl(args.right_events), args.scenario or None)

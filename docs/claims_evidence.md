@@ -11,6 +11,7 @@
 - Added a finite event-structure model for telemetry traces with parent-child spans, span links, log attachments, metric exemplars, timestamp happens-before edges, concurrent span pairs, and Mermaid incident-window diagrams in service-owner reports and `describe-model` output.
 - Added observational-equivalence reports for debugging tasks. `reports/gitlab_2017_observational_equivalence.json` and `.md` compare the GitLab reconstructed fixture with a deliberately degraded sampled/exported derivative by the `restore-readiness` question signature, not by byte equality.
 - Added transformation-preservation reports for approved sampling/omission-style changes. `reports/gitlab_2017_transformation_preservation.json` and `.md` check that obligations and selected scenario witnesses satisfied in the reconstructed source trace remain satisfied in the degraded derivative, and report the lost backup-failure alert evidence.
+- Added a generated finding-taxonomy artifact in `docs/finding_taxonomy.json` with schema `docs/finding_taxonomy.schema.json`, plus `telemetry-contracts taxonomy` reports that map observed public-fixture findings to category, formal clause, SARIF level, CI baseline keys, and service-owner route. `reports/current_impact_taxonomy.json` and `.md` summarize the taxonomy coverage of the checked-in built-in benchmark report.
 
 ## Bounded novelty claim
 
@@ -97,6 +98,17 @@ python3 -m telemetry_contracts.cli preservation \
   --format markdown \
   --output reports/gitlab_2017_transformation_preservation.md \
   --fail-on never
+python3 -m telemetry_contracts.cli taxonomy \
+  --format json \
+  --output docs/finding_taxonomy.json
+python3 -m telemetry_contracts.cli taxonomy \
+  --findings reports/current_impact.json \
+  --format json \
+  --output reports/current_impact_taxonomy.json
+python3 -m telemetry_contracts.cli taxonomy \
+  --findings reports/current_impact.json \
+  --format markdown \
+  --output reports/current_impact_taxonomy.md
 ```
 
-The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json` and `case_studies/current/owasp_securetea_signin/metadata.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 3 contracts, 10 runtime events, 14 total labeled findings, and 1.0 precision/recall for the current static case. The GitLab incident-readiness report records 12 findings, 3 missing required-evidence obligations, 3 missing fields for the `restore-readiness` question, and 100% remediation text coverage for those bounded findings. The regenerated GitLab incident-readiness report also records the reconstructed finite event structure for 5 observations, 4 timestamp happens-before edges, 1 incident window, and a checked-in Mermaid diagram in `reports/gitlab_2017_incident_readiness.md`. The GitLab observational-equivalence report records `equivalent=false` for the degraded sampled/exported derivative, with 1 different question and exact deltas for the missing `log:backup.pg_dump.failed` observation and its `alert_route`, `backup_job_id`, and `destination` fields. The GitLab transformation-preservation report records `pass=false`, 1 event removed, and 5 preservation findings: 1 newly introduced runtime obligation failure, 1 lost scenario signal, and 3 lost scenario fields.
+The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json` and `case_studies/current/owasp_securetea_signin/metadata.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 3 contracts, 10 runtime events, 14 total labeled findings, and 1.0 precision/recall for the current static case. The taxonomy coverage report over that checked-in benchmark records 14 observed findings, 0 unknown codes, 5 observed formal clauses, and 2 privacy-security findings from the OWASP SecureTea public-code case. The GitLab incident-readiness report records 12 findings, 3 missing required-evidence obligations, 3 missing fields for the `restore-readiness` question, and 100% remediation text coverage for those bounded findings. The regenerated GitLab incident-readiness report also records the reconstructed finite event structure for 5 observations, 4 timestamp happens-before edges, 1 incident window, and a checked-in Mermaid diagram in `reports/gitlab_2017_incident_readiness.md`. The GitLab observational-equivalence report records `equivalent=false` for the degraded sampled/exported derivative, with 1 different question and exact deltas for the missing `log:backup.pg_dump.failed` observation and its `alert_route`, `backup_job_id`, and `destination` fields. The GitLab transformation-preservation report records `pass=false`, 1 event removed, and 5 preservation findings: 1 newly introduced runtime obligation failure, 1 lost scenario signal, and 3 lost scenario fields.

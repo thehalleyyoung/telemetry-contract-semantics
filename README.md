@@ -14,6 +14,7 @@ This repository turns that thesis into executable checks:
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - A benchmark harness for built-in or user-provided contract/event corpora.
+- A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - Passing and failing examples for a checkout/payment service.
@@ -61,6 +62,10 @@ python3 -m telemetry_contracts.cli validate \
 
 python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
+  --format markdown
+
+python3 -m telemetry_contracts.cli taxonomy \
+  --findings reports/current_impact.json \
   --format markdown
 
 python3 -m telemetry_contracts.cli describe-model \
@@ -176,7 +181,7 @@ Runtime validation reads newline-delimited JSON. Events are intentionally simple
 {"kind":"log","service":"checkout","name":"checkout.payment_failed","trace_id":"trace-123","timestamp_ms":1200,"severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
 ```
 
-Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field`), remediation, disclosure sensitivity, service-owner routing, and SARIF-compatible level.
+Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field`), remediation, disclosure sensitivity, service-owner routing, SARIF-compatible level, and CI baseline keys. `python3 -m telemetry_contracts.cli taxonomy` emits the canonical taxonomy from `docs/finding_taxonomy.json`; with `--findings`, it summarizes which semantic clauses and categories appear in a concrete JSON report.
 
 ## Observation model and satisfaction relation
 
@@ -197,7 +202,8 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.preservation` checks pre/post transformation preservation for runtime obligations and scenario witnesses.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
-- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, and `benchmark` commands.
+- `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
+- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `benchmark`, and `taxonomy` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.

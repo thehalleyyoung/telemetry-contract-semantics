@@ -13,7 +13,7 @@ def _entry(
     default_severity: str = "error",
     disclosure_sensitivity: str = "internal",
     service_owner: str = "contract service owner",
-) -> dict[str, str]:
+) -> dict[str, Any]:
     sarif_level = {"error": "error", "warning": "warning", "info": "note"}[default_severity]
     return {
         "category": category,
@@ -23,10 +23,15 @@ def _entry(
         "disclosure_sensitivity": disclosure_sensitivity,
         "service_owner": service_owner,
         "sarif_level": sarif_level,
+        "ci": {
+            "default_fail_on": default_severity,
+            "sarif_level": sarif_level,
+            "baseline_key_fields": ["code", "path", "contract_path", "event_index"],
+        },
     }
 
 
-TAXONOMY: dict[str, dict[str, str]] = {
+TAXONOMY: dict[str, dict[str, Any]] = {
     "contract.version": _entry("contract", "Declare contract version 1.0.", "WF.version"),
     "contract.service": _entry("contract", "Add a non-empty service name.", "WF.service"),
     "contract.section_type": _entry("contract", "Use arrays for spans, metrics, and logs sections.", "WF.signal-section"),
@@ -107,7 +112,7 @@ class Finding:
         item = {key: value for key, value in asdict(self).items() if value is not None}
         taxonomy = TAXONOMY.get(self.code, {})
         item.setdefault("category", taxonomy.get("category", "uncategorized"))
-        for key in ("formal_clause", "remediation", "disclosure_sensitivity", "service_owner", "sarif_level"):
+        for key in ("formal_clause", "remediation", "disclosure_sensitivity", "service_owner", "sarif_level", "ci"):
             if taxonomy.get(key):
                 item.setdefault(key, taxonomy[key])
         return item

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/telemetry-contracts/finding_taxonomy.schema.json",
+  "title": "Telemetry Contracts Finding Taxonomy",
+  "type": "object",
+  "required": ["schema", "schema_version", "semantics", "summary", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"type": "string"},
+    "schema_version": {"type": "string"},
+    "semantics": {
+      "type": "object",
+      "required": ["finding", "formal_clause", "ci_mapping"],
+      "additionalProperties": false,
+      "properties": {
+        "finding": {"type": "string"},
+        "formal_clause": {"type": "string"},
+        "ci_mapping": {"type": "string"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["rules", "categories", "default_severities", "sarif_levels"],
+      "additionalProperties": false,
+      "properties": {
+        "rules": {"type": "integer", "minimum": 0},
+        "categories": {"$ref": "#/$defs/stringIntegerMap"},
+        "default_severities": {"$ref": "#/$defs/stringIntegerMap"},
+        "sarif_levels": {"$ref": "#/$defs/stringIntegerMap"}
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/rule"}
+    },
+    "observed_findings": {
+      "type": "object",
+      "required": ["sources", "summary", "findings"],
+      "additionalProperties": false,
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "findings"],
+            "additionalProperties": false,
+            "properties": {
+              "path": {"type": "string"},
+              "findings": {"type": "integer", "minimum": 0}
+            }
+          }
+        },
+        "summary": {
+          "type": "object",
+          "required": ["findings", "unknown_codes", "by_code", "by_category", "by_formal_clause", "by_sarif_level", "by_service_owner"],
+          "additionalProperties": false,
+          "properties": {
+            "findings": {"type": "integer", "minimum": 0},
+            "unknown_codes": {
+              "type": "array",
+              "items": {"type": "string"},
+              "uniqueItems": true
+            },
+            "by_code": {"$ref": "#/$defs/stringIntegerMap"},
+            "by_category": {"$ref": "#/$defs/stringIntegerMap"},
+            "by_formal_clause": {"$ref": "#/$defs/stringIntegerMap"},
+            "by_sarif_level": {"$ref": "#/$defs/stringIntegerMap"},
+            "by_service_owner": {"$ref": "#/$defs/stringIntegerMap"}
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "severity", "category", "formal_clause", "sarif_level", "service_owner"],
+            "additionalProperties": false,
+            "properties": {
+              "code": {"type": "string"},
+              "severity": {"type": ["string", "null"]},
+              "category": {"type": "string"},
+              "formal_clause": {"type": ["string", "null"]},
+              "sarif_level": {"type": ["string", "null"]},
+              "service_owner": {"type": ["string", "null"]},
+              "path": {"type": ["string", "null"]},
+              "contract_path": {"type": ["string", "null"]},
+              "event_index": {"type": ["integer", "null"]}
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stringIntegerMap": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "code",
+        "category",
+        "default_severity",
+        "formal_clause",
+        "remediation",
+        "disclosure_sensitivity",
+        "service_owner",
+        "sarif_level",
+        "ci"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"type": "string", "pattern": "^[a-z]+[a-z0-9_]*(\\.[a-z]+[a-z0-9_]*)+$"},
+        "category": {"type": "string"},
+        "default_severity": {"enum": ["info", "warning", "error"]},
+        "formal_clause": {"type": "string"},
+        "remediation": {"type": "string"},
+        "disclosure_sensitivity": {"type": "string"},
+        "service_owner": {"type": "string"},
+        "sarif_level": {"enum": ["note", "warning", "error"]},
+        "ci": {
+          "type": "object",
+          "required": ["default_fail_on", "sarif_level", "baseline_key_fields"],
+          "additionalProperties": false,
+          "properties": {
+            "default_fail_on": {"enum": ["info", "warning", "error"]},
+            "sarif_level": {"enum": ["note", "warning", "error"]},
+            "baseline_key_fields": {
+              "type": "array",
+              "items": {"type": "string"},
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    }
+  }
+}
