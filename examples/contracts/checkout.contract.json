@@ -25,8 +25,13 @@
         "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+"},
         "payment_provider": {"type": "string", "required": true, "allowed_values": ["stripe", "adyen", "test"]},
         "retry_count": {"type": "integer", "required": true, "min": 0, "max": 3},
-        "error_code": {"type": "string", "required": false, "pattern": "[A-Z_]+"}
-      }
+        "error_code": {"type": "string", "required": false, "pattern": "[A-Z_]+"},
+        "remediation_hint": {"type": "string", "required": false},
+        "retryable": {"type": "boolean", "required": false}
+      },
+      "conditional_requirements": [
+        {"if": {"field": "error_code", "present": true}, "then": {"fields": ["remediation_hint", "retryable"]}}
+      ]
     }
   ],
   "metrics": [
@@ -53,6 +58,7 @@
       "name": "checkout.payment_failed",
       "required": true,
       "severity": "ERROR",
+      "severity_policy": {"min": "ERROR"},
       "message_pattern": "payment authorization failed",
       "fields": {
         "tenant_id": {"type": "string", "required": true},

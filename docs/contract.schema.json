@@ -5,6 +5,12 @@
         "attributes": {
           "$ref": "#/$defs/fieldMap"
         },
+        "conditional_requirements": {
+          "items": {
+            "$ref": "#/$defs/conditionalRequirement"
+          },
+          "type": "array"
+        },
         "fields": {
           "$ref": "#/$defs/fieldMap"
         },
@@ -34,6 +40,32 @@
       },
       "type": "object"
     },
+    "conditionalRequirement": {
+      "properties": {
+        "if": {
+          "$ref": "#/$defs/fieldCondition"
+        },
+        "then": {
+          "$ref": "#/$defs/conditionalThen"
+        }
+      },
+      "required": [
+        "if",
+        "then"
+      ],
+      "type": "object"
+    },
+    "conditionalThen": {
+      "properties": {
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
     "correlationPolicy": {
       "properties": {
         "keys": {
@@ -58,6 +90,24 @@
       },
       "required": [
         "keys"
+      ],
+      "type": "object"
+    },
+    "fieldCondition": {
+      "properties": {
+        "allowed_values": {
+          "type": "array"
+        },
+        "equals": {},
+        "field": {
+          "type": "string"
+        },
+        "present": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "field"
       ],
       "type": "object"
     },
@@ -164,6 +214,9 @@
             },
             "severity": {
               "type": "string"
+            },
+            "severity_policy": {
+              "$ref": "#/$defs/severityPolicy"
             }
           },
           "type": "object"
@@ -246,6 +299,17 @@
         "signal",
         "name"
       ],
+      "type": "object"
+    },
+    "severityPolicy": {
+      "properties": {
+        "min": {
+          "type": "string"
+        },
+        "minimum": {
+          "type": "string"
+        }
+      },
       "type": "object"
     },
     "spanSignal": {

@@ -9,6 +9,34 @@ from .schema import validate_contract_schema
 
 SignalKind = str
 PRIMITIVE_TYPES = {"string", "integer", "number", "boolean", "object", "array", "null"}
+SEVERITY_RANKS = {
+    "TRACE": 10,
+    "TRACE2": 11,
+    "TRACE3": 12,
+    "TRACE4": 13,
+    "DEBUG": 20,
+    "DEBUG2": 21,
+    "DEBUG3": 22,
+    "DEBUG4": 23,
+    "INFO": 30,
+    "INFO2": 31,
+    "INFO3": 32,
+    "INFO4": 33,
+    "WARN": 40,
+    "WARNING": 40,
+    "WARN2": 41,
+    "WARN3": 42,
+    "WARN4": 43,
+    "ERROR": 50,
+    "ERROR2": 51,
+    "ERROR3": 52,
+    "ERROR4": 53,
+    "FATAL": 60,
+    "CRITICAL": 60,
+    "FATAL2": 61,
+    "FATAL3": 62,
+    "FATAL4": 63,
+}
 
 BUILTIN_FORBIDDEN_PATTERNS: dict[str, str] = {
     "email": r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
@@ -37,6 +65,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
         raw_signals = contract.get(section, []) or []
         if not isinstance(raw_signals, list):
             continue
+        seen_signal_names: dict[str, int] = {}
         for signal_index, spec in enumerate(raw_signals):
             signal_path = f"$.{section}[{signal_index}]"
             if not isinstance(spec, dict):
@@ -44,12 +73,28 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                 continue
             if not isinstance(spec.get("name"), str) or not spec.get("name"):
                 findings.append(Finding("error", "contract.signal_name", "signal must declare a non-empty name", f"{signal_path}.name"))
+            elif spec["name"] in seen_signal_names:
+                findings.append(
+                    Finding(
+                        "error",
+                        "contract.duplicate_signal",
+                        f"{section} signal '{spec['name']}' is declared more than once",
+                        f"{signal_path}.name",
+                        f"$.{section}[{seen_signal_names[spec['name']]}].name",
+                    )
+                )
+            else:
+                seen_signal_names[spec["name"]] = signal_index
             if "required" in spec and not isinstance(spec["required"], bool):
                 findings.append(Finding("error", "contract.required_type", "signal required flag must be a boolean", f"{signal_path}.required"))
             if section == "metrics" and isinstance(spec.get("value"), dict):
                 findings.extend(_validate_field_spec("value", spec["value"], f"{signal_path}.value"))
             if section == "logs" and spec.get("message_pattern") is not None:
                 findings.extend(_validate_regex(str(spec["message_pattern"]), f"{signal_path}.message_pattern", "invalid log message regex"))
+            if section == "logs":
+                findings.extend(_validate_severity_policy_shape(spec, signal_path))
+            findings.extend(_validate_conditional_requirement_shape(spec, signal_path))
+            findings.extend(_validate_duplicate_field_names(spec, signal_path))
             for container in ("fields", "attributes", "tags"):
                 raw_fields = spec.get(container, {}) or {}
                 if not isinstance(raw_fields, dict):
@@ -70,6 +115,74 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                         )
     findings.extend(_validate_correlation_policy_shape(contract.get("correlation")))
     return findings
+
+
+def _validate_duplicate_field_names(spec: dict[str, Any], signal_path: str) -> list[Finding]:
+    findings: list[Finding] = []
+    seen: dict[str, str] = {}
+    for container in ("fields", "attributes", "tags"):
+        raw_fields = spec.get(container, {}) or {}
+        if not isinstance(raw_fields, dict):
+            continue
+        for field_name in raw_fields:
+            field_key = str(field_name)
+            field_path = f"{signal_path}.{container}.{field_key}"
+            if field_key in seen:
+                findings.append(
+                    Finding(
+                        "error",
+                        "contract.duplicate_field",
+                        f"field '{field_key}' is declared in multiple containers for signal '{spec.get('name')}'",
+                        field_path,
+                        seen[field_key],
+                    )
+                )
+            else:
+                seen[field_key] = field_path
+    return findings
+
+
+def _validate_conditional_requirement_shape(spec: dict[str, Any], signal_path: str) -> list[Finding]:
+    raw_requirements = spec.get("conditional_requirements", []) or []
+    if not isinstance(raw_requirements, list):
+        return [Finding("error", "contract.conditional_requirement", "conditional_requirements must be an array", f"{signal_path}.conditional_requirements")]
+    findings: list[Finding] = []
+    for index, requirement in enumerate(raw_requirements):
+        req_path = f"{signal_path}.conditional_requirements[{index}]"
+        if not isinstance(requirement, dict):
+            findings.append(Finding("error", "contract.conditional_requirement", "conditional requirement must be an object", req_path))
+            continue
+        condition = requirement.get("if")
+        then = requirement.get("then")
+        if not isinstance(condition, dict):
+            findings.append(Finding("error", "contract.conditional_requirement", "conditional requirement must include an if object", f"{req_path}.if"))
+        else:
+            field = condition.get("field")
+            if not isinstance(field, str) or not field:
+                findings.append(Finding("error", "contract.conditional_requirement", "conditional if.field must be a non-empty string", f"{req_path}.if.field"))
+            if "present" in condition and not isinstance(condition["present"], bool):
+                findings.append(Finding("error", "contract.conditional_requirement", "conditional if.present must be a boolean", f"{req_path}.if.present"))
+            if "allowed_values" in condition and not isinstance(condition["allowed_values"], list):
+                findings.append(Finding("error", "contract.conditional_requirement", "conditional if.allowed_values must be an array", f"{req_path}.if.allowed_values"))
+        if not isinstance(then, dict):
+            findings.append(Finding("error", "contract.conditional_requirement", "conditional requirement must include a then object", f"{req_path}.then"))
+        else:
+            fields = then.get("fields", [])
+            if not isinstance(fields, list) or not fields or not all(isinstance(field, str) and field for field in fields):
+                findings.append(Finding("error", "contract.conditional_requirement", "conditional then.fields must be a non-empty array of strings", f"{req_path}.then.fields"))
+    return findings
+
+
+def _validate_severity_policy_shape(spec: dict[str, Any], signal_path: str) -> list[Finding]:
+    policy = spec.get("severity_policy")
+    if policy is None:
+        return []
+    if not isinstance(policy, dict):
+        return [Finding("error", "contract.severity_policy", "severity_policy must be an object", f"{signal_path}.severity_policy")]
+    threshold = policy.get("min", policy.get("minimum"))
+    if not isinstance(threshold, str) or _severity_rank(threshold) is None:
+        return [Finding("error", "contract.severity_policy", "severity_policy.min must be a known severity", f"{signal_path}.severity_policy.min")]
+    return []
 
 
 def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
@@ -258,8 +371,61 @@ def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str,
                     findings.append(Finding("error", "telemetry.missing_field", f"{kind} '{name}' missing required field '{field_name}'", value_path, f"{path}.fields.{field_name}", _event_index(event)))
                 continue
             findings.extend(_validate_field(field_name, field_spec, value, event, f"{path}.fields.{field_name}"))
+        findings.extend(_validate_conditional_requirements(kind, name, spec, event, path))
     findings.extend(_validate_cardinality(kind, name, field_specs, matches, path))
     return findings
+
+
+def _validate_conditional_requirements(kind: str, name: str, spec: dict[str, Any], event: dict[str, Any], path: str) -> list[Finding]:
+    raw_requirements = spec.get("conditional_requirements", []) or []
+    if not isinstance(raw_requirements, list):
+        return []
+    findings: list[Finding] = []
+    for index, requirement in enumerate(raw_requirements):
+        if not isinstance(requirement, dict):
+            continue
+        condition = requirement.get("if")
+        then = requirement.get("then")
+        if not isinstance(condition, dict) or not isinstance(then, dict):
+            continue
+        if not _condition_matches(condition, event):
+            continue
+        fields = then.get("fields", [])
+        if not isinstance(fields, list):
+            continue
+        for field_position, field_name in enumerate(fields):
+            if not isinstance(field_name, str) or not field_name:
+                continue
+            value, value_path = _lookup_field(event, field_name)
+            if value is _MISSING:
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.conditional_missing_field",
+                        f"{kind} '{name}' missing conditionally required field '{field_name}'",
+                        value_path,
+                        f"{path}.conditional_requirements[{index}].then.fields[{field_position}]",
+                        _event_index(event),
+                        {"condition": condition},
+                    )
+                )
+    return findings
+
+
+def _condition_matches(condition: dict[str, Any], event: dict[str, Any]) -> bool:
+    field = condition.get("field")
+    if not isinstance(field, str) or not field:
+        return False
+    value, _ = _lookup_field(event, field)
+    is_present = value is not _MISSING
+    if "present" in condition and condition["present"] is not is_present:
+        return False
+    if "equals" in condition:
+        return is_present and value == condition["equals"]
+    allowed_values = condition.get("allowed_values")
+    if isinstance(allowed_values, list):
+        return is_present and value in allowed_values
+    return is_present if "present" not in condition else True
 
 
 def _field_specs(spec: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -457,6 +623,12 @@ def _validate_log_patterns(spec: dict[str, Any], matches: list[dict[str, Any]], 
     findings: list[Finding] = []
     pattern = spec.get("message_pattern")
     severity = spec.get("severity")
+    severity_policy = spec.get("severity_policy")
+    minimum_severity = None
+    if isinstance(severity_policy, dict):
+        threshold = severity_policy.get("min", severity_policy.get("minimum"))
+        if isinstance(threshold, str):
+            minimum_severity = threshold
     for event in matches:
         message = event.get("message", "")
         if pattern is not None:
@@ -467,4 +639,31 @@ def _validate_log_patterns(spec: dict[str, Any], matches: list[dict[str, Any]], 
                 findings.append(Finding("error", "contract.invalid_regex", f"invalid log message regex: {exc}", f"{path}.message_pattern"))
         if severity is not None and event.get("severity") != severity:
             findings.append(Finding("error", "telemetry.log_severity", f"log '{spec.get('name')}' severity must be {severity}", f"event[{_event_index(event)}].severity", f"{path}.severity", _event_index(event)))
+        if minimum_severity is not None:
+            expected_rank = _severity_rank(minimum_severity)
+            actual = event.get("severity")
+            actual_rank = _severity_rank(actual)
+            if expected_rank is not None and (actual_rank is None or actual_rank < expected_rank):
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.log_severity_min",
+                        f"log '{spec.get('name')}' severity must be at least {minimum_severity}",
+                        f"event[{_event_index(event)}].severity",
+                        f"{path}.severity_policy.min",
+                        _event_index(event),
+                        {"actual": actual, "minimum": minimum_severity},
+                    )
+                )
     return findings
+
+
+def _severity_rank(value: Any) -> int | None:
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value
+    if not isinstance(value, str):
+        return None
+    normalized = value.strip().upper()
+    if normalized.isdigit():
+        return int(normalized)
+    return SEVERITY_RANKS.get(normalized)

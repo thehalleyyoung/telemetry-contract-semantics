@@ -75,8 +75,14 @@ A contract declares a service plus expected telemetry signals:
       "tenant_id": {"type": "string", "required": true},
       "auth_token": {"type": "string", "sensitivity": "token", "forbidden_patterns": ["bearer_token"]},
       "retry_count": {"type": "integer", "min": 0, "max": 3},
-      "payment_provider": {"type": "string", "allowed_values": ["stripe", "adyen", "test"]}
-    }
+      "payment_provider": {"type": "string", "allowed_values": ["stripe", "adyen", "test"]},
+      "error_code": {"type": "string", "required": false},
+      "remediation_hint": {"type": "string", "required": false},
+      "retryable": {"type": "boolean", "required": false}
+    },
+    "conditional_requirements": [
+      {"if": {"field": "error_code", "present": true}, "then": {"fields": ["remediation_hint", "retryable"]}}
+    ]
   }]
 }
 ```
@@ -94,8 +100,11 @@ Supported checks include:
 - Numeric `min`/`max` ranges.
 - Metric `value` checks.
 - Log severity and message pattern checks.
+- Log `severity_policy` minimum thresholds, for example `{"min": "ERROR"}`.
+- Conditional requirements, for example requiring `remediation_hint` and `retryable` whenever `error_code` is present.
 - Cardinality hints and bounded-cardinality policies as warnings.
 - Cross-signal correlation policies requiring shared keys such as `trace_id` or `request_id` across configured signal kinds.
+- Duplicate signal and duplicate field diagnostics during contract linting.
 - Sampling and retention metadata as documented assumptions.
 
 ## Runtime event format

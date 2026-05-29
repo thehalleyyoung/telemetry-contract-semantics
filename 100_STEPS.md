@@ -12,17 +12,17 @@
 - [ ] Define a versioned contract evolution policy with backwards-compatible additions, deprecations, and migration examples.
 - [x] Add cross-signal correlation semantics requiring trace IDs, span IDs, request IDs, or configured correlation keys across spans, logs, and metrics.
 - [ ] Implement temporal ordering checks for required span/log/metric sequences within an incident window.
-- [ ] Implement conditional requirements such as “if error_code is present, emit remediation_hint and retryable”.
+- [x] Implement conditional requirements such as “if error_code is present, emit remediation_hint and retryable”.
 - [ ] Add contract inheritance or composition for shared organization-wide telemetry requirements.
 - [ ] Support reusable field dictionaries for common attributes such as tenant_id, trace_id, region, build_sha, and deployment_environment.
-- [ ] Add explicit severity policy validation for logs beyond exact matching, including minimum severity thresholds.
+- [x] Add explicit severity policy validation for logs beyond exact matching, including minimum severity thresholds.
 - [ ] Validate sampling and retention metadata against machine-readable policy stubs instead of documenting them only.
 - [ ] Add schema-level privacy classifications with allowed transformations such as redacted, hashed, tokenized, bucketed, or omitted.
 - [ ] Add field-level units validation for durations, bytes, percentages, counts, timestamps, and currency-like values.
 - [ ] Add contract lint warnings for names that violate OpenTelemetry semantic-convention naming guidance.
 - [ ] Support optional and alternative signals where one of several equivalent telemetry paths satisfies a requirement.
 - [ ] Add event-window grouping so validation can reason per trace, per request, per tenant, and per scenario instance.
-- [ ] Add duplicate-signal and duplicate-field diagnostics to catch accidental repeated telemetry definitions.
+- [x] Add duplicate-signal and duplicate-field diagnostics to catch accidental repeated telemetry definitions.
 - [ ] Add strict mode that errors on unexpected fields or telemetry names not declared by the contract.
 - [ ] Add a machine-readable finding taxonomy document generated from `telemetry_contracts.findings.TAXONOMY`.
 - [ ] Import OTLP traces with span parent-child relationships and validate required parent/child topology.

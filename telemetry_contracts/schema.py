@@ -78,6 +78,7 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                 "fields": {"$ref": "#/$defs/fieldMap"},
                 "attributes": {"$ref": "#/$defs/fieldMap"},
                 "tags": {"$ref": "#/$defs/fieldMap"},
+                "conditional_requirements": {"type": "array", "items": {"$ref": "#/$defs/conditionalRequirement"}},
             },
         },
         "spanSignal": {"allOf": [{"$ref": "#/$defs/baseSignal"}]},
@@ -90,8 +91,39 @@ CONTRACT_SCHEMA: dict[str, Any] = {
         "logSignal": {
             "allOf": [
                 {"$ref": "#/$defs/baseSignal"},
-                {"type": "object", "properties": {"severity": {"type": "string"}, "message_pattern": {"type": "string"}}},
+                {"type": "object", "properties": {"severity": {"type": "string"}, "severity_policy": {"$ref": "#/$defs/severityPolicy"}, "message_pattern": {"type": "string"}}},
             ]
+        },
+        "conditionalRequirement": {
+            "type": "object",
+            "required": ["if", "then"],
+            "properties": {
+                "if": {"$ref": "#/$defs/fieldCondition"},
+                "then": {"$ref": "#/$defs/conditionalThen"},
+            },
+        },
+        "fieldCondition": {
+            "type": "object",
+            "required": ["field"],
+            "properties": {
+                "field": {"type": "string"},
+                "present": {"type": "boolean"},
+                "equals": {},
+                "allowed_values": {"type": "array"},
+            },
+        },
+        "conditionalThen": {
+            "type": "object",
+            "properties": {
+                "fields": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+        "severityPolicy": {
+            "type": "object",
+            "properties": {
+                "min": {"type": "string"},
+                "minimum": {"type": "string"},
+            },
         },
         "correlationPolicy": {
             "type": "object",

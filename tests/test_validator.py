@@ -102,7 +102,11 @@ def test_contract_lint_reports_schema_semantic_errors():
                             "forbidden_patterns": [{"name": "bad"}],
                         }
                     },
+                    "conditional_requirements": [{"if": {"present": "yes"}, "then": {"fields": []}}],
                 }
+            ],
+            "logs": [
+                {"name": "failed", "severity_policy": {"min": "LOUD"}}
             ],
         }
     )
@@ -114,6 +118,8 @@ def test_contract_lint_reports_schema_semantic_errors():
     assert "contract.invalid_regex" in finding_codes
     assert "contract.forbidden_patterns_type" in finding_codes
     assert "contract.sensitive_field_unclassified" in finding_codes
+    assert "contract.conditional_requirement" in finding_codes
+    assert "contract.severity_policy" in finding_codes
 
 
 def test_published_contract_schema_matches_runtime_schema():
@@ -160,3 +166,64 @@ def test_correlation_policy_requires_shared_keys_across_signals():
         ],
     )
     assert passing == []
+
+
+def test_conditional_requirements_enforce_dependent_fields():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "spans": [
+            {
+                "name": "payment.authorize",
+                "fields": {"error_code": {"type": "string", "required": False}},
+                "conditional_requirements": [
+                    {"if": {"field": "error_code", "present": True}, "then": {"fields": ["remediation_hint", "retryable"]}}
+                ],
+            }
+        ],
+    }
+    findings = validate_events(
+        contract,
+        [{"kind": "span", "service": "svc", "name": "payment.authorize", "fields": {"error_code": "TIMEOUT", "retryable": True}}],
+    )
+    assert "telemetry.conditional_missing_field" in codes(findings)
+
+    passing = validate_events(
+        contract,
+        [
+            {
+                "kind": "span",
+                "service": "svc",
+                "name": "payment.authorize",
+                "fields": {"error_code": "TIMEOUT", "retryable": True, "remediation_hint": "retry provider"},
+            }
+        ],
+    )
+    assert passing == []
+
+
+def test_log_severity_policy_supports_minimum_thresholds():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "logs": [{"name": "checkout.failed", "severity_policy": {"min": "WARN"}}],
+    }
+    findings = validate_events(contract, [{"kind": "log", "service": "svc", "name": "checkout.failed", "severity": "INFO"}])
+    assert "telemetry.log_severity_min" in codes(findings)
+    assert validate_events(contract, [{"kind": "log", "service": "svc", "name": "checkout.failed", "severity": "ERROR"}]) == []
+
+
+def test_lint_reports_duplicate_signals_and_fields():
+    findings = validate_contract_shape(
+        {
+            "version": "1.0",
+            "service": "svc",
+            "logs": [
+                {"name": "checkout.failed", "fields": {"tenant_id": {"type": "string"}}, "attributes": {"tenant_id": {"type": "string"}}},
+                {"name": "checkout.failed"},
+            ],
+        }
+    )
+    finding_codes = codes(findings)
+    assert "contract.duplicate_signal" in finding_codes
+    assert "contract.duplicate_field" in finding_codes
