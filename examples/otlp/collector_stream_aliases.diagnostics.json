@@ -1,0 +1,172 @@
+{
+  "diagnostics": [
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "resource_spans",
+        "canonical": "resourceSpans"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'resource_spans' to 'resourceSpans'",
+      "path": "$[1].resource_spans",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "scope_spans",
+        "canonical": "scopeSpans"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'scope_spans' to 'scopeSpans'",
+      "path": "$[1].resourceSpans[0].scope_spans",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "trace_id",
+        "canonical": "traceId"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'trace_id' to 'traceId'",
+      "path": "$[1].resourceSpans[0].scopeSpans[0].spans[0].trace_id",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "span_id",
+        "canonical": "spanId"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'span_id' to 'spanId'",
+      "path": "$[1].resourceSpans[0].scopeSpans[0].spans[0].span_id",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "start_time_unix_nano",
+        "canonical": "startTimeUnixNano"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'start_time_unix_nano' to 'startTimeUnixNano'",
+      "path": "$[1].resourceSpans[0].scopeSpans[0].spans[0].start_time_unix_nano",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "end_time_unix_nano",
+        "canonical": "endTimeUnixNano"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'end_time_unix_nano' to 'endTimeUnixNano'",
+      "path": "$[1].resourceSpans[0].scopeSpans[0].spans[0].end_time_unix_nano",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "start_time_unix_nano",
+        "canonical": "startTimeUnixNano"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'start_time_unix_nano' to 'startTimeUnixNano'",
+      "path": "$[1].resourceSpans[0].scopeSpans[0].spans[0].start_time_unix_nano",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "end_time_unix_nano",
+        "canonical": "endTimeUnixNano"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'end_time_unix_nano' to 'endTimeUnixNano'",
+      "path": "$[1].resourceSpans[0].scopeSpans[0].spans[0].end_time_unix_nano",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "resource_logs",
+        "canonical": "resourceLogs"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'resource_logs' to 'resourceLogs'",
+      "path": "$[2].resource_logs",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "scope_logs",
+        "canonical": "scopeLogs"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'scope_logs' to 'scopeLogs'",
+      "path": "$[2].resourceLogs[0].scope_logs",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "log_records",
+        "canonical": "logRecords"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'log_records' to 'logRecords'",
+      "path": "$[2].resourceLogs[0].scopeLogs[0].log_records",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "severity_text",
+        "canonical": "severityText"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'severity_text' to 'severityText'",
+      "path": "$[2].resourceLogs[0].scopeLogs[0].logRecords[0].severity_text",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "trace_id",
+        "canonical": "traceId"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'trace_id' to 'traceId'",
+      "path": "$[2].resourceLogs[0].scopeLogs[0].logRecords[0].trace_id",
+      "severity": "info"
+    },
+    {
+      "code": "otlp.normalized_alias",
+      "details": {
+        "alias": "span_id",
+        "canonical": "spanId"
+      },
+      "invalidates_contract_claim": false,
+      "message": "normalized OTLP alias 'span_id' to 'spanId'",
+      "path": "$[2].resourceLogs[0].scopeLogs[0].logRecords[0].span_id",
+      "severity": "info"
+    }
+  ],
+  "summary": {
+    "diagnostics": 14,
+    "diagnostics_by_code": {
+      "otlp.normalized_alias": 14
+    },
+    "events": 2,
+    "events_by_kind": {
+      "log": 1,
+      "span": 1
+    },
+    "invalidating_diagnostics": 0,
+    "records": 2,
+    "streaming": true
+  }
+}

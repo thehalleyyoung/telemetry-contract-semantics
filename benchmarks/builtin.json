@@ -31,6 +31,12 @@
       "events": "../case_studies/current/owasp_securetea_signin/reconstructed_console_events.jsonl"
     },
     {
+      "id": "otlp-collector-mixed-signals-pass",
+      "description": "OpenTelemetry collector JSON export converted to telemetry-contracts JSONL with span, metric exemplar, and log correlation preserved.",
+      "contract": "../examples/otlp/collector_mixed_signals.contract.json",
+      "events": "../examples/otlp/collector_mixed_signals.events.jsonl"
+    },
+    {
       "id": "temporal-logic-properties-fail",
       "description": "Bounded temporal-logic fixture covering safety, bounded response, absence, ordering, and deadline violations.",
       "contract": "../examples/temporal_logic/contract.json",

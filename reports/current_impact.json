@@ -23,7 +23,7 @@
         "findings_by_severity": {},
         "labels": null,
         "pass": true,
-        "runtime_ms": 1.038,
+        "runtime_ms": 1.508,
         "validation_pass": true
       },
       "pass": true,
@@ -412,7 +412,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.082,
+        "runtime_ms": 1.651,
         "validation_pass": false
       },
       "pass": true,
@@ -598,13 +598,42 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.644,
+        "runtime_ms": 1.932,
         "validation_pass": false
       },
       "pass": true,
       "source_paths": [
         "case_studies/current/owasp_securetea_signin/Signin.js"
       ]
+    },
+    {
+      "checks": {
+        "runtime": true,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [
+        "examples/otlp/collector_mixed_signals.contract.json"
+      ],
+      "description": "OpenTelemetry collector JSON export converted to telemetry-contracts JSONL with span, metric exemplar, and log correlation preserved.",
+      "events": 3,
+      "events_path": "examples/otlp/collector_mixed_signals.events.jsonl",
+      "findings": [],
+      "id": "otlp-collector-mixed-signals-pass",
+      "metrics": {
+        "contracts": 1,
+        "events": 3,
+        "findings": 0,
+        "findings_by_code": {},
+        "findings_by_severity": {},
+        "labels": null,
+        "pass": true,
+        "runtime_ms": 0.708,
+        "validation_pass": true
+      },
+      "pass": true,
+      "source_paths": []
     },
     {
       "checks": {
@@ -793,7 +822,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 0.44,
+        "runtime_ms": 0.933,
         "validation_pass": false
       },
       "pass": true,
@@ -802,8 +831,8 @@
   ],
   "summary": {
     "config": "benchmarks/builtin.json",
-    "contracts": 4,
-    "events": 21,
+    "contracts": 5,
+    "events": 24,
     "findings": 22,
     "findings_by_code": {
       "scenario.missing_field": 3,
@@ -823,6 +852,6 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 6.887
+    "runtime_ms": 9.924
   }
 }

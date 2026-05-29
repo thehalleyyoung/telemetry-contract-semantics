@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "service": "checkout-api",
+  "spans": [
+    {
+      "name": "checkout.pay",
+      "required": true,
+      "attributes": {
+        "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+"},
+        "cart_id": {"type": "string", "required": true},
+        "payment_provider": {"type": "string", "required": true, "allowed_values": ["stripe", "adyen"]}
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "name": "checkout.pay.duration",
+      "required": true,
+      "value": {"type": "number", "min": 0, "unit": "ms"},
+      "tags": {"tenant_id": {"type": "string", "required": true}}
+    }
+  ],
+  "logs": [
+    {
+      "name": "checkout.payment_authorized",
+      "required": true,
+      "severity": "ERROR",
+      "message_pattern": "payment",
+      "fields": {"tenant_id": {"type": "string", "required": true}}
+    }
+  ]
+}

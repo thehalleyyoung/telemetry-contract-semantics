@@ -1,0 +1,16 @@
+{
+  "diagnostics": [],
+  "summary": {
+    "diagnostics": 0,
+    "diagnostics_by_code": {},
+    "events": 3,
+    "events_by_kind": {
+      "log": 1,
+      "metric": 1,
+      "span": 1
+    },
+    "invalidating_diagnostics": 0,
+    "records": 1,
+    "streaming": false
+  }
+}

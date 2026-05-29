@@ -1,0 +1,118 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "schemaUrl": "https://opentelemetry.io/schemas/1.25.0",
+        "attributes": [
+          {"key": "service.name", "value": {"stringValue": "checkout-api"}},
+          {"key": "deployment.environment", "value": {"stringValue": "prod"}}
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {"name": "checkout.instrumentation", "version": "1.2.3"},
+          "spans": [
+            {
+              "traceId": "11111111111111111111111111111111",
+              "spanId": "2222222222222222",
+              "parentSpanId": "aaaaaaaaaaaaaaaa",
+              "name": "checkout.pay",
+              "kind": "SPAN_KIND_SERVER",
+              "startTimeUnixNano": "1700000000000000000",
+              "endTimeUnixNano": "1700000000123000000",
+              "attributes": [
+                {"key": "tenant_id", "value": {"stringValue": "tenant-public"}},
+                {"key": "cart_id", "value": {"stringValue": "cart-100"}},
+                {"key": "payment_provider", "value": {"stringValue": "stripe"}}
+              ],
+              "events": [
+                {
+                  "name": "payment.authorize.start",
+                  "timeUnixNano": "1700000000030000000",
+                  "attributes": [{"key": "attempt", "value": {"intValue": "1"}}]
+                }
+              ],
+              "links": [
+                {
+                  "traceId": "99999999999999999999999999999999",
+                  "spanId": "8888888888888888",
+                  "attributes": [{"key": "link.type", "value": {"stringValue": "retry-of"}}]
+                }
+              ],
+              "status": {"code": "STATUS_CODE_OK"}
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resourceMetrics": [
+    {
+      "resource": {"attributes": [{"key": "service.name", "value": {"stringValue": "checkout-api"}}]},
+      "scopeMetrics": [
+        {
+          "scope": {"name": "checkout.instrumentation", "version": "1.2.3"},
+          "metrics": [
+            {
+              "name": "checkout.pay.duration",
+              "unit": "ms",
+              "histogram": {
+                "aggregationTemporality": "AGGREGATION_TEMPORALITY_DELTA",
+                "dataPoints": [
+                  {
+                    "startTimeUnixNano": "1699999999000000000",
+                    "timeUnixNano": "1700000000123000000",
+                    "count": "1",
+                    "sum": 123.0,
+                    "min": 123.0,
+                    "max": 123.0,
+                    "bucketCounts": ["0", "1"],
+                    "explicitBounds": [100.0],
+                    "attributes": [{"key": "tenant_id", "value": {"stringValue": "tenant-public"}}],
+                    "exemplars": [
+                      {
+                        "timeUnixNano": "1700000000100000000",
+                        "asDouble": 123.0,
+                        "traceId": "11111111111111111111111111111111",
+                        "spanId": "2222222222222222",
+                        "filteredAttributes": [{"key": "sampling", "value": {"stringValue": "head"}}]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resourceLogs": [
+    {
+      "resource": {"attributes": [{"key": "service.name", "value": {"stringValue": "checkout-api"}}]},
+      "scopeLogs": [
+        {
+          "scope": {"name": "checkout.instrumentation", "version": "1.2.3"},
+          "logRecords": [
+            {
+              "timeUnixNano": "1700000000124000000",
+              "observedTimeUnixNano": "1700000000130000000",
+              "severityText": "ERROR",
+              "severityNumber": 17,
+              "traceId": "11111111111111111111111111111111",
+              "spanId": "2222222222222222",
+              "body": {"kvlistValue": {"values": [
+                {"key": "message", "value": {"stringValue": "payment authorized after retry"}},
+                {"key": "retry", "value": {"boolValue": true}}
+              ]}},
+              "attributes": [
+                {"key": "log.name", "value": {"stringValue": "checkout.payment_authorized"}},
+                {"key": "tenant_id", "value": {"stringValue": "tenant-public"}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

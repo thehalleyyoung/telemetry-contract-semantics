@@ -8,7 +8,7 @@ from pathlib import Path
 from .findings import Finding, has_at_least
 from .incident_report import format_incident_readiness_markdown, generate_incident_readiness_report
 from .loader import ContractLoadError, load_contract, load_jsonl
-from .otlp import load_otlp_json, write_jsonl
+from .otlp import load_otlp_json_detailed, load_otlp_jsonl_detailed, write_diagnostics, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .semantics import describe_model, format_model_markdown
 from .preservation import check_transformation_preservation, format_preservation_markdown
@@ -56,9 +56,11 @@ def main(argv: list[str] | None = None) -> int:
     scenario_parser.add_argument("--question")
     _common_output_args(scenario_parser)
 
-    otlp_parser = subparsers.add_parser("import-otlp", help="convert OTLP JSON export to telemetry-contracts JSONL")
+    otlp_parser = subparsers.add_parser("import-otlp", help="convert OTLP JSON or JSONL exports to telemetry-contracts JSONL")
     otlp_parser.add_argument("--input", required=True)
     otlp_parser.add_argument("--output", required=True)
+    otlp_parser.add_argument("--input-format", choices=["json", "jsonl"], default="json")
+    otlp_parser.add_argument("--diagnostics-output", help="optional JSON file with normalization/skipped-record diagnostics")
 
     model_parser = subparsers.add_parser("describe-model", help="describe the observation domain and satisfaction relation")
     model_parser.add_argument("--events", help="optional JSONL artifact to summarize against the observation model")
@@ -191,9 +193,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "import-otlp":
-            events = load_otlp_json(args.input)
-            write_jsonl(events, args.output)
-            print(f"Wrote {len(events)} event(s) to {args.output}")
+            report = load_otlp_jsonl_detailed(args.input) if args.input_format == "jsonl" else load_otlp_json_detailed(args.input)
+            write_jsonl(report["events"], args.output)
+            if args.diagnostics_output:
+                write_diagnostics(report, args.diagnostics_output)
+            invalidating = report["summary"]["invalidating_diagnostics"]
+            suffix = f"; {invalidating} diagnostic(s) may invalidate contract claims" if invalidating else ""
+            print(f"Wrote {len(report['events'])} event(s) to {args.output}{suffix}")
             return 0
         if args.command == "describe-model":
             events = load_jsonl(args.events) if args.events else None
