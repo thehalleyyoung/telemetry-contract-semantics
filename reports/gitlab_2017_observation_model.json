@@ -1,0 +1,255 @@
+{
+  "observation_domain": [
+    {
+      "checker_use": "presence, field predicates, correlation keys, temporal ordering, and scenario evidence",
+      "jsonl_fields": [
+        "kind=span",
+        "service",
+        "name",
+        "trace_id",
+        "span_id",
+        "parent_span_id",
+        "attributes",
+        "timestamp_ms",
+        "start_time_unix_nano",
+        "end_time_unix_nano"
+      ],
+      "meaning": "An operation interval in a finite trace event structure.",
+      "object": "span",
+      "otlp_fields": [
+        "resourceSpans[].resource.attributes",
+        "scopeSpans[].spans[].name",
+        "traceId",
+        "spanId",
+        "parentSpanId",
+        "attributes",
+        "startTimeUnixNano",
+        "endTimeUnixNano",
+        "status",
+        "events",
+        "links"
+      ]
+    },
+    {
+      "checker_use": "severity/message policies, field predicates, privacy checks, correlation, and incident-question evidence",
+      "jsonl_fields": [
+        "kind=log",
+        "service",
+        "name",
+        "severity",
+        "message",
+        "trace_id",
+        "span_id",
+        "fields",
+        "timestamp_ms",
+        "time_unix_nano"
+      ],
+      "meaning": "A timestamped diagnostic record that may attach to a trace/span.",
+      "object": "log",
+      "otlp_fields": [
+        "resourceLogs[].resource.attributes",
+        "scopeLogs[].logRecords[].body",
+        "severityText",
+        "traceId",
+        "spanId",
+        "attributes",
+        "timeUnixNano",
+        "observedTimeUnixNano"
+      ]
+    },
+    {
+      "checker_use": "metric presence, value bounds, units, cardinality, temporality metadata, and scenario evidence",
+      "jsonl_fields": [
+        "kind=metric",
+        "service",
+        "name",
+        "value",
+        "tags",
+        "metric_type",
+        "aggregation_temporality",
+        "is_monotonic",
+        "time_unix_nano"
+      ],
+      "meaning": "A measurement point or aggregate over a finite window.",
+      "object": "metric",
+      "otlp_fields": [
+        "resourceMetrics[].resource.attributes",
+        "scopeMetrics[].metrics[].name",
+        "sum",
+        "gauge",
+        "histogram",
+        "exponentialHistogram",
+        "summary",
+        "dataPoints[].attributes",
+        "aggregationTemporality",
+        "isMonotonic"
+      ]
+    },
+    {
+      "checker_use": "service scoping, ownership, common fields, and provenance of imported evidence",
+      "jsonl_fields": [
+        "service",
+        "attributes.service.name",
+        "fields.service.name",
+        "tags.service.name"
+      ],
+      "meaning": "Entity metadata shared by spans, logs, or metrics, including service identity.",
+      "object": "resource",
+      "otlp_fields": [
+        "resource.attributes",
+        "resource.droppedAttributesCount"
+      ]
+    },
+    {
+      "checker_use": "import audit context and future static/runtime alignment",
+      "jsonl_fields": [
+        "scope",
+        "instrumentation_scope",
+        "instrumentation_library"
+      ],
+      "meaning": "Instrumentation library or scope that produced observations.",
+      "object": "scope",
+      "otlp_fields": [
+        "scopeSpans[].scope",
+        "scopeMetrics[].scope",
+        "scopeLogs[].scope",
+        "instrumentationLibrarySpans[]",
+        "instrumentationLibraryMetrics[]",
+        "instrumentationLibraryLogs[]"
+      ]
+    },
+    {
+      "checker_use": "future cross-signal causality between sampled metrics and traces",
+      "jsonl_fields": [
+        "exemplars",
+        "trace_id",
+        "span_id"
+      ],
+      "meaning": "Metric sample that can point back to a trace/span witness.",
+      "object": "exemplar",
+      "otlp_fields": [
+        "dataPoints[].exemplars[].traceId",
+        "dataPoints[].exemplars[].spanId",
+        "dataPoints[].exemplars[].filteredAttributes"
+      ]
+    },
+    {
+      "checker_use": "temporal sequence ordering, incident-window grouping, and deadline/window diagnostics",
+      "jsonl_fields": [
+        "timestamp_ms",
+        "time_ms",
+        "start_time_ms",
+        "end_time_ms",
+        "timestamp",
+        "time",
+        "time_unix_nano",
+        "start_time_unix_nano",
+        "end_time_unix_nano"
+      ],
+      "meaning": "Ordering evidence used to build happens-before checks over finite traces.",
+      "object": "timestamp",
+      "otlp_fields": [
+        "startTimeUnixNano",
+        "endTimeUnixNano",
+        "timeUnixNano",
+        "observedTimeUnixNano"
+      ]
+    },
+    {
+      "checker_use": "required fields, primitive types, allowed values, regexes, numeric bounds, units, transformations, privacy, and cardinality",
+      "jsonl_fields": [
+        "attributes",
+        "fields",
+        "tags",
+        "value"
+      ],
+      "meaning": "A named value attached to spans, logs, metrics, resources, or exemplars.",
+      "object": "attribute",
+      "otlp_fields": [
+        "attributes[].key",
+        "attributes[].value",
+        "filteredAttributes",
+        "body"
+      ]
+    },
+    {
+      "checker_use": "bounded claims, reproducibility, skipped-record diagnostics, and auditability of imported collector evidence",
+      "jsonl_fields": [
+        "_line",
+        "source",
+        "source_path",
+        "normalization",
+        "import_warnings"
+      ],
+      "meaning": "Evidence about where an observation came from and how it was normalized.",
+      "object": "provenance",
+      "otlp_fields": [
+        "resource/scope array indexes",
+        "source JSON path",
+        "droppedAttributesCount",
+        "schemaUrl"
+      ]
+    }
+  ],
+  "observed_artifact": {
+    "correlation_key_counts": {},
+    "counts_by_kind": {
+      "log": 2,
+      "metric": 2,
+      "span": 1
+    },
+    "event_count": 5,
+    "fields_by_kind": {
+      "log": [
+        "actor_role",
+        "alert_route",
+        "backup_job_id",
+        "destination",
+        "intended_host",
+        "notification_status",
+        "target_host",
+        "target_role"
+      ],
+      "metric": [
+        "backup_job_id",
+        "database_version",
+        "destination",
+        "incident_id",
+        "primary_host",
+        "replica_host",
+        "tool_version"
+      ],
+      "span": [
+        "backup_age_hours",
+        "source",
+        "source_environment"
+      ]
+    },
+    "names_by_kind": {
+      "log": [
+        "backup.pg_dump.failed",
+        "database.destructive_command"
+      ],
+      "metric": [
+        "backup.pg_dump.success",
+        "postgres.replication.lag_bytes"
+      ],
+      "span": [
+        "disaster_recovery.restore_attempt"
+      ]
+    },
+    "timestamp_field_counts": {}
+  },
+  "satisfaction_relation": {
+    "definition": "A finite telemetry trace T satisfies contract C when every well-formed contract obligation evaluates to true over the observations relevant to C.service under declared assumptions.",
+    "notation": "T ⊨ C",
+    "states": {
+      "absent": "A required signal or field has no witness in T.",
+      "malformed": "The contract or evidence cannot be interpreted by the declared domain.",
+      "partial": "Some evidence exists but required predicates, correlation, ordering, or scenario fields fail.",
+      "present": "A required observation or field exists and all predicates hold.",
+      "transformed": "Evidence is accepted only when its declared transformation is allowed by the privacy/diagnosability policy for that field.",
+      "unknown": "The artifact lacks enough modeled evidence to prove the obligation either way; current checker reports this as missing evidence when the contract requires it."
+    }
+  }
+}

@@ -30,3 +30,22 @@ def test_cli_static_and_scenario_pass(capsys):
 def test_cli_lint_contract_pass(capsys):
     assert main(["lint-contract", "--contract", CONTRACT]) == 0
     assert "OK" in capsys.readouterr().out
+
+
+def test_cli_describe_model_summarizes_historical_fixture(capsys):
+    code = main(
+        [
+            "describe-model",
+            "--events",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl"),
+            "--format",
+            "json",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert '"notation": "T ⊨ C"' in output
+    assert '"event_count": 5' in output
+    assert '"metric": 2' in output
+    assert "postgres.replication.lag_bytes" in output

@@ -10,6 +10,7 @@ from .incident_report import format_incident_readiness_markdown, generate_incide
 from .loader import ContractLoadError, load_contract, load_jsonl
 from .otlp import load_otlp_json, write_jsonl
 from .scenario import check_scenario, choose_scenario
+from .semantics import describe_model, format_model_markdown
 from .static_checker import check_sources
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .validator import validate_contract_shape, validate_events
@@ -44,6 +45,11 @@ def main(argv: list[str] | None = None) -> int:
     otlp_parser.add_argument("--input", required=True)
     otlp_parser.add_argument("--output", required=True)
 
+    model_parser = subparsers.add_parser("describe-model", help="describe the observation domain and satisfaction relation")
+    model_parser.add_argument("--events", help="optional JSONL artifact to summarize against the observation model")
+    model_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    model_parser.add_argument("--output")
+
     benchmark_parser = subparsers.add_parser("benchmark", help="run a benchmark suite from a JSON config")
     benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
     benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
@@ -65,6 +71,15 @@ def main(argv: list[str] | None = None) -> int:
             events = load_otlp_json(args.input)
             write_jsonl(events, args.output)
             print(f"Wrote {len(events)} event(s) to {args.output}")
+            return 0
+        if args.command == "describe-model":
+            events = load_jsonl(args.events) if args.events else None
+            report = describe_model(events)
+            output = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) if args.format == "json" else format_model_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
             return 0
         if args.command == "benchmark":
             report = run_benchmark(args.config)

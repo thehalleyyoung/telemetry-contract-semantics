@@ -59,6 +59,10 @@ python3 -m telemetry_contracts.cli validate \
 python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
   --format markdown
+
+python3 -m telemetry_contracts.cli describe-model \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format markdown
 ```
 
 If installed as a package, the same CLI is available as `telemetry-contracts`.
@@ -153,19 +157,26 @@ Runtime validation reads newline-delimited JSON. Events are intentionally simple
 {"kind":"log","service":"checkout","name":"checkout.payment_failed","trace_id":"trace-123","timestamp_ms":1200,"severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
 ```
 
-Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output.
+Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field`), remediation, disclosure sensitivity, service-owner routing, and SARIF-compatible level.
+
+## Observation model and satisfaction relation
+
+`python3 -m telemetry_contracts.cli describe-model` prints the executable observation domain used by the checker. It maps spans, logs, metrics, resources, scopes, exemplars, timestamps, attributes, and provenance to the repository JSONL fields and the OTLP JSON fields currently normalized by `import-otlp`.
+
+The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary, which is useful for checking what kinds, names, fields, correlation keys, and timestamps are actually present in a historical or current fixture.
 
 ## Architecture
 
 - `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
 - `telemetry_contracts.validator` checks emitted telemetry against signal, field, and correlation specifications.
+- `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, and artifact summaries used by `describe-model`.
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
-- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `report incident-readiness`, and `benchmark` commands.
+- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `describe-model`, `report incident-readiness`, and `benchmark` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
