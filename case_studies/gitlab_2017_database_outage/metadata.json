@@ -1,0 +1,57 @@
+{
+  "id": "gitlab-2017-database-outage-reconstructed",
+  "title": "GitLab.com database outage (2017-01-31), reconstructed telemetry diagnosability fixture",
+  "incident_date": "2017-01-31",
+  "fixture_status": "reconstructed_from_public_postmortem_not_raw_telemetry",
+  "sources": [
+    {
+      "title": "Postmortem of database outage of January 31",
+      "url": "https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/",
+      "accessed": "2026-05-29",
+      "facts_used": [
+        "Accidental removal of data from the primary database server caused a major GitLab.com outage and unrecovered production data loss.",
+        "At about 23:00 UTC the secondary replication process lagged and failed because needed WAL segments had been removed.",
+        "pg_basebackup hung without meaningful output; runbooks and official docs did not clearly document the wait behavior.",
+        "The destructive wipe was intended for the secondary but executed on the primary.",
+        "pg_dump backups were absent because pg_dump 9.2 was used against PostgreSQL 9.6 and failed; cron error email notifications were rejected due to DMARC.",
+        "Recovery used an LVM snapshot created roughly six hours before the outage."
+      ]
+    },
+    {
+      "title": "GitLab.com Database Incident",
+      "url": "https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/",
+      "accessed": "2026-05-29",
+      "facts_used": [
+        "The incident response notes list replication lag, missing or unreliable backups, an empty S3 bucket, fragile replication procedures, and pg_basebackup waiting silently as problems encountered."
+      ]
+    }
+  ],
+  "reconstructed_vs_exact": {
+    "exact_from_sources": [
+      "Hostnames db1.cluster.gitlab.com and db2.cluster.gitlab.com.",
+      "Approximate six-hour recovery point objective from the LVM snapshot.",
+      "PostgreSQL 9.6 database and pg_dump 9.2 mismatch.",
+      "S3 backup destination and DMARC-rejected cron notifications."
+    ],
+    "reconstructed": [
+      "JSONL event names, field names, incident_id, and severity choices.",
+      "The 4 GiB replication lag value represented as bytes.",
+      "Contract thresholds such as one-hour maximum backup age and 100 MiB replication lag ceiling."
+    ]
+  },
+  "labels_description": "Expected findings are precision-oriented labels for this fixture: the benchmark passes only when every labeled finding is reproduced and no extra finding appears.",
+  "expected_findings": [
+    {"code": "telemetry.allowed_values", "severity": "error", "path": "event[5].source", "contract_path": "$.spans[0].fields.source", "event_index": 5},
+    {"code": "telemetry.numeric_max", "severity": "error", "path": "event[5].backup_age_hours", "contract_path": "$.spans[0].fields.backup_age_hours", "event_index": 5},
+    {"code": "telemetry.allowed_values", "severity": "error", "path": "event[5].source_environment", "contract_path": "$.spans[0].fields.source_environment", "event_index": 5},
+    {"code": "telemetry.numeric_max", "severity": "error", "path": "event[1].value", "contract_path": "$.metrics[0].value", "event_index": 1},
+    {"code": "telemetry.allowed_values", "severity": "error", "path": "event[3].value", "contract_path": "$.metrics[1].value", "event_index": 3},
+    {"code": "telemetry.allowed_values", "severity": "error", "path": "event[2].target_role", "contract_path": "$.logs[0].fields.target_role", "event_index": 2},
+    {"code": "telemetry.missing_field", "severity": "error", "path": "event[2].correlation_id", "contract_path": "$.logs[0].fields.correlation_id", "event_index": 2},
+    {"code": "telemetry.missing_field", "severity": "error", "path": "event[2].command_guard_result", "contract_path": "$.logs[0].fields.command_guard_result", "event_index": 2},
+    {"code": "telemetry.missing_field", "severity": "error", "path": "event[4].alert_delivered", "contract_path": "$.logs[1].fields.alert_delivered", "event_index": 4},
+    {"code": "scenario.missing_field", "severity": "error", "path": "events[log=database.destructive_command].correlation_id", "contract_path": "$.scenarios[restore-readiness].requires[0].fields"},
+    {"code": "scenario.missing_field", "severity": "error", "path": "events[log=database.destructive_command].command_guard_result", "contract_path": "$.scenarios[restore-readiness].requires[0].fields"},
+    {"code": "scenario.missing_field", "severity": "error", "path": "events[log=backup.pg_dump.failed].alert_delivered", "contract_path": "$.scenarios[restore-readiness].requires[2].fields"}
+  ]
+}

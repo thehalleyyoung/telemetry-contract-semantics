@@ -8,6 +8,8 @@ This repository turns that thesis into executable checks:
 - Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
+- A benchmark harness for built-in or user-provided contract/event corpora.
+- A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - Passing and failing examples for a checkout/payment service.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
@@ -37,11 +39,15 @@ python3 -m telemetry_contracts.cli scenario \
 
 python3 -m telemetry_contracts.cli import-otlp \
   --input examples/real_world/otel_checkout_missing_tenant.otlp.json \
-  --output /tmp/checkout.otlp.jsonl
+  --output checkout.otlp.jsonl
 
 python3 -m telemetry_contracts.cli validate \
   --contract examples/real_world/otel_checkout_missing_tenant.contract.json \
-  --events /tmp/checkout.otlp.jsonl
+  --events checkout.otlp.jsonl
+
+python3 -m telemetry_contracts.cli benchmark \
+  --config benchmarks/builtin.json \
+  --format markdown
 ```
 
 If installed as a package, the same CLI is available as `telemetry-contracts`.
@@ -99,9 +105,12 @@ Findings include severity, code, message, event path, contract path, and details
 - `telemetry_contracts.validator` checks emitted telemetry against signal and field specifications.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals.
 - `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
-- `telemetry_contracts.cli` exposes `validate`, `static`, and `scenario` commands.
+- `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
+- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, and `benchmark` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
-- `tests/` covers parser behavior, validator behavior, CLI behavior, static checks, scenarios, and examples.
+- `benchmarks/` contains runnable benchmark configs.
+- `case_studies/` contains public historical fixtures and metadata.
+- `tests/` covers parser behavior, validator behavior, CLI behavior, static checks, scenarios, benchmark behavior, and examples.
 
 ## Example workflow
 
@@ -121,6 +130,29 @@ python3 -m telemetry_contracts.cli validate --contract service.contract.json --e
 ```
 
 `examples/real_world/otel_checkout_missing_tenant.*` is a case-study fixture modeled on a common production observability bug: payment failure traces and logs exist, but neither carries the tenant identifier needed to scope blast radius. The validator confirms the bug by reporting `telemetry.missing_field` for `tenant_id`.
+
+
+## Benchmark harness
+
+Run the built-in benchmark suite:
+
+```bash
+python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format json
+python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown
+```
+
+A benchmark config is JSON with a `cases` list. Each case points to a contract, JSONL events, optional scenario ids, optional metadata, and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include number of contracts, events, findings, findings by code/severity, label precision/recall when labels are present, runtime, and pass/fail.
+
+## Public historical case study
+
+`case_studies/gitlab_2017_database_outage/` contains a reconstructed fixture derived from GitLab's public January 31, 2017 database outage reports:
+
+- <https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/>
+- <https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/>
+
+The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot.
+
+See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
 
 ## LLM-process separation note
 

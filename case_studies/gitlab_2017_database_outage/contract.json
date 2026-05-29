@@ -1,0 +1,88 @@
+{
+  "version": "1.0",
+  "service": "gitlab.com-database",
+  "metadata": {
+    "case_study": "GitLab.com database outage, 2017-01-31",
+    "purpose": "Executable diagnosability contract reconstructed from public postmortem facts.",
+    "source_urls": [
+      "https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/",
+      "https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/"
+    ],
+    "reconstruction": "Events are synthetic fixtures derived from public facts; they are not GitLab raw telemetry."
+  },
+  "spans": [
+    {
+      "name": "disaster_recovery.restore_attempt",
+      "required": true,
+      "fields": {
+        "source": {"type": "string", "required": true, "allowed_values": ["verified_backup"]},
+        "backup_age_hours": {"type": "number", "required": true, "min": 0, "max": 1},
+        "source_environment": {"type": "string", "required": true, "allowed_values": ["production_backup"]}
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "name": "postgres.replication.lag_bytes",
+      "required": true,
+      "value": {"type": "number", "min": 0, "max": 104857600},
+      "tags": {
+        "primary_host": {"type": "string", "required": true},
+        "replica_host": {"type": "string", "required": true},
+        "incident_id": {"type": "string", "required": true}
+      }
+    },
+    {
+      "name": "backup.pg_dump.success",
+      "required": true,
+      "value": {"type": "boolean", "allowed_values": [true]},
+      "tags": {
+        "backup_job_id": {"type": "string", "required": true},
+        "destination": {"type": "string", "required": true},
+        "database_version": {"type": "string", "required": true},
+        "tool_version": {"type": "string", "required": true}
+      }
+    }
+  ],
+  "logs": [
+    {
+      "name": "database.destructive_command",
+      "required": true,
+      "severity": "ERROR",
+      "message_pattern": "production database directory removal|destructive command",
+      "fields": {
+        "actor_role": {"type": "string", "required": true},
+        "target_host": {"type": "string", "required": true},
+        "intended_host": {"type": "string", "required": true},
+        "target_role": {"type": "string", "required": true, "allowed_values": ["secondary"]},
+        "correlation_id": {"type": "string", "required": true},
+        "command_guard_result": {"type": "string", "required": true, "allowed_values": ["blocked"]}
+      }
+    },
+    {
+      "name": "backup.pg_dump.failed",
+      "required": true,
+      "severity": "ERROR",
+      "message_pattern": "pg_dump.*version mismatch|cron email rejected",
+      "fields": {
+        "backup_job_id": {"type": "string", "required": true},
+        "destination": {"type": "string", "required": true},
+        "alert_route": {"type": "string", "required": true},
+        "alert_delivered": {"type": "boolean", "required": true, "allowed_values": [true]}
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "restore-readiness",
+      "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?",
+      "requires": [
+        {"signal": "log", "name": "database.destructive_command", "fields": ["target_host", "intended_host", "target_role", "correlation_id", "command_guard_result"]},
+        {"signal": "metric", "name": "backup.pg_dump.success", "fields": ["backup_job_id", "destination", "database_version", "tool_version"]},
+        {"signal": "log", "name": "backup.pg_dump.failed", "fields": ["backup_job_id", "destination", "alert_route", "alert_delivered"]},
+        {"signal": "span", "name": "disaster_recovery.restore_attempt", "fields": ["source", "backup_age_hours", "source_environment"]},
+        {"signal": "metric", "name": "postgres.replication.lag_bytes", "fields": ["primary_host", "replica_host", "incident_id"]}
+      ]
+    }
+  ]
+}

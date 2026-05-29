@@ -10,6 +10,7 @@ from .loader import ContractLoadError, load_contract, load_jsonl
 from .otlp import load_otlp_json, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .static_checker import check_sources
+from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .validator import validate_events
 
 
@@ -38,6 +39,11 @@ def main(argv: list[str] | None = None) -> int:
     otlp_parser.add_argument("--input", required=True)
     otlp_parser.add_argument("--output", required=True)
 
+    benchmark_parser = subparsers.add_parser("benchmark", help="run a benchmark suite from a JSON config")
+    benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
+    benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    benchmark_parser.add_argument("--output")
+
     args = parser.parse_args(argv)
     try:
         if args.command == "import-otlp":
@@ -45,6 +51,14 @@ def main(argv: list[str] | None = None) -> int:
             write_jsonl(events, args.output)
             print(f"Wrote {len(events)} event(s) to {args.output}")
             return 0
+        if args.command == "benchmark":
+            report = run_benchmark(args.config)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0 if report["summary"]["pass"] else 1
         contract = load_contract(args.contract)
         if args.command == "validate":
             findings = validate_events(contract, load_jsonl(args.events))
@@ -55,7 +69,10 @@ def main(argv: list[str] | None = None) -> int:
             findings = check_scenario(contract, events, choose_scenario(contract, args.id, args.question))
         else:  # pragma: no cover
             raise AssertionError(args.command)
-    except (ContractLoadError, FileNotFoundError, ValueError) as exc:
+    except (BenchmarkLoadError, ContractLoadError, FileNotFoundError, ValueError) as exc:
+        if not hasattr(args, "fail_on"):
+            print(f"ERROR input.load_error: {exc}", file=sys.stderr)
+            return 2
         findings = [Finding("error", "input.load_error", str(exc), "input")]
     _print_findings(findings, args.format)
     if args.fail_on == "never":

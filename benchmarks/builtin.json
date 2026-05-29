@@ -1,0 +1,20 @@
+{
+  "name": "built-in telemetry contracts benchmark",
+  "cases": [
+    {
+      "id": "checkout-payment-timeout-pass",
+      "description": "Existing checkout fixture with complete telemetry for the payment-timeout scenario.",
+      "contract": "../examples/contracts/checkout.contract.json",
+      "events": "../examples/telemetry/passing.jsonl",
+      "scenarios": ["payment-timeout"]
+    },
+    {
+      "id": "gitlab-2017-database-outage-reconstructed",
+      "description": "Reconstructed public historical case study based on GitLab.com's January 31, 2017 database outage postmortem.",
+      "metadata": "../case_studies/gitlab_2017_database_outage/metadata.json",
+      "contract": "../case_studies/gitlab_2017_database_outage/contract.json",
+      "events": "../case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
+      "scenarios": ["restore-readiness"]
+    }
+  ]
+}
