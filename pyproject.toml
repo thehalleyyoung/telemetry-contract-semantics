@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telemetry-contracts"
+version = "0.1.0"
+description = "Prototype tooling for testing observability as a correctness property."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [{name = "Telemetry Contracts Prototype"}]
+dependencies = []
+
+[project.optional-dependencies]
+yaml = ["PyYAML>=6"]
+test = ["pytest>=7"]
+
+[project.scripts]
+telemetry-contracts = "telemetry_contracts.cli:main"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

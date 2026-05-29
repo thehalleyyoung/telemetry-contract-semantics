@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "service": "checkout",
+  "metadata": {
+    "owner": "payments-platform",
+    "sampling": {"traces": "parent-based 10% minimum", "logs": "errors always"},
+    "retention": {"traces_days": 7, "metrics_days": 30, "logs_days": 14}
+  },
+  "spans": [
+    {
+      "name": "checkout.request",
+      "required": true,
+      "fields": {
+        "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+", "cardinality": {"max": 1000}},
+        "cart_id": {"type": "string", "required": true, "pattern": "cart-[0-9]+", "cardinality": {"max": 100000}},
+        "result": {"type": "string", "required": true, "allowed_values": ["ok", "failed"]},
+        "duration_ms": {"type": "number", "required": true, "min": 0, "max": 30000}
+      }
+    },
+    {
+      "name": "payment.authorize",
+      "required": true,
+      "fields": {
+        "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+"},
+        "payment_provider": {"type": "string", "required": true, "allowed_values": ["stripe", "adyen", "test"]},
+        "retry_count": {"type": "integer", "required": true, "min": 0, "max": 3},
+        "error_code": {"type": "string", "required": false, "pattern": "[A-Z_]+"}
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "name": "checkout.requests.total",
+      "required": true,
+      "value": {"type": "number", "min": 0},
+      "tags": {
+        "tenant_id": {"type": "string", "required": true, "cardinality": {"max": 1000}},
+        "result": {"type": "string", "required": true, "allowed_values": ["ok", "failed"]}
+      }
+    },
+    {
+      "name": "payment.authorization.latency_ms",
+      "required": true,
+      "value": {"type": "number", "min": 0, "max": 30000},
+      "tags": {
+        "payment_provider": {"type": "string", "required": true, "allowed_values": ["stripe", "adyen", "test"]}
+      }
+    }
+  ],
+  "logs": [
+    {
+      "name": "checkout.payment_failed",
+      "required": true,
+      "severity": "ERROR",
+      "message_pattern": "payment authorization failed",
+      "fields": {
+        "tenant_id": {"type": "string", "required": true},
+        "cart_id": {"type": "string", "required": true},
+        "error_code": {"type": "string", "required": true, "pattern": "[A-Z_]+"}
+      }
+    }
+  ],
+  "static_expectations": {
+    "spans": ["checkout.request", "payment.authorize"],
+    "metrics": ["checkout.requests.total", "payment.authorization.latency_ms"],
+    "logs": ["checkout.payment_failed"]
+  },
+  "scenarios": [
+    {
+      "id": "payment-timeout",
+      "question": "Can an on-call engineer diagnose which tenant, cart, provider, and retry count were involved when payment authorization times out?",
+      "requires": [
+        {"signal": "span", "name": "payment.authorize", "fields": ["tenant_id", "payment_provider", "retry_count", "error_code"]},
+        {"signal": "log", "name": "checkout.payment_failed", "fields": ["tenant_id", "cart_id", "error_code"]},
+        {"signal": "metric", "name": "payment.authorization.latency_ms", "fields": ["payment_provider"]}
+      ]
+    }
+  ]
+}

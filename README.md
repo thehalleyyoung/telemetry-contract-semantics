@@ -1,0 +1,128 @@
+# Telemetry Contracts
+
+Telemetry Contracts is a standalone prototype for testing **observability as a correctness property**. A service is not merely correct when it returns the right response; for production systems, it should also emit the traces, metrics, logs, fields, tags, and retention/sampling assumptions needed to diagnose failures later.
+
+This repository turns that thesis into executable checks:
+
+- Runtime validation of JSONL telemetry events against contracts.
+- Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
+- Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
+- Passing and failing examples for a checkout/payment service.
+
+The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
+
+## Quickstart
+
+Requirements: Python 3.10+. The package itself uses only the Python standard library. Tests use `pytest`.
+
+```bash
+cd telemetry-contracts-repo
+python3 -m telemetry_contracts.cli validate \
+  --contract examples/contracts/checkout.contract.json \
+  --events examples/telemetry/passing.jsonl
+
+python3 -m telemetry_contracts.cli validate \
+  --contract examples/contracts/checkout.contract.json \
+  --events examples/telemetry/failing.jsonl --format json
+
+python3 -m telemetry_contracts.cli static \
+  --contract examples/contracts/checkout.contract.json \
+  examples/services
+
+python3 -m telemetry_contracts.cli scenario \
+  --contract examples/contracts/checkout.contract.json \
+  --events examples/telemetry/passing.jsonl \
+  --id payment-timeout
+```
+
+If installed as a package, the same CLI is available as `telemetry-contracts`.
+
+## Contract language
+
+Executable examples use JSON so the project runs without third-party YAML libraries. YAML files (`.yaml`/`.yml`) are accepted only when `PyYAML` is installed; otherwise the loader fails loudly with a clear error.
+
+A contract declares a service plus expected telemetry signals:
+
+```json
+{
+  "version": "1.0",
+  "service": "checkout",
+  "spans": [{
+    "name": "payment.authorize",
+    "required": true,
+    "fields": {
+      "tenant_id": {"type": "string", "required": true},
+      "retry_count": {"type": "integer", "min": 0, "max": 3},
+      "payment_provider": {"type": "string", "allowed_values": ["stripe", "adyen", "test"]}
+    }
+  }]
+}
+```
+
+Supported checks include:
+
+- Signal presence for spans, metrics, and logs.
+- Required fields/tags/attributes.
+- Primitive field types: string, integer, number, boolean, object, array, null.
+- Allowed values.
+- Regex patterns.
+- Numeric `min`/`max` ranges.
+- Metric `value` checks.
+- Log severity and message pattern checks.
+- Cardinality hints as warnings.
+- Sampling and retention metadata as documented assumptions.
+
+## Runtime event format
+
+Runtime validation reads newline-delimited JSON. Events are intentionally simple and collector-neutral:
+
+```json
+{"kind":"span","service":"checkout","name":"payment.authorize","attributes":{"tenant_id":"tenant-acme","payment_provider":"stripe","retry_count":2}}
+{"kind":"metric","service":"checkout","name":"payment.authorization.latency_ms","value":812.7,"tags":{"payment_provider":"stripe"}}
+{"kind":"log","service":"checkout","name":"checkout.payment_failed","severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
+```
+
+Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output.
+
+## Architecture
+
+- `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
+- `telemetry_contracts.validator` checks emitted telemetry against signal and field specifications.
+- `telemetry_contracts.static_checker` scans source files for expected instrumentation literals.
+- `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
+- `telemetry_contracts.cli` exposes `validate`, `static`, and `scenario` commands.
+- `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
+- `tests/` covers parser behavior, validator behavior, CLI behavior, static checks, scenarios, and examples.
+
+## Example workflow
+
+1. Write a contract for the telemetry needed to debug checkout failures.
+2. Run static checks in CI to catch missing instrumentation names before execution.
+3. Run service tests or staging traffic and export JSONL telemetry.
+4. Validate emitted telemetry against the contract.
+5. Add scenario checks for incident questions such as: “Can on-call identify tenant, cart, provider, retry count, and error class for a payment timeout?”
+
+## LLM-process separation note
+
+The idea document suggests LLMs can help generate realistic incident questions, propose telemetry requirements, and mutate services to create diagnosability bugs. This repository keeps that process separate from the correctness mechanism: contracts are explicit files, telemetry is concrete JSONL, and pass/fail results come from deterministic validators. No model call is required to run or trust the checks.
+
+## Limitations
+
+- Static checking is literal-based, not a full AST or OpenTelemetry semantic analysis.
+- The runtime format is a pragmatic JSONL interchange, not native OTLP ingestion.
+- Cardinality is checked over the supplied sample window, not a production time series backend.
+- Sampling and retention are represented as contract metadata rather than verified against infrastructure.
+- Scenario matching is intentionally simple; robust incident-question synthesis is future work.
+
+## Development
+
+```bash
+python3 -m pytest
+make smoke
+```
+
+Optional YAML support:
+
+```bash
+python3 -m pip install '.[yaml]'
+```

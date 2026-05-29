@@ -1,0 +1,5 @@
+{"kind":"span","service":"checkout","name":"checkout.request","attributes":{"tenant_id":"tenant-acme","cart_id":"cart-123","result":"failed","duration_ms":842.4}}
+{"kind":"span","service":"checkout","name":"payment.authorize","attributes":{"tenant_id":"tenant-acme","payment_provider":"stripe","retry_count":2,"error_code":"PAYMENT_TIMEOUT"}}
+{"kind":"metric","service":"checkout","name":"checkout.requests.total","value":1,"tags":{"tenant_id":"tenant-acme","result":"failed"}}
+{"kind":"metric","service":"checkout","name":"payment.authorization.latency_ms","value":812.7,"tags":{"payment_provider":"stripe"}}
+{"kind":"log","service":"checkout","name":"checkout.payment_failed","severity":"ERROR","message":"payment authorization failed after retries","fields":{"tenant_id":"tenant-acme","cart_id":"cart-123","error_code":"PAYMENT_TIMEOUT"}}

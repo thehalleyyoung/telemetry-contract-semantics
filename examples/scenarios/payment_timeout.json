@@ -1,0 +1,4 @@
+{
+  "id": "payment-timeout",
+  "question": "Can an on-call engineer diagnose which tenant, cart, provider, and retry count were involved when payment authorization times out?"
+}
