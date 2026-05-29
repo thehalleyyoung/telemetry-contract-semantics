@@ -1,0 +1,1 @@
+{"kind":"log","name":"auth.failure","timestamp":"2026-05-29T12:00:00Z","severity":"ERROR","fields":{"email":"alice@example.com","error_code":"INVALID_PASSWORD"}}

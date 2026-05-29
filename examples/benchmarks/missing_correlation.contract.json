@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "service": "benchmark-checkout",
+  "metadata": {"owner": "benchmark-platform"},
+  "correlation": {"keys": ["trace_id", "request_id"], "require_on": ["spans", "logs", "metrics"]},
+  "spans": [{"name": "checkout.request", "required": true, "fields": {"tenant_id": {"type": "string", "required": true}}}],
+  "metrics": [{"name": "checkout.requests", "required": true, "value": {"type": "number", "min": 0}, "tags": {"tenant_id": {"type": "string", "required": true}}}],
+  "logs": [{"name": "checkout.error", "required": true, "severity": "ERROR", "fields": {"tenant_id": {"type": "string", "required": true}, "error_code": {"type": "string", "required": true}}}]
+}

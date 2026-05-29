@@ -21,7 +21,7 @@ This repository turns that thesis into executable checks:
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON/JSONL import for testing OpenTelemetry collector/exporter captures, preserving spans, logs, metrics, exemplars, links, scope/resource metadata, provenance paths, and import diagnostics.
-- A benchmark harness for built-in or user-provided contract/event corpora.
+- A benchmark harness for built-in or user-provided contract/event corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, and OTLP import-loss accounting.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, semantic-convention, incident-readiness, equivalence, and preservation outputs.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
 - An executable small-step `evaluate-semantics` command that emits contract-evaluation derivations and checks their denotation against the deterministic validator on golden and historical traces.
@@ -36,7 +36,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 47 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 54 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -367,7 +367,7 @@ python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --
 python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown
 ```
 
-A benchmark config is JSON with a `cases` list. Each case points to a contract plus JSONL events, source paths, or both; optional scenario ids; optional `strict: true`; optional metadata; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario/strict check flags, number of contracts, events, findings, findings by code/severity, label precision/recall when labels are present, runtime, and pass/fail. The checked-in built-in benchmark currently covers 5 contracts, 24 events, 22 labeled findings, and 1.0 precision/recall on all labeled cases, including three `telemetry.hyper_pii_disclosure` findings in the OWASP SecureTea reconstructed console-log fixture.
+A benchmark config is JSON with a `cases` list. Each case can point to one contract or multiple contracts plus JSONL events, source paths, import diagnostics, or a mix of those inputs; optional scenario ids; optional `strict: true`; optional dataset metadata/provenance; optional tags/check types/failure modes/semantic features; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario/strict/import-diagnostic check flags, number of contracts, events, findings, findings by code/severity, label precision/recall/F1, runtime and runtime-per-1K-events, findings-per-1K-events, observed memory envelope, dataset ids, import loss rate, grouped remediations with effort/benefit hints, and pass/fail. Use `--case-id`, `--tag`, `--check-type`, `--dataset`, `--expected-failure-mode`, `--semantics-feature`, `--service-owner`, or `--disclosure-status` to slice a suite, and `benchmark-diff` to compare two saved JSON benchmark reports. The checked-in built-in benchmark currently covers 9 cases, 8 contract-backed cases, 30 runtime events, 31 labeled findings, and 1.0 precision/recall/F1 on all labeled cases, including four `telemetry.hyper_pii_disclosure` findings and one labeled partial OTLP import diagnostic.
 
 ## Public historical case study
 

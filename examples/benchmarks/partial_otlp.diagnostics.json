@@ -1,0 +1,6 @@
+{
+  "summary": {"records": 3, "events": 2, "diagnostics": 1, "invalidating_diagnostics": 1},
+  "diagnostics": [
+    {"severity": "warning", "code": "otlp.malformed_record", "message": "OTLP JSONL record 2 was malformed and skipped", "path": "records[1]", "invalidates_contract_claim": true, "details": {"record_index": 1}}
+  ]
+}

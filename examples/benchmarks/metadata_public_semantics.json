@@ -1,0 +1,29 @@
+{
+  "id": "public-benchmark-semantics-fixtures",
+  "title": "Local public-fixture benchmark semantics labels",
+  "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+  "retrieval_date": "2026-05-29",
+  "license": "repository public license",
+  "fixture_status": "reconstructed minimal public fixtures",
+  "disclosure_status": "public synthetic fixture checked into repository",
+  "transformations": [
+    "Minimal JSONL/contract fixtures derived from repository semantics; no private incident claims."
+  ],
+  "validity_threats": [
+    "Small fixtures target semantic failure modes, not population-level prevalence."
+  ],
+  "labels_description": "Expected finding labels encode exact checker outputs for precision/recall/F1 benchmark accounting.",
+  "document_version": "2026-05-29.benchmark-semantics-v1",
+  "owner": "benchmark-platform",
+  "checksum_algorithm": "sha256",
+  "checksums": {
+    "missing_correlation.contract.json": "485009e10bbe17f92f10fe955f4f8d5fe464cc142947b26216738d71379d27aa",
+    "missing_correlation.events.jsonl": "1823d58b3d0007a249147daed5607e843c6b7a71970c91d5cc5832ebb26c718d",
+    "cardinality.contract.json": "00d7fa90e9e31efde450fd547011073359732fad074db1628369cd228e4c5134",
+    "cardinality.events.jsonl": "6d0923d8c97fd5de425bea6a86cfbf31d88247a3182730bb427d704bbca998c0",
+    "privacy_static.contract.json": "a31ef92e5c930545b9db3f720317ae70cb20c9fe080b54b94e390fc624a76079",
+    "privacy_static.events.jsonl": "baf38813122f9a3a9528788119028a0a214b56644953674c52c11c9ec94aae14",
+    "privacy_static_source.py": "4987916cc4931310e87c2bf19139fc60d809e64725b13198cc7c65763480cf8d",
+    "partial_otlp.diagnostics.json": "5104cdba31f785ff184bd8ee0018327fc0d9060b41adc104032c633926fa71c9"
+  }
+}

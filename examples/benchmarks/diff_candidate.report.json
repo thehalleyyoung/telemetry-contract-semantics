@@ -1,0 +1,6 @@
+{
+  "summary": {"findings": 2, "runtime_ms": 12.5, "top_remediations": [{"severity": "error", "semantic_property": "diagnosability"}], "pass": false},
+  "cases": [
+    {"id": "case-a", "pass": false, "semantics_features": ["correlation", "import loss accounting"], "metrics": {"findings": 2, "runtime_ms": 12.5, "findings_by_code": {"telemetry.correlation_missing": 1, "otlp.malformed_record": 1}, "labels": {"precision": 0.5, "recall": 1.0}}}
+  ]
+}

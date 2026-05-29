@@ -68,6 +68,168 @@
           "event_index": 8
         }
       ]
+    },
+    {
+      "id": "benchmark-missing-correlation",
+      "description": "Minimal public fixture that preserves span/metric data but drops log correlation keys so incident evidence cannot be joined.",
+      "metadata": "../examples/benchmarks/metadata_public_semantics.json",
+      "contract": "../examples/benchmarks/missing_correlation.contract.json",
+      "events": "../examples/benchmarks/missing_correlation.events.jsonl",
+      "tags": [
+        "correlation",
+        "diagnosability",
+        "runtime"
+      ],
+      "check_types": [
+        "runtime"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "expected_failure_modes": [
+        "missing_correlation"
+      ],
+      "semantics_features": [
+        "cross-signal correlation",
+        "incident diagnosability"
+      ],
+      "service_owner": "benchmark-platform",
+      "disclosure_status": "public-fixture",
+      "expected_findings": [
+        {
+          "code": "telemetry.correlation_missing",
+          "severity": "error",
+          "event_index": 2
+        },
+        {
+          "code": "telemetry.correlation_missing",
+          "severity": "error",
+          "path": "events[log]"
+        }
+      ]
+    },
+    {
+      "id": "benchmark-cardinality-budget",
+      "description": "Minimal metric fixture whose tenant_id tag exceeds a declared bounded-cardinality budget.",
+      "metadata": "../examples/benchmarks/metadata_public_semantics.json",
+      "contract": "../examples/benchmarks/cardinality.contract.json",
+      "events": "../examples/benchmarks/cardinality.events.jsonl",
+      "tags": [
+        "cardinality",
+        "operability",
+        "runtime"
+      ],
+      "check_types": [
+        "runtime"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "expected_failure_modes": [
+        "high_cardinality"
+      ],
+      "semantics_features": [
+        "cardinality budgets",
+        "operability policy"
+      ],
+      "service_owner": "benchmark-platform",
+      "disclosure_status": "public-fixture",
+      "expected_findings": [
+        {
+          "code": "telemetry.cardinality",
+          "severity": "warning",
+          "path": "events[metric=checkout.requests].tenant_id"
+        }
+      ]
+    },
+    {
+      "id": "benchmark-privacy-static-source",
+      "description": "Public-code-style auth fixture combining raw sensitive telemetry, static secret logging, unbounded label, and missing correlation checks.",
+      "metadata": "../examples/benchmarks/metadata_public_semantics.json",
+      "contract": "../examples/benchmarks/privacy_static.contract.json",
+      "events": "../examples/benchmarks/privacy_static.events.jsonl",
+      "sources": [
+        "../examples/benchmarks/privacy_static_source.py"
+      ],
+      "tags": [
+        "privacy",
+        "security",
+        "static",
+        "runtime"
+      ],
+      "check_types": [
+        "runtime",
+        "static"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "expected_failure_modes": [
+        "pii_exposure",
+        "secret_logging",
+        "unbounded_source_label",
+        "missing_static_correlation"
+      ],
+      "semantics_features": [
+        "pii non-disclosure",
+        "static source checks",
+        "correlation-at-source"
+      ],
+      "service_owner": "benchmark-auth",
+      "disclosure_status": "public-fixture",
+      "expected_findings": [
+        {
+          "code": "telemetry.sensitive_value",
+          "severity": "error",
+          "event_index": 1
+        },
+        {
+          "code": "telemetry.hyper_pii_disclosure",
+          "severity": "error",
+          "event_index": 1
+        },
+        {
+          "code": "static.secret_logging",
+          "severity": "error",
+          "path_suffix": "privacy_static_source.py:2"
+        },
+        {
+          "code": "static.missing_correlation",
+          "severity": "warning",
+          "path_suffix": "privacy_static_source.py:2"
+        },
+        {
+          "code": "static.unbounded_label",
+          "severity": "warning",
+          "path_suffix": "privacy_static_source.py:3"
+        }
+      ]
+    },
+    {
+      "id": "benchmark-partial-otlp-diagnostics",
+      "description": "Partial OTLP-import diagnostics fixture where a malformed public JSONL record is skipped and invalidates complete-import claims.",
+      "metadata": "../examples/benchmarks/metadata_public_semantics.json",
+      "import_diagnostics": "../examples/benchmarks/partial_otlp.diagnostics.json",
+      "tags": [
+        "otlp",
+        "import",
+        "diagnostics"
+      ],
+      "check_types": [
+        "import_diagnostics"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "expected_failure_modes": [
+        "partial_otlp_import",
+        "malformed_record"
+      ],
+      "semantics_features": [
+        "import loss accounting",
+        "diagnostic claim validity"
+      ],
+      "service_owner": "collector-platform",
+      "disclosure_status": "public-fixture",
+      "expected_findings": [
+        {
+          "code": "otlp.malformed_record",
+          "severity": "warning",
+          "path": "records[1]"
+        }
+      ]
     }
   ]
 }

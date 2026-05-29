@@ -1,0 +1,2 @@
+{"kind":"metric","name":"checkout.requests","timestamp":"2026-05-29T12:00:00Z","value":1,"tags":{"tenant_id":"tenant-a"}}
+{"kind":"metric","name":"checkout.requests","timestamp":"2026-05-29T12:00:01Z","value":1,"tags":{"tenant_id":"tenant-b"}}

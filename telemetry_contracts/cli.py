@@ -15,7 +15,7 @@ from .preservation import check_transformation_preservation, format_preservation
 from .static_checker import check_sources
 from .alternatives import evaluate_alternative_obligations, format_alternative_obligations_markdown
 from .assume_guarantee import evaluate_assume_guarantee, format_assume_guarantee_markdown
-from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
+from .benchmark import BenchmarkLoadError, compare_benchmark_reports, format_diff_markdown, format_markdown, run_benchmark
 from .core_semantics import evaluate_contract_semantics, format_core_semantics_markdown
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .explain import explain_finding, format_explanation_markdown
@@ -86,6 +86,20 @@ def main(argv: list[str] | None = None) -> int:
     benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
     benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     benchmark_parser.add_argument("--output")
+    benchmark_parser.add_argument("--case-id", action="append", help="only run a benchmark case id; repeatable")
+    benchmark_parser.add_argument("--tag", action="append", help="only run cases carrying this tag; repeatable")
+    benchmark_parser.add_argument("--check-type", action="append", choices=["runtime", "static", "scenario", "strict", "import_diagnostics"], help="only run cases exercising this check type; repeatable")
+    benchmark_parser.add_argument("--dataset", action="append", help="only run cases for this dataset id; repeatable")
+    benchmark_parser.add_argument("--expected-failure-mode", action="append", help="only run cases labeled with this expected failure mode; repeatable")
+    benchmark_parser.add_argument("--semantics-feature", action="append", help="only run cases labeled with this semantic feature; repeatable")
+    benchmark_parser.add_argument("--service-owner", action="append", help="only run cases for this service owner; repeatable")
+    benchmark_parser.add_argument("--disclosure-status", action="append", help="only run cases with this disclosure status; repeatable")
+
+    benchmark_diff_parser = subparsers.add_parser("benchmark-diff", help="diff two JSON benchmark reports")
+    benchmark_diff_parser.add_argument("--baseline", required=True)
+    benchmark_diff_parser.add_argument("--candidate", required=True)
+    benchmark_diff_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    benchmark_diff_parser.add_argument("--output")
 
     semconv_parser = subparsers.add_parser("semconv", help="lint telemetry against OpenTelemetry semantic conventions and local policy")
     semconv_parser.add_argument("--contract", required=True)
@@ -211,13 +225,30 @@ def main(argv: list[str] | None = None) -> int:
                 print(output)
             return 0
         if args.command == "benchmark":
-            report = run_benchmark(args.config)
+            report = run_benchmark(args.config, filters={
+                "case_id": args.case_id,
+                "tag": args.tag,
+                "check_type": args.check_type,
+                "dataset": args.dataset,
+                "expected_failure_mode": args.expected_failure_mode,
+                "semantics_feature": args.semantics_feature,
+                "service_owner": args.service_owner,
+                "disclosure_status": args.disclosure_status,
+            })
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_markdown(report)
             if args.output:
                 Path(args.output).write_text(output + "\n", encoding="utf-8")
             else:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
+        if args.command == "benchmark-diff":
+            report = compare_benchmark_reports(args.baseline, args.candidate)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_diff_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0
         if args.command == "semconv":
             report = lint_semantic_conventions(load_contract(args.contract), load_jsonl(args.events) if args.events else None)
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_semconv_markdown(report)

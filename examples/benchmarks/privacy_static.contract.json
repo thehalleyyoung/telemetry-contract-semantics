@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "service": "benchmark-auth",
+  "logs": [{"name": "auth.failure", "required": true, "severity": "ERROR", "fields": {"email": {"type": "string", "required": true, "sensitivity": "personal", "allow_raw_sensitive": false}, "error_code": {"type": "string", "required": true}}}],
+  "static_expectations": {"spans": [], "metrics": ["auth.login.attempts"], "logs": ["auth.failure"]},
+  "static_rules": {"detect_secret_logging": true, "detect_unbounded_labels": true, "require_correlation_on_error_logs": true, "correlation_fields": ["trace_id", "request_id"]},
+  "hyperproperties": [{"id": "auth-no-raw-email", "type": "pii_non_disclosure", "description": "auth telemetry must not disclose raw emails", "sensitive_fields": ["email"], "forbidden_patterns": ["email"], "sink_kinds": ["logs"]}]
+}

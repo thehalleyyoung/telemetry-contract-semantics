@@ -1,0 +1,5 @@
+{
+  "version": "1.0",
+  "service": "benchmark-checkout",
+  "metrics": [{"name": "checkout.requests", "required": true, "value": {"type": "number", "min": 0}, "tags": {"tenant_id": {"type": "string", "required": true, "cardinality": {"policy": "bounded", "max": 1}}}}]
+}

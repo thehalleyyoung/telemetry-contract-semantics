@@ -1,0 +1,6 @@
+{
+  "summary": {"findings": 1, "runtime_ms": 10.0, "top_remediations": [], "pass": true},
+  "cases": [
+    {"id": "case-a", "pass": true, "semantics_features": ["correlation"], "metrics": {"findings": 1, "runtime_ms": 10.0, "findings_by_code": {"telemetry.correlation_missing": 1}, "labels": {"precision": 1.0, "recall": 1.0}}}
+  ]
+}
