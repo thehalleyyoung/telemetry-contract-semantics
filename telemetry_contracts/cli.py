@@ -26,6 +26,7 @@ from .refinement import check_contract_refinement, format_refinement_markdown
 from .composition import analyze_contract_composition, format_composition_markdown
 from .monitor import format_monitor_markdown, run_compiled_monitor
 from .windows import format_event_window_markdown, generate_event_window_report
+from .semconv import format_semconv_markdown, lint_semantic_conventions
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -82,6 +83,13 @@ def main(argv: list[str] | None = None) -> int:
     benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
     benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     benchmark_parser.add_argument("--output")
+
+    semconv_parser = subparsers.add_parser("semconv", help="lint telemetry against OpenTelemetry semantic conventions and local policy")
+    semconv_parser.add_argument("--contract", required=True)
+    semconv_parser.add_argument("--events", help="optional JSONL telemetry to check in addition to the contract")
+    semconv_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    semconv_parser.add_argument("--output")
+    semconv_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
     taxonomy_parser = subparsers.add_parser("taxonomy", help="emit the machine-readable finding taxonomy and optional observed finding coverage")
     taxonomy_parser.add_argument("--findings", action="append", default=[], help="JSON report containing findings or benchmark cases with findings")
@@ -196,6 +204,16 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
+        if args.command == "semconv":
+            report = lint_semantic_conventions(load_contract(args.contract), load_jsonl(args.events) if args.events else None)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_semconv_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
         if args.command == "taxonomy":
             report = taxonomy_report(args.findings)
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_taxonomy_markdown(report)

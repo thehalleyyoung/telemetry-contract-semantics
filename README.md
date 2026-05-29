@@ -21,12 +21,13 @@ This repository turns that thesis into executable checks:
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - A benchmark harness for built-in or user-provided contract/event corpora.
-- A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
+- A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, semantic-convention, incident-readiness, equivalence, and preservation outputs.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
 - An executable small-step `evaluate-semantics` command that emits contract-evaluation derivations and checks their denotation against the deterministic validator on golden and historical traces.
 - A compiled `monitor` command that runs deterministic bounded-memory runtime monitors over finite JSONL traces, with sliding-window witnesses for temporal response/sequence obligations and an observed memory envelope.
 - An `event-windows` report that groups events and findings by trace, request, tenant, deployment, scenario, incident id, or bounded incident time slice so failures localize to actionable ownership units.
 - A `proof-obligations` command that instantiates well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity proof-goal templates against contracts, runtime traces, transformation pairs, and benchmark labels.
+- A `semconv` command that lints declared and observed telemetry against bounded OpenTelemetry semantic-convention rules plus contract-local policies, citing the rule and exact attribute/name remediation.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
@@ -34,7 +35,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 39 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 40 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -152,6 +153,11 @@ python3 -m telemetry_contracts.cli proof-obligations \
   --benchmark-config benchmarks/builtin.json \
   --format markdown
 
+python3 -m telemetry_contracts.cli semconv \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format markdown --fail-on never
+
 python3 -m telemetry_contracts.cli validate \
   --contract examples/temporal_logic/contract.json \
   --events examples/temporal_logic/failing.jsonl \
@@ -260,6 +266,7 @@ Supported checks include:
 - Alternative obligations under `alternative_obligations`, where a required finite disjunction passes when at least one declared option has a witness event containing all required fields; `minimum_observations` scenario entries may also use `any_of` for equivalent evidence paths.
 - Assume-guarantee obligations under `assume_guarantee`, grouped as `service_guarantees`, `collector_assumptions`, `environment_assumptions`, and `oncall_obligations`. `report assume-guarantee` checks signal/field witnesses, field predicates, scenarios, temporal properties, alternative evidence, and documented collector transformations, then reports which layer is accountable for each missing or non-preserved witness.
 - Strict validation via `validate --strict` or `metadata.strict_validation.enabled`. Strict mode adds closed-world obligations: each event service must match the modeled service or `allow_unmodeled_services`; each span/log/metric name must be declared in signal sections, scenarios, temporal sequences, or alternative obligations unless `allow_undeclared_signals` names it; emitted attributes/tags/fields must be declared unless `allowed_extra_fields` or `allow_unexpected_fields` permits them; collector transformations must appear in `metadata.transformation_preservation.approved_transformations` or `allow_collector_transformations`.
+- OpenTelemetry semantic-convention linting via `semconv`. The checker reports `semconv.*` warnings for legacy attributes such as `http.method`/`db.system`, missing convention attributes such as `http.request.method`, `http.route`, `http.response.status_code`, `db.system.name`, or `messaging.system`, metric names that encode units without declaring `value.unit`, and `metadata.semantic_conventions.required_attributes` local-policy obligations. Each finding includes the cited convention/local policy and an exact rename/add remediation.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
 - Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
@@ -306,11 +313,12 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.refinement` implements the executable finite-contract refinement relation and JSON/Markdown reports.
 - `telemetry_contracts.composition` analyzes inherited contract denotations and parent-refinement evidence for `compose-contract`.
 - `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, assume-guarantee, semantics, hyperproperty, preservation, and benchmark evidence.
+- `telemetry_contracts.semconv` checks declared and observed signal names/attributes against bounded OpenTelemetry HTTP, database, messaging, and metric-unit conventions plus contract-local semantic policies.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -442,6 +450,19 @@ python3 -m telemetry_contracts.cli proof-obligations \
 
 `reports/gitlab_2017_proof_obligations.md` catalogs 27 feature groups and 99 instantiated obligations for those supplied artifacts: 82 discharged, 14 violated, and 3 pending refinement templates. The violations are bounded to the checked-in strict-drift, assume-guarantee, and sampled/exported fixtures; the report does not claim access to GitLab private telemetry or prove universal monitor soundness.
 
+Generate the checked-in semantic-convention lint report for the reconstructed GitLab metric/log/span names and event attributes:
+
+```bash
+python3 -m telemetry_contracts.cli semconv \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format markdown \
+  --output reports/gitlab_2017_semconv_lint.md \
+  --fail-on never
+```
+
+`reports/gitlab_2017_semconv_lint.md` records 7 warning-level `semconv.*` findings over 5 reconstructed events. The report cites OpenTelemetry database/metric conventions and a contract-local policy requiring `db.system.name="postgresql"` on the `postgres.replication.lag_bytes` metric, plus exact remediation to add the attribute and declare or normalize metric units. This is naming/attribute quality evidence over the checked-in reconstruction, not a claim about GitLab private instrumentation.
+
 Generate the checked-in refinement reports over the same public reconstruction:
 
 ```bash
@@ -517,7 +538,8 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 
 ## Limitations
 
-- Static checking is literal-based, not a full AST or OpenTelemetry semantic analysis.
+- Static checking is literal-based, not a full AST analysis.
+- Semantic-convention linting intentionally covers a bounded subset of OpenTelemetry HTTP, database, messaging, and metric-unit guidance plus explicit local policies; it is not a complete semantic-convention compliance suite.
 - OTLP support covers common JSON exports for spans, metrics, and logs; protobuf/gRPC collector ingestion is future work.
 - Cardinality is checked over the supplied sample window, not a production time series backend.
 - Sampling and retention stubs are linted for machine-readable contract shape, but not verified against live collector or backend configuration.

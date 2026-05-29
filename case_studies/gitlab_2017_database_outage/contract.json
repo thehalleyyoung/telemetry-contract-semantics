@@ -17,6 +17,21 @@
         "restore-readiness"
       ],
       "claim": "The sampled/degraded derivative must preserve every restore-readiness witness that the reconstructed source trace already contains."
+    },
+    "semantic_conventions": {
+      "enabled": true,
+      "description": "Bounded OpenTelemetry semantic-convention and local-policy lint for the reconstructed GitLab 2017 database incident fixture.",
+      "required_attributes": [
+        {
+          "kind": "metric",
+          "name": "postgres.replication.lag_bytes",
+          "attribute": "db.system.name",
+          "expected_value": "postgresql",
+          "severity": "warning",
+          "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+          "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+        }
+      ]
     }
   },
   "spans": [

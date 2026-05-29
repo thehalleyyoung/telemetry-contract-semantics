@@ -196,6 +196,28 @@ def test_cli_monitor_reports_historical_temporal_response(capsys):
     assert '"max_pending_responses": 1' in output
 
 
+def test_cli_semconv_reports_historical_otlp_policy_findings(capsys):
+    case = ROOT / "case_studies/gitlab_2017_database_outage"
+    code = main(
+        [
+            "semconv",
+            "--contract",
+            str(case / "contract.json"),
+            "--events",
+            str(case / "reconstructed_events.jsonl"),
+            "--format",
+            "json",
+            "--fail-on",
+            "never",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert '"semconv.local_policy"' in output
+    assert "OpenTelemetry database semantic conventions" in output
+
+
 def test_cli_event_windows_reports_historical_ownership_units(capsys):
     case = ROOT / "case_studies/gitlab_2017_database_outage"
     code = main(

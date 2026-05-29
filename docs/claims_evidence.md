@@ -24,6 +24,7 @@
 - Added assume-guarantee telemetry contracts and reports in `telemetry_contracts.assume_guarantee` and `telemetry-contracts report assume-guarantee`. The GitLab 2017 contract now separates service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations; `reports/gitlab_2017_assume_guarantee_sampled.md` records layer-specific counterexamples over the sampled/exported derivative.
 - Added executable contract-refinement checking in `telemetry_contracts.refinement` and `telemetry-contracts refinement`. `reports/gitlab_2017_refinement.json` records that the reconstructed GitLab 2017 incident contract refines a checked-in broader baseline fixture, while `reports/gitlab_2017_refinement_weakened.json` records a deliberate weakened candidate with `refinement.required_field_removed`.
 - Added contract composition/inheritance in `telemetry_contracts.loader` and `telemetry_contracts.composition`. `case_studies/gitlab_2017_database_outage/composed_contract.json` extends a shared `org_incident_policy.contract.json`; `reports/gitlab_2017_composition.json` records zero parent-refinement findings, and `reports/gitlab_2017_composed_validation.json` validates the resolved contract over the reconstructed public GitLab 2017 fixture.
+- Added bounded OpenTelemetry semantic-convention and local-policy linting in `telemetry_contracts.semconv` and `telemetry-contracts semconv`. `reports/gitlab_2017_semconv_lint.json` and `.md` cite database/metric convention guidance and a contract-local policy requiring `db.system.name="postgresql"` on the reconstructed `postgres.replication.lag_bytes` metric, producing exact remediation over the checked-in GitLab 2017 public reconstruction.
 
 ## Bounded novelty claim
 
@@ -51,6 +52,7 @@ To make the novelty claim falsifiable, use this protocol on or after the retriev
 - Hyperproperties are checked over finite supplied artifacts and pair/set witnesses; they do not prove universal non-interference or non-disclosure over all executions.
 - Assume-guarantee reports check declared layer obligations over finite supplied artifacts; they do not prove organizational accountability or production workflow behavior beyond those artifacts.
 - Strict-mode drift findings are over the checked-in finite derivative fixture; they do not imply GitLab emitted those private events or used the modeled collector transformations.
+- Semantic-convention linting covers a bounded subset of OpenTelemetry HTTP, database, messaging, and metric-unit guidance plus explicit local policies. It is useful for checked-in artifacts but is not a complete OpenTelemetry compliance suite.
 - The benchmark does not establish recall over all possible observability failures.
 - Static checks are heuristic line/source checks, not full semantic instrumentation analysis.
 
@@ -227,6 +229,18 @@ python3 -m telemetry_contracts.cli proof-obligations \
   --benchmark-config benchmarks/builtin.json \
   --format markdown \
   --output reports/gitlab_2017_proof_obligations.md
+python3 -m telemetry_contracts.cli semconv \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format json \
+  --output reports/gitlab_2017_semconv_lint.json \
+  --fail-on never
+python3 -m telemetry_contracts.cli semconv \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format markdown \
+  --output reports/gitlab_2017_semconv_lint.md \
+  --fail-on never
 python3 -m telemetry_contracts.cli refinement \
   --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json \
   --candidate-contract case_studies/gitlab_2017_database_outage/contract.json \

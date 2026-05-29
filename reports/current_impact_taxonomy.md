@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 86
-- Categories: `{"contract": 27, "diagnosability": 26, "input": 1, "operability": 3, "preservation": 5, "privacy-security": 8, "scenario": 2, "schema": 12, "static-coverage": 2}`
-- Default severities: `{"error": 81, "warning": 5}`
-- SARIF levels: `{"error": 81, "warning": 5}`
+- Rules: 100
+- Categories: `{"contract": 27, "diagnosability": 26, "input": 1, "operability": 3, "preservation": 5, "privacy-security": 8, "refinement": 9, "scenario": 2, "schema": 17, "static-coverage": 2}`
+- Default severities: `{"error": 90, "warning": 10}`
+- SARIF levels: `{"error": 90, "warning": 10}`
 
 ## Rule catalog
 
@@ -51,11 +51,25 @@
 | preservation.contract_obligation | preservation | error | PRES.runtime-obligation | error | error | internal | contract service owner | Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation. |
 | preservation.scenario_field | preservation | error | PRES.adequacy-field | error | error | internal | contract service owner | Keep the transformed field, or provide an approved surrogate that still answers the selected incident question. |
 | preservation.scenario_signal | preservation | error | PRES.adequacy-signal | error | error | internal | contract service owner | Keep at least one transformed signal witness for each selected diagnosability requirement. |
+| refinement.assumption_strengthened | refinement | error | REF.assumption-compatibility | error | error | internal | contract service owner | Do not add harder collector, environment, on-call, sampling, or retention assumptions in a refining contract. |
+| refinement.field_predicate_weakened | refinement | error | REF.requirement-preservation | error | error | internal | contract service owner | Change the candidate predicate to be equal to or stronger than the inherited base predicate. |
+| refinement.malformed_contract | refinement | error | REF.well-formedness | error | error | internal | contract service owner | Lint both contracts before comparing refinement. |
+| refinement.privacy_weakened | refinement | error | REF.privacy-nonweakening | error | error | responsible-disclosure | contract service owner | Keep inherited privacy classifications, sensitivity, and allowed transformation sets at least as restrictive. |
+| refinement.required_field_removed | refinement | error | REF.requirement-preservation | error | error | internal | contract service owner | Keep every required base field required in the candidate contract. |
+| refinement.required_signal_removed | refinement | error | REF.requirement-preservation | error | error | internal | contract service owner | Keep every required base signal, scenario, temporal property, alternative obligation, and service guarantee required in the candidate. |
+| refinement.service_mismatch | refinement | error | REF.service-scope | error | error | internal | contract service owner | Compare contracts for the same service or declare an organization/team refinement scope. |
+| refinement.strict_policy_weakened | refinement | error | REF.requirement-preservation | error | error | internal | contract service owner | Keep strict closed-world validation enabled and avoid adding new escape hatches in the candidate. |
+| refinement.transformation_policy_weakened | refinement | error | REF.privacy-nonweakening | error | error | internal | contract service owner | Do not approve new transformations or drop inherited preservation scenarios unless the base policy is changed first. |
 | scenario.alternative_missing | diagnosability | error | ADEQ.alternative-observation | error | error | internal | contract service owner | Emit one alternative observation that can answer the scenario question. |
 | scenario.missing_field | diagnosability | error | ADEQ.required-field | error | error | internal | contract service owner | Emit the field needed to answer the scenario question. |
 | scenario.missing_signal | diagnosability | error | ADEQ.required-signal | error | error | internal | contract service owner | Emit the signal needed to answer the scenario question. |
 | scenario.not_found | scenario | error | SCENARIO.selection | error | error | internal | contract service owner | Add or select a scenario that matches the incident question. |
 | scenario.requirement_type | scenario | error | SCENARIO.requirement-wf | error | error | internal | contract service owner | Describe scenario requirements as objects. |
+| semconv.legacy_attribute | schema | warning | SEMCONV.attribute-alias | warning | warning | internal | contract service owner | Rename the legacy attribute to the cited current OpenTelemetry semantic-convention attribute. |
+| semconv.local_policy | schema | warning | SEMCONV.local-policy | warning | warning | internal | contract service owner | Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification. |
+| semconv.metric_unit | schema | warning | SEMCONV.metric-unit | warning | warning | internal | contract service owner | Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name. |
+| semconv.missing_attribute | schema | warning | SEMCONV.required-attribute | warning | warning | internal | contract service owner | Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception. |
+| semconv.signal_name | schema | warning | SEMCONV.signal-name | warning | warning | internal | contract service owner | Rename the signal to the cited low-cardinality OpenTelemetry semantic-convention shape. |
 | static.missing_correlation | diagnosability | error | STATIC.correlation-evidence | error | error | internal | contract service owner | Include a trace_id, request_id, or configured correlation field in error logs. |
 | static.missing_instrumentation | static-coverage | error | STATIC.signal-literal | error | error | internal | contract service owner | Add source instrumentation with the expected stable telemetry name. |
 | static.no_sources | static-coverage | error | STATIC.source-domain | error | error | internal | contract service owner | Pass source files or directories to the static checker. |

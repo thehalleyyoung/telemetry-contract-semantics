@@ -526,6 +526,9 @@
           },
           "type": "object"
         },
+        "semantic_conventions": {
+          "$ref": "#/$defs/semanticConventionPolicy"
+        },
         "strict_validation": {
           "$ref": "#/$defs/strictValidationPolicy"
         },
@@ -717,6 +720,76 @@
           ]
         }
       },
+      "type": "object"
+    },
+    "semanticConventionPolicy": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "required_attributes": {
+          "items": {
+            "$ref": "#/$defs/semanticConventionRequiredAttribute"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "semanticConventionRequiredAttribute": {
+      "properties": {
+        "attribute": {
+          "type": "string"
+        },
+        "convention": {
+          "type": "string"
+        },
+        "expected_value": {},
+        "field": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "remediation": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ]
+        },
+        "signal": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "attribute"
+      ],
       "type": "object"
     },
     "severityPolicy": {

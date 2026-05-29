@@ -1,0 +1,239 @@
+{
+  "findings": [
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'postgres.replication.lag_bytes'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should declare semantic attribute 'db.system.name'",
+      "path": "$.metrics[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.metric_unit",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "convention": "OpenTelemetry metric semantic conventions prefer explicit units in instrument metadata over unit-only name suffixes.",
+        "expected_name": "postgres.replication.lag",
+        "expected_unit": "By",
+        "metric": "postgres.replication.lag_bytes",
+        "remediation": "Declare value.unit 'By' and consider renaming the metric to 'postgres.replication.lag'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.metric-unit",
+      "message": "metric 'postgres.replication.lag_bytes' encodes unit suffix '_bytes' without declaring value.unit",
+      "path": "$.metrics[0].value.unit",
+      "remediation": "Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.logs[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'database.destructive_command'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should declare semantic attribute 'db.system.name'",
+      "path": "$.logs[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' must declare local semantic attribute 'db.system.name'",
+      "path": "$.metadata.semantic_conventions.required_attributes[0].attribute",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Emit 'db.system.name' on 'postgres.replication.lag_bytes' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should emit semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Emit 'db.system.name' on 'database.destructive_command' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should emit semantic attribute 'db.system.name'",
+      "path": "event[2].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' missing local semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    }
+  ],
+  "policy_sources": [
+    "OpenTelemetry HTTP semantic conventions: request/response attributes such as http.request.method, http.route, and http.response.status_code.",
+    "OpenTelemetry database semantic conventions: database attributes such as db.system.name, db.operation.name, db.namespace, db.collection.name, server.address, and db.query.text.",
+    "OpenTelemetry messaging semantic conventions: messaging.system, messaging.destination.name, and messaging.operation.name.",
+    "OpenTelemetry metrics guidance: declare measurement units separately from metric identity when possible.",
+    "Contract metadata.semantic_conventions local policy entries checked as artifact-scoped extensions."
+  ],
+  "semantics": "SEMCONV-T \u22a8 naming_and_attribute_policy iff every declared/observed signal satisfies cited OpenTelemetry semantic-convention or local-policy obligations.",
+  "summary": {
+    "contracts_checked": 1,
+    "events_checked": 5,
+    "findings": 7,
+    "findings_by_code": {
+      "semconv.local_policy": 2,
+      "semconv.metric_unit": 1,
+      "semconv.missing_attribute": 4
+    },
+    "findings_by_severity": {
+      "warning": 7
+    },
+    "pass": true
+  }
+}

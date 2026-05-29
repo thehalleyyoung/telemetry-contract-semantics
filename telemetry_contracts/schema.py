@@ -89,6 +89,30 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                     },
                 },
                 "strict_validation": {"$ref": "#/$defs/strictValidationPolicy"},
+                "semantic_conventions": {"$ref": "#/$defs/semanticConventionPolicy"},
+            },
+        },
+        "semanticConventionPolicy": {
+            "type": "object",
+            "properties": {
+                "enabled": {"type": "boolean"},
+                "description": {"type": "string"},
+                "required_attributes": {"type": "array", "items": {"$ref": "#/$defs/semanticConventionRequiredAttribute"}},
+            },
+        },
+        "semanticConventionRequiredAttribute": {
+            "type": "object",
+            "required": ["kind", "name", "attribute"],
+            "properties": {
+                "kind": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                "signal": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                "name": {"type": "string"},
+                "attribute": {"type": "string"},
+                "field": {"type": "string"},
+                "expected_value": {},
+                "severity": {"enum": ["info", "warning", "error"]},
+                "convention": {"type": "string"},
+                "remediation": {"type": "string"},
             },
         },
         "strictValidationPolicy": {

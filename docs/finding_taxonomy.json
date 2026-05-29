@@ -1101,6 +1101,106 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.legacy_attribute",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.attribute-alias",
+      "remediation": "Rename the legacy attribute to the cited current OpenTelemetry semantic-convention attribute.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.local-policy",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.metric_unit",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.metric-unit",
+      "remediation": "Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.signal_name",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.signal-name",
+      "remediation": "Rename the signal to the cited low-cardinality OpenTelemetry semantic-convention shape.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "diagnosability",
       "ci": {
         "baseline_key_fields": [
@@ -1918,17 +2018,17 @@
       "privacy-security": 8,
       "refinement": 9,
       "scenario": 2,
-      "schema": 12,
+      "schema": 17,
       "static-coverage": 2
     },
     "default_severities": {
       "error": 90,
-      "warning": 5
+      "warning": 10
     },
-    "rules": 95,
+    "rules": 100,
     "sarif_levels": {
       "error": 90,
-      "warning": 5
+      "warning": 10
     }
   }
 }
