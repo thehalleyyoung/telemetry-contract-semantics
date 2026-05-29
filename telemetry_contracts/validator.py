@@ -7,6 +7,7 @@ from typing import Any
 from .findings import Finding
 
 SignalKind = str
+PRIMITIVE_TYPES = {"string", "integer", "number", "boolean", "object", "array", "null"}
 
 BUILTIN_FORBIDDEN_PATTERNS: dict[str, str] = {
     "email": r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
@@ -31,16 +32,39 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
     for section in ("spans", "metrics", "logs"):
         if section in contract and not isinstance(contract[section], list):
             findings.append(Finding("error", "contract.section_type", f"{section} must be a list", f"$.{section}"))
-        for signal_index, spec in enumerate(contract.get(section, []) or []):
-            if isinstance(spec, dict):
-                for field_name, field_spec in _field_specs(spec).items():
-                    if SENSITIVE_FIELD_NAMES.search(field_name) and not _declares_sensitivity(field_spec):
+            continue
+        raw_signals = contract.get(section, []) or []
+        if not isinstance(raw_signals, list):
+            continue
+        for signal_index, spec in enumerate(raw_signals):
+            signal_path = f"$.{section}[{signal_index}]"
+            if not isinstance(spec, dict):
+                findings.append(Finding("error", "contract.signal_type", f"{section}[{signal_index}] must be an object", signal_path))
+                continue
+            if not isinstance(spec.get("name"), str) or not spec.get("name"):
+                findings.append(Finding("error", "contract.signal_name", "signal must declare a non-empty name", f"{signal_path}.name"))
+            if "required" in spec and not isinstance(spec["required"], bool):
+                findings.append(Finding("error", "contract.required_type", "signal required flag must be a boolean", f"{signal_path}.required"))
+            if section == "metrics" and isinstance(spec.get("value"), dict):
+                findings.extend(_validate_field_spec("value", spec["value"], f"{signal_path}.value"))
+            if section == "logs" and spec.get("message_pattern") is not None:
+                findings.extend(_validate_regex(str(spec["message_pattern"]), f"{signal_path}.message_pattern", "invalid log message regex"))
+            for container in ("fields", "attributes", "tags"):
+                raw_fields = spec.get(container, {}) or {}
+                if not isinstance(raw_fields, dict):
+                    findings.append(Finding("error", "contract.section_type", f"{container} must be an object", f"{signal_path}.{container}"))
+                    continue
+                for field_name, field_spec in raw_fields.items():
+                    normalized_spec = field_spec if isinstance(field_spec, dict) else {"type": str(field_spec)}
+                    field_path = f"{signal_path}.{container}.{field_name}"
+                    findings.extend(_validate_field_spec(str(field_name), normalized_spec, field_path))
+                    if SENSITIVE_FIELD_NAMES.search(str(field_name)) and not _declares_sensitivity(normalized_spec):
                         findings.append(
                             Finding(
                                 "warning",
                                 "contract.sensitive_field_unclassified",
                                 f"field '{field_name}' appears sensitive but has no sensitivity classification",
-                                f"$.{section}[{signal_index}].fields.{field_name}",
+                                field_path,
                             )
                         )
     return findings
@@ -53,9 +77,66 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> l
     for section, kind in (("spans", "span"), ("metrics", "metric"), ("logs", "log")):
         for signal_index, spec in enumerate(contract.get(section, []) or []):
             if not isinstance(spec, dict):
-                findings.append(Finding("error", "contract.signal_type", f"{section}[{signal_index}] must be an object", f"$.{section}[{signal_index}]"))
+                continue
+            if not isinstance(spec.get("name"), str) or not spec.get("name"):
                 continue
             findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events))
+    return findings
+
+
+def _validate_field_spec(field_name: str, spec: dict[str, Any], path: str) -> list[Finding]:
+    findings: list[Finding] = []
+    expected_type = spec.get("type")
+    if expected_type is not None:
+        normalized = {"str": "string", "int": "integer", "float": "number", "bool": "boolean", "dict": "object", "list": "array"}.get(str(expected_type), str(expected_type))
+        if normalized not in PRIMITIVE_TYPES:
+            findings.append(Finding("error", "contract.field_type", f"field '{field_name}' has unknown type {expected_type!r}", f"{path}.type"))
+    if "required" in spec and not isinstance(spec["required"], bool):
+        findings.append(Finding("error", "contract.required_type", f"field '{field_name}' required flag must be a boolean", f"{path}.required"))
+    if "allowed_values" in spec and not isinstance(spec["allowed_values"], list):
+        findings.append(Finding("error", "contract.allowed_values_type", f"field '{field_name}' allowed_values must be an array", f"{path}.allowed_values"))
+    for regex_key in ("pattern", "regex"):
+        if regex_key in spec:
+            findings.extend(_validate_regex(str(spec[regex_key]), f"{path}.{regex_key}", f"invalid regex for field '{field_name}'"))
+    findings.extend(_validate_forbidden_pattern_specs(field_name, spec, path))
+    for bound in ("min", "max"):
+        if bound in spec and (not isinstance(spec[bound], (int, float)) or isinstance(spec[bound], bool)):
+            findings.append(Finding("error", "contract.numeric_bound_type", f"field '{field_name}' {bound} must be numeric", f"{path}.{bound}"))
+    if all(bound in spec and isinstance(spec[bound], (int, float)) and not isinstance(spec[bound], bool) for bound in ("min", "max")) and spec["min"] > spec["max"]:
+        findings.append(Finding("error", "contract.numeric_bounds", f"field '{field_name}' min must be <= max", path))
+    return findings
+
+
+def _validate_regex(pattern: str, path: str, message: str) -> list[Finding]:
+    try:
+        re.compile(pattern)
+    except re.error as exc:
+        return [Finding("error", "contract.invalid_regex", f"{message}: {exc}", path)]
+    return []
+
+
+def _validate_forbidden_pattern_specs(field_name: str, spec: dict[str, Any], path: str) -> list[Finding]:
+    if "forbidden_patterns" not in spec:
+        return []
+    patterns = spec.get("forbidden_patterns") or []
+    if isinstance(patterns, (str, dict)):
+        patterns = [patterns]
+    if not isinstance(patterns, list):
+        return [Finding("error", "contract.forbidden_patterns_type", f"field '{field_name}' forbidden_patterns must be a string, object, or array", f"{path}.forbidden_patterns")]
+    findings: list[Finding] = []
+    for index, pattern_spec in enumerate(patterns):
+        pattern_path = f"{path}.forbidden_patterns[{index}]"
+        if isinstance(pattern_spec, str):
+            if pattern_spec not in BUILTIN_FORBIDDEN_PATTERNS:
+                findings.extend(_validate_regex(pattern_spec, pattern_path, f"invalid forbidden regex for field '{field_name}'"))
+        elif isinstance(pattern_spec, dict):
+            pattern = pattern_spec.get("pattern", pattern_spec.get("regex"))
+            if not isinstance(pattern, str):
+                findings.append(Finding("error", "contract.forbidden_patterns_type", f"field '{field_name}' forbidden pattern object must include pattern or regex", pattern_path))
+            else:
+                findings.extend(_validate_regex(pattern, pattern_path, f"invalid forbidden regex for field '{field_name}'"))
+        else:
+            findings.append(Finding("error", "contract.forbidden_patterns_type", f"field '{field_name}' forbidden pattern entry must be a string or object", pattern_path))
     return findings
 
 

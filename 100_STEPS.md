@@ -1,0 +1,102 @@
+# 100 Steps to Make Telemetry Contracts Overpoweringly Useful
+
+- [x] Maintain this exact 100-step repo-specific roadmap and update checkboxes only after verified implementation.
+- [x] Add a `lint-contract` CLI path that validates contract shape and schema semantics before telemetry events exist.
+- [x] Strengthen core contract validation for invalid field types, non-boolean `required`, malformed `allowed_values`, bad regexes, invalid forbidden-pattern specs, and impossible numeric bounds.
+- [x] Expand OTLP metric ingestion to preserve histogram, exponential-histogram, summary, temporality, bucket, quantile, and timing metadata.
+- [x] Add regression tests covering contract lint failures and richer OTLP metric conversion behavior.
+- [x] Document the contract lint workflow in the quickstart and architecture overview.
+- [x] Add a GitHub Actions CI workflow that runs tests and smoke checks across supported Python versions.
+- [x] Add a responsible disclosure workflow for privacy-preserving public-code and telemetry findings.
+- [ ] Publish a formal JSON Schema for contract files and validate contracts against it in tests and CLI linting.
+- [ ] Define a versioned contract evolution policy with backwards-compatible additions, deprecations, and migration examples.
+- [ ] Add cross-signal correlation semantics requiring trace IDs, span IDs, request IDs, or configured correlation keys across spans, logs, and metrics.
+- [ ] Implement temporal ordering checks for required span/log/metric sequences within an incident window.
+- [ ] Implement conditional requirements such as “if error_code is present, emit remediation_hint and retryable”.
+- [ ] Add contract inheritance or composition for shared organization-wide telemetry requirements.
+- [ ] Support reusable field dictionaries for common attributes such as tenant_id, trace_id, region, build_sha, and deployment_environment.
+- [ ] Add explicit severity policy validation for logs beyond exact matching, including minimum severity thresholds.
+- [ ] Validate sampling and retention metadata against machine-readable policy stubs instead of documenting them only.
+- [ ] Add schema-level privacy classifications with allowed transformations such as redacted, hashed, tokenized, bucketed, or omitted.
+- [ ] Add field-level units validation for durations, bytes, percentages, counts, timestamps, and currency-like values.
+- [ ] Add contract lint warnings for names that violate OpenTelemetry semantic-convention naming guidance.
+- [ ] Support optional and alternative signals where one of several equivalent telemetry paths satisfies a requirement.
+- [ ] Add event-window grouping so validation can reason per trace, per request, per tenant, and per scenario instance.
+- [ ] Add duplicate-signal and duplicate-field diagnostics to catch accidental repeated telemetry definitions.
+- [ ] Add strict mode that errors on unexpected fields or telemetry names not declared by the contract.
+- [ ] Add a machine-readable finding taxonomy document generated from `telemetry_contracts.findings.TAXONOMY`.
+- [ ] Import OTLP traces with span parent-child relationships and validate required parent/child topology.
+- [ ] Import OTLP span events and links as first-class telemetry-contracts event fields.
+- [ ] Import OTLP resource, scope, and instrumentation-library metadata into separate normalized fields.
+- [ ] Support OTLP JSON exports that use abbreviated or collector-specific field aliases.
+- [ ] Add OTLP log body preservation for structured JSON/object bodies instead of stringifying all bodies.
+- [ ] Add OTLP exemplar extraction for metrics and connect exemplars back to traces when IDs are present.
+- [ ] Add a streaming OTLP JSONL importer for large collector exports without loading the whole file into memory.
+- [ ] Add import diagnostics that report skipped malformed OTLP records with paths and reasons.
+- [ ] Add a synthetic OTLP fixture suite covering spans, logs, sums, gauges, histograms, exponential histograms, summaries, exemplars, links, and events.
+- [ ] Add real collector export instructions for OpenTelemetry Collector file exporter and common vendor-neutral pipelines.
+- [ ] Add a converter from telemetry-contracts JSONL back to minimal OTLP JSON for round-trip testing.
+- [ ] Add source-language static check fixtures for Python, JavaScript, TypeScript, Go, Java, C#, Ruby, and Rust instrumentation examples.
+- [ ] Replace literal-only static matching with lightweight AST-aware detectors where standard-library parsers make that feasible.
+- [ ] Add static checks that detect telemetry name construction via constants and simple concatenation.
+- [ ] Add static checks for OpenTelemetry API usage patterns such as tracer names, meter names, attributes, and status codes.
+- [ ] Add static checks for missing exception recording on error spans.
+- [ ] Add static checks for missing metric units and descriptions in source instrumentation calls.
+- [ ] Add static suppression comments with required justification text and tests proving suppression is precise.
+- [ ] Add SARIF output for static and runtime findings so GitHub code scanning can consume results.
+- [ ] Add pre-commit examples for contract linting, static checks, and benchmark smoke runs.
+- [ ] Add benchmark cases for missing correlation IDs across traces and logs.
+- [ ] Add benchmark cases for high-cardinality metric labels and expected warning labels.
+- [ ] Add benchmark cases for privacy/security leaks in runtime telemetry, not only static source.
+- [ ] Add benchmark cases for partial OTLP imports with skipped malformed records and expected importer diagnostics.
+- [ ] Add benchmark macro metrics for precision, recall, F1, findings per K events, and runtime per K events.
+- [ ] Add benchmark report diffing so changes can compare current results against a checked-in baseline.
+- [ ] Add benchmark metadata fields for dataset license, provenance, reconstruction status, and responsible-disclosure status.
+- [ ] Add benchmark filtering by case id, tag, check type, dataset, and expected failure mode.
+- [ ] Add benchmark Markdown sections listing top remediations grouped by category and severity.
+- [ ] Add a larger synthetic microservices benchmark with checkout, payment, inventory, shipping, auth, and notification contracts.
+- [ ] Add a reconstructed incident dataset for a public outage involving queue backlog and autoscaling blind spots.
+- [ ] Add a reconstructed incident dataset for a public caching or CDN incident with missing purge/correlation telemetry.
+- [ ] Add a reconstructed incident dataset for database connection pool exhaustion with incomplete saturation metrics.
+- [ ] Add a current public-code static case study for missing correlation fields in error logs.
+- [ ] Add a current public-code static case study for high-cardinality labels in metrics instrumentation.
+- [ ] Add a real-world fixture template that separates public facts, reconstructed telemetry, labels, and claims.
+- [ ] Add scripts that regenerate `reports/current_impact.json` and Markdown reports deterministically.
+- [ ] Add a report command that writes runtime/static/scenario/benchmark findings as JSON, Markdown, and SARIF.
+- [ ] Add a claims-to-evidence matrix that maps every paper claim to tests, fixtures, reports, and limitations.
+- [ ] Add a minimal research replication guide with exact commands for every figure/table the repo can produce.
+- [ ] Add examples showing passing and failing contracts for HTTP APIs, batch jobs, message consumers, and cron tasks.
+- [ ] Add examples showing SLO debugging questions translated into scenario requirements.
+- [ ] Add examples showing privacy-safe telemetry designs for authentication, payments, and multi-tenant identifiers.
+- [ ] Add examples showing how to encode allowed operational ranges for latency, retry counts, queue depth, and error budgets.
+- [ ] Add a tutorial that starts with a broken service fixture and incrementally fixes telemetry until all checks pass.
+- [ ] Add documentation for contract authoring anti-patterns and how the validator reports them.
+- [ ] Add documentation for integrating the CLI with pytest, make, GitHub Actions, and generic CI systems.
+- [ ] Add documentation for importer limitations and known OTLP fields not yet supported.
+- [ ] Add documentation for finding severity, category, remediation, and responsible handling.
+- [ ] Add package metadata classifiers, project URLs, and long-description validation for PyPI readiness.
+- [ ] Add an installed-console-script smoke test that verifies `telemetry-contracts` works after editable install.
+- [ ] Add `python -m build` validation and wheel/sdist smoke tests without adding runtime dependencies.
+- [ ] Add type-check-friendly public API docs for `load_contract`, `load_jsonl`, `validate_events`, `check_sources`, and `run_benchmark`.
+- [ ] Add a stable Python API for embedding validation in other test suites without invoking the CLI.
+- [ ] Add JSON output schema documentation for findings and benchmark reports.
+- [ ] Add CLI `--output` support consistently across validate, static, scenario, lint-contract, import, and benchmark commands.
+- [ ] Add CLI filtering by severity, code, category, and remediation group.
+- [ ] Add CLI `explain` command for a finding code with examples and remediation guidance.
+- [ ] Add CLI `init` command that scaffolds a service contract, example events, and CI snippet.
+- [ ] Add CLI `doctor` command that checks Python version, optional YAML support, package install state, and writable report paths.
+- [ ] Improve text output with concise summaries, counts by severity/code, and deterministic ordering.
+- [ ] Add property-style fuzz tests for loader and validator edge cases using only existing/minimal dependencies.
+- [ ] Add golden-file tests for CLI JSON, Markdown benchmark, and future SARIF output formats.
+- [ ] Add performance tests for validating at least 100K JSONL events within a documented time budget.
+- [ ] Optimize validator matching with indexes by kind/name/service for large event streams.
+- [ ] Optimize static checking by avoiding repeated corpus scans for large source trees.
+- [ ] Add memory-usage notes and streaming APIs for million-event telemetry captures.
+- [ ] Add negative tests proving raw sensitive previews remain redacted in all output formats.
+- [ ] Add tests that contracts and examples in README remain synchronized with actual fixture behavior.
+- [ ] Add tests that every benchmark expected finding label still matches exactly one current finding.
+- [ ] Add tests for YAML optional dependency behavior in both installed and not-installed environments.
+- [ ] Add a release checklist covering tests, smoke, benchmark report regeneration, documentation, and responsible disclosure review.
+- [ ] Add contributor guidance explaining coding style, fixture provenance, test expectations, and how to add new case studies.
+- [ ] Add a paper-ready limitations section describing static-analysis boundaries, reconstructed data limits, and non-AI deterministic validation.
+- [ ] Add archival metadata and checksums for every public case-study source fixture and generated report.

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from telemetry_contracts.loader import load_contract, load_jsonl
-from telemetry_contracts.validator import validate_events
+from telemetry_contracts.validator import validate_contract_shape, validate_events
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "examples/contracts/checkout.contract.json"
@@ -79,3 +79,36 @@ def test_sensitive_schema_and_forbidden_patterns_are_enforced():
     assert "telemetry.sensitive_value" in codes(findings)
     assert "telemetry.sensitive_unclassified" in codes(findings)
     assert any(item.to_dict()["category"] == "privacy-security" for item in findings)
+
+
+def test_contract_lint_reports_schema_semantic_errors():
+    findings = validate_contract_shape(
+        {
+            "version": "1.0",
+            "service": "svc",
+            "metrics": [
+                {
+                    "name": "latency",
+                    "required": "yes",
+                    "value": {"type": "duration", "min": 10, "max": 1},
+                    "tags": {
+                        "auth_token": {
+                            "type": "string",
+                            "required": "true",
+                            "allowed_values": "acme",
+                            "pattern": "[",
+                            "forbidden_patterns": [{"name": "bad"}],
+                        }
+                    },
+                }
+            ],
+        }
+    )
+    finding_codes = codes(findings)
+    assert "contract.required_type" in finding_codes
+    assert "contract.field_type" in finding_codes
+    assert "contract.numeric_bounds" in finding_codes
+    assert "contract.allowed_values_type" in finding_codes
+    assert "contract.invalid_regex" in finding_codes
+    assert "contract.forbidden_patterns_type" in finding_codes
+    assert "contract.sensitive_field_unclassified" in finding_codes

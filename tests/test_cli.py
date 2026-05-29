@@ -25,3 +25,8 @@ def test_cli_static_and_scenario_pass(capsys):
     assert main(["static", "--contract", CONTRACT, str(ROOT / "examples/services")]) == 0
     assert main(["scenario", "--contract", CONTRACT, "--events", str(ROOT / "examples/telemetry/passing.jsonl"), "--id", "payment-timeout"]) == 0
     assert capsys.readouterr().out.count("OK") == 2
+
+
+def test_cli_lint_contract_pass(capsys):
+    assert main(["lint-contract", "--contract", CONTRACT]) == 0
+    assert "OK" in capsys.readouterr().out

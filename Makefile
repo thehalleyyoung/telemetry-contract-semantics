@@ -1,9 +1,12 @@
-.PHONY: test smoke validate-pass validate-fail static scenario benchmark
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario benchmark
 
 test:
 	python3 -m pytest
 
-smoke: validate-pass validate-fail static scenario benchmark
+smoke: lint-contract validate-pass validate-fail static scenario benchmark
+
+lint-contract:
+	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
 
 validate-pass:
 	python3 -m telemetry_contracts.cli validate --contract examples/contracts/checkout.contract.json --events examples/telemetry/passing.jsonl

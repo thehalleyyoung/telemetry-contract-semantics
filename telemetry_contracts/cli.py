@@ -11,7 +11,7 @@ from .otlp import load_otlp_json, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .static_checker import check_sources
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
-from .validator import validate_events
+from .validator import validate_contract_shape, validate_events
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -22,6 +22,10 @@ def main(argv: list[str] | None = None) -> int:
     validate_parser.add_argument("--contract", required=True)
     validate_parser.add_argument("--events", required=True)
     _common_output_args(validate_parser)
+
+    lint_parser = subparsers.add_parser("lint-contract", help="lint contract shape and schema semantics without telemetry events")
+    lint_parser.add_argument("--contract", required=True)
+    _common_output_args(lint_parser)
 
     static_parser = subparsers.add_parser("static", help="check source files for expected instrumentation names")
     static_parser.add_argument("--contract", required=True)
@@ -60,7 +64,9 @@ def main(argv: list[str] | None = None) -> int:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
         contract = load_contract(args.contract)
-        if args.command == "validate":
+        if args.command == "lint-contract":
+            findings = validate_contract_shape(contract)
+        elif args.command == "validate":
             findings = validate_events(contract, load_jsonl(args.events))
         elif args.command == "static":
             findings = check_sources(contract, [Path(item) for item in args.sources])

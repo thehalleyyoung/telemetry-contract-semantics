@@ -34,6 +34,9 @@ python3 -m telemetry_contracts.cli static \
   --contract examples/contracts/checkout.contract.json \
   examples/services
 
+python3 -m telemetry_contracts.cli lint-contract \
+  --contract examples/contracts/checkout.contract.json
+
 python3 -m telemetry_contracts.cli scenario \
   --contract examples/contracts/checkout.contract.json \
   --events examples/telemetry/passing.jsonl \
@@ -108,6 +111,7 @@ Findings include severity, code, message, event path, contract path, and details
 
 - `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
 - `telemetry_contracts.validator` checks emitted telemetry against signal and field specifications.
+- `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.

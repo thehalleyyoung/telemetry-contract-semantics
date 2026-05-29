@@ -66,18 +66,88 @@ def _span_event(span: dict[str, Any], service: str, resource_attrs: dict[str, An
 
 def _metric_events(metric: dict[str, Any], service: str, resource_attrs: dict[str, Any]) -> list[dict[str, Any]]:
     name = metric.get("name")
-    data = metric.get("sum") or metric.get("gauge") or metric.get("histogram") or {}
+    metric_type, data = _metric_data(metric)
     points = _as_list(data.get("dataPoints"))
     events: list[dict[str, Any]] = []
     for point in points:
         if not isinstance(point, dict):
             continue
         tags = {**resource_attrs, **_attributes(point.get("attributes", []))}
-        value = point.get("asDouble", point.get("asInt", point.get("value")))
-        if value is None and "count" in point:
-            value = point["count"]
-        events.append({"kind": "metric", "service": service or tags.get("service.name"), "name": name, "value": value, "tags": tags})
+        event = {
+            "kind": "metric",
+            "service": service or tags.get("service.name"),
+            "name": name,
+            "value": _metric_value(metric_type, point),
+            "tags": tags,
+            "metric_type": metric_type,
+        }
+        for key, value in _metric_point_metadata(metric_type, data, point).items():
+            if value is not None:
+                event[key] = value
+        events.append(event)
     return events
+
+
+def _metric_data(metric: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    for metric_type in ("sum", "gauge", "histogram", "exponentialHistogram", "summary"):
+        data = metric.get(metric_type)
+        if isinstance(data, dict):
+            return metric_type, data
+    return "unknown", {}
+
+
+def _metric_value(metric_type: str, point: dict[str, Any]) -> Any:
+    if metric_type in {"sum", "gauge"}:
+        return _number(point.get("asDouble", point.get("asInt", point.get("value"))))
+    if metric_type in {"histogram", "exponentialHistogram", "summary"}:
+        return _number(point.get("sum", point.get("count")))
+    return _number(point.get("value"))
+
+
+def _metric_point_metadata(metric_type: str, data: dict[str, Any], point: dict[str, Any]) -> dict[str, Any]:
+    common = {
+        "aggregation_temporality": data.get("aggregationTemporality"),
+        "is_monotonic": data.get("isMonotonic"),
+        "start_time_unix_nano": point.get("startTimeUnixNano"),
+        "time_unix_nano": point.get("timeUnixNano"),
+    }
+    if metric_type == "histogram":
+        common.update(
+            {
+                "count": _number(point.get("count")),
+                "sum": _number(point.get("sum")),
+                "min": _number(point.get("min")),
+                "max": _number(point.get("max")),
+                "bucket_counts": [_number(item) for item in _as_list(point.get("bucketCounts"))],
+                "explicit_bounds": [_number(item) for item in _as_list(point.get("explicitBounds"))],
+            }
+        )
+    elif metric_type == "exponentialHistogram":
+        common.update(
+            {
+                "count": _number(point.get("count")),
+                "sum": _number(point.get("sum")),
+                "min": _number(point.get("min")),
+                "max": _number(point.get("max")),
+                "scale": _number(point.get("scale")),
+                "zero_count": _number(point.get("zeroCount")),
+                "positive": point.get("positive"),
+                "negative": point.get("negative"),
+            }
+        )
+    elif metric_type == "summary":
+        common.update(
+            {
+                "count": _number(point.get("count")),
+                "sum": _number(point.get("sum")),
+                "quantiles": [
+                    {"quantile": _number(item.get("quantile")), "value": _number(item.get("value"))}
+                    for item in _as_list(point.get("quantileValues"))
+                    if isinstance(item, dict)
+                ],
+            }
+        )
+    return common
 
 
 def _log_event(record: dict[str, Any], service: str, resource_attrs: dict[str, Any]) -> dict[str, Any]:
@@ -119,6 +189,22 @@ def _any_value(value: Any) -> Any:
     if "kvlistValue" in value:
         return _attributes(value["kvlistValue"].get("values", []))
     return None
+
+
+def _number(value: Any) -> Any:
+    if isinstance(value, bool) or value is None:
+        return value
+    if isinstance(value, (int, float)):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            try:
+                return float(value)
+            except ValueError:
+                return value
+    return value
 
 
 def _body_value(body: Any) -> str:
