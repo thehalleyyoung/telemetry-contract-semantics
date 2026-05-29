@@ -9,7 +9,7 @@
         "strict": false
       },
       "contract_paths": [
-        "examples/contracts/checkout.contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/contracts/checkout.contract.json"
       ],
       "dataset": "checkout-payment-timeout-pass",
       "dataset_metadata": {
@@ -19,7 +19,7 @@
       "description": "Existing checkout fixture with complete telemetry for the payment-timeout scenario.",
       "disclosure_status": "public-fixture",
       "events": 5,
-      "events_path": "examples/telemetry/passing.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/telemetry/passing.jsonl",
       "expected_failure_modes": [],
       "findings": [],
       "id": "checkout-payment-timeout-pass",
@@ -42,8 +42,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 1.629,
-        "runtime_per_k_events_ms": 325.8,
+        "runtime_ms": 1.66,
+        "runtime_per_k_events_ms": 332.0,
         "validation_pass": true
       },
       "pass": true,
@@ -61,7 +61,7 @@
         "strict": false
       },
       "contract_paths": [
-        "case_studies/gitlab_2017_database_outage/contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/gitlab_2017_database_outage/contract.json"
       ],
       "dataset": "gitlab-2017-database-outage-reconstructed",
       "dataset_metadata": {
@@ -73,7 +73,7 @@
       "description": "Reconstructed public historical case study based on GitLab.com's January 31, 2017 database outage postmortem.",
       "disclosure_status": "public-fixture",
       "events": 5,
-      "events_path": "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
       "expected_failure_modes": [],
       "findings": [
         {
@@ -457,8 +457,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 2.517,
-        "runtime_per_k_events_ms": 503.4,
+        "runtime_ms": 1.512,
+        "runtime_per_k_events_ms": 302.4,
         "validation_pass": false
       },
       "pass": true,
@@ -476,7 +476,7 @@
         "strict": false
       },
       "contract_paths": [
-        "case_studies/current/owasp_securetea_signin/contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/contract.json"
       ],
       "dataset": "owasp-securetea-signin-current-static-and-hyperproperty",
       "dataset_metadata": {
@@ -493,7 +493,7 @@
       "description": "Defensive static and finite-trace hyperproperty privacy/security analysis of a public OWASP SecureTea React sign-in source file and a bounded reconstructed console-log fixture.",
       "disclosure_status": "public-fixture",
       "events": 3,
-      "events_path": "case_studies/current/owasp_securetea_signin/reconstructed_console_events.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/reconstructed_console_events.jsonl",
       "expected_failure_modes": [],
       "findings": [
         {
@@ -609,13 +609,13 @@
               "end_column": 69,
               "end_line": 27,
               "line": 27,
-              "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+              "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
             }
           },
           "disclosure_sensitivity": "responsible-disclosure",
           "formal_clause": "STATIC.raw-sensitive-log",
           "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
-          "path": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
+          "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
           "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -641,13 +641,13 @@
               "end_column": 41,
               "end_line": 48,
               "line": 48,
-              "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+              "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
             }
           },
           "disclosure_sensitivity": "responsible-disclosure",
           "formal_clause": "STATIC.raw-sensitive-log",
           "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
-          "path": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
+          "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
           "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -688,15 +688,15 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 4.575,
-        "runtime_per_k_events_ms": 1525.0,
+        "runtime_ms": 4.374,
+        "runtime_per_k_events_ms": 1458.0,
         "validation_pass": false
       },
       "pass": true,
       "semantics_features": [],
       "service_owner": "contract service owner",
       "source_paths": [
-        "case_studies/current/owasp_securetea_signin/Signin.js"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
       ],
       "tags": []
     },
@@ -709,7 +709,7 @@
         "strict": false
       },
       "contract_paths": [
-        "examples/otlp/collector_mixed_signals.contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/otlp/collector_mixed_signals.contract.json"
       ],
       "dataset": "otlp-collector-mixed-signals-pass",
       "dataset_metadata": {
@@ -719,7 +719,7 @@
       "description": "OpenTelemetry collector JSON export converted to telemetry-contracts JSONL with span, metric exemplar, and log correlation preserved.",
       "disclosure_status": "public-fixture",
       "events": 3,
-      "events_path": "examples/otlp/collector_mixed_signals.events.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/otlp/collector_mixed_signals.events.jsonl",
       "expected_failure_modes": [],
       "findings": [],
       "id": "otlp-collector-mixed-signals-pass",
@@ -742,8 +742,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.89,
-        "runtime_per_k_events_ms": 296.666667,
+        "runtime_ms": 0.599,
+        "runtime_per_k_events_ms": 199.666667,
         "validation_pass": true
       },
       "pass": true,
@@ -938,7 +938,7 @@
           "streaming": false
         }
       },
-      "import_diagnostics_path": "examples/otlp/collector_coverage_all_signals.diagnostics.json",
+      "import_diagnostics_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/otlp/collector_coverage_all_signals.diagnostics.json",
       "metrics": {
         "contracts": 0,
         "diagnosability_score_change": -0.0,
@@ -972,7 +972,7 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.033,
+        "runtime_ms": 0.038,
         "runtime_per_k_events_ms": 0.0,
         "validation_pass": true
       },
@@ -998,7 +998,7 @@
         "strict": false
       },
       "contract_paths": [
-        "examples/temporal_logic/contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/temporal_logic/contract.json"
       ],
       "dataset": "temporal-logic-properties-fail",
       "dataset_metadata": {
@@ -1008,7 +1008,7 @@
       "description": "Bounded temporal-logic fixture covering safety, bounded response, absence, ordering, and deadline violations.",
       "disclosure_status": "public-fixture",
       "events": 8,
-      "events_path": "examples/temporal_logic/failing.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/temporal_logic/failing.jsonl",
       "expected_failure_modes": [],
       "findings": [
         {
@@ -1196,8 +1196,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.932,
-        "runtime_per_k_events_ms": 116.5,
+        "runtime_ms": 0.602,
+        "runtime_per_k_events_ms": 75.25,
         "validation_pass": false
       },
       "pass": true,
@@ -1215,7 +1215,7 @@
         "strict": false
       },
       "contract_paths": [
-        "examples/benchmarks/missing_correlation.contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/missing_correlation.contract.json"
       ],
       "dataset": "public-benchmark-semantics-fixtures",
       "dataset_metadata": {
@@ -1247,7 +1247,7 @@
       "description": "Minimal public fixture that preserves span/metric data but drops log correlation keys so incident evidence cannot be joined.",
       "disclosure_status": "public-fixture",
       "events": 3,
-      "events_path": "examples/benchmarks/missing_correlation.events.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/missing_correlation.events.jsonl",
       "expected_failure_modes": [
         "missing_correlation"
       ],
@@ -1333,8 +1333,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 1.439,
-        "runtime_per_k_events_ms": 479.666667,
+        "runtime_ms": 0.478,
+        "runtime_per_k_events_ms": 159.333333,
         "validation_pass": false
       },
       "pass": true,
@@ -1359,7 +1359,7 @@
         "strict": false
       },
       "contract_paths": [
-        "examples/benchmarks/cardinality.contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/cardinality.contract.json"
       ],
       "dataset": "public-benchmark-semantics-fixtures",
       "dataset_metadata": {
@@ -1391,7 +1391,7 @@
       "description": "Minimal metric fixture whose tenant_id tag exceeds a declared bounded-cardinality budget.",
       "disclosure_status": "public-fixture",
       "events": 2,
-      "events_path": "examples/benchmarks/cardinality.events.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/cardinality.events.jsonl",
       "expected_failure_modes": [
         "high_cardinality"
       ],
@@ -1456,8 +1456,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.803,
-        "runtime_per_k_events_ms": 401.5,
+        "runtime_ms": 0.345,
+        "runtime_per_k_events_ms": 172.5,
         "validation_pass": true
       },
       "pass": true,
@@ -1482,7 +1482,7 @@
         "strict": false
       },
       "contract_paths": [
-        "examples/benchmarks/privacy_static.contract.json"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static.contract.json"
       ],
       "dataset": "public-benchmark-semantics-fixtures",
       "dataset_metadata": {
@@ -1514,7 +1514,7 @@
       "description": "Public-code-style auth fixture combining raw sensitive telemetry, static secret logging, unbounded label, and missing correlation checks.",
       "disclosure_status": "public-fixture",
       "events": 1,
-      "events_path": "examples/benchmarks/privacy_static.events.jsonl",
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static.events.jsonl",
       "expected_failure_modes": [
         "pii_exposure",
         "secret_logging",
@@ -1601,13 +1601,13 @@
               "end_column": 91,
               "end_line": 2,
               "line": 2,
-              "path": "examples/benchmarks/privacy_static_source.py"
+              "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
             }
           },
           "disclosure_sensitivity": "responsible-disclosure",
           "formal_clause": "STATIC.raw-sensitive-log",
           "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
-          "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+          "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
           "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -1637,13 +1637,13 @@
               "end_column": 91,
               "end_line": 2,
               "line": 2,
-              "path": "examples/benchmarks/privacy_static_source.py"
+              "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
             }
           },
           "disclosure_sensitivity": "internal",
           "formal_clause": "STATIC.correlation-evidence",
           "message": "error log may be missing trace/request correlation fields",
-          "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+          "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
           "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -1669,13 +1669,13 @@
               "end_column": 91,
               "end_line": 3,
               "line": 3,
-              "path": "examples/benchmarks/privacy_static_source.py"
+              "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
             }
           },
           "disclosure_sensitivity": "internal",
           "formal_clause": "STATIC.cardinality-risk",
           "message": "metric/tag code appears to use a high-cardinality or user-controlled label without bucketing",
-          "path": "examples/benchmarks/privacy_static_source.py:3:5-3:91",
+          "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91",
           "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
           "sarif_level": "warning",
           "service_owner": "contract service owner",
@@ -1720,8 +1720,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 1.485,
-        "runtime_per_k_events_ms": 1485.0,
+        "runtime_ms": 1.299,
+        "runtime_per_k_events_ms": 1299.0,
         "validation_pass": false
       },
       "pass": true,
@@ -1732,7 +1732,7 @@
       ],
       "service_owner": "benchmark-auth",
       "source_paths": [
-        "examples/benchmarks/privacy_static_source.py"
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
       ],
       "tags": [
         "privacy",
@@ -1834,7 +1834,7 @@
           "records": 3
         }
       },
-      "import_diagnostics_path": "examples/benchmarks/partial_otlp.diagnostics.json",
+      "import_diagnostics_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/partial_otlp.diagnostics.json",
       "metrics": {
         "contracts": 0,
         "diagnosability_score_change": -0.0,
@@ -1865,7 +1865,7 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.013,
+        "runtime_ms": 0.015,
         "runtime_per_k_events_ms": 0.0,
         "validation_pass": true
       },
@@ -1885,7 +1885,7 @@
   ],
   "summary": {
     "cases": 10,
-    "config": "benchmarks/builtin.json",
+    "config": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/benchmarks/builtin.json",
     "contracts": 8,
     "datasets": [
       "checkout-payment-timeout-pass",
@@ -1945,8 +1945,8 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 28.153,
-    "runtime_per_k_events_ms": 938.433333,
+    "runtime_ms": 21.371,
+    "runtime_per_k_events_ms": 712.366667,
     "top_remediations": [
       {
         "affected_owner": "contract service owner",

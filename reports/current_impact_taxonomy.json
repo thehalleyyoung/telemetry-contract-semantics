@@ -172,7 +172,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -183,7 +183,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -348,7 +348,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -359,7 +359,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.correlation-evidence",
-        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -370,7 +370,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.cardinality-risk",
-        "path": "examples/benchmarks/privacy_static_source.py:3:5-3:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"

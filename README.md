@@ -24,6 +24,8 @@ This repository turns that thesis into executable checks:
 - Collector-export analysis for dropped evidence, unknown schemas, high-cardinality attributes, PII/secret patterns, metric temporality, and unsupported OTLP features, plus JSONL↔OTLP round-trip conversion for importer regression tests.
 - A benchmark harness for built-in or user-provided contract/event corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, and OTLP import-loss accounting.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, semantic-convention, incident-readiness, equivalence, and preservation outputs.
+- SARIF export for runtime/static findings and benchmark reports, plus CI gate helpers that fail on new unbaselined findings while honoring owned, expiring baselines.
+- Deterministic report regeneration and a public claims-to-evidence matrix that links bounded README/report claims to checked-in fixtures, generated artifacts, and tests.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
 - An executable small-step `evaluate-semantics` command that emits contract-evaluation derivations and checks their denotation against the deterministic validator on golden and historical traces.
 - A compiled `monitor` command that runs deterministic bounded-memory runtime monitors over finite JSONL traces, with sliding-window witnesses for temporal response/sequence obligations and an observed memory envelope.
@@ -37,7 +39,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 64 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 69 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -105,6 +107,20 @@ python3 -m telemetry_contracts.cli benchmark \
 python3 -m telemetry_contracts.cli taxonomy \
   --findings reports/current_impact.json \
   --format markdown
+
+python3 -m telemetry_contracts.cli validate \
+  --contract examples/contracts/checkout.contract.json \
+  --events examples/telemetry/failing.jsonl \
+  --format sarif
+
+python3 -m telemetry_contracts.cli ci-gate \
+  --findings examples/ci/static_findings.example.json \
+  --baseline examples/ci/baseline.example.json \
+  --format markdown
+
+python3 -m telemetry_contracts.cli regenerate-artifacts --format markdown
+
+python3 -m telemetry_contracts.cli claims-matrix --format markdown
 
 python3 -m telemetry_contracts.cli explain telemetry.strict_unexpected_field \
   --examples reports/gitlab_2017_strict_validation.json \
@@ -300,7 +316,7 @@ Runtime validation reads newline-delimited JSON. Events are intentionally simple
 {"kind":"log","service":"checkout","name":"checkout.payment_failed","trace_id":"trace-123","timestamp_ms":1200,"severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
 ```
 
-Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field` or `STRICT.signal-closed-world`), remediation, disclosure sensitivity, service-owner routing, SARIF-compatible level, and CI baseline keys. `python3 -m telemetry_contracts.cli taxonomy` emits the canonical taxonomy from `docs/finding_taxonomy.json`; with `--findings`, it summarizes which semantic clauses and categories appear in a concrete JSON report.
+Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output or `--format sarif` on runtime/static finding commands for code-scanning upload. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field` or `STRICT.signal-closed-world`), remediation, disclosure sensitivity, service-owner routing, SARIF-compatible level, and CI baseline keys. `python3 -m telemetry_contracts.cli taxonomy` emits the canonical taxonomy from `docs/finding_taxonomy.json`; with `--findings`, it summarizes which semantic clauses and categories appear in a concrete JSON report. `python3 -m telemetry_contracts.cli sarif --findings report.json` converts saved JSON finding or benchmark reports to SARIF 2.1.0.
 
 ## Observation model and satisfaction relation
 
@@ -332,8 +348,12 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
+- `telemetry_contracts.sarif` converts validation, static, and benchmark finding reports to SARIF 2.1.0 with taxonomy-backed rule metadata.
+- `telemetry_contracts.ci_gate` evaluates saved finding reports against exact owned/expiring baselines so CI can block only new high-severity findings.
+- `telemetry_contracts.regenerate` writes deterministic public report artifacts and a paper-style benchmark table from checked-in benchmark config.
+- `telemetry_contracts.claims` emits a claims-to-evidence matrix linking public claims to artifacts, fixtures, tests, and limitations.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `import-otlp`, `export-otlp`, `analyze-collector-export`, `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `import-otlp`, `export-otlp`, `analyze-collector-export`, `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `benchmark-diff`, `taxonomy`, `sarif`, `ci-gate`, `regenerate-artifacts`, `claims-matrix`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -346,6 +366,18 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 3. Run service tests or staging traffic and export JSONL telemetry.
 4. Validate emitted telemetry against the contract.
 5. Add scenario checks for incident questions such as: “Can on-call identify tenant, cart, provider, retry count, and error class for a payment timeout?”
+
+## CI and code-scanning workflow
+
+`examples/ci/` contains a GitHub Actions template, generic shell script, pre-commit hook example, sample finding report, and owned expiring baseline. The CI pattern is:
+
+```bash
+python3 -m telemetry_contracts.cli validate --contract service.contract.json --events telemetry.jsonl --format sarif > telemetry-contracts.sarif
+python3 -m telemetry_contracts.cli static --contract service.contract.json src --format json > telemetry-contracts.static.json
+python3 -m telemetry_contracts.cli ci-gate --findings telemetry-contracts.static.json --baseline examples/ci/baseline.example.json --fail-on error
+```
+
+Baselines match exact `code`, `path`, `contract_path`, `event_index`, or `path_suffix` keys and may include `owner`, `expires_at`, and `justification`; expired entries fail the gate.
 
 ## Real-world finding workflow
 
@@ -376,6 +408,15 @@ python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --
 ```
 
 A benchmark config is JSON with a `cases` list. Each case can point to one contract or multiple contracts plus JSONL events, source paths, import diagnostics, or a mix of those inputs; optional scenario ids; optional `strict: true`; optional dataset metadata/provenance; optional tags/check types/failure modes/semantic features; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario/strict/import-diagnostic check flags, number of contracts, events, findings, findings by code/severity, label precision/recall/F1, runtime and runtime-per-1K-events, findings-per-1K-events, observed memory envelope, dataset ids, import loss rate, grouped remediations with effort/benefit hints, and pass/fail. Use `--case-id`, `--tag`, `--check-type`, `--dataset`, `--expected-failure-mode`, `--semantics-feature`, `--service-owner`, or `--disclosure-status` to slice a suite, and `benchmark-diff` to compare two saved JSON benchmark reports. The checked-in built-in benchmark currently covers 10 cases, 8 contract-backed cases, 30 runtime events, 35 labeled findings, and 1.0 precision/recall/F1 on all labeled cases, including four `telemetry.hyper_pii_disclosure` findings, collector dropped-evidence/unsupported-feature diagnostics, and one labeled partial OTLP import diagnostic.
+
+To refresh checked-in public artifacts from current fixtures:
+
+```bash
+python3 -m telemetry_contracts.cli regenerate-artifacts --write --format markdown
+python3 -m telemetry_contracts.cli claims-matrix --output docs/claims_evidence_matrix.json
+```
+
+This rewrites `reports/current_impact.{json,md,sarif}`, `reports/current_impact_taxonomy.{json,md}`, `reports/paper_tables.md`, and `docs/claims_evidence_matrix.json`.
 
 ## Public historical case study
 

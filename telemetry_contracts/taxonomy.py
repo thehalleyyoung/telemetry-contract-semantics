@@ -54,7 +54,10 @@ def summarize_findings(paths: list[str | Path]) -> dict[str, Any]:
         extracted = _extract_findings(data)
         sources.append({"path": str(path), "findings": len(extracted)})
         findings.extend(extracted)
+    return summarize_finding_records(findings, sources=sources)
 
+
+def summarize_finding_records(findings: list[dict[str, Any]], *, sources: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     unknown_codes = sorted({str(item.get("code")) for item in findings if item.get("code") not in TAXONOMY})
     enriched = []
     for item in findings:
@@ -75,7 +78,7 @@ def summarize_findings(paths: list[str | Path]) -> dict[str, Any]:
         )
 
     return {
-        "sources": sources,
+        "sources": sources or [],
         "summary": {
             "findings": len(enriched),
             "unknown_codes": unknown_codes,

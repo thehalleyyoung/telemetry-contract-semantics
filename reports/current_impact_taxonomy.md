@@ -161,8 +161,8 @@
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.username |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[2].fields.password |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[3].fields.cookie |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69 |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41 |
 | otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount |
 | otlp.unsupported_metric | input | OTLP.unsupported-metric | warning | warning | $.resourceMetrics[0].scopeMetrics[0].metrics[5] |
 | otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount |
@@ -177,8 +177,7 @@
 | telemetry.cardinality | operability | SAT.cardinality-bound | warning | warning | events[metric=checkout.requests].tenant_id |
 | telemetry.sensitive_value | privacy-security | SAT.raw-sensitive-value | error | error | event[1].email |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.email |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
-| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
-| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | examples/benchmarks/privacy_static_source.py:3:5-3:91 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91 |
 | otlp.malformed_record | input | OTLP.malformed-record | warning | warning | records[1] |
-

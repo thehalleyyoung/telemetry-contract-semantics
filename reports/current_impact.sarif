@@ -1,0 +1,1968 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5].source"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'source' value 'lvm_snapshot' is not allowed"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "schema",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.allowed_values",
+            "contract_path": "$.spans[0].fields.source",
+            "details": {
+              "allowed_values": [
+                "verified_backup"
+              ]
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.allowed-values",
+            "path": "event[5].source",
+            "remediation": "Normalize the field to one of the declared allowed values.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.allowed_values"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5].backup_age_hours"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'backup_age_hours' value 6 is above maximum 1"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "schema",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.numeric_max",
+            "contract_path": "$.spans[0].fields.backup_age_hours",
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.numeric-upper-bound",
+            "path": "event[5].backup_age_hours",
+            "remediation": "Investigate or clamp values above the declared maximum.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.numeric_max"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5].source_environment"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'source_environment' value 'staging' is not allowed"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "schema",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.allowed_values",
+            "contract_path": "$.spans[0].fields.source_environment",
+            "details": {
+              "allowed_values": [
+                "production_backup"
+              ]
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.allowed-values",
+            "path": "event[5].source_environment",
+            "remediation": "Normalize the field to one of the declared allowed values.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.allowed_values"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].value"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'value' value 4294967296 is above maximum 104857600"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "schema",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.numeric_max",
+            "contract_path": "$.metrics[0].value",
+            "disclosure_sensitivity": "internal",
+            "event_index": 1,
+            "formal_clause": "SAT.numeric-upper-bound",
+            "path": "event[1].value",
+            "remediation": "Investigate or clamp values above the declared maximum.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.numeric_max"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[3].value"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'value' value False is not allowed"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "schema",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.allowed_values",
+            "contract_path": "$.metrics[1].value",
+            "details": {
+              "allowed_values": [
+                true
+              ]
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 3,
+            "formal_clause": "SAT.allowed-values",
+            "path": "event[3].value",
+            "remediation": "Normalize the field to one of the declared allowed values.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.allowed_values"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2].target_role"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'target_role' value 'primary' is not allowed"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "schema",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.allowed_values",
+            "contract_path": "$.logs[0].fields.target_role",
+            "details": {
+              "allowed_values": [
+                "secondary"
+              ]
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.allowed-values",
+            "path": "event[2].target_role",
+            "remediation": "Normalize the field to one of the declared allowed values.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.allowed_values"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2].correlation_id"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'database.destructive_command' missing required field 'correlation_id'"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.correlation_id",
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.required-field",
+            "path": "event[2].correlation_id",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2].command_guard_result"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'database.destructive_command' missing required field 'command_guard_result'"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.command_guard_result",
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.required-field",
+            "path": "event[2].command_guard_result",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[4].alert_delivered"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[1].fields.alert_delivered",
+            "disclosure_sensitivity": "internal",
+            "event_index": 4,
+            "formal_clause": "SAT.required-field",
+            "path": "event[4].alert_delivered",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "events[log=database.destructive_command].correlation_id"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "correlation_id",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "path": "events[log=database.destructive_command].correlation_id",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "scenario.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "events[log=database.destructive_command].command_guard_result"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "command_guard_result",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "path": "events[log=database.destructive_command].command_guard_result",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "scenario.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "events[log=backup.pg_dump.failed].alert_delivered"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'"
+          },
+          "properties": {
+            "case_id": "gitlab-2017-database-outage-reconstructed",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                3
+              ],
+              "minimum_observation": {
+                "field": "alert_delivered",
+                "name": "backup.pg_dump.failed",
+                "signal": "log"
+              },
+              "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "path": "events[log=backup.pg_dump.failed].alert_delivered",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "scenario.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].fields.username"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "signin-console-no-raw-sensitive-values: log 'console.log' exposes raw sensitive field 'username'"
+          },
+          "properties": {
+            "case_id": "owasp-securetea-signin-current-static-and-hyperproperty",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.hyper_pii_disclosure",
+            "contract_path": "$.hyperproperties[0].sensitive_fields",
+            "details": {
+              "field": "username",
+              "property": "signin-console-no-raw-sensitive-values",
+              "request_id": null,
+              "trace_id": null,
+              "value_preview": "alic\u2026test"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "HYP.pii-non-disclosure",
+            "path": "event[1].fields.username",
+            "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.hyper_pii_disclosure"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2].fields.password"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "signin-console-no-raw-sensitive-values: log 'console.log' exposes raw sensitive field 'password'"
+          },
+          "properties": {
+            "case_id": "owasp-securetea-signin-current-static-and-hyperproperty",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.hyper_pii_disclosure",
+            "contract_path": "$.hyperproperties[0].sensitive_fields",
+            "details": {
+              "field": "password",
+              "property": "signin-console-no-raw-sensitive-values",
+              "request_id": null,
+              "trace_id": null,
+              "value_preview": "pass\u2026aple"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 2,
+            "formal_clause": "HYP.pii-non-disclosure",
+            "path": "event[2].fields.password",
+            "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.hyper_pii_disclosure"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[3].fields.cookie"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "signin-console-no-raw-sensitive-values: log 'console.log' exposes raw sensitive field 'cookie'"
+          },
+          "properties": {
+            "case_id": "owasp-securetea-signin-current-static-and-hyperproperty",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.hyper_pii_disclosure",
+            "contract_path": "$.hyperproperties[0].sensitive_fields",
+            "details": {
+              "field": "cookie",
+              "property": "signin-console-no-raw-sensitive-values",
+              "request_id": null,
+              "trace_id": null,
+              "value_preview": "Bear\u2026okie"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 3,
+            "formal_clause": "HYP.pii-non-disclosure",
+            "path": "event[3].fields.cookie",
+            "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.hyper_pii_disclosure"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 27
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include a credential, token, cookie, or other sensitive value"
+          },
+          "properties": {
+            "case_id": "owasp-securetea-signin-current-static-and-hyperproperty",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.secret_logging",
+            "details": {
+              "line": "console.log('A password was submitted: ' + this.state.password);",
+              "source_span": {
+                "column": 5,
+                "end_column": 69,
+                "end_line": 27,
+                "line": 27,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.raw-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
+            "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.secret_logging"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
+                },
+                "region": {
+                  "startColumn": 13,
+                  "startLine": 48
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include a credential, token, cookie, or other sensitive value"
+          },
+          "properties": {
+            "case_id": "owasp-securetea-signin-current-static-and-hyperproperty",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.secret_logging",
+            "details": {
+              "line": "console.log(json[\"cookie\"]);",
+              "source_span": {
+                "column": 13,
+                "end_column": 41,
+                "end_line": 48,
+                "line": 48,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.raw-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
+            "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.secret_logging"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "droppedLinksCount=1 indicates collector/exporter loss"
+          },
+          "properties": {
+            "case_id": "otlp-collector-coverage-analysis",
+            "category": "input",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "otlp.dropped_evidence",
+            "details": {
+              "count": 1,
+              "field": "droppedLinksCount",
+              "invalidates_contract_claim": true
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "OTLP.dropped-evidence",
+            "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount",
+            "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "otlp.dropped_evidence"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unsupported metric payload for checkout.unsupported"
+          },
+          "properties": {
+            "case_id": "otlp-collector-coverage-analysis",
+            "category": "input",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "otlp.unsupported_metric",
+            "details": {
+              "invalidates_contract_claim": true
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "OTLP.unsupported-metric",
+            "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]",
+            "remediation": "Add importer support or avoid the unsupported metric encoding before making metric-contract claims.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "otlp.unsupported_metric"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "droppedAttributesCount=1 indicates collector/exporter loss"
+          },
+          "properties": {
+            "case_id": "otlp-collector-coverage-analysis",
+            "category": "input",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "otlp.dropped_evidence",
+            "details": {
+              "count": 1,
+              "field": "droppedAttributesCount",
+              "invalidates_contract_claim": true
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "OTLP.dropped-evidence",
+            "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount",
+            "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "otlp.dropped_evidence"
+        },
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "$.partialSuccess"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "ignored unsupported top-level OTLP field 'partialSuccess'"
+          },
+          "properties": {
+            "case_id": "otlp-collector-coverage-analysis",
+            "category": "input",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "info",
+              "sarif_level": "note"
+            },
+            "code": "otlp.unsupported_top_level",
+            "details": {
+              "invalidates_contract_claim": false
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "OTLP.unsupported-top-level",
+            "path": "$.partialSuccess",
+            "remediation": "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.",
+            "sarif_level": "note",
+            "service_owner": "contract service owner",
+            "severity": "info"
+          },
+          "ruleId": "otlp.unsupported_top_level"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].value"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "backup-success-safety: safety condition failed for metric 'backup.pg_dump.success'"
+          },
+          "properties": {
+            "case_id": "temporal-logic-properties-fail",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_safety",
+            "contract_path": "$.temporal_properties[0].condition",
+            "details": {
+              "event": 1,
+              "property": "backup-success-safety"
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 1,
+            "formal_clause": "SAT.temporal-safety",
+            "path": "event[1].value",
+            "remediation": "Keep every matched event inside the declared temporal invariant.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.temporal_safety"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "request-failure-alert-response: no response 'request.alerted' within 1000ms after trigger 'request.failed'"
+          },
+          "properties": {
+            "case_id": "temporal-logic-properties-fail",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_response",
+            "contract_path": "$.temporal_properties[1].response",
+            "details": {
+              "group": [
+                "trace-late"
+              ],
+              "property": "request-failure-alert-response",
+              "within_ms": 1000
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.temporal-response",
+            "path": "event[2]",
+            "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.temporal_response"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[4]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "no-raw-secret-logs: forbidden event log 'debug.raw_secret_preview' was observed"
+          },
+          "properties": {
+            "case_id": "temporal-logic-properties-fail",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_absence",
+            "contract_path": "$.temporal_properties[2].forbidden",
+            "details": {
+              "property": "no-raw-secret-logs"
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 4,
+            "formal_clause": "SAT.temporal-absence",
+            "path": "event[4]",
+            "remediation": "Do not emit the forbidden event in traces covered by this absence property.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.temporal_absence"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deploy-start-before-finish: 'deploy.finished' occurred without prior 'deploy.started'"
+          },
+          "properties": {
+            "case_id": "temporal-logic-properties-fail",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_order",
+            "contract_path": "$.temporal_properties[3].before",
+            "details": {
+              "group": [
+                "deploy-2"
+              ],
+              "property": "deploy-start-before-finish"
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.temporal-order",
+            "path": "event[5]",
+            "remediation": "Emit telemetry in the order required by the temporal property or sequence.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.temporal_order"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[8]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "restore-deadline: 'incident.restored' missed 5000ms deadline by 1001.000ms"
+          },
+          "properties": {
+            "case_id": "temporal-logic-properties-fail",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.temporal_deadline",
+            "contract_path": "$.temporal_properties[4].within_ms",
+            "details": {
+              "elapsed_ms": 6001.0,
+              "group": [
+                "incident-2"
+              ],
+              "property": "restore-deadline"
+            },
+            "disclosure_sensitivity": "internal",
+            "event_index": 8,
+            "formal_clause": "SAT.temporal-deadline",
+            "path": "event[8]",
+            "remediation": "Emit the deadline-bound event before the declared time budget expires.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.temporal_deadline"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'checkout.error' missing any correlation key from ['trace_id', 'request_id']"
+          },
+          "properties": {
+            "case_id": "benchmark-missing-correlation",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.correlation_missing",
+            "contract_path": "$.correlation.keys",
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.correlation-presence",
+            "path": "event[2]",
+            "remediation": "Emit a trace_id, span_id, request_id, or configured correlation key on correlated signals.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.correlation_missing"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "events[log]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "no log events carried required correlation keys"
+          },
+          "properties": {
+            "case_id": "benchmark-missing-correlation",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.correlation_missing",
+            "contract_path": "$.correlation.keys",
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "SAT.correlation-presence",
+            "path": "events[log]",
+            "remediation": "Emit a trace_id, span_id, request_id, or configured correlation key on correlated signals.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.correlation_missing"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "events[metric=checkout.requests].tenant_id"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'checkout.requests' field 'tenant_id' has cardinality 2 over hint 1"
+          },
+          "properties": {
+            "case_id": "benchmark-cardinality-budget",
+            "category": "operability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "telemetry.cardinality",
+            "contract_path": "$.metrics[0].fields.tenant_id.cardinality",
+            "details": {
+              "distinct_values": 2
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "SAT.cardinality-bound",
+            "path": "events[metric=checkout.requests].tenant_id",
+            "remediation": "Bucket, hash, drop, or bound labels with excessive cardinality.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "telemetry.cardinality"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].email"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'email' appears to contain raw personal data"
+          },
+          "properties": {
+            "case_id": "benchmark-privacy-static-source",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.sensitive_value",
+            "contract_path": "$.logs[0].fields.email",
+            "details": {
+              "sensitivity": "personal",
+              "value_preview": "alic\u2026.com"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.raw-sensitive-value",
+            "path": "event[1].email",
+            "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.sensitive_value"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].fields.email"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "auth-no-raw-email: log 'auth.failure' exposes raw sensitive field 'email'"
+          },
+          "properties": {
+            "case_id": "benchmark-privacy-static-source",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.hyper_pii_disclosure",
+            "contract_path": "$.hyperproperties[0].sensitive_fields",
+            "details": {
+              "field": "email",
+              "property": "auth-no-raw-email",
+              "request_id": null,
+              "trace_id": null,
+              "value_preview": "alic\u2026.com"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "HYP.pii-non-disclosure",
+            "path": "event[1].fields.email",
+            "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.hyper_pii_disclosure"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include a credential, token, cookie, or other sensitive value"
+          },
+          "properties": {
+            "case_id": "benchmark-privacy-static-source",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.secret_logging",
+            "details": {
+              "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)",
+              "source_span": {
+                "column": 5,
+                "end_column": 91,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.raw-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
+            "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.secret_logging"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "error log may be missing trace/request correlation fields"
+          },
+          "properties": {
+            "case_id": "benchmark-privacy-static-source",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.missing_correlation",
+            "details": {
+              "expected_any": [
+                "trace_id",
+                "request_id"
+              ],
+              "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)",
+              "source_span": {
+                "column": 5,
+                "end_column": 91,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+              }
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "STATIC.correlation-evidence",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
+            "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "static.missing_correlation"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 3
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric/tag code appears to use a high-cardinality or user-controlled label without bucketing"
+          },
+          "properties": {
+            "case_id": "benchmark-privacy-static-source",
+            "category": "operability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "static.unbounded_label",
+            "details": {
+              "line": "meter.counter(\"auth.login.attempts\", labels={\"email\": user_email, \"status\": \"failed\"})",
+              "source_span": {
+                "column": 5,
+                "end_column": 91,
+                "end_line": 3,
+                "line": 3,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+              }
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "STATIC.cardinality-risk",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91",
+            "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "static.unbounded_label"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "records[1]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "OTLP JSONL record 2 was malformed and skipped"
+          },
+          "properties": {
+            "case_id": "benchmark-partial-otlp-diagnostics",
+            "category": "input",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "otlp.malformed_record",
+            "details": {
+              "invalidates_contract_claim": true,
+              "record_index": 1
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "OTLP.malformed-record",
+            "path": "records[1]",
+            "remediation": "Fix or exclude malformed OTLP JSONL records before asserting full export coverage.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "otlp.malformed_record"
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+          "name": "telemetry-contracts",
+          "rules": [
+            {
+              "fullDescription": {
+                "text": "OTLP.dropped-evidence"
+              },
+              "help": {
+                "text": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence."
+              },
+              "id": "otlp.dropped_evidence",
+              "name": "otlp.dropped_evidence",
+              "properties": {
+                "category": "input",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "otlp.dropped_evidence"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "OTLP.malformed-record"
+              },
+              "help": {
+                "text": "Fix or exclude malformed OTLP JSONL records before asserting full export coverage."
+              },
+              "id": "otlp.malformed_record",
+              "name": "otlp.malformed_record",
+              "properties": {
+                "category": "input",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "otlp.malformed_record"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "OTLP.unsupported-metric"
+              },
+              "help": {
+                "text": "Add importer support or avoid the unsupported metric encoding before making metric-contract claims."
+              },
+              "id": "otlp.unsupported_metric",
+              "name": "otlp.unsupported_metric",
+              "properties": {
+                "category": "input",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "otlp.unsupported_metric"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "OTLP.unsupported-top-level"
+              },
+              "help": {
+                "text": "Document unsupported top-level OTLP fields as validity threats or add bounded importer support."
+              },
+              "id": "otlp.unsupported_top_level",
+              "name": "otlp.unsupported_top_level",
+              "properties": {
+                "category": "input",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "otlp.unsupported_top_level"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "ADEQ.required-field"
+              },
+              "help": {
+                "text": "Emit the field needed to answer the scenario question."
+              },
+              "id": "scenario.missing_field",
+              "name": "scenario.missing_field",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "scenario.missing_field"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "STATIC.correlation-evidence"
+              },
+              "help": {
+                "text": "Include a trace_id, request_id, or configured correlation field in error logs."
+              },
+              "id": "static.missing_correlation",
+              "name": "static.missing_correlation",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "static.missing_correlation"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "STATIC.raw-sensitive-log"
+              },
+              "help": {
+                "text": "Remove the sensitive value from logs or log only a redacted/hash surrogate."
+              },
+              "id": "static.secret_logging",
+              "name": "static.secret_logging",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "static.secret_logging"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "STATIC.cardinality-risk"
+              },
+              "help": {
+                "text": "Avoid user-controlled/high-cardinality metric labels or add bucketing."
+              },
+              "id": "static.unbounded_label",
+              "name": "static.unbounded_label",
+              "properties": {
+                "category": "operability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "static.unbounded_label"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.allowed-values"
+              },
+              "help": {
+                "text": "Normalize the field to one of the declared allowed values."
+              },
+              "id": "telemetry.allowed_values",
+              "name": "telemetry.allowed_values",
+              "properties": {
+                "category": "schema",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.allowed_values"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.cardinality-bound"
+              },
+              "help": {
+                "text": "Bucket, hash, drop, or bound labels with excessive cardinality."
+              },
+              "id": "telemetry.cardinality",
+              "name": "telemetry.cardinality",
+              "properties": {
+                "category": "operability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.cardinality"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.correlation-presence"
+              },
+              "help": {
+                "text": "Emit a trace_id, span_id, request_id, or configured correlation key on correlated signals."
+              },
+              "id": "telemetry.correlation_missing",
+              "name": "telemetry.correlation_missing",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.correlation_missing"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "HYP.pii-non-disclosure"
+              },
+              "help": {
+                "text": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks."
+              },
+              "id": "telemetry.hyper_pii_disclosure",
+              "name": "telemetry.hyper_pii_disclosure",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.hyper_pii_disclosure"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.required-field"
+              },
+              "help": {
+                "text": "Attach the required attribute/tag/field to the signal."
+              },
+              "id": "telemetry.missing_field",
+              "name": "telemetry.missing_field",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.missing_field"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.numeric-upper-bound"
+              },
+              "help": {
+                "text": "Investigate or clamp values above the declared maximum."
+              },
+              "id": "telemetry.numeric_max",
+              "name": "telemetry.numeric_max",
+              "properties": {
+                "category": "schema",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.numeric_max"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.raw-sensitive-value"
+              },
+              "help": {
+                "text": "Do not emit raw PII, credentials, or bearer tokens in telemetry."
+              },
+              "id": "telemetry.sensitive_value",
+              "name": "telemetry.sensitive_value",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.sensitive_value"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.temporal-absence"
+              },
+              "help": {
+                "text": "Do not emit the forbidden event in traces covered by this absence property."
+              },
+              "id": "telemetry.temporal_absence",
+              "name": "telemetry.temporal_absence",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.temporal_absence"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.temporal-deadline"
+              },
+              "help": {
+                "text": "Emit the deadline-bound event before the declared time budget expires."
+              },
+              "id": "telemetry.temporal_deadline",
+              "name": "telemetry.temporal_deadline",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.temporal_deadline"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.temporal-order"
+              },
+              "help": {
+                "text": "Emit telemetry in the order required by the temporal property or sequence."
+              },
+              "id": "telemetry.temporal_order",
+              "name": "telemetry.temporal_order",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.temporal_order"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.temporal-response"
+              },
+              "help": {
+                "text": "Emit the required response event inside the bounded response window after each trigger."
+              },
+              "id": "telemetry.temporal_response",
+              "name": "telemetry.temporal_response",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.temporal_response"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.temporal-safety"
+              },
+              "help": {
+                "text": "Keep every matched event inside the declared temporal invariant."
+              },
+              "id": "telemetry.temporal_safety",
+              "name": "telemetry.temporal_safety",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.temporal_safety"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

@@ -27,6 +27,10 @@
 - Added first-class OTLP JSON/JSONL import coverage for OpenTelemetry collector-style spans, logs, sums, gauges, histograms, exponential histograms, summaries, metric exemplars, span links/events/status, resource/scope metadata, source JSON provenance, alias normalization, importer diagnostics, collector-export risk analysis, and JSONL↔OTLP round-trip conversion. `examples/otlp/collector_mixed_signals.*`, `examples/otlp/collector_stream_aliases.*`, `examples/otlp/collector_coverage_all_signals.*`, `examples/otlp/collector_malformed_records.otlp.jsonl`, `examples/otlp/collector_pipeline_*`, and `examples/benchmarks/partial_otlp.diagnostics.json` are checked-in validation fixtures; the built-in benchmark reports labeled partial-import and collector dropped-evidence/unsupported-feature diagnostics with bounded import loss rates.
 - Added bounded OpenTelemetry semantic-convention and local-policy linting in `telemetry_contracts.semconv` and `telemetry-contracts semconv`. `reports/gitlab_2017_semconv_lint.json` and `.md` cite database/metric convention guidance and a contract-local policy requiring `db.system.name="postgresql"` on the reconstructed `postgres.replication.lag_bytes` metric, producing exact remediation over the checked-in GitLab 2017 public reconstruction.
 - Added pull-request contract-diff reports in `telemetry_contracts.contract_diff` and `telemetry-contracts contract-diff`. `reports/gitlab_2017_contract_diff.json` and `.md` compare the checked-in GitLab 2017 baseline fixture with a deliberate weakened candidate and flag the removed `alert_delivered` backup-alert obligation with `contract_diff.removed_obligation`. Added `benchmark-diff` for saved benchmark JSON reports, with checked-in example report pairs under `examples/benchmarks/`.
+- Added SARIF export in `telemetry_contracts.sarif` and `telemetry-contracts sarif` / `--format sarif` for validation/static finding commands. SARIF rules use taxonomy metadata from `docs/finding_taxonomy.json`, and tests cover saved static findings plus runtime validation findings.
+- Added CI regression gate examples in `examples/ci/` and `telemetry-contracts ci-gate`, which fail on new findings at a selected severity threshold while honoring exact owned baselines with expiration dates.
+- Added deterministic regeneration in `telemetry_contracts.regenerate` and `telemetry-contracts regenerate-artifacts`, producing current impact reports, taxonomy coverage reports, and `reports/paper_tables.md` from `benchmarks/builtin.json`.
+- Added `telemetry-contracts claims-matrix` and checked-in `docs/claims_evidence_matrix.json`, linking public claims to bounded artifacts, fixtures, tests, benchmark rows, and limitations.
 
 ## Bounded novelty claim
 
@@ -69,6 +73,10 @@ python3 -m telemetry_contracts.cli analyze-collector-export --input examples/otl
 python3 -m telemetry_contracts.cli preservation --contract examples/otlp/collector_pipeline.contract.json --before-events examples/otlp/collector_pipeline_before.jsonl --after-events examples/otlp/collector_pipeline_after.jsonl --format markdown
 python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --tag privacy --check-type static --format markdown
 python3 -m telemetry_contracts.cli benchmark-diff --baseline examples/benchmarks/diff_baseline.report.json --candidate examples/benchmarks/diff_candidate.report.json --format markdown
+python3 -m telemetry_contracts.cli sarif --findings examples/ci/static_findings.example.json
+python3 -m telemetry_contracts.cli ci-gate --findings examples/ci/static_findings.example.json --baseline examples/ci/baseline.example.json --format markdown
+python3 -m telemetry_contracts.cli regenerate-artifacts --write --format markdown
+python3 -m telemetry_contracts.cli claims-matrix --output docs/claims_evidence_matrix.json
 python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
   --format json \

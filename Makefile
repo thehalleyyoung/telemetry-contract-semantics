@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy explain semantics monitor semconv otlp-import collector-analysis collector-preservation
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy sarif ci-gate regenerate-artifacts claims-matrix explain semantics monitor semconv otlp-import collector-analysis collector-preservation
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy explain semantics monitor semconv otlp-import collector-analysis collector-preservation
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy sarif ci-gate regenerate-artifacts claims-matrix explain semantics monitor semconv otlp-import collector-analysis collector-preservation
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -43,6 +43,18 @@ benchmark:
 
 taxonomy:
 	python3 -m telemetry_contracts.cli taxonomy --findings reports/current_impact.json --format markdown
+
+sarif:
+	python3 -m telemetry_contracts.cli sarif --findings examples/ci/static_findings.example.json
+
+ci-gate:
+	python3 -m telemetry_contracts.cli ci-gate --findings examples/ci/static_findings.example.json --baseline examples/ci/baseline.example.json --format markdown
+
+regenerate-artifacts:
+	python3 -m telemetry_contracts.cli regenerate-artifacts --format markdown
+
+claims-matrix:
+	python3 -m telemetry_contracts.cli claims-matrix --format markdown
 
 explain:
 	python3 -m telemetry_contracts.cli explain telemetry.strict_unexpected_field --examples reports/gitlab_2017_strict_validation.json --format markdown

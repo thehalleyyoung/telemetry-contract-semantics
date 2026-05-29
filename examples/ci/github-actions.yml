@@ -1,0 +1,35 @@
+name: telemetry-contracts
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python -m pip install -e .
+      - name: Validate checkout telemetry
+        run: |
+          python3 -m telemetry_contracts.cli validate \
+            --contract examples/contracts/checkout.contract.json \
+            --events examples/telemetry/passing.jsonl \
+            --format sarif \
+            > telemetry-contracts.validate.sarif
+      - name: Static instrumentation check
+        run: |
+          python3 -m telemetry_contracts.cli static \
+            --contract examples/contracts/checkout.contract.json \
+            examples/services \
+            --format json \
+            > telemetry-contracts.static.json
+      - name: Gate new findings
+        run: |
+          python3 -m telemetry_contracts.cli ci-gate \
+            --findings telemetry-contracts.static.json \
+            --baseline examples/ci/baseline.example.json \
+            --fail-on error

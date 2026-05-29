@@ -1,0 +1,133 @@
+{
+  "claims": [
+    {
+      "benchmark_rows": [
+        "gitlab-2017-database-outage-reconstructed",
+        "owasp-securetea-signin-current-static-and-hyperproperty",
+        "benchmark-privacy-static-source"
+      ],
+      "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
+      "commit": "ebfd3f3",
+      "evidence_exists": {
+        "README.md": true,
+        "benchmarks/builtin.json": true,
+        "case_studies/current/owasp_securetea_signin/Signin.js": true,
+        "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl": true,
+        "examples/benchmarks/privacy_static.events.jsonl": true,
+        "reports/current_impact.json": true,
+        "reports/current_impact.md": true
+      },
+      "fixtures": [
+        "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
+        "case_studies/current/owasp_securetea_signin/Signin.js",
+        "examples/benchmarks/privacy_static.events.jsonl"
+      ],
+      "id": "benchmark-public-fixtures",
+      "limitations": [
+        "Finite checked-in fixtures only; not population-level recall."
+      ],
+      "public_artifacts": [
+        "README.md",
+        "benchmarks/builtin.json",
+        "reports/current_impact.json",
+        "reports/current_impact.md"
+      ],
+      "tests": [
+        "tests/test_benchmark.py::test_builtin_benchmark_reports_labeled_historical_case"
+      ]
+    },
+    {
+      "benchmark_rows": [
+        "benchmark-privacy-static-source"
+      ],
+      "claim": "CI can fail on new high-severity findings while allowing audited, owned, expiring baseline entries.",
+      "commit": "ebfd3f3",
+      "evidence_exists": {
+        "examples/ci/baseline.example.json": true,
+        "examples/ci/generic-ci.sh": true,
+        "examples/ci/github-actions.yml": true,
+        "examples/ci/static_findings.example.json": true
+      },
+      "fixtures": [
+        "examples/ci/static_findings.example.json"
+      ],
+      "id": "ci-regression-gate",
+      "limitations": [
+        "Baseline entries are exact finding keys; broad suppressions are intentionally unsupported."
+      ],
+      "public_artifacts": [
+        "examples/ci/baseline.example.json",
+        "examples/ci/github-actions.yml",
+        "examples/ci/generic-ci.sh"
+      ],
+      "tests": [
+        "tests/test_ci_gate.py"
+      ]
+    },
+    {
+      "benchmark_rows": [
+        "benchmark-privacy-static-source",
+        "benchmark-missing-correlation"
+      ],
+      "claim": "Static and runtime findings can be exported as SARIF with taxonomy-backed rule metadata for code scanning consumers.",
+      "commit": "ebfd3f3",
+      "evidence_exists": {
+        "docs/finding_taxonomy.json": true,
+        "examples/ci/static_findings.example.json": true,
+        "reports/current_impact.sarif": true,
+        "telemetry_contracts/sarif.py": true
+      },
+      "fixtures": [
+        "examples/ci/static_findings.example.json"
+      ],
+      "id": "sarif-static-runtime",
+      "limitations": [
+        "SARIF locations are precise for source-span findings and best-effort for event-index findings."
+      ],
+      "public_artifacts": [
+        "telemetry_contracts/sarif.py",
+        "docs/finding_taxonomy.json",
+        "reports/current_impact.sarif"
+      ],
+      "tests": [
+        "tests/test_sarif.py",
+        "tests/test_cli.py"
+      ]
+    },
+    {
+      "benchmark_rows": [
+        "all built-in benchmark rows"
+      ],
+      "claim": "Current impact reports, benchmark Markdown, taxonomy summaries, paper tables, and this matrix are regenerated from checked-in artifacts.",
+      "commit": "ebfd3f3",
+      "evidence_exists": {
+        "benchmarks/builtin.json": true,
+        "docs/claims_evidence_matrix.json": true,
+        "reports/current_impact.json": true,
+        "reports/current_impact.md": true,
+        "reports/paper_tables.md": true
+      },
+      "fixtures": [
+        "benchmarks/builtin.json"
+      ],
+      "id": "deterministic-regeneration",
+      "limitations": [
+        "Runtime duration fields vary by machine; labels and finding codes are deterministic."
+      ],
+      "public_artifacts": [
+        "reports/current_impact.json",
+        "reports/current_impact.md",
+        "reports/paper_tables.md",
+        "docs/claims_evidence_matrix.json"
+      ],
+      "tests": [
+        "tests/test_regenerate.py"
+      ]
+    }
+  ],
+  "schema_version": "1.0",
+  "summary": {
+    "claims": 4,
+    "commit": "ebfd3f3"
+  }
+}

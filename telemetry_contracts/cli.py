@@ -28,6 +28,10 @@ from .composition import analyze_contract_composition, format_composition_markdo
 from .monitor import format_monitor_markdown, run_compiled_monitor
 from .windows import format_event_window_markdown, generate_event_window_report
 from .semconv import format_semconv_markdown, lint_semantic_conventions
+from .ci_gate import evaluate_ci_gate, format_ci_gate_markdown
+from .claims import claims_evidence_matrix, write_claims_evidence_matrix
+from .regenerate import format_regeneration_markdown, regenerate_artifacts
+from .sarif import findings_to_sarif, report_to_sarif
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -123,6 +127,27 @@ def main(argv: list[str] | None = None) -> int:
     taxonomy_parser.add_argument("--findings", action="append", default=[], help="JSON report containing findings or benchmark cases with findings")
     taxonomy_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     taxonomy_parser.add_argument("--output")
+
+    sarif_parser = subparsers.add_parser("sarif", help="convert a JSON findings or benchmark report to SARIF")
+    sarif_parser.add_argument("--findings", required=True, help="JSON report containing findings or benchmark cases with findings")
+    sarif_parser.add_argument("--tool-name", default="telemetry-contracts")
+    sarif_parser.add_argument("--output")
+
+    ci_gate_parser = subparsers.add_parser("ci-gate", help="fail CI on new findings while honoring owned expiring baselines")
+    ci_gate_parser.add_argument("--findings", required=True)
+    ci_gate_parser.add_argument("--baseline")
+    ci_gate_parser.add_argument("--fail-on", choices=["error", "warning"], default="error")
+    ci_gate_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    ci_gate_parser.add_argument("--output")
+
+    regenerate_parser = subparsers.add_parser("regenerate-artifacts", help="list or write deterministic report regeneration artifacts")
+    regenerate_parser.add_argument("--write", action="store_true", help="write reports/current_impact*, reports/paper_tables.md, and docs/claims_evidence_matrix.json")
+    regenerate_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    regenerate_parser.add_argument("--output")
+
+    claims_parser = subparsers.add_parser("claims-matrix", help="emit README/report claim-to-evidence mapping")
+    claims_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    claims_parser.add_argument("--output")
 
     explain_parser = subparsers.add_parser("explain", help="explain a finding code with formal meaning, impact, examples, and fixes")
     explain_parser.add_argument("code", help="finding code such as telemetry.missing_field")
@@ -295,6 +320,45 @@ def main(argv: list[str] | None = None) -> int:
                 print(output)
             observed = report.get("observed_findings")
             return 1 if observed and observed["summary"]["unknown_codes"] else 0
+        if args.command == "sarif":
+            report = report_to_sarif(json.loads(Path(args.findings).read_text(encoding="utf-8")), tool_name=args.tool_name)
+            output = json.dumps(report, indent=2, sort_keys=True)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0
+        if args.command == "ci-gate":
+            report = evaluate_ci_gate(args.findings, args.baseline, fail_on=args.fail_on)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_ci_gate_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0 if report["summary"]["pass"] else 1
+        if args.command == "regenerate-artifacts":
+            report = regenerate_artifacts(Path.cwd(), write=args.write)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_regeneration_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0
+        if args.command == "claims-matrix":
+            if args.output and args.format == "json":
+                report = write_claims_evidence_matrix(args.output, Path.cwd())
+                output = json.dumps(report, indent=2, sort_keys=True)
+            else:
+                report = claims_evidence_matrix(Path.cwd())
+                if args.format == "json":
+                    output = json.dumps(report, indent=2, sort_keys=True)
+                else:
+                    output = _format_claims_matrix_markdown(report)
+                if args.output:
+                    Path(args.output).write_text(output + "\n", encoding="utf-8")
+            if not args.output:
+                print(output)
+            return 0
         if args.command == "evaluate-semantics":
             contract = load_contract(args.contract)
             report = evaluate_contract_semantics(contract, load_jsonl(args.events), strict=True if args.strict else None)
@@ -456,11 +520,14 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _common_output_args(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--format", choices=["text", "json"], default="text")
+    parser.add_argument("--format", choices=["text", "json", "sarif"], default="text")
     parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
 
 def _print_findings(findings: list[Finding], output_format: str) -> None:
+    if output_format == "sarif":
+        print(json.dumps(findings_to_sarif([finding.to_dict() for finding in findings]), indent=2, sort_keys=True))
+        return
     if output_format == "json":
         print(json.dumps({"findings": [finding.to_dict() for finding in findings], "ok": not has_at_least(findings, "error")}, indent=2, sort_keys=True))
         return
@@ -470,6 +537,17 @@ def _print_findings(findings: list[Finding], output_format: str) -> None:
     for finding in findings:
         location = f" at {finding.path}" if finding.path else ""
         print(f"{finding.severity.upper()} {finding.code}{location}: {finding.message}")
+
+
+def _format_claims_matrix_markdown(report: dict) -> str:
+    lines = ["# Claims-to-evidence matrix", "", "| Claim | Evidence | Tests | Limitations |", "| --- | --- | --- | --- |"]
+    for claim in report["claims"]:
+        evidence = ", ".join(f"`{item}`" for item in claim["public_artifacts"] + claim["fixtures"])
+        tests = ", ".join(f"`{item}`" for item in claim["tests"])
+        limitations = "<br>".join(claim["limitations"])
+        lines.append(f"| {claim['claim']} | {evidence} | {tests} | {limitations} |")
+    lines.append("")
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":  # pragma: no cover

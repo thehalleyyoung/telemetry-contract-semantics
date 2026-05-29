@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: telemetry-contracts-static
+        name: telemetry contracts static checker
+        entry: python3 -m telemetry_contracts.cli static --contract examples/contracts/checkout.contract.json examples/services
+        language: system
+        pass_filenames: false
