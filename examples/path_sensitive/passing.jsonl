@@ -1,0 +1,4 @@
+{"attributes": {"experiment_id": "exp-42", "feature_flag": "new-payment", "trace_id": "t1"}, "kind": "span", "name": "checkout.request", "service": "checkout-paths", "timestamp_ms": 1000, "trace_id": "t1"}
+{"attributes": {"fallback": true, "fallback_reason": "processor-timeout", "retry_count": 2, "trace_id": "t1"}, "kind": "span", "name": "payment.retry", "service": "checkout-paths", "timestamp_ms": 1200, "trace_id": "t1"}
+{"fields": {"fallback_reason": "processor-timeout", "trace_id": "t1"}, "kind": "log", "name": "checkout.fallback", "service": "checkout-paths", "severity": "WARN", "timestamp_ms": 1500, "trace_id": "t1"}
+{"attributes": {"exception.type": "TimeoutError", "retryable": true, "trace_id": "t2"}, "kind": "span", "name": "checkout.exception", "service": "checkout-paths", "timestamp_ms": 2000, "trace_id": "t2"}

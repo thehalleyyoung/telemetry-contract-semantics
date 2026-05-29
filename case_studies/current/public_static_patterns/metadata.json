@@ -1,0 +1,22 @@
+{
+  "case_study_claims": [
+    "missing correlation on error logs",
+    "high-cardinality labels",
+    "unsafe payload logging",
+    "incomplete error spans"
+  ],
+  "disclosure_status": "public-fixture",
+  "fixture_status": "minimal public repository fixture for static telemetry anti-patterns, not a vulnerability disclosure",
+  "id": "public-static-patterns-current-case-study",
+  "license": "MIT (repository fixture)",
+  "reports": [
+    "../../../reports/current_public_static_patterns.json",
+    "../../../reports/current_public_static_patterns.md"
+  ],
+  "retrieval_date": "2026-05-29",
+  "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics/tree/main/case_studies/current/public_static_patterns",
+  "title": "Disclosure-safe current public-code static pattern case study",
+  "validity_threats": [
+    "The fixture is intentionally small and demonstrates deterministic checker behavior rather than making claims about an external service."
+  ]
+}

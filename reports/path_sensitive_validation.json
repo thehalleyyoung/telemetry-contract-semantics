@@ -1,0 +1,217 @@
+{
+  "findings": [
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.conditional_missing_field",
+      "contract_path": "$.spans[0].conditional_requirements[0].then.fields[0]",
+      "details": {
+        "condition": {
+          "equals": "new-payment",
+          "field": "feature_flag"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SAT.conditional-obligation",
+      "message": "span 'checkout.request' missing conditionally required field 'experiment_id'",
+      "path": "event[1].experiment_id",
+      "remediation": "When the triggering field is present, emit all fields required by the conditional requirement.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.spans[1].fields.retry_count",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'retry_count' value 4 is above maximum 3",
+      "path": "event[2].retry_count",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.conditional_missing_field",
+      "contract_path": "$.spans[1].conditional_requirements[0].then.fields[0]",
+      "details": {
+        "condition": {
+          "equals": true,
+          "field": "fallback"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.conditional-obligation",
+      "message": "span 'payment.retry' missing conditionally required field 'fallback_reason'",
+      "path": "event[2].fallback_reason",
+      "remediation": "When the triggering field is present, emit all fields required by the conditional requirement.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.spans[2].fields.exception.type",
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.required-field",
+      "message": "span 'checkout.exception' missing required field 'exception.type'",
+      "path": "event[4].exception.type",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.field_type",
+      "contract_path": "$.spans[2].fields.retryable",
+      "details": {
+        "value": "yes"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.field-type",
+      "message": "field 'retryable' expected boolean, got str",
+      "path": "event[4].retryable",
+      "remediation": "Emit the field using the contract's declared primitive type.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.log_severity",
+      "contract_path": "$.logs[0].severity",
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.log-severity",
+      "message": "log 'checkout.fallback' severity must be WARN",
+      "path": "event[3].severity",
+      "remediation": "Emit the log at the severity required for alerting and search.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.fallback_reason",
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'checkout.fallback' missing required field 'fallback_reason'",
+      "path": "event[3].fallback_reason",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_window",
+      "contract_path": "$.temporal_sequences[0].window_ms",
+      "details": {
+        "elapsed_ms": 7000.0,
+        "group": [
+          "t1"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-window",
+      "message": "retry-fallback-flow: sequence exceeded 5000ms window",
+      "path": "events",
+      "remediation": "Emit the temporal sequence within the declared bounded window.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "ok": false
+}

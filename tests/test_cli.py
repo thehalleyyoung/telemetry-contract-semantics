@@ -391,3 +391,55 @@ def test_cli_import_otlp_json_summary(capsys, tmp_path):
     assert code == 0
     assert '"output"' in output
     assert out.exists()
+
+
+def test_cli_abstract_domains_summarizes_path_sensitive_fixture(capsys):
+    code = main(
+        [
+            "abstract-domains",
+            "--contract",
+            str(ROOT / "examples/path_sensitive/contract.json"),
+            "--events",
+            str(ROOT / "examples/path_sensitive/passing.jsonl"),
+            "--format",
+            "json",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert '"domains"' in output
+    assert '"path_feasibility"' in output
+    assert "checkout.fallback" in output
+
+
+def test_cli_path_sensitive_fixture_has_bounded_failures(capsys):
+    passing = main(
+        [
+            "validate",
+            "--contract",
+            str(ROOT / "examples/path_sensitive/contract.json"),
+            "--events",
+            str(ROOT / "examples/path_sensitive/passing.jsonl"),
+        ]
+    )
+    failing = main(
+        [
+            "validate",
+            "--contract",
+            str(ROOT / "examples/path_sensitive/contract.json"),
+            "--events",
+            str(ROOT / "examples/path_sensitive/failing.jsonl"),
+            "--format",
+            "json",
+            "--fail-on",
+            "never",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert passing == 0
+    assert failing == 0
+    assert "telemetry.conditional_missing_field" in output
+    assert "telemetry.numeric_max" in output
+    assert "telemetry.temporal_window" in output

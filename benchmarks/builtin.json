@@ -409,6 +409,100 @@
       ]
     },
     {
+      "id": "path-sensitive-checkout-pass",
+      "description": "Path-sensitive checkout fixture covering feature flags, retries, fallback, exception, and bounded response semantics.",
+      "contract": "../examples/path_sensitive/contract.json",
+      "events": "../examples/path_sensitive/passing.jsonl",
+      "tags": [
+        "path-sensitive",
+        "runtime",
+        "slo-debugging"
+      ],
+      "check_types": [
+        "runtime"
+      ],
+      "dataset": "path-sensitive-checkout-fixture",
+      "expected_failure_modes": [],
+      "semantics_features": [
+        "conditional requirements",
+        "retries",
+        "fallbacks",
+        "bounded response"
+      ],
+      "service_owner": "checkout-platform",
+      "disclosure_status": "public-synthetic-fixture"
+    },
+    {
+      "id": "current-public-static-patterns",
+      "description": "Disclosure-safe current public-code static fixture for secret logging, payload preview, correlation, cardinality, and error-span observability patterns.",
+      "metadata": "../case_studies/current/public_static_patterns/metadata.json",
+      "contract": "../case_studies/current/public_static_patterns/contract.json",
+      "sources": [
+        "../case_studies/current/public_static_patterns"
+      ],
+      "tags": [
+        "public-code",
+        "static",
+        "privacy",
+        "operability"
+      ],
+      "check_types": [
+        "static"
+      ],
+      "dataset": "public-static-patterns-fixture",
+      "expected_failure_modes": [
+        "secret_logging",
+        "unsafe_payload_preview",
+        "missing_correlation",
+        "unbounded_source_label",
+        "missing_error_observability"
+      ],
+      "semantics_features": [
+        "static source checks",
+        "privacy/security patterns",
+        "error span obligations"
+      ],
+      "service_owner": "public-fixture-maintainers",
+      "disclosure_status": "public-code-fixture",
+      "expected_findings": [
+        {
+          "code": "static.secret_logging",
+          "severity": "error",
+          "path_suffix": "app.py:13:9-13:104"
+        },
+        {
+          "code": "static.unsafe_payload_preview",
+          "severity": "warning",
+          "path_suffix": "app.py:13:9-13:104"
+        },
+        {
+          "code": "static.missing_correlation",
+          "severity": "warning",
+          "path_suffix": "app.py:13:9-13:104"
+        },
+        {
+          "code": "static.unbounded_label",
+          "severity": "warning",
+          "path_suffix": "app.py:14:9-14:93"
+        },
+        {
+          "code": "static.missing_exception_recording",
+          "severity": "warning",
+          "path_suffix": "app.py:11:10-11:58"
+        },
+        {
+          "code": "static.missing_error_status",
+          "severity": "warning",
+          "path_suffix": "app.py:11:10-11:58"
+        },
+        {
+          "code": "static.missing_remediation_field",
+          "severity": "warning",
+          "path_suffix": "app.py:11:10-11:58"
+        }
+      ]
+    },
+    {
       "id": "synthetic-microservices-checkout-pass",
       "description": "Synthetic ten-service checkout flow covering checkout, payment, inventory, shipping, auth, notification, queue, cache, database, and collector contract correlation.",
       "contracts": [

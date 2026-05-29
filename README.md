@@ -10,6 +10,7 @@ This repository turns that thesis into executable checks:
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - Alternative-obligation checks that let one of several equivalent logs/spans/metrics satisfy a required evidence path without duplicate false positives.
 - Temporal-logic checks for safety invariants, bounded responses, absence properties, ordering, and deadlines over finite telemetry traces.
+- Finite abstract-domain summaries for signal values, label sets, severity, units, privacy classifications, and path feasibility, including documented join/widening behavior.
 - Hyperproperty checks for PII non-disclosure and tenant non-interference over finite sets/pairs of traces, producing privacy-risk witness findings.
 - Assume-guarantee reports that partition finite-trace obligations into service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations with layer-specific counterexamples.
 - Strict validation that treats a contract as a closed-world model and reports unexpected fields, undeclared signal names, unmodeled services, and undocumented collector transformations, with bounded escape hatches.
@@ -22,7 +23,7 @@ This repository turns that thesis into executable checks:
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON/JSONL import for testing OpenTelemetry collector/exporter captures, preserving spans, logs, metrics, exemplars, links, scope/resource metadata, provenance paths, and import diagnostics.
 - Collector-export analysis for dropped evidence, unknown schemas, high-cardinality attributes, PII/secret patterns, metric temporality, and unsupported OTLP features, plus JSONL↔OTLP round-trip conversion for importer regression tests.
-- A benchmark harness for built-in or user-provided contract/event corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, OTLP import-loss accounting, a ten-service synthetic microservices fixture, and reconstructed incident-readiness blind-spot fixtures.
+- A benchmark harness for built-in or user-provided contract/event/source corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, OTLP import-loss accounting, a path-sensitive checkout fixture, a second current public-code static case study, a ten-service synthetic microservices fixture, and reconstructed incident-readiness blind-spot fixtures.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, semantic-convention, incident-readiness, equivalence, and preservation outputs.
 - SARIF export for runtime/static findings and benchmark reports, plus CI gate helpers that fail on new unbaselined findings while honoring owned, expiring baselines.
 - Deterministic report regeneration and a public claims-to-evidence matrix that links bounded README/report claims to checked-in fixtures, generated artifacts, and tests.
@@ -40,13 +41,13 @@ This repository turns that thesis into executable checks:
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
-- Passing and failing examples for a checkout/payment service, plus `examples/microservices/` for a correlated checkout flow across checkout, payment, inventory, shipping, auth, notification, queue, cache, database, and collector contracts.
+- Passing and failing examples for a checkout/payment service, `examples/path_sensitive/` for feature flags, retries, exceptions, and fallbacks, plus `examples/microservices/` for a correlated checkout flow across checkout, payment, inventory, shipping, auth, notification, queue, cache, database, and collector contracts.
 - Operational scorecards and authoring guidance for HTTP APIs, batch jobs, message consumers, cron tasks, stateful workers, privacy-safe telemetry, operational ranges, anti-patterns, CI/review integration, and OTLP importer limitations in `docs/operational_scorecards.md`.
 - JSON report schema documentation for finding, import-diagnostic, scenario, benchmark, service-owner, and claims-evidence report envelopes under `docs/report_schemas/`, real-world fixture templates under `case_studies/templates/`, with a replication guide and release checklist for bounded public claims.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 94 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 100 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -120,6 +121,16 @@ python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
   --case-id reconstructed-incident-blind-spots \
   --format markdown
+
+python3 -m telemetry_contracts.cli abstract-domains \
+  --contract examples/path_sensitive/contract.json \
+  --events examples/path_sensitive/passing.jsonl \
+  --format markdown
+
+python3 -m telemetry_contracts.cli static \
+  --contract case_studies/current/public_static_patterns/contract.json \
+  case_studies/current/public_static_patterns \
+  --format json --fail-on never
 
 python3 -m telemetry_contracts.cli taxonomy \
   --findings reports/current_impact.json \
@@ -244,6 +255,8 @@ If installed as a package, the same CLI is available as `telemetry-contracts`; w
 ## Operational and replication docs
 
 - `docs/operational_scorecards.md` maps workload scorecards, privacy-safe telemetry examples, operational range clauses, authoring anti-patterns, CI/SARIF/review integration, and OTLP importer limitations to checked-in commands and fixtures.
+- `docs/tutorials/broken_service_tutorial.md` and `docs/tutorials/slo_debugging_contract_clauses.md` walk through fixing a broken service and mapping SLO debugging questions to contract clauses and passing/failing traces.
+- `docs/performance_budgets.md` records the bounded event-indexing memory/performance budgets for large finite traces and OTLP fixtures.
 - `docs/report_schemas.md` and `docs/report_schemas/*.schema.json` document the JSON envelopes consumed by CI, SARIF, benchmark, service-owner, and claims-evidence workflows.
 - `docs/replication_guide.md` gives exact commands for benchmark metrics, generated reports, historical GitLab analysis, current OWASP SecureTea case-study claims, OTLP importer diagnostics, and paper-table artifacts.
 - `docs/release_checklist.md` records limitations and release gates for mechanized-core scope, static-analysis boundaries, reconstructed-data claims, benchmark validity threats, privacy safeguards, archival metadata, checksums, and deterministic non-AI validation.
@@ -324,8 +337,9 @@ Supported checks include:
 - Cardinality hints and bounded-cardinality policies as warnings.
 - Cross-signal correlation policies requiring shared keys such as `trace_id` or `request_id` across configured signal kinds.
 - Temporal sequence checks over spans, metrics, and logs using timestamps and optional `group_by` incident windows.
-- Temporal properties under `temporal_properties`: `safety`, `bounded_response`, `absence`, `ordering`, and `deadline`, with selectors, field predicates, optional grouping keys, and concrete finding codes such as `telemetry.temporal_response`.
+- Temporal properties under `temporal_properties`: `safety`, `bounded_response`, `absence`, `ordering`, and `deadline`, with selectors, field predicates, optional grouping keys, and concrete finding codes such as `telemetry.temporal_response`. The validator builds a finite event index by kind/name, service, correlation keys, and timestamp buckets before signal checks, preserving existing semantics while supporting larger traces.
 - Runtime monitor compilation via `monitor`: required signal predicates become matched-bit monitors, safety/absence properties become per-event checks, bounded responses and temporal sequences keep active sliding-window witnesses, and ordering/deadline properties keep per-group prefix summaries. JSON/Markdown reports expose the compiled monitor counts, formal judgement, findings, and observed memory envelope.
+- Abstract-domain summaries via `abstract-domains`: deterministic prototype domains summarize bounded string values, attribute presence, severity joins, units, privacy classes, and condition-sensitive path feasibility, with each domain reporting its join, widening, and limitations.
 - Event-window grouping via `report event-windows`: the report first evaluates `T ⊨ C`, then assigns event-local findings to every observed trace, request/correlation, tenant, deployment, scenario, incident-id, or bounded incident-slice ownership unit. Findings without an event witness remain in a global contract window, preserving missing-signal evidence without inventing an owner.
 - Hyperproperties under `hyperproperties`: `pii_non_disclosure` checks raw sensitive fields reaching configured telemetry sinks, and `tenant_non_interference` checks pairwise that distinct tenants do not share configured isolation keys such as `trace_id` or `request_id`. Findings include concrete event-index witnesses (`telemetry.hyper_pii_disclosure`, `telemetry.hyper_tenant_interference`).
 - Duplicate signal and duplicate field diagnostics during contract linting.
@@ -383,7 +397,8 @@ assert not findings
 - `telemetry_contracts.windows` groups concrete events and validation findings into trace/request/tenant/deployment/scenario/incident ownership windows.
 - `telemetry_contracts.loader` loads JSON/YAML contracts, resolves relative `extends`/`inherits` chains, and reads JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
-- `telemetry_contracts.validator` checks emitted telemetry against signal, field, privacy/PII/secret transformation, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications.
+- `telemetry_contracts.validator` checks emitted telemetry against signal, field, privacy/PII/secret transformation, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications, using an `EventIndex` for kind/name, service, correlation, and time-window lookups.
+- `telemetry_contracts.abstract_domains` computes finite prototype domains used by the `abstract-domains` CLI.
 - `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
 - `telemetry_contracts.alternatives` evaluates finite disjunctions over semantically equivalent evidence paths and emits witness/counterexample reports.
 - `telemetry_contracts.assume_guarantee` evaluates layer-partitioned service, collector, environment, and on-call obligations over finite telemetry artifacts.

@@ -167,3 +167,21 @@ def test_static_checker_redacts_pii_snippets_and_ignores_plain_dates():
     assert "+1 415 555 0199" not in snippet
     assert "tenant-123" not in snippet
     assert "2026-05-29" not in snippet
+
+
+def test_current_public_static_case_study_reports_disclosure_safe_patterns():
+    source_dir = ROOT / "case_studies/current/public_static_patterns"
+    contract = load_contract(source_dir / "contract.json")
+    findings = check_sources(contract, [source_dir])
+    finding_codes = {item.code for item in findings}
+
+    assert {
+        "static.secret_logging",
+        "static.unsafe_payload_preview",
+        "static.missing_correlation",
+        "static.unbounded_label",
+        "static.missing_exception_recording",
+        "static.missing_error_status",
+        "static.missing_remediation_field",
+    } <= finding_codes
+    assert all("source_span" in item.details for item in findings)

@@ -14,11 +14,11 @@ DIFF_CANDIDATE = ROOT / "examples/benchmarks/diff_candidate.report.json"
 def test_builtin_benchmark_reports_labeled_historical_case():
     report = run_benchmark(BUILTIN)
     assert report["summary"]["pass"] is True
-    assert report["summary"]["contracts"] == 23
+    assert report["summary"]["contracts"] == 25
     assert report["summary"]["label_metrics"]["f1"] == 1.0
     assert report["summary"]["findings_per_k_events"] > 0
     assert report["summary"]["top_remediations"]
-    assert report["summary"]["events"] == 68
+    assert report["summary"]["events"] == 72
     historical = next(case for case in report["cases"] if case["id"] == "gitlab-2017-database-outage-reconstructed")
     labels = historical["metrics"]["labels"]
     assert historical["metrics"]["validation_pass"] is False
@@ -61,6 +61,11 @@ def test_builtin_benchmark_reports_labeled_historical_case():
     assert microservices["metrics"]["contracts"] == 10
     assert microservices["metrics"]["events"] == 30
     assert microservices["metrics"]["findings"] == 0
+    path_sensitive = next(case for case in report["cases"] if case["id"] == "path-sensitive-checkout-pass")
+    assert path_sensitive["metrics"]["findings"] == 0
+    static_patterns = next(case for case in report["cases"] if case["id"] == "current-public-static-patterns")
+    assert static_patterns["metrics"]["labels"]["expected"] == 7
+    assert static_patterns["metrics"]["findings_by_code"]["static.unbounded_label"] == 1
     incident = next(case for case in report["cases"] if case["id"] == "reconstructed-incident-blind-spots")
     assert incident["metrics"]["labels"]["expected"] == 15
     assert incident["metrics"]["labels"]["f1"] == 1.0
@@ -80,12 +85,13 @@ def test_benchmark_markdown_and_cli(capsys):
 
 def test_benchmark_filters_and_metadata(capsys):
     report = run_benchmark(BUILTIN, filters={"tag": ["privacy"], "check_type": ["static"]})
-    assert report["summary"]["cases"] == 2
+    assert report["summary"]["cases"] == 3
     cases = {case["id"]: case for case in report["cases"]}
     case = cases["benchmark-privacy-static-source"]
     assert case["dataset_metadata"]["id"] == "public-benchmark-semantics-fixtures"
     assert "pii non-disclosure" in case["semantics_features"]
     assert "benchmark-unsafe-transformations-and-payload-preview" in cases
+    assert "current-public-static-patterns" in cases
     owner_report = run_benchmark(BUILTIN, filters={"service_owner": ["collector-platform"], "disclosure_status": ["public-fixture"]})
     assert [case["id"] for case in owner_report["cases"]] == ["otlp-collector-coverage-analysis", "benchmark-partial-otlp-diagnostics"]
     assert main(["benchmark", "--config", str(BUILTIN), "--case-id", "benchmark-cardinality-budget", "--format", "markdown"]) == 0

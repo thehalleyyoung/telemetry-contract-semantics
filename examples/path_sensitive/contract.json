@@ -1,0 +1,148 @@
+{
+  "field_definitions": {
+    "trace_id": {
+      "required": true,
+      "type": "string"
+    }
+  },
+  "logs": [
+    {
+      "fields": {
+        "fallback_reason": {
+          "required": true,
+          "type": "string"
+        },
+        "trace_id": {
+          "$ref": "#/field_definitions/trace_id"
+        }
+      },
+      "name": "checkout.fallback",
+      "severity": "WARN"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "why-fallback",
+      "minimum_observations": [
+        {
+          "fields": [
+            "trace_id",
+            "retry_count",
+            "fallback_reason"
+          ],
+          "name": "payment.retry",
+          "purpose": "explain retry branch",
+          "signal": "span"
+        },
+        {
+          "fields": [
+            "trace_id",
+            "fallback_reason"
+          ],
+          "name": "checkout.fallback",
+          "purpose": "connect fallback log",
+          "signal": "log"
+        }
+      ],
+      "question": "Why did checkout use fallback payment?"
+    }
+  ],
+  "service": "checkout-paths",
+  "spans": [
+    {
+      "conditional_requirements": [
+        {
+          "if": {
+            "equals": "new-payment",
+            "field": "feature_flag"
+          },
+          "then": {
+            "fields": [
+              "experiment_id"
+            ]
+          }
+        }
+      ],
+      "fields": {
+        "feature_flag": {
+          "required": false,
+          "type": "string"
+        },
+        "trace_id": {
+          "$ref": "#/field_definitions/trace_id"
+        }
+      },
+      "name": "checkout.request"
+    },
+    {
+      "conditional_requirements": [
+        {
+          "if": {
+            "equals": true,
+            "field": "fallback"
+          },
+          "then": {
+            "fields": [
+              "fallback_reason"
+            ]
+          }
+        }
+      ],
+      "fields": {
+        "fallback": {
+          "required": false,
+          "type": "boolean"
+        },
+        "retry_count": {
+          "max": 3,
+          "min": 1,
+          "type": "integer"
+        },
+        "trace_id": {
+          "$ref": "#/field_definitions/trace_id"
+        }
+      },
+      "name": "payment.retry"
+    },
+    {
+      "fields": {
+        "exception.type": {
+          "required": true,
+          "type": "string"
+        },
+        "retryable": {
+          "required": true,
+          "type": "boolean"
+        },
+        "trace_id": {
+          "$ref": "#/field_definitions/trace_id"
+        }
+      },
+      "name": "checkout.exception"
+    }
+  ],
+  "temporal_sequences": [
+    {
+      "group_by": [
+        "trace_id"
+      ],
+      "id": "retry-fallback-flow",
+      "steps": [
+        {
+          "kind": "span",
+          "name": "checkout.request"
+        },
+        {
+          "kind": "span",
+          "name": "payment.retry"
+        },
+        {
+          "kind": "log",
+          "name": "checkout.fallback"
+        }
+      ],
+      "window_ms": 5000
+    }
+  ],
+  "version": "1.0"
+}

@@ -392,13 +392,14 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]], *, s
     findings = validate_contract_shape(contract)
     service = contract.get("service")
     relevant_events = [event for event in events if service is None or event.get("service") in {service, None}]
+    event_index = EventIndex(relevant_events)
     for section, kind in (("spans", "span"), ("metrics", "metric"), ("logs", "log")):
         for signal_index, spec in enumerate(contract.get(section, []) or []):
             if not isinstance(spec, dict):
                 continue
             if not isinstance(spec.get("name"), str) or not spec.get("name"):
                 continue
-            findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events, contract))
+            findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events, contract, event_index))
     findings.extend(_validate_correlation_policy(contract, relevant_events))
     findings.extend(_validate_temporal_sequences(contract, relevant_events))
     findings.extend(_validate_temporal_properties(contract, relevant_events))
@@ -409,6 +410,39 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]], *, s
     if _strict_enabled(contract, strict):
         findings.extend(_validate_strict_events(contract, events))
     return findings
+
+
+class EventIndex:
+    """Small deterministic indexes for repeated bounded-trace validation."""
+
+    def __init__(self, events: list[dict[str, Any]], *, window_ms: int = 1000):
+        self.events = events
+        self.by_kind_name: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+        self.by_service: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        self.by_correlation: dict[tuple[str, Any], list[dict[str, Any]]] = defaultdict(list)
+        self.by_window: dict[int, list[dict[str, Any]]] = defaultdict(list)
+        self.window_ms = window_ms
+        for event in events:
+            kind = event.get("kind")
+            name = event.get("name")
+            if isinstance(kind, str) and isinstance(name, str):
+                self.by_kind_name[(kind, name)].append(event)
+            service = event.get("service")
+            if isinstance(service, str):
+                self.by_service[service].append(event)
+            for key in ("trace_id", "request_id", "correlation_id"):
+                value = event.get(key)
+                if value is None:
+                    nested, found = _lookup_field(event, key)
+                    value = nested if found else None
+                if value is not None:
+                    self.by_correlation[(key, value)].append(event)
+            timestamp = _event_timestamp_ms(event)
+            if timestamp is not None:
+                self.by_window[int(timestamp // window_ms)].append(event)
+
+    def matching(self, kind: str, name: str) -> list[dict[str, Any]]:
+        return self.by_kind_name.get((kind, name), [])
 
 
 def _strict_enabled(contract: dict[str, Any], strict: bool | None) -> bool:
@@ -1559,13 +1593,13 @@ def _validate_forbidden_pattern_specs(field_name: str, spec: dict[str, Any], pat
     return findings
 
 
-def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str, Any], events: list[dict[str, Any]], contract: dict[str, Any]) -> list[Finding]:
+def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str, Any], events: list[dict[str, Any]], contract: dict[str, Any], event_index: EventIndex | None = None) -> list[Finding]:
     findings: list[Finding] = []
     name = spec.get("name")
     path = f"$.{section}[{signal_index}]"
     if not isinstance(name, str) or not name:
         return [Finding("error", "contract.signal_name", "signal must declare a non-empty name", f"{path}.name")]
-    matches = [event for event in events if event.get("kind") == kind and event.get("name") == name]
+    matches = list(event_index.matching(kind, name)) if event_index is not None else [event for event in events if event.get("kind") == kind and event.get("name") == name]
     if spec.get("required", True) and not matches:
         findings.append(Finding("error", "telemetry.missing_signal", f"required {kind} '{name}' was not emitted", f"events[{kind}={name}]", path))
         return findings

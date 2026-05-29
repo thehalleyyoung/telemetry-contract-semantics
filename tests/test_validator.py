@@ -544,3 +544,31 @@ def test_runtime_sensitive_checks_cover_credentials_pii_tenant_and_payload_previ
     risk_kinds = {item.details.get("risk_kind") for item in findings if item.code == "telemetry.sensitive_value"}
     assert {"credential_or_token", "email", "phone", "raw_payload_preview"} <= risk_kinds
     assert any(item.code == "telemetry.privacy_transformation" and item.contract_path.endswith("tenant_id") for item in findings)
+
+
+def test_path_sensitive_public_fixture_passes_and_fails_on_named_boundaries():
+    contract = load_contract(ROOT / "examples/path_sensitive/contract.json")
+    passing = validate_events(contract, load_jsonl(ROOT / "examples/path_sensitive/passing.jsonl"))
+    failing = validate_events(contract, load_jsonl(ROOT / "examples/path_sensitive/failing.jsonl"))
+    failing_codes = codes(failing)
+
+    assert passing == []
+    assert "telemetry.conditional_missing_field" in failing_codes
+    assert "telemetry.numeric_max" in failing_codes
+    assert "telemetry.temporal_window" in failing_codes
+    assert "telemetry.field_type" in failing_codes
+
+
+def test_event_index_preserves_large_trace_signal_matching():
+    contract = {
+        "version": "1.0",
+        "service": "checkout",
+        "logs": [{"name": "checkout.selected", "fields": {"trace_id": {"type": "string", "required": True}}}],
+    }
+    events = [
+        {"kind": "metric", "service": "checkout", "name": "checkout.noise", "value": i, "tags": {"trace_id": f"trace-{i % 17}"}}
+        for i in range(2500)
+    ]
+    events.append({"kind": "log", "service": "checkout", "name": "checkout.selected", "fields": {"trace_id": "trace-target"}})
+
+    assert validate_events(contract, events) == []

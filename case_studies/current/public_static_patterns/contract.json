@@ -1,0 +1,36 @@
+{
+  "logs": [],
+  "metrics": [
+    {
+      "description": "login attempts",
+      "name": "auth.login_attempts",
+      "unit": "1"
+    }
+  ],
+  "service": "public-static-patterns",
+  "spans": [
+    {
+      "fields": {
+        "exception.type": {
+          "required": true,
+          "type": "string"
+        },
+        "remediation_hint": {
+          "required": true,
+          "type": "string"
+        },
+        "retryable": {
+          "required": true,
+          "type": "boolean"
+        }
+      },
+      "name": "auth.login.error"
+    }
+  ],
+  "static_rules": {
+    "detect_unbounded_labels": true,
+    "require_correlation_on_error_logs": true,
+    "require_error_span_observability": true
+  },
+  "version": "1.0"
+}

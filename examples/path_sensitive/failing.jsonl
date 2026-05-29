@@ -1,0 +1,4 @@
+{"attributes": {"feature_flag": "new-payment", "trace_id": "t1"}, "kind": "span", "name": "checkout.request", "service": "checkout-paths", "timestamp_ms": 1000, "trace_id": "t1"}
+{"attributes": {"fallback": true, "retry_count": 4, "trace_id": "t1"}, "kind": "span", "name": "payment.retry", "service": "checkout-paths", "timestamp_ms": 1200, "trace_id": "t1"}
+{"fields": {"trace_id": "t1"}, "kind": "log", "name": "checkout.fallback", "service": "checkout-paths", "severity": "INFO", "timestamp_ms": 8000, "trace_id": "t1"}
+{"attributes": {"retryable": "yes", "trace_id": "t2"}, "kind": "span", "name": "checkout.exception", "service": "checkout-paths", "timestamp_ms": 2000, "trace_id": "t2"}

@@ -14,6 +14,7 @@ from .semantics import describe_model, format_model_markdown
 from .preservation import check_transformation_preservation, format_preservation_markdown
 from .static_checker import check_sources
 from .alternatives import evaluate_alternative_obligations, format_alternative_obligations_markdown
+from .abstract_domains import format_abstract_domains_markdown, summarize_abstract_domains
 from .assume_guarantee import evaluate_assume_guarantee, format_assume_guarantee_markdown
 from .benchmark import BenchmarkLoadError, compare_benchmark_reports, format_diff_markdown, format_markdown, run_benchmark
 from .core_semantics import evaluate_contract_semantics, format_core_semantics_markdown
@@ -85,6 +86,13 @@ def main(argv: list[str] | None = None) -> int:
     model_parser.add_argument("--events", help="optional JSONL artifact to summarize against the observation model")
     model_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     model_parser.add_argument("--output")
+
+    abstract_parser = subparsers.add_parser("abstract-domains", help="summarize finite abstract domains for contract/event reasoning")
+    abstract_parser.add_argument("--contract", required=True)
+    abstract_parser.add_argument("--events", help="optional JSONL telemetry evidence")
+    abstract_parser.add_argument("--string-bound", type=int, default=5)
+    abstract_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    abstract_parser.add_argument("--output")
 
     semantics_parser = subparsers.add_parser("evaluate-semantics", help="emit the executable small-step contract-evaluation derivation")
     semantics_parser.add_argument("--contract", required=True)
@@ -307,6 +315,14 @@ def main(argv: list[str] | None = None) -> int:
             events = load_jsonl(args.events) if args.events else None
             report = describe_model(events)
             output = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) if args.format == "json" else format_model_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0
+        if args.command == "abstract-domains":
+            report = summarize_abstract_domains(load_contract(args.contract), load_jsonl(args.events) if args.events else None, string_bound=args.string_bound)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_abstract_domains_markdown(report)
             if args.output:
                 Path(args.output).write_text(output + "\n", encoding="utf-8")
             else:

@@ -1,0 +1,263 @@
+{
+  "findings": [
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "static.secret_logging",
+      "details": {
+        "line": "logger.error(\"login failed password=<redacted> raw_payload=%s\", request.password, request.body_preview)",
+        "risk_kind": "credential_or_token",
+        "source_span": {
+          "column": 9,
+          "end_column": 104,
+          "end_line": 13,
+          "line": 13,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.raw-sensitive-log",
+      "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
+      "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+      "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.unsafe_payload_preview",
+      "details": {
+        "line": "logger.error(\"login failed password=<redacted> raw_payload=%s\", request.password, request.body_preview)",
+        "risk_kind": "raw_payload_preview",
+        "source_span": {
+          "column": 9,
+          "end_column": 104,
+          "end_line": 13,
+          "line": 13,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.payload-preview",
+      "message": "logging statement appears to include a raw payload or unsafe preview field",
+      "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+      "remediation": "Replace raw payload/body previews with allowlisted sanitized previews or omit them.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "static.missing_correlation",
+      "details": {
+        "expected_any": [
+          "trace_id",
+          "traceId",
+          "request_id",
+          "requestId",
+          "span_id"
+        ],
+        "line": "logger.error(\"login failed password=<redacted> raw_payload=%s\", request.password, request.body_preview)",
+        "source_span": {
+          "column": 9,
+          "end_column": 104,
+          "end_line": 13,
+          "line": 13,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.correlation-evidence",
+      "message": "error log may be missing trace/request correlation fields",
+      "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+      "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "operability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.unbounded_label",
+      "details": {
+        "line": "login_attempts.add(1, attributes={\"user_id\": request.user_id, \"path\": request.path})",
+        "source_span": {
+          "column": 9,
+          "end_column": 93,
+          "end_line": 14,
+          "line": 14,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.cardinality-risk",
+      "message": "metric/tag code appears to use a high-cardinality or user-controlled label without bucketing",
+      "path": "case_studies/current/public_static_patterns/app.py:14:9-14:93",
+      "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_exception_recording",
+      "details": {
+        "api": "tracer.start_as_current_span",
+        "obligation": {
+          "fields": [
+            "exception.type",
+            "remediation_hint",
+            "retryable"
+          ],
+          "kind": "span",
+          "name": "auth.login.error"
+        },
+        "source_span": {
+          "column": 10,
+          "end_column": 58,
+          "end_line": 11,
+          "line": 11,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.exception-recording",
+      "message": "error span does not record the caught exception",
+      "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+      "remediation": "Record caught exceptions on error spans so incident responders can inspect failure type and stack context.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_error_status",
+      "details": {
+        "api": "tracer.start_as_current_span",
+        "obligation": {
+          "fields": [
+            "exception.type",
+            "remediation_hint",
+            "retryable"
+          ],
+          "kind": "span",
+          "name": "auth.login.error"
+        },
+        "source_span": {
+          "column": 10,
+          "end_column": 58,
+          "end_line": 11,
+          "line": 11,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.error-status",
+      "message": "error span does not set OpenTelemetry ERROR status",
+      "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+      "remediation": "Set the OpenTelemetry span status to ERROR on error paths.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_remediation_field",
+      "details": {
+        "api": "tracer.start_as_current_span",
+        "obligation": {
+          "fields": [
+            "remediation_hint"
+          ],
+          "kind": "span",
+          "name": "auth.login.error"
+        },
+        "source_span": {
+          "column": 10,
+          "end_column": 58,
+          "end_line": 11,
+          "line": 11,
+          "path": "case_studies/current/public_static_patterns/app.py"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.remediation-evidence",
+      "message": "error span does not attach required 'remediation_hint' evidence",
+      "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+      "remediation": "Attach a bounded remediation hint on error spans or logs when the contract requires operator guidance.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    }
+  ],
+  "ok": false
+}
