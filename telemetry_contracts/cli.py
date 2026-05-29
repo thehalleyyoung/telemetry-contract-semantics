@@ -8,7 +8,7 @@ from pathlib import Path
 from .findings import Finding, has_at_least
 from .incident_report import format_incident_readiness_markdown, generate_incident_readiness_report
 from .loader import ContractLoadError, load_contract, load_jsonl
-from .otlp import load_otlp_json_detailed, load_otlp_jsonl_detailed, write_diagnostics, write_jsonl
+from .otlp import analyze_otlp_report, convert_events_to_otlp_payload, format_collector_analysis_markdown, load_otlp_json_detailed, load_otlp_jsonl_detailed, write_diagnostics, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .semantics import describe_model, format_model_markdown
 from .preservation import check_transformation_preservation, format_preservation_markdown
@@ -61,6 +61,17 @@ def main(argv: list[str] | None = None) -> int:
     otlp_parser.add_argument("--output", required=True)
     otlp_parser.add_argument("--input-format", choices=["json", "jsonl"], default="json")
     otlp_parser.add_argument("--diagnostics-output", help="optional JSON file with normalization/skipped-record diagnostics")
+
+    export_otlp_parser = subparsers.add_parser("export-otlp", help="convert telemetry-contracts JSONL back to collector-style OTLP JSON for importer differential tests")
+    export_otlp_parser.add_argument("--events", required=True)
+    export_otlp_parser.add_argument("--output", required=True)
+
+    collector_parser = subparsers.add_parser("analyze-collector-export", help="summarize OTLP collector export loss, schema, cardinality, PII, temporality, and unsupported-feature risks")
+    collector_parser.add_argument("--input", required=True)
+    collector_parser.add_argument("--input-format", choices=["json", "jsonl"], default="json")
+    collector_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    collector_parser.add_argument("--output")
+    collector_parser.add_argument("--cardinality-threshold", type=int, default=2)
 
     model_parser = subparsers.add_parser("describe-model", help="describe the observation domain and satisfaction relation")
     model_parser.add_argument("--events", help="optional JSONL artifact to summarize against the observation model")
@@ -214,6 +225,22 @@ def main(argv: list[str] | None = None) -> int:
             invalidating = report["summary"]["invalidating_diagnostics"]
             suffix = f"; {invalidating} diagnostic(s) may invalidate contract claims" if invalidating else ""
             print(f"Wrote {len(report['events'])} event(s) to {args.output}{suffix}")
+            return 0
+        if args.command == "export-otlp":
+            events = load_jsonl(args.events)
+            payload = convert_events_to_otlp_payload(events)
+            Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.output).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            print(f"Wrote OTLP JSON with {len(events)} source event(s) to {args.output}")
+            return 0
+        if args.command == "analyze-collector-export":
+            import_report = load_otlp_jsonl_detailed(args.input) if args.input_format == "jsonl" else load_otlp_json_detailed(args.input)
+            report = analyze_otlp_report(import_report, cardinality_threshold=args.cardinality_threshold)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_collector_analysis_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
             return 0
         if args.command == "describe-model":
             events = load_jsonl(args.events) if args.events else None

@@ -1,6 +1,8 @@
 from pathlib import Path
 
 from telemetry_contracts.otlp import (
+    analyze_otlp_report,
+    convert_events_to_otlp_payload,
     convert_otlp_payload,
     convert_otlp_payload_with_diagnostics,
     load_otlp_json,
@@ -163,3 +165,38 @@ def test_otlp_diagnostics_mark_dropped_or_skipped_evidence_as_invalidating():
     assert report["summary"]["diagnostics_by_code"]["otlp.dropped_evidence"] == 1
     assert report["summary"]["diagnostics_by_code"]["otlp.skipped_record"] == 2
     assert report["summary"]["diagnostics_by_code"]["otlp.unsupported_top_level"] == 1
+
+
+def test_collector_coverage_fixture_exercises_otlp_signals_and_analysis():
+    report = load_otlp_json_detailed(ROOT / "examples/otlp/collector_coverage_all_signals.otlp.json")
+    analysis = analyze_otlp_report(report)
+
+    metric_types = {event["metric_type"] for event in report["events"] if event["kind"] == "metric"}
+    assert {"sum", "gauge", "histogram", "exponentialHistogram", "summary"} <= metric_types
+    assert report["summary"]["events_by_kind"] == {"log": 1, "metric": 5, "span": 1}
+    assert report["summary"]["diagnostics_by_code"]["otlp.dropped_evidence"] == 2
+    assert report["summary"]["diagnostics_by_code"]["otlp.unsupported_metric"] == 1
+    assert analysis["summary"]["cardinality_risks"] >= 4
+    assert analysis["summary"]["pii_secret_risks"] == 1
+    assert analysis["summary"]["unknown_schemas"] == 1
+    assert analysis["temporality"]["counts"]["AGGREGATION_TEMPORALITY_DELTA"] == 2
+
+
+def test_otlp_jsonl_malformed_records_are_diagnostic_fixtures():
+    report = load_otlp_jsonl_detailed(ROOT / "examples/otlp/collector_malformed_records.otlp.jsonl")
+
+    assert report["summary"]["events"] == 0
+    assert report["summary"]["invalidating_diagnostics"] == 3
+    assert report["summary"]["diagnostics_by_code"]["otlp.malformed_record"] == 2
+    assert report["summary"]["diagnostics_by_code"]["otlp.skipped_record"] == 1
+
+
+def test_contract_jsonl_round_trip_converter_preserves_importer_semantics():
+    original = load_otlp_json(ROOT / "examples/otlp/collector_mixed_signals.otlp.json")
+    payload = convert_events_to_otlp_payload(original)
+    round_tripped = convert_otlp_payload(payload)
+
+    assert [event["kind"] for event in round_tripped] == [event["kind"] for event in original]
+    assert {event["name"] for event in round_tripped} == {event["name"] for event in original}
+    assert {event.get("trace_id") for event in round_tripped} == {event.get("trace_id") for event in original}
+    assert any(event.get("exemplars") for event in round_tripped if event["kind"] == "metric")

@@ -1,0 +1,53 @@
+{
+  "approved_transformations": [
+    "aggregation",
+    "redaction",
+    "routing",
+    "sampling"
+  ],
+  "findings": [],
+  "limitations": [
+    "The relation is scoped to this contract's declared signals, field predicates, privacy transformations, and selected scenarios.",
+    "The checker compares finite artifacts; it does not prove a collector implementation correct for all possible production traces.",
+    "Historical case-study fixtures are reconstructed when their metadata says so; preservation claims are bounded to checked-in artifacts."
+  ],
+  "model": {
+    "name": "transformation-preservation-v1",
+    "relation": "For a contract C, source trace T, transformed trace T\u2032, and approved transformations \u0394, T\u2032 preserves C when every runtime contract obligation and diagnosability witness that is satisfied in T remains satisfied in T\u2032. The check is obligation-local: it reports newly destroyed evidence even when T already violates unrelated obligations.",
+    "supported_transformations": [
+      "aggregation",
+      "bucketing",
+      "hashing",
+      "omission",
+      "redaction",
+      "retention",
+      "routing",
+      "sampling",
+      "tokenization"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "collector-preserves-checkout",
+      "lost_witnesses": [],
+      "question": "Can on-call connect checkout payment latency to tenant after collector processing?",
+      "source_answerable": true,
+      "transformed_answerable": true
+    }
+  ],
+  "service": "checkout-api",
+  "source_findings": [],
+  "summary": {
+    "events_removed": 1,
+    "findings_by_code": {},
+    "findings_by_severity": {},
+    "pass": true,
+    "preservation_findings": 0,
+    "scenarios_checked": 1,
+    "source_events": 4,
+    "source_findings": 0,
+    "transformed_events": 3,
+    "transformed_findings": 0
+  },
+  "transformed_findings": []
+}

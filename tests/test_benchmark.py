@@ -41,6 +41,9 @@ def test_builtin_benchmark_reports_labeled_historical_case():
     otlp = next(case for case in report["cases"] if case["id"] == "otlp-collector-mixed-signals-pass")
     assert otlp["metrics"]["validation_pass"] is True
     assert otlp["metrics"]["findings"] == 0
+    coverage = next(case for case in report["cases"] if case["id"] == "otlp-collector-coverage-analysis")
+    assert coverage["metrics"]["labels"]["expected"] == 4
+    assert coverage["metrics"]["findings_by_code"]["otlp.dropped_evidence"] == 2
     correlation = next(case for case in report["cases"] if case["id"] == "benchmark-missing-correlation")
     assert correlation["metrics"]["labels"]["recall"] == 1.0
     assert correlation["metrics"]["findings_by_code"]["telemetry.correlation_missing"] == 2
@@ -73,7 +76,7 @@ def test_benchmark_filters_and_metadata(capsys):
     assert case["dataset_metadata"]["id"] == "public-benchmark-semantics-fixtures"
     assert "pii non-disclosure" in case["semantics_features"]
     owner_report = run_benchmark(BUILTIN, filters={"service_owner": ["collector-platform"], "disclosure_status": ["public-fixture"]})
-    assert [case["id"] for case in owner_report["cases"]] == ["benchmark-partial-otlp-diagnostics"]
+    assert [case["id"] for case in owner_report["cases"]] == ["otlp-collector-coverage-analysis", "benchmark-partial-otlp-diagnostics"]
     assert main(["benchmark", "--config", str(BUILTIN), "--case-id", "benchmark-cardinality-budget", "--format", "markdown"]) == 0
     output = capsys.readouterr().out
     assert "benchmark-cardinality-budget" in output
@@ -81,6 +84,7 @@ def test_benchmark_filters_and_metadata(capsys):
     assert main(["benchmark", "--config", str(BUILTIN), "--service-owner", "collector-platform", "--disclosure-status", "public-fixture", "--format", "markdown"]) == 0
     output = capsys.readouterr().out
     assert "benchmark-partial-otlp-diagnostics" in output
+    assert "otlp-collector-coverage-analysis" in output
     assert "benchmark-privacy-static-source" not in output
 
 

@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy explain semantics monitor semconv
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy explain semantics monitor semconv otlp-import collector-analysis collector-preservation
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy explain semantics monitor semconv
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy explain semantics monitor semconv otlp-import collector-analysis collector-preservation
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -55,3 +55,12 @@ monitor:
 
 semconv:
 	python3 -m telemetry_contracts.cli semconv --contract case_studies/gitlab_2017_database_outage/contract.json --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl --format markdown --fail-on never
+
+otlp-import:
+	python3 -m telemetry_contracts.cli import-otlp --input examples/otlp/collector_coverage_all_signals.otlp.json --output examples/otlp/collector_coverage_all_signals.events.jsonl --diagnostics-output examples/otlp/collector_coverage_all_signals.diagnostics.json
+
+collector-analysis:
+	python3 -m telemetry_contracts.cli analyze-collector-export --input examples/otlp/collector_coverage_all_signals.otlp.json --format markdown
+
+collector-preservation:
+	python3 -m telemetry_contracts.cli preservation --contract examples/otlp/collector_pipeline.contract.json --before-events examples/otlp/collector_pipeline_before.jsonl --after-events examples/otlp/collector_pipeline_after.jsonl --format markdown

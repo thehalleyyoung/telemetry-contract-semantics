@@ -135,6 +135,12 @@ TAXONOMY: dict[str, dict[str, Any]] = {
     "preservation.contract_obligation": _entry("preservation", "Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation.", "PRES.runtime-obligation"),
     "preservation.scenario_signal": _entry("preservation", "Keep at least one transformed signal witness for each selected diagnosability requirement.", "PRES.adequacy-signal"),
     "preservation.scenario_field": _entry("preservation", "Keep the transformed field, or provide an approved surrogate that still answers the selected incident question.", "PRES.adequacy-field"),
+    "otlp.dropped_evidence": _entry("input", "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.", "OTLP.dropped-evidence", "warning"),
+    "otlp.malformed_record": _entry("input", "Fix or exclude malformed OTLP JSONL records before asserting full export coverage.", "OTLP.malformed-record", "warning"),
+    "otlp.skipped_record": _entry("input", "Fix malformed OTLP containers or unsupported item shapes so importer semantics are complete.", "OTLP.skipped-record", "warning"),
+    "otlp.unsupported_metric": _entry("input", "Add importer support or avoid the unsupported metric encoding before making metric-contract claims.", "OTLP.unsupported-metric", "warning"),
+    "otlp.unsupported_top_level": _entry("input", "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.", "OTLP.unsupported-top-level", "info"),
+    "otlp.normalized_alias": _entry("input", "Prefer canonical OTLP JSON field names, or keep alias normalization diagnostics with the import artifact.", "OTLP.alias-normalization", "info"),
     "input.load_error": _entry("input", "Fix the referenced input path or file format.", "INPUT.parse"),
 }
 

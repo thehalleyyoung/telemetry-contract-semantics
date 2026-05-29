@@ -266,3 +266,43 @@ def test_cli_validate_public_hyperproperty_case_study(capsys):
     assert code == 0
     assert "telemetry.hyper_pii_disclosure" in output
     assert "signin-console-no-raw-sensitive-values" in output
+
+
+def test_cli_collector_export_analysis_and_roundtrip_export(capsys):
+    otlp_path = ROOT / "examples/otlp/collector_coverage_all_signals.otlp.json"
+    code = main(["analyze-collector-export", "--input", str(otlp_path), "--format", "markdown"])
+    output = capsys.readouterr().out
+    assert code == 0
+    assert "Collector export analysis" in output
+    assert "PII/secret risks: 1" in output
+    assert "Unsupported features: 2" in output
+
+    roundtrip_path = ROOT / ".pytest_roundtrip.otlp.json"
+    try:
+        code = main(["export-otlp", "--events", str(ROOT / "examples/otlp/collector_mixed_signals.events.jsonl"), "--output", str(roundtrip_path)])
+        output = capsys.readouterr().out
+        assert code == 0
+        assert "Wrote OTLP JSON" in output
+        assert "resourceSpans" in roundtrip_path.read_text()
+    finally:
+        roundtrip_path.unlink(missing_ok=True)
+
+
+def test_cli_collector_pipeline_preservation_fixture(capsys):
+    code = main(
+        [
+            "preservation",
+            "--contract",
+            str(ROOT / "examples/otlp/collector_pipeline.contract.json"),
+            "--before-events",
+            str(ROOT / "examples/otlp/collector_pipeline_before.jsonl"),
+            "--after-events",
+            str(ROOT / "examples/otlp/collector_pipeline_after.jsonl"),
+            "--format",
+            "json",
+        ]
+    )
+    output = capsys.readouterr().out
+    assert code == 0
+    assert '"pass": true' in output
+    assert "collector-preserves-checkout" in output

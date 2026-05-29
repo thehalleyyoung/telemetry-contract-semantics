@@ -189,6 +189,50 @@
         "severity": "error"
       },
       {
+        "category": "input",
+        "code": "otlp.dropped_evidence",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "OTLP.dropped-evidence",
+        "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "input",
+        "code": "otlp.unsupported_metric",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "OTLP.unsupported-metric",
+        "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "input",
+        "code": "otlp.dropped_evidence",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "OTLP.dropped-evidence",
+        "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "input",
+        "code": "otlp.unsupported_top_level",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "OTLP.unsupported-top-level",
+        "path": "$.partialSuccess",
+        "sarif_level": "note",
+        "service_owner": "contract service owner",
+        "severity": "info"
+      },
+      {
         "category": "diagnosability",
         "code": "telemetry.temporal_safety",
         "contract_path": "$.temporal_properties[0].condition",
@@ -242,27 +286,137 @@
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
+      },
+      {
+        "category": "diagnosability",
+        "code": "telemetry.correlation_missing",
+        "contract_path": "$.correlation.keys",
+        "event_index": 2,
+        "formal_clause": "SAT.correlation-presence",
+        "path": "event[2]",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "diagnosability",
+        "code": "telemetry.correlation_missing",
+        "contract_path": "$.correlation.keys",
+        "event_index": null,
+        "formal_clause": "SAT.correlation-presence",
+        "path": "events[log]",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "operability",
+        "code": "telemetry.cardinality",
+        "contract_path": "$.metrics[0].fields.tenant_id.cardinality",
+        "event_index": null,
+        "formal_clause": "SAT.cardinality-bound",
+        "path": "events[metric=checkout.requests].tenant_id",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.sensitive_value",
+        "contract_path": "$.logs[0].fields.email",
+        "event_index": 1,
+        "formal_clause": "SAT.raw-sensitive-value",
+        "path": "event[1].email",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.hyper_pii_disclosure",
+        "contract_path": "$.hyperproperties[0].sensitive_fields",
+        "event_index": 1,
+        "formal_clause": "HYP.pii-non-disclosure",
+        "path": "event[1].fields.email",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "static.secret_logging",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.raw-sensitive-log",
+        "path": "examples/benchmarks/privacy_static_source.py:2",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "diagnosability",
+        "code": "static.missing_correlation",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.correlation-evidence",
+        "path": "examples/benchmarks/privacy_static_source.py:2",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "operability",
+        "code": "static.unbounded_label",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.cardinality-risk",
+        "path": "examples/benchmarks/privacy_static_source.py:3",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "input",
+        "code": "otlp.malformed_record",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "OTLP.malformed-record",
+        "path": "records[1]",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
       }
     ],
     "sources": [
       {
-        "findings": 22,
+        "findings": 35,
         "path": "reports/current_impact.json"
       }
     ],
     "summary": {
       "by_category": {
-        "diagnosability": 11,
-        "privacy-security": 5,
+        "diagnosability": 14,
+        "input": 5,
+        "operability": 2,
+        "privacy-security": 8,
         "schema": 6
       },
       "by_code": {
+        "otlp.dropped_evidence": 2,
+        "otlp.malformed_record": 1,
+        "otlp.unsupported_metric": 1,
+        "otlp.unsupported_top_level": 1,
         "scenario.missing_field": 3,
-        "static.secret_logging": 2,
+        "static.missing_correlation": 1,
+        "static.secret_logging": 3,
+        "static.unbounded_label": 1,
         "telemetry.allowed_values": 4,
-        "telemetry.hyper_pii_disclosure": 3,
+        "telemetry.cardinality": 1,
+        "telemetry.correlation_missing": 2,
+        "telemetry.hyper_pii_disclosure": 4,
         "telemetry.missing_field": 3,
         "telemetry.numeric_max": 2,
+        "telemetry.sensitive_value": 1,
         "telemetry.temporal_absence": 1,
         "telemetry.temporal_deadline": 1,
         "telemetry.temporal_order": 1,
@@ -271,24 +425,35 @@
       },
       "by_formal_clause": {
         "ADEQ.required-field": 3,
-        "HYP.pii-non-disclosure": 3,
+        "HYP.pii-non-disclosure": 4,
+        "OTLP.dropped-evidence": 2,
+        "OTLP.malformed-record": 1,
+        "OTLP.unsupported-metric": 1,
+        "OTLP.unsupported-top-level": 1,
         "SAT.allowed-values": 4,
+        "SAT.cardinality-bound": 1,
+        "SAT.correlation-presence": 2,
         "SAT.numeric-upper-bound": 2,
+        "SAT.raw-sensitive-value": 1,
         "SAT.required-field": 3,
         "SAT.temporal-absence": 1,
         "SAT.temporal-deadline": 1,
         "SAT.temporal-order": 1,
         "SAT.temporal-response": 1,
         "SAT.temporal-safety": 1,
-        "STATIC.raw-sensitive-log": 2
+        "STATIC.cardinality-risk": 1,
+        "STATIC.correlation-evidence": 1,
+        "STATIC.raw-sensitive-log": 3
       },
       "by_sarif_level": {
-        "error": 22
+        "error": 28,
+        "note": 1,
+        "warning": 6
       },
       "by_service_owner": {
-        "contract service owner": 22
+        "contract service owner": 35
       },
-      "findings": 22,
+      "findings": 35,
       "unknown_codes": []
     }
   },
@@ -1131,6 +1296,126 @@
       "formal_clause": "INPUT.parse",
       "remediation": "Fix the referenced input path or file format.",
       "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.dropped_evidence",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.dropped-evidence",
+      "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.malformed_record",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.malformed-record",
+      "remediation": "Fix or exclude malformed OTLP JSONL records before asserting full export coverage.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "info",
+        "sarif_level": "note"
+      },
+      "code": "otlp.normalized_alias",
+      "default_severity": "info",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.alias-normalization",
+      "remediation": "Prefer canonical OTLP JSON field names, or keep alias normalization diagnostics with the import artifact.",
+      "sarif_level": "note",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.skipped_record",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.skipped-record",
+      "remediation": "Fix malformed OTLP containers or unsupported item shapes so importer semantics are complete.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.unsupported_metric",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.unsupported-metric",
+      "remediation": "Add importer support or avoid the unsupported metric encoding before making metric-contract claims.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "info",
+        "sarif_level": "note"
+      },
+      "code": "otlp.unsupported_top_level",
+      "default_severity": "info",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.unsupported-top-level",
+      "remediation": "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.",
+      "sarif_level": "note",
       "service_owner": "contract service owner"
     },
     {
@@ -2385,7 +2670,7 @@
     "categories": {
       "contract": 27,
       "diagnosability": 27,
-      "input": 1,
+      "input": 7,
       "operability": 3,
       "preservation": 5,
       "privacy-security": 9,
@@ -2396,14 +2681,14 @@
     },
     "default_severities": {
       "error": 90,
-      "info": 1,
-      "warning": 13
+      "info": 3,
+      "warning": 17
     },
-    "rules": 104,
+    "rules": 110,
     "sarif_levels": {
       "error": 90,
-      "note": 1,
-      "warning": 13
+      "note": 3,
+      "warning": 17
     }
   }
 }

@@ -29,6 +29,8 @@ SUPPORTED_TRANSFORMATIONS = {
     "retention",
     "aggregation",
     "aggregate",
+    "routing",
+    "route",
 }
 
 CANONICAL_TRANSFORMATIONS = {
@@ -44,6 +46,7 @@ CANONICAL_TRANSFORMATIONS = {
     "omitted": "omission",
     "sample": "sampling",
     "aggregate": "aggregation",
+    "route": "routing",
 }
 
 PRESERVATION_MODEL = {

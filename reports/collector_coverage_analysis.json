@@ -1,0 +1,115 @@
+{
+  "cardinality_risks": [
+    {
+      "distinct_values": 1,
+      "field": "cart_id",
+      "risk": "high_cardinality_label"
+    },
+    {
+      "distinct_values": 1,
+      "field": "request_id",
+      "risk": "high_cardinality_label"
+    },
+    {
+      "distinct_values": 1,
+      "field": "session_id",
+      "risk": "high_cardinality_label"
+    },
+    {
+      "distinct_values": 5,
+      "field": "tenant_id",
+      "risk": "high_cardinality_label"
+    }
+  ],
+  "dropped_fields": [
+    {
+      "code": "otlp.dropped_evidence",
+      "details": {
+        "count": 1,
+        "field": "droppedLinksCount"
+      },
+      "invalidates_contract_claim": true,
+      "message": "droppedLinksCount=1 indicates collector/exporter loss",
+      "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount",
+      "severity": "warning"
+    },
+    {
+      "code": "otlp.dropped_evidence",
+      "details": {
+        "count": 1,
+        "field": "droppedAttributesCount"
+      },
+      "invalidates_contract_claim": true,
+      "message": "droppedAttributesCount=1 indicates collector/exporter loss",
+      "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount",
+      "severity": "warning"
+    }
+  ],
+  "limitations": [
+    "Cardinality is estimated over the supplied finite export, not backend-wide production series.",
+    "PII/secret risk checks are heuristic field-name and value-pattern checks for triage.",
+    "Unsupported-feature diagnostics bound the validity of contract claims made from this export."
+  ],
+  "pii_secret_risks": [
+    {
+      "event_index": 6,
+      "field": "email",
+      "kind": "log",
+      "risk": "sensitive_value_pattern",
+      "value_preview": "user\u2026.com"
+    }
+  ],
+  "summary": {
+    "cardinality_risks": 4,
+    "collector_risk_count": 10,
+    "diagnostics": 4,
+    "diagnostics_by_code": {
+      "otlp.dropped_evidence": 2,
+      "otlp.unsupported_metric": 1,
+      "otlp.unsupported_top_level": 1
+    },
+    "dropped_evidence": 2,
+    "events": 7,
+    "events_by_kind": {
+      "log": 1,
+      "metric": 5,
+      "span": 1
+    },
+    "invalidating_diagnostics": 3,
+    "missing_temporality": 0,
+    "pii_secret_risks": 1,
+    "records": 1,
+    "streaming": false,
+    "unknown_schemas": 1,
+    "unsupported_features": 2
+  },
+  "temporality": {
+    "counts": {
+      "AGGREGATION_TEMPORALITY_CUMULATIVE": 1,
+      "AGGREGATION_TEMPORALITY_DELTA": 2
+    },
+    "missing_for_metrics": []
+  },
+  "unknown_schemas": [
+    {
+      "events": 5,
+      "schema_url": "https://vendor.example/schemas/private"
+    }
+  ],
+  "unsupported_features": [
+    {
+      "code": "otlp.unsupported_metric",
+      "invalidates_contract_claim": true,
+      "message": "unsupported metric payload for checkout.unsupported",
+      "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]",
+      "severity": "warning"
+    },
+    {
+      "code": "otlp.unsupported_top_level",
+      "invalidates_contract_claim": false,
+      "message": "ignored unsupported top-level OTLP field 'partialSuccess'",
+      "path": "$.partialSuccess",
+      "severity": "info"
+    }
+  ]
+}

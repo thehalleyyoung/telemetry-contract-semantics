@@ -37,6 +37,52 @@
       "events": "../examples/otlp/collector_mixed_signals.events.jsonl"
     },
     {
+      "id": "otlp-collector-coverage-analysis",
+      "description": "Collector export coverage fixture with spans, logs, sums, gauges, histograms, exponential histograms, summaries, exemplars, links, span events, resource/scope metadata, temporality, drops, unsupported features, and PII/cardinality analysis inputs.",
+      "import_diagnostics": "../examples/otlp/collector_coverage_all_signals.diagnostics.json",
+      "tags": [
+        "otlp",
+        "collector",
+        "diagnostics"
+      ],
+      "check_types": [
+        "import_diagnostics"
+      ],
+      "dataset": "collector-export-semantics-fixtures",
+      "expected_failure_modes": [
+        "collector_dropped_evidence",
+        "unsupported_otlp_feature"
+      ],
+      "semantics_features": [
+        "collector export analysis",
+        "otlp signal coverage"
+      ],
+      "service_owner": "collector-platform",
+      "disclosure_status": "public-fixture",
+      "expected_findings": [
+        {
+          "code": "otlp.dropped_evidence",
+          "severity": "warning",
+          "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount"
+        },
+        {
+          "code": "otlp.unsupported_metric",
+          "severity": "warning",
+          "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]"
+        },
+        {
+          "code": "otlp.dropped_evidence",
+          "severity": "warning",
+          "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount"
+        },
+        {
+          "code": "otlp.unsupported_top_level",
+          "severity": "info",
+          "path": "$.partialSuccess"
+        }
+      ]
+    },
+    {
       "id": "temporal-logic-properties-fail",
       "description": "Bounded temporal-logic fixture covering safety, bounded response, absence, ordering, and deadline violations.",
       "contract": "../examples/temporal_logic/contract.json",

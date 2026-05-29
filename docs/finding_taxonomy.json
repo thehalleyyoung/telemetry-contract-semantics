@@ -841,6 +841,126 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.dropped_evidence",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.dropped-evidence",
+      "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.malformed_record",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.malformed-record",
+      "remediation": "Fix or exclude malformed OTLP JSONL records before asserting full export coverage.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "info",
+        "sarif_level": "note"
+      },
+      "code": "otlp.normalized_alias",
+      "default_severity": "info",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.alias-normalization",
+      "remediation": "Prefer canonical OTLP JSON field names, or keep alias normalization diagnostics with the import artifact.",
+      "sarif_level": "note",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.skipped_record",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.skipped-record",
+      "remediation": "Fix malformed OTLP containers or unsupported item shapes so importer semantics are complete.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "otlp.unsupported_metric",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.unsupported-metric",
+      "remediation": "Add importer support or avoid the unsupported metric encoding before making metric-contract claims.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "input",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "info",
+        "sarif_level": "note"
+      },
+      "code": "otlp.unsupported_top_level",
+      "default_severity": "info",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "OTLP.unsupported-top-level",
+      "remediation": "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.",
+      "sarif_level": "note",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "preservation",
       "ci": {
         "baseline_key_fields": [
@@ -2092,7 +2212,7 @@
     "categories": {
       "contract": 27,
       "diagnosability": 27,
-      "input": 1,
+      "input": 7,
       "operability": 3,
       "preservation": 5,
       "privacy-security": 9,
@@ -2103,14 +2223,14 @@
     },
     "default_severities": {
       "error": 90,
-      "info": 1,
-      "warning": 13
+      "info": 3,
+      "warning": 17
     },
-    "rules": 104,
+    "rules": 110,
     "sarif_levels": {
       "error": 90,
-      "note": 1,
-      "warning": 13
+      "note": 3,
+      "warning": 17
     }
   }
 }

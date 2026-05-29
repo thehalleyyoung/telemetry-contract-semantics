@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 104
-- Categories: `{"contract": 27, "diagnosability": 27, "input": 1, "operability": 3, "preservation": 5, "privacy-security": 9, "refinement": 11, "scenario": 2, "schema": 17, "static-coverage": 2}`
-- Default severities: `{"error": 90, "info": 1, "warning": 13}`
-- SARIF levels: `{"error": 90, "note": 1, "warning": 13}`
+- Rules: 110
+- Categories: `{"contract": 27, "diagnosability": 27, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 9, "refinement": 11, "scenario": 2, "schema": 17, "static-coverage": 2}`
+- Default severities: `{"error": 90, "info": 3, "warning": 17}`
+- SARIF levels: `{"error": 90, "note": 3, "warning": 17}`
 
 ## Rule catalog
 
@@ -52,6 +52,12 @@
 | contract_diff.privacy_changed | privacy-security | warning | DIFF.privacy-change | warning | warning | responsible-disclosure | contract service owner | Review privacy-classification or transformation changes with the data owner before merging. |
 | contract_diff.removed_obligation | refinement | warning | DIFF.obligation-removed | warning | warning | internal | contract service owner | Confirm that removing the telemetry obligation is intentional and does not regress incident diagnosability. |
 | input.load_error | input | error | INPUT.parse | error | error | internal | contract service owner | Fix the referenced input path or file format. |
+| otlp.dropped_evidence | input | warning | OTLP.dropped-evidence | warning | warning | internal | contract service owner | Inspect collector/exporter dropped-count fields before relying on complete contract evidence. |
+| otlp.malformed_record | input | warning | OTLP.malformed-record | warning | warning | internal | contract service owner | Fix or exclude malformed OTLP JSONL records before asserting full export coverage. |
+| otlp.normalized_alias | input | info | OTLP.alias-normalization | note | info | internal | contract service owner | Prefer canonical OTLP JSON field names, or keep alias normalization diagnostics with the import artifact. |
+| otlp.skipped_record | input | warning | OTLP.skipped-record | warning | warning | internal | contract service owner | Fix malformed OTLP containers or unsupported item shapes so importer semantics are complete. |
+| otlp.unsupported_metric | input | warning | OTLP.unsupported-metric | warning | warning | internal | contract service owner | Add importer support or avoid the unsupported metric encoding before making metric-contract claims. |
+| otlp.unsupported_top_level | input | info | OTLP.unsupported-top-level | note | info | internal | contract service owner | Document unsupported top-level OTLP fields as validity threats or add bounded importer support. |
 | preservation.contract_obligation | preservation | error | PRES.runtime-obligation | error | error | internal | contract service owner | Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation. |
 | preservation.scenario_field | preservation | error | PRES.adequacy-field | error | error | internal | contract service owner | Keep the transformed field, or provide an approved surrogate that still answers the selected incident question. |
 | preservation.scenario_signal | preservation | error | PRES.adequacy-signal | error | error | internal | contract service owner | Keep at least one transformed signal witness for each selected diagnosability requirement. |
@@ -117,17 +123,17 @@
 
 ## Observed finding coverage
 
-- Findings: 22
+- Findings: 35
 - Unknown codes: `[]`
-- By code: `{"scenario.missing_field": 3, "static.secret_logging": 2, "telemetry.allowed_values": 4, "telemetry.hyper_pii_disclosure": 3, "telemetry.missing_field": 3, "telemetry.numeric_max": 2, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
-- By category: `{"diagnosability": 11, "privacy-security": 5, "schema": 6}`
-- By formal clause: `{"ADEQ.required-field": 3, "HYP.pii-non-disclosure": 3, "SAT.allowed-values": 4, "SAT.numeric-upper-bound": 2, "SAT.required-field": 3, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.raw-sensitive-log": 2}`
-- By SARIF level: `{"error": 22}`
-- By service owner: `{"contract service owner": 22}`
+- By code: `{"otlp.dropped_evidence": 2, "otlp.malformed_record": 1, "otlp.unsupported_metric": 1, "otlp.unsupported_top_level": 1, "scenario.missing_field": 3, "static.missing_correlation": 1, "static.secret_logging": 3, "static.unbounded_label": 1, "telemetry.allowed_values": 4, "telemetry.cardinality": 1, "telemetry.correlation_missing": 2, "telemetry.hyper_pii_disclosure": 4, "telemetry.missing_field": 3, "telemetry.numeric_max": 2, "telemetry.sensitive_value": 1, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
+- By category: `{"diagnosability": 14, "input": 5, "operability": 2, "privacy-security": 8, "schema": 6}`
+- By formal clause: `{"ADEQ.required-field": 3, "HYP.pii-non-disclosure": 4, "OTLP.dropped-evidence": 2, "OTLP.malformed-record": 1, "OTLP.unsupported-metric": 1, "OTLP.unsupported-top-level": 1, "SAT.allowed-values": 4, "SAT.cardinality-bound": 1, "SAT.correlation-presence": 2, "SAT.numeric-upper-bound": 2, "SAT.raw-sensitive-value": 1, "SAT.required-field": 3, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.cardinality-risk": 1, "STATIC.correlation-evidence": 1, "STATIC.raw-sensitive-log": 3}`
+- By SARIF level: `{"error": 28, "note": 1, "warning": 6}`
+- By service owner: `{"contract service owner": 35}`
 
 | Source | Findings |
 | --- | ---: |
-| reports/current_impact.json | 22 |
+| reports/current_impact.json | 35 |
 
 | Code | Category | Formal clause | Severity | SARIF | Path |
 | --- | --- | --- | --- | --- | --- |
@@ -148,9 +154,22 @@
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[3].fields.cookie |
 | static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:27 |
 | static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:48 |
+| otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount |
+| otlp.unsupported_metric | input | OTLP.unsupported-metric | warning | warning | $.resourceMetrics[0].scopeMetrics[0].metrics[5] |
+| otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount |
+| otlp.unsupported_top_level | input | OTLP.unsupported-top-level | info | note | $.partialSuccess |
 | telemetry.temporal_safety | diagnosability | SAT.temporal-safety | error | error | event[1].value |
 | telemetry.temporal_response | diagnosability | SAT.temporal-response | error | error | event[2] |
 | telemetry.temporal_absence | diagnosability | SAT.temporal-absence | error | error | event[4] |
 | telemetry.temporal_order | diagnosability | SAT.temporal-order | error | error | event[5] |
 | telemetry.temporal_deadline | diagnosability | SAT.temporal-deadline | error | error | event[8] |
+| telemetry.correlation_missing | diagnosability | SAT.correlation-presence | error | error | event[2] |
+| telemetry.correlation_missing | diagnosability | SAT.correlation-presence | error | error | events[log] |
+| telemetry.cardinality | operability | SAT.cardinality-bound | warning | warning | events[metric=checkout.requests].tenant_id |
+| telemetry.sensitive_value | privacy-security | SAT.raw-sensitive-value | error | error | event[1].email |
+| telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.email |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | examples/benchmarks/privacy_static_source.py:2 |
+| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | examples/benchmarks/privacy_static_source.py:2 |
+| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | examples/benchmarks/privacy_static_source.py:3 |
+| otlp.malformed_record | input | OTLP.malformed-record | warning | warning | records[1] |
 

@@ -1,0 +1,99 @@
+{
+  "logs": [
+    {
+      "fields": {
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "checkout.payment_authorized",
+      "required": false,
+      "severity": "INFO"
+    }
+  ],
+  "metadata": {
+    "transformation_preservation": {
+      "approved_transformations": [
+        "redaction",
+        "sampling",
+        "aggregation",
+        "routing"
+      ],
+      "preserve_scenarios": [
+        "collector-preserves-checkout"
+      ]
+    }
+  },
+  "metrics": [
+    {
+      "name": "checkout.pay.duration",
+      "required": true,
+      "tags": {
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "ms"
+      }
+    }
+  ],
+  "privacy_classifications": {
+    "token": {
+      "allowed_transformations": [
+        "redacted",
+        "hashed",
+        "tokenized",
+        "omitted"
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "id": "collector-preserves-checkout",
+      "minimum_observations": [
+        {
+          "fields": [
+            "tenant_id"
+          ],
+          "kind": "span",
+          "name": "checkout.pay",
+          "purpose": "route incident by tenant"
+        },
+        {
+          "fields": [
+            "tenant_id"
+          ],
+          "kind": "metric",
+          "name": "checkout.pay.duration",
+          "purpose": "confirm aggregate latency evidence"
+        }
+      ],
+      "question": "Can on-call connect checkout payment latency to tenant after collector processing?"
+    }
+  ],
+  "service": "checkout-api",
+  "spans": [
+    {
+      "attributes": {
+        "auth_token": {
+          "classification": "token",
+          "required": false,
+          "transformation": "redacted",
+          "type": "string"
+        },
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "checkout.pay",
+      "required": true
+    }
+  ],
+  "version": "1.0"
+}

@@ -21,6 +21,7 @@ This repository turns that thesis into executable checks:
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON/JSONL import for testing OpenTelemetry collector/exporter captures, preserving spans, logs, metrics, exemplars, links, scope/resource metadata, provenance paths, and import diagnostics.
+- Collector-export analysis for dropped evidence, unknown schemas, high-cardinality attributes, PII/secret patterns, metric temporality, and unsupported OTLP features, plus JSONL↔OTLP round-trip conversion for importer regression tests.
 - A benchmark harness for built-in or user-provided contract/event corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, and OTLP import-loss accounting.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, semantic-convention, incident-readiness, equivalence, and preservation outputs.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
@@ -36,7 +37,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 54 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 59 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -83,6 +84,10 @@ python3 -m telemetry_contracts.cli import-otlp \
   --input examples/real_world/otel_checkout_missing_tenant.otlp.json \
   --output checkout.otlp.jsonl \
   --diagnostics-output checkout.otlp.diagnostics.json
+
+python3 -m telemetry_contracts.cli analyze-collector-export \
+  --input examples/otlp/collector_coverage_all_signals.otlp.json \
+  --format markdown
 
 python3 -m telemetry_contracts.cli validate \
   --contract examples/real_world/otel_checkout_missing_tenant.contract.json \
@@ -327,7 +332,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `import-otlp`, `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `import-otlp`, `export-otlp`, `analyze-collector-export`, `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -343,15 +348,17 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 
 ## Real-world finding workflow
 
-The repo is designed to be run on real telemetry captures, not only synthetic fixtures. Export OTLP JSON or newline-delimited OTLP JSON from an OpenTelemetry Collector, convert it, inspect importer diagnostics, then validate the converted JSONL. The JSONL loader processes one collector export record at a time, so event streaming is bounded by the largest single OTLP record rather than the whole capture:
+The repo is designed to be run on real telemetry captures, not only synthetic fixtures. Export OTLP JSON or newline-delimited OTLP JSON from an OpenTelemetry Collector, convert it, inspect importer diagnostics, then validate the converted JSONL. The JSONL loader processes one collector export record at a time, so event streaming is bounded by the largest single OTLP record rather than the whole capture. The collector analysis command summarizes dropped evidence, schema surprises, finite-window cardinality risks, PII/secret patterns, temporality, and unsupported features before users make contract claims from a partial export:
 
 ```bash
 python3 -m telemetry_contracts.cli import-otlp --input otlp-export.json --output captured.jsonl --diagnostics-output captured.diagnostics.json
 python3 -m telemetry_contracts.cli import-otlp --input-format jsonl --input otlp-stream.jsonl --output captured-stream.jsonl
+python3 -m telemetry_contracts.cli analyze-collector-export --input otlp-export.json --format markdown
+python3 -m telemetry_contracts.cli export-otlp --events captured.jsonl --output captured.roundtrip.otlp.json
 python3 -m telemetry_contracts.cli validate --contract service.contract.json --events captured.jsonl --format json
 ```
 
-`examples/otlp/collector_mixed_signals.*` is an OpenTelemetry collector-style fixture with a correlated span, histogram exemplar, and structured log; its generated JSONL validates against `collector_mixed_signals.contract.json`, and the alias JSONL fixture demonstrates streaming snake_case normalization diagnostics.
+`examples/otlp/collector_mixed_signals.*` is an OpenTelemetry collector-style fixture with a correlated span, histogram exemplar, and structured log; its generated JSONL validates against `collector_mixed_signals.contract.json`, and the alias JSONL fixture demonstrates streaming snake_case normalization diagnostics. `examples/otlp/collector_coverage_all_signals.*` covers spans, logs, sums, gauges, histograms, exponential histograms, summaries, exemplars, links, span events, resource/scope metadata, temporality, dropped evidence, unsupported OTLP features, and PII/cardinality analysis inputs. `docs/collector_file_exporter.md` gives a vendor-neutral OpenTelemetry Collector file-exporter workflow, and `examples/otlp/collector_pipeline_*` shows redaction, sampling, aggregation, and routing preservation checks over finite before/after artifacts.
 
 `examples/real_world/otel_checkout_missing_tenant.*` is a case-study fixture modeled on a common production observability bug: payment failure traces and logs exist, but neither carries the tenant identifier needed to scope blast radius. The validator confirms the bug by reporting `telemetry.missing_field` for `tenant_id`.
 
@@ -367,7 +374,7 @@ python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --
 python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown
 ```
 
-A benchmark config is JSON with a `cases` list. Each case can point to one contract or multiple contracts plus JSONL events, source paths, import diagnostics, or a mix of those inputs; optional scenario ids; optional `strict: true`; optional dataset metadata/provenance; optional tags/check types/failure modes/semantic features; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario/strict/import-diagnostic check flags, number of contracts, events, findings, findings by code/severity, label precision/recall/F1, runtime and runtime-per-1K-events, findings-per-1K-events, observed memory envelope, dataset ids, import loss rate, grouped remediations with effort/benefit hints, and pass/fail. Use `--case-id`, `--tag`, `--check-type`, `--dataset`, `--expected-failure-mode`, `--semantics-feature`, `--service-owner`, or `--disclosure-status` to slice a suite, and `benchmark-diff` to compare two saved JSON benchmark reports. The checked-in built-in benchmark currently covers 9 cases, 8 contract-backed cases, 30 runtime events, 31 labeled findings, and 1.0 precision/recall/F1 on all labeled cases, including four `telemetry.hyper_pii_disclosure` findings and one labeled partial OTLP import diagnostic.
+A benchmark config is JSON with a `cases` list. Each case can point to one contract or multiple contracts plus JSONL events, source paths, import diagnostics, or a mix of those inputs; optional scenario ids; optional `strict: true`; optional dataset metadata/provenance; optional tags/check types/failure modes/semantic features; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario/strict/import-diagnostic check flags, number of contracts, events, findings, findings by code/severity, label precision/recall/F1, runtime and runtime-per-1K-events, findings-per-1K-events, observed memory envelope, dataset ids, import loss rate, grouped remediations with effort/benefit hints, and pass/fail. Use `--case-id`, `--tag`, `--check-type`, `--dataset`, `--expected-failure-mode`, `--semantics-feature`, `--service-owner`, or `--disclosure-status` to slice a suite, and `benchmark-diff` to compare two saved JSON benchmark reports. The checked-in built-in benchmark currently covers 10 cases, 8 contract-backed cases, 30 runtime events, 35 labeled findings, and 1.0 precision/recall/F1 on all labeled cases, including four `telemetry.hyper_pii_disclosure` findings, collector dropped-evidence/unsupported-feature diagnostics, and one labeled partial OTLP import diagnostic.
 
 ## Public historical case study
 
@@ -559,7 +566,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 
 - Static checking is literal-based, not a full AST analysis.
 - Semantic-convention linting intentionally covers a bounded subset of OpenTelemetry HTTP, database, messaging, and metric-unit guidance plus explicit local policies; it is not a complete semantic-convention compliance suite.
-- OTLP support covers common JSON and JSONL exports for spans, metrics, and logs, including resource/scope metadata, span links/events/status, structured log bodies, observed timestamps, metric exemplars, alias normalization, provenance paths, and importer diagnostics; protobuf/gRPC collector ingestion is future work.
+- OTLP support covers common JSON and JSONL exports for spans, metrics, and logs, including resource/scope metadata, span links/events/status, structured log bodies, observed timestamps, metric exemplars, alias normalization, provenance paths, collector-export analysis, round-trip JSON conversion, and importer diagnostics; protobuf/gRPC collector ingestion is future work.
 - Cardinality is checked over the supplied sample window, not a production time series backend.
 - Sampling and retention stubs are linted for machine-readable contract shape, but not verified against live collector or backend configuration.
 - Strict mode is a closed-world check over the supplied finite event artifact; escape hatches are explicit but do not prove a collector pipeline is correctly configured.

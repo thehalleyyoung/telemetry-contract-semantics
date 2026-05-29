@@ -1,0 +1,57 @@
+{
+  "diagnostics": [
+    {
+      "code": "otlp.dropped_evidence",
+      "details": {
+        "count": 1,
+        "field": "droppedLinksCount"
+      },
+      "invalidates_contract_claim": true,
+      "message": "droppedLinksCount=1 indicates collector/exporter loss",
+      "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount",
+      "severity": "warning"
+    },
+    {
+      "code": "otlp.unsupported_metric",
+      "invalidates_contract_claim": true,
+      "message": "unsupported metric payload for checkout.unsupported",
+      "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]",
+      "severity": "warning"
+    },
+    {
+      "code": "otlp.dropped_evidence",
+      "details": {
+        "count": 1,
+        "field": "droppedAttributesCount"
+      },
+      "invalidates_contract_claim": true,
+      "message": "droppedAttributesCount=1 indicates collector/exporter loss",
+      "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount",
+      "severity": "warning"
+    },
+    {
+      "code": "otlp.unsupported_top_level",
+      "invalidates_contract_claim": false,
+      "message": "ignored unsupported top-level OTLP field 'partialSuccess'",
+      "path": "$.partialSuccess",
+      "severity": "info"
+    }
+  ],
+  "summary": {
+    "diagnostics": 4,
+    "diagnostics_by_code": {
+      "otlp.dropped_evidence": 2,
+      "otlp.unsupported_metric": 1,
+      "otlp.unsupported_top_level": 1
+    },
+    "events": 7,
+    "events_by_kind": {
+      "log": 1,
+      "metric": 5,
+      "span": 1
+    },
+    "invalidating_diagnostics": 3,
+    "records": 1,
+    "streaming": false
+  }
+}

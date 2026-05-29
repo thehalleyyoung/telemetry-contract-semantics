@@ -1,0 +1,357 @@
+{
+  "partialSuccess": {
+    "rejectedLogRecords": "1"
+  },
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "checkout-api"
+            }
+          }
+        ]
+      },
+      "scopeLogs": [
+        {
+          "logRecords": [
+            {
+              "attributes": [
+                {
+                  "key": "log.name",
+                  "value": {
+                    "stringValue": "checkout.coverage_log"
+                  }
+                },
+                {
+                  "key": "session_id",
+                  "value": {
+                    "stringValue": "session-123"
+                  }
+                }
+              ],
+              "body": {
+                "kvlistValue": {
+                  "values": [
+                    {
+                      "key": "message",
+                      "value": {
+                        "stringValue": "checkout coverage error"
+                      }
+                    },
+                    {
+                      "key": "email",
+                      "value": {
+                        "stringValue": "user@example.com"
+                      }
+                    }
+                  ]
+                }
+              },
+              "droppedAttributesCount": "1",
+              "observedTimeUnixNano": "1700000101200000000",
+              "severityNumber": 17,
+              "severityText": "ERROR",
+              "spanId": "bbbbbbbbbbbbbbbb",
+              "timeUnixNano": "1700000101100000000",
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "scope": {
+            "name": "checkout.logs",
+            "version": "2.0.0"
+          }
+        }
+      ]
+    }
+  ],
+  "resourceMetrics": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "checkout-api"
+            }
+          }
+        ],
+        "schemaUrl": "https://vendor.example/schemas/private"
+      },
+      "scopeMetrics": [
+        {
+          "metrics": [
+            {
+              "name": "checkout.requests",
+              "sum": {
+                "aggregationTemporality": "AGGREGATION_TEMPORALITY_DELTA",
+                "dataPoints": [
+                  {
+                    "asInt": "7",
+                    "attributes": [
+                      {
+                        "key": "tenant_id",
+                        "value": {
+                          "stringValue": "tenant-alpha"
+                        }
+                      }
+                    ],
+                    "startTimeUnixNano": "1700000100000000000",
+                    "timeUnixNano": "1700000101000000000"
+                  }
+                ],
+                "isMonotonic": true
+              },
+              "unit": "1"
+            },
+            {
+              "gauge": {
+                "dataPoints": [
+                  {
+                    "asInt": "3",
+                    "attributes": [
+                      {
+                        "key": "tenant_id",
+                        "value": {
+                          "stringValue": "tenant-beta"
+                        }
+                      }
+                    ],
+                    "timeUnixNano": "1700000101000000000"
+                  }
+                ]
+              },
+              "name": "checkout.queue.depth",
+              "unit": "1"
+            },
+            {
+              "histogram": {
+                "aggregationTemporality": "AGGREGATION_TEMPORALITY_CUMULATIVE",
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "tenant_id",
+                        "value": {
+                          "stringValue": "tenant-gamma"
+                        }
+                      }
+                    ],
+                    "bucketCounts": [
+                      "1",
+                      "1"
+                    ],
+                    "count": "2",
+                    "exemplars": [
+                      {
+                        "asDouble": 32.0,
+                        "filteredAttributes": [
+                          {
+                            "key": "sampling",
+                            "value": {
+                              "stringValue": "tail"
+                            }
+                          }
+                        ],
+                        "spanId": "bbbbbbbbbbbbbbbb",
+                        "timeUnixNano": "1700000100500000000",
+                        "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                      }
+                    ],
+                    "explicitBounds": [
+                      20.0
+                    ],
+                    "max": 32.0,
+                    "min": 10.0,
+                    "startTimeUnixNano": "1700000100000000000",
+                    "sum": 42.0,
+                    "timeUnixNano": "1700000101000000000"
+                  }
+                ]
+              },
+              "name": "checkout.duration",
+              "unit": "ms"
+            },
+            {
+              "exponentialHistogram": {
+                "aggregationTemporality": "AGGREGATION_TEMPORALITY_DELTA",
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "tenant_id",
+                        "value": {
+                          "stringValue": "tenant-delta"
+                        }
+                      }
+                    ],
+                    "count": "4",
+                    "negative": {
+                      "bucketCounts": [],
+                      "offset": 0
+                    },
+                    "positive": {
+                      "bucketCounts": [
+                        "2",
+                        "2"
+                      ],
+                      "offset": 0
+                    },
+                    "scale": 1,
+                    "sum": "2048",
+                    "timeUnixNano": "1700000101000000000",
+                    "zeroCount": "0"
+                  }
+                ]
+              },
+              "name": "checkout.payload.size",
+              "unit": "By"
+            },
+            {
+              "name": "checkout.quantiles",
+              "summary": {
+                "dataPoints": [
+                  {
+                    "attributes": [
+                      {
+                        "key": "tenant_id",
+                        "value": {
+                          "stringValue": "tenant-epsilon"
+                        }
+                      }
+                    ],
+                    "count": "2",
+                    "quantileValues": [
+                      {
+                        "quantile": 0.5,
+                        "value": 20.0
+                      },
+                      {
+                        "quantile": 0.99,
+                        "value": 30.0
+                      }
+                    ],
+                    "sum": "50",
+                    "timeUnixNano": "1700000101000000000"
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            {
+              "name": "checkout.unsupported",
+              "unknownMetric": {
+                "dataPoints": [
+                  {
+                    "value": 1
+                  }
+                ]
+              }
+            }
+          ],
+          "scope": {
+            "name": "checkout.metrics",
+            "version": "2.0.0"
+          }
+        }
+      ]
+    }
+  ],
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "checkout-api"
+            }
+          },
+          {
+            "key": "tenant_id",
+            "value": {
+              "stringValue": "tenant-alpha"
+            }
+          }
+        ],
+        "schemaUrl": "https://opentelemetry.io/schemas/1.25.0"
+      },
+      "scopeSpans": [
+        {
+          "schemaUrl": "https://opentelemetry.io/schemas/1.25.0",
+          "scope": {
+            "attributes": [
+              {
+                "key": "scope.attr",
+                "value": {
+                  "stringValue": "demo"
+                }
+              }
+            ],
+            "name": "checkout.spans",
+            "version": "2.0.0"
+          },
+          "spans": [
+            {
+              "attributes": [
+                {
+                  "key": "request_id",
+                  "value": {
+                    "stringValue": "req-coverage"
+                  }
+                },
+                {
+                  "key": "cart_id",
+                  "value": {
+                    "stringValue": "cart-1"
+                  }
+                }
+              ],
+              "droppedLinksCount": "1",
+              "endTimeUnixNano": "1700000100200000000",
+              "events": [
+                {
+                  "attributes": [
+                    {
+                      "key": "event.attr",
+                      "value": {
+                        "stringValue": "present"
+                      }
+                    }
+                  ],
+                  "name": "coverage.event",
+                  "timeUnixNano": "1700000100050000000"
+                }
+              ],
+              "kind": "SPAN_KIND_SERVER",
+              "links": [
+                {
+                  "attributes": [
+                    {
+                      "key": "link.attr",
+                      "value": {
+                        "stringValue": "present"
+                      }
+                    }
+                  ],
+                  "spanId": "dddddddddddddddd",
+                  "traceId": "cccccccccccccccccccccccccccccccc"
+                }
+              ],
+              "name": "checkout.coverage",
+              "parentSpanId": "1111111111111111",
+              "spanId": "bbbbbbbbbbbbbbbb",
+              "startTimeUnixNano": "1700000100000000000",
+              "status": {
+                "code": "STATUS_CODE_OK"
+              },
+              "traceId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

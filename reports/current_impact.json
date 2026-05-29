@@ -2,6 +2,7 @@
   "cases": [
     {
       "checks": {
+        "import_diagnostics": false,
         "runtime": true,
         "scenario": true,
         "static": false,
@@ -10,27 +11,50 @@
       "contract_paths": [
         "examples/contracts/checkout.contract.json"
       ],
+      "dataset": "checkout-payment-timeout-pass",
+      "dataset_metadata": {
+        "disclosure_status": "public-fixture",
+        "id": "checkout-payment-timeout-pass"
+      },
       "description": "Existing checkout fixture with complete telemetry for the payment-timeout scenario.",
+      "disclosure_status": "public-fixture",
       "events": 5,
       "events_path": "examples/telemetry/passing.jsonl",
+      "expected_failure_modes": [],
       "findings": [],
       "id": "checkout-payment-timeout-pass",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
       "metrics": {
         "contracts": 1,
+        "diagnosability_score_change": -0.0,
         "events": 5,
         "findings": 0,
         "findings_by_code": {},
         "findings_by_severity": {},
+        "findings_per_k_events": 0.0,
+        "import_loss_rate": 0.0,
         "labels": null,
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 5,
+          "import_records": 0,
+          "source_files": 0
+        },
         "pass": true,
-        "runtime_ms": 1.508,
+        "runtime_ms": 1.43,
+        "runtime_per_k_events_ms": 286.0,
         "validation_pass": true
       },
       "pass": true,
-      "source_paths": []
+      "semantics_features": [],
+      "service_owner": "contract service owner",
+      "source_paths": [],
+      "tags": []
     },
     {
       "checks": {
+        "import_diagnostics": false,
         "runtime": true,
         "scenario": true,
         "static": false,
@@ -39,9 +63,18 @@
       "contract_paths": [
         "case_studies/gitlab_2017_database_outage/contract.json"
       ],
+      "dataset": "gitlab-2017-database-outage-reconstructed",
+      "dataset_metadata": {
+        "disclosure_status": "public-fixture",
+        "id": "gitlab-2017-database-outage-reconstructed",
+        "labels": "Expected findings are precision-oriented labels for this fixture: the benchmark passes only when every labeled finding is reproduced and no extra finding appears.",
+        "reconstruction_status": "reconstructed_from_public_postmortem_not_raw_telemetry"
+      },
       "description": "Reconstructed public historical case study based on GitLab.com's January 31, 2017 database outage postmortem.",
+      "disclosure_status": "public-fixture",
       "events": 5,
       "events_path": "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
+      "expected_failure_modes": [],
       "findings": [
         {
           "category": "schema",
@@ -389,8 +422,11 @@
         }
       ],
       "id": "gitlab-2017-database-outage-reconstructed",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
       "metrics": {
         "contracts": 1,
+        "diagnosability_score_change": -0.3,
         "events": 5,
         "findings": 12,
         "findings_by_code": {
@@ -402,8 +438,11 @@
         "findings_by_severity": {
           "error": 12
         },
+        "findings_per_k_events": 2400.0,
+        "import_loss_rate": 0.0,
         "labels": {
           "expected": 12,
+          "f1": 1.0,
           "matched": 12,
           "missing": [],
           "pass": true,
@@ -411,15 +450,26 @@
           "recall": 1.0,
           "unexpected": []
         },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 5,
+          "import_records": 0,
+          "source_files": 0
+        },
         "pass": true,
-        "runtime_ms": 1.651,
+        "runtime_ms": 1.815,
+        "runtime_per_k_events_ms": 363.0,
         "validation_pass": false
       },
       "pass": true,
-      "source_paths": []
+      "semantics_features": [],
+      "service_owner": "contract service owner",
+      "source_paths": [],
+      "tags": []
     },
     {
       "checks": {
+        "import_diagnostics": false,
         "runtime": true,
         "scenario": false,
         "static": true,
@@ -428,9 +478,23 @@
       "contract_paths": [
         "case_studies/current/owasp_securetea_signin/contract.json"
       ],
+      "dataset": "owasp-securetea-signin-current-static-and-hyperproperty",
+      "dataset_metadata": {
+        "checksum": "50a8a687be00dd5c3f70e91636c71e54255b5b20",
+        "disclosure_status": "public-fixture",
+        "id": "owasp-securetea-signin-current-static-and-hyperproperty",
+        "labels": "expected_findings",
+        "license": "MIT License; copied source file is included for reproducible defensive analysis with the upstream MIT license text in LICENSE.SecureTea.md.",
+        "reconstruction_status": "reconstructed_console_events.jsonl is a bounded reconstruction of console.log observations from the cited public Signin.js lines; values are synthetic placeholders, not private SecureTea operational data.",
+        "retrieval_date": "2026-05-29",
+        "source_url": "https://github.com/OWASP/SecureTea-Project/blob/7a2da8756e6addbe379ae9b23905dcdbe68b3814/react_gui/src/views/Signin.js",
+        "version": "7a2da8756e6addbe379ae9b23905dcdbe68b3814"
+      },
       "description": "Defensive static and finite-trace hyperproperty privacy/security analysis of a public OWASP SecureTea React sign-in source file and a bounded reconstructed console-log fixture.",
+      "disclosure_status": "public-fixture",
       "events": 3,
       "events_path": "case_studies/current/owasp_securetea_signin/reconstructed_console_events.jsonl",
+      "expected_failure_modes": [],
       "findings": [
         {
           "category": "privacy-security",
@@ -577,8 +641,11 @@
         }
       ],
       "id": "owasp-securetea-signin-current-static-and-hyperproperty",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
       "metrics": {
         "contracts": 1,
+        "diagnosability_score_change": -0.0,
         "events": 3,
         "findings": 5,
         "findings_by_code": {
@@ -588,8 +655,11 @@
         "findings_by_severity": {
           "error": 5
         },
+        "findings_per_k_events": 1666.666667,
+        "import_loss_rate": 0.0,
         "labels": {
           "expected": 5,
+          "f1": 1.0,
           "matched": 5,
           "missing": [],
           "pass": true,
@@ -597,17 +667,28 @@
           "recall": 1.0,
           "unexpected": []
         },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 3,
+          "import_records": 0,
+          "source_files": 1
+        },
         "pass": true,
-        "runtime_ms": 1.932,
+        "runtime_ms": 2.361,
+        "runtime_per_k_events_ms": 787.0,
         "validation_pass": false
       },
       "pass": true,
+      "semantics_features": [],
+      "service_owner": "contract service owner",
       "source_paths": [
         "case_studies/current/owasp_securetea_signin/Signin.js"
-      ]
+      ],
+      "tags": []
     },
     {
       "checks": {
+        "import_diagnostics": false,
         "runtime": true,
         "scenario": false,
         "static": false,
@@ -616,27 +697,287 @@
       "contract_paths": [
         "examples/otlp/collector_mixed_signals.contract.json"
       ],
+      "dataset": "otlp-collector-mixed-signals-pass",
+      "dataset_metadata": {
+        "disclosure_status": "public-fixture",
+        "id": "otlp-collector-mixed-signals-pass"
+      },
       "description": "OpenTelemetry collector JSON export converted to telemetry-contracts JSONL with span, metric exemplar, and log correlation preserved.",
+      "disclosure_status": "public-fixture",
       "events": 3,
       "events_path": "examples/otlp/collector_mixed_signals.events.jsonl",
+      "expected_failure_modes": [],
       "findings": [],
       "id": "otlp-collector-mixed-signals-pass",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
       "metrics": {
         "contracts": 1,
+        "diagnosability_score_change": -0.0,
         "events": 3,
         "findings": 0,
         "findings_by_code": {},
         "findings_by_severity": {},
+        "findings_per_k_events": 0.0,
+        "import_loss_rate": 0.0,
         "labels": null,
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 3,
+          "import_records": 0,
+          "source_files": 0
+        },
         "pass": true,
-        "runtime_ms": 0.708,
+        "runtime_ms": 0.715,
+        "runtime_per_k_events_ms": 238.333333,
         "validation_pass": true
       },
       "pass": true,
-      "source_paths": []
+      "semantics_features": [],
+      "service_owner": "contract service owner",
+      "source_paths": [],
+      "tags": []
     },
     {
       "checks": {
+        "import_diagnostics": true,
+        "runtime": false,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [],
+      "dataset": "collector-export-semantics-fixtures",
+      "dataset_metadata": {
+        "disclosure_status": "public-fixture",
+        "id": "collector-export-semantics-fixtures"
+      },
+      "description": "Collector export coverage fixture with spans, logs, sums, gauges, histograms, exponential histograms, summaries, exemplars, links, span events, resource/scope metadata, temporality, drops, unsupported features, and PII/cardinality analysis inputs.",
+      "disclosure_status": "public-fixture",
+      "events": 0,
+      "events_path": null,
+      "expected_failure_modes": [
+        "collector_dropped_evidence",
+        "unsupported_otlp_feature"
+      ],
+      "findings": [
+        {
+          "category": "input",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "warning",
+            "sarif_level": "warning"
+          },
+          "code": "otlp.dropped_evidence",
+          "details": {
+            "count": 1,
+            "field": "droppedLinksCount",
+            "invalidates_contract_claim": true
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "OTLP.dropped-evidence",
+          "message": "droppedLinksCount=1 indicates collector/exporter loss",
+          "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount",
+          "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+          "sarif_level": "warning",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        },
+        {
+          "category": "input",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "warning",
+            "sarif_level": "warning"
+          },
+          "code": "otlp.unsupported_metric",
+          "details": {
+            "invalidates_contract_claim": true
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "OTLP.unsupported-metric",
+          "message": "unsupported metric payload for checkout.unsupported",
+          "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]",
+          "remediation": "Add importer support or avoid the unsupported metric encoding before making metric-contract claims.",
+          "sarif_level": "warning",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        },
+        {
+          "category": "input",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "warning",
+            "sarif_level": "warning"
+          },
+          "code": "otlp.dropped_evidence",
+          "details": {
+            "count": 1,
+            "field": "droppedAttributesCount",
+            "invalidates_contract_claim": true
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "OTLP.dropped-evidence",
+          "message": "droppedAttributesCount=1 indicates collector/exporter loss",
+          "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount",
+          "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+          "sarif_level": "warning",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        },
+        {
+          "category": "input",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "info",
+            "sarif_level": "note"
+          },
+          "code": "otlp.unsupported_top_level",
+          "details": {
+            "invalidates_contract_claim": false
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "OTLP.unsupported-top-level",
+          "message": "ignored unsupported top-level OTLP field 'partialSuccess'",
+          "path": "$.partialSuccess",
+          "remediation": "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.",
+          "sarif_level": "note",
+          "service_owner": "contract service owner",
+          "severity": "info"
+        }
+      ],
+      "id": "otlp-collector-coverage-analysis",
+      "import_diagnostics": {
+        "diagnostics": [
+          {
+            "code": "otlp.dropped_evidence",
+            "details": {
+              "count": 1,
+              "field": "droppedLinksCount"
+            },
+            "invalidates_contract_claim": true,
+            "message": "droppedLinksCount=1 indicates collector/exporter loss",
+            "path": "$.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount",
+            "severity": "warning"
+          },
+          {
+            "code": "otlp.unsupported_metric",
+            "invalidates_contract_claim": true,
+            "message": "unsupported metric payload for checkout.unsupported",
+            "path": "$.resourceMetrics[0].scopeMetrics[0].metrics[5]",
+            "severity": "warning"
+          },
+          {
+            "code": "otlp.dropped_evidence",
+            "details": {
+              "count": 1,
+              "field": "droppedAttributesCount"
+            },
+            "invalidates_contract_claim": true,
+            "message": "droppedAttributesCount=1 indicates collector/exporter loss",
+            "path": "$.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount",
+            "severity": "warning"
+          },
+          {
+            "code": "otlp.unsupported_top_level",
+            "invalidates_contract_claim": false,
+            "message": "ignored unsupported top-level OTLP field 'partialSuccess'",
+            "path": "$.partialSuccess",
+            "severity": "info"
+          }
+        ],
+        "summary": {
+          "diagnostics": 4,
+          "diagnostics_by_code": {
+            "otlp.dropped_evidence": 2,
+            "otlp.unsupported_metric": 1,
+            "otlp.unsupported_top_level": 1
+          },
+          "events": 7,
+          "events_by_kind": {
+            "log": 1,
+            "metric": 5,
+            "span": 1
+          },
+          "invalidating_diagnostics": 3,
+          "records": 1,
+          "streaming": false
+        }
+      },
+      "import_diagnostics_path": "examples/otlp/collector_coverage_all_signals.diagnostics.json",
+      "metrics": {
+        "contracts": 0,
+        "diagnosability_score_change": -0.0,
+        "events": 0,
+        "findings": 4,
+        "findings_by_code": {
+          "otlp.dropped_evidence": 2,
+          "otlp.unsupported_metric": 1,
+          "otlp.unsupported_top_level": 1
+        },
+        "findings_by_severity": {
+          "info": 1,
+          "warning": 3
+        },
+        "findings_per_k_events": 0.0,
+        "import_loss_rate": 3.0,
+        "labels": {
+          "expected": 4,
+          "f1": 1.0,
+          "matched": 4,
+          "missing": [],
+          "pass": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "unexpected": []
+        },
+        "memory_envelope": {
+          "diagnostics": 4,
+          "events_indexed": 0,
+          "import_records": 1,
+          "source_files": 0
+        },
+        "pass": true,
+        "runtime_ms": 0.039,
+        "runtime_per_k_events_ms": 0.0,
+        "validation_pass": true
+      },
+      "pass": true,
+      "semantics_features": [
+        "collector export analysis",
+        "otlp signal coverage"
+      ],
+      "service_owner": "collector-platform",
+      "source_paths": [],
+      "tags": [
+        "otlp",
+        "collector",
+        "diagnostics"
+      ]
+    },
+    {
+      "checks": {
+        "import_diagnostics": false,
         "runtime": true,
         "scenario": false,
         "static": false,
@@ -645,9 +986,16 @@
       "contract_paths": [
         "examples/temporal_logic/contract.json"
       ],
+      "dataset": "temporal-logic-properties-fail",
+      "dataset_metadata": {
+        "disclosure_status": "public-fixture",
+        "id": "temporal-logic-properties-fail"
+      },
       "description": "Bounded temporal-logic fixture covering safety, bounded response, absence, ordering, and deadline violations.",
+      "disclosure_status": "public-fixture",
       "events": 8,
       "events_path": "examples/temporal_logic/failing.jsonl",
+      "expected_failure_modes": [],
       "findings": [
         {
           "category": "diagnosability",
@@ -798,8 +1146,11 @@
         }
       ],
       "id": "temporal-logic-properties-fail",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
       "metrics": {
         "contracts": 1,
+        "diagnosability_score_change": -0.25,
         "events": 8,
         "findings": 5,
         "findings_by_code": {
@@ -812,8 +1163,11 @@
         "findings_by_severity": {
           "error": 5
         },
+        "findings_per_k_events": 625.0,
+        "import_loss_rate": 0.0,
         "labels": {
           "expected": 5,
+          "f1": 1.0,
           "matched": 5,
           "missing": [],
           "pass": true,
@@ -821,26 +1175,711 @@
           "recall": 1.0,
           "unexpected": []
         },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 8,
+          "import_records": 0,
+          "source_files": 0
+        },
         "pass": true,
-        "runtime_ms": 0.933,
+        "runtime_ms": 0.674,
+        "runtime_per_k_events_ms": 84.25,
         "validation_pass": false
       },
       "pass": true,
-      "source_paths": []
+      "semantics_features": [],
+      "service_owner": "contract service owner",
+      "source_paths": [],
+      "tags": []
+    },
+    {
+      "checks": {
+        "import_diagnostics": false,
+        "runtime": true,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [
+        "examples/benchmarks/missing_correlation.contract.json"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "dataset_metadata": {
+        "checksum": {
+          "cardinality.contract.json": "00d7fa90e9e31efde450fd547011073359732fad074db1628369cd228e4c5134",
+          "cardinality.events.jsonl": "6d0923d8c97fd5de425bea6a86cfbf31d88247a3182730bb427d704bbca998c0",
+          "missing_correlation.contract.json": "485009e10bbe17f92f10fe955f4f8d5fe464cc142947b26216738d71379d27aa",
+          "missing_correlation.events.jsonl": "1823d58b3d0007a249147daed5607e843c6b7a71970c91d5cc5832ebb26c718d",
+          "partial_otlp.diagnostics.json": "5104cdba31f785ff184bd8ee0018327fc0d9060b41adc104032c633926fa71c9",
+          "privacy_static.contract.json": "a31ef92e5c930545b9db3f720317ae70cb20c9fe080b54b94e390fc624a76079",
+          "privacy_static.events.jsonl": "baf38813122f9a3a9528788119028a0a214b56644953674c52c11c9ec94aae14",
+          "privacy_static_source.py": "4987916cc4931310e87c2bf19139fc60d809e64725b13198cc7c65763480cf8d"
+        },
+        "disclosure_status": "public synthetic fixture checked into repository",
+        "id": "public-benchmark-semantics-fixtures",
+        "labels": "Expected finding labels encode exact checker outputs for precision/recall/F1 benchmark accounting.",
+        "license": "repository public license",
+        "reconstruction_status": "reconstructed minimal public fixtures",
+        "retrieval_date": "2026-05-29",
+        "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+        "transformations": [
+          "Minimal JSONL/contract fixtures derived from repository semantics; no private incident claims."
+        ],
+        "validity_threats": [
+          "Small fixtures target semantic failure modes, not population-level prevalence."
+        ],
+        "version": "2026-05-29.benchmark-semantics-v1"
+      },
+      "description": "Minimal public fixture that preserves span/metric data but drops log correlation keys so incident evidence cannot be joined.",
+      "disclosure_status": "public-fixture",
+      "events": 3,
+      "events_path": "examples/benchmarks/missing_correlation.events.jsonl",
+      "expected_failure_modes": [
+        "missing_correlation"
+      ],
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.correlation_missing",
+          "contract_path": "$.correlation.keys",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.correlation-presence",
+          "message": "log 'checkout.error' missing any correlation key from ['trace_id', 'request_id']",
+          "path": "event[2]",
+          "remediation": "Emit a trace_id, span_id, request_id, or configured correlation key on correlated signals.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.correlation_missing",
+          "contract_path": "$.correlation.keys",
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "SAT.correlation-presence",
+          "message": "no log events carried required correlation keys",
+          "path": "events[log]",
+          "remediation": "Emit a trace_id, span_id, request_id, or configured correlation key on correlated signals.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "benchmark-missing-correlation",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
+      "metrics": {
+        "contracts": 1,
+        "diagnosability_score_change": -0.1,
+        "events": 3,
+        "findings": 2,
+        "findings_by_code": {
+          "telemetry.correlation_missing": 2
+        },
+        "findings_by_severity": {
+          "error": 2
+        },
+        "findings_per_k_events": 666.666667,
+        "import_loss_rate": 0.0,
+        "labels": {
+          "expected": 2,
+          "f1": 1.0,
+          "matched": 2,
+          "missing": [],
+          "pass": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "unexpected": []
+        },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 3,
+          "import_records": 0,
+          "source_files": 0
+        },
+        "pass": true,
+        "runtime_ms": 0.718,
+        "runtime_per_k_events_ms": 239.333333,
+        "validation_pass": false
+      },
+      "pass": true,
+      "semantics_features": [
+        "cross-signal correlation",
+        "incident diagnosability"
+      ],
+      "service_owner": "benchmark-platform",
+      "source_paths": [],
+      "tags": [
+        "correlation",
+        "diagnosability",
+        "runtime"
+      ]
+    },
+    {
+      "checks": {
+        "import_diagnostics": false,
+        "runtime": true,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [
+        "examples/benchmarks/cardinality.contract.json"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "dataset_metadata": {
+        "checksum": {
+          "cardinality.contract.json": "00d7fa90e9e31efde450fd547011073359732fad074db1628369cd228e4c5134",
+          "cardinality.events.jsonl": "6d0923d8c97fd5de425bea6a86cfbf31d88247a3182730bb427d704bbca998c0",
+          "missing_correlation.contract.json": "485009e10bbe17f92f10fe955f4f8d5fe464cc142947b26216738d71379d27aa",
+          "missing_correlation.events.jsonl": "1823d58b3d0007a249147daed5607e843c6b7a71970c91d5cc5832ebb26c718d",
+          "partial_otlp.diagnostics.json": "5104cdba31f785ff184bd8ee0018327fc0d9060b41adc104032c633926fa71c9",
+          "privacy_static.contract.json": "a31ef92e5c930545b9db3f720317ae70cb20c9fe080b54b94e390fc624a76079",
+          "privacy_static.events.jsonl": "baf38813122f9a3a9528788119028a0a214b56644953674c52c11c9ec94aae14",
+          "privacy_static_source.py": "4987916cc4931310e87c2bf19139fc60d809e64725b13198cc7c65763480cf8d"
+        },
+        "disclosure_status": "public synthetic fixture checked into repository",
+        "id": "public-benchmark-semantics-fixtures",
+        "labels": "Expected finding labels encode exact checker outputs for precision/recall/F1 benchmark accounting.",
+        "license": "repository public license",
+        "reconstruction_status": "reconstructed minimal public fixtures",
+        "retrieval_date": "2026-05-29",
+        "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+        "transformations": [
+          "Minimal JSONL/contract fixtures derived from repository semantics; no private incident claims."
+        ],
+        "validity_threats": [
+          "Small fixtures target semantic failure modes, not population-level prevalence."
+        ],
+        "version": "2026-05-29.benchmark-semantics-v1"
+      },
+      "description": "Minimal metric fixture whose tenant_id tag exceeds a declared bounded-cardinality budget.",
+      "disclosure_status": "public-fixture",
+      "events": 2,
+      "events_path": "examples/benchmarks/cardinality.events.jsonl",
+      "expected_failure_modes": [
+        "high_cardinality"
+      ],
+      "findings": [
+        {
+          "category": "operability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "warning",
+            "sarif_level": "warning"
+          },
+          "code": "telemetry.cardinality",
+          "contract_path": "$.metrics[0].fields.tenant_id.cardinality",
+          "details": {
+            "distinct_values": 2
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "SAT.cardinality-bound",
+          "message": "metric 'checkout.requests' field 'tenant_id' has cardinality 2 over hint 1",
+          "path": "events[metric=checkout.requests].tenant_id",
+          "remediation": "Bucket, hash, drop, or bound labels with excessive cardinality.",
+          "sarif_level": "warning",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        }
+      ],
+      "id": "benchmark-cardinality-budget",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
+      "metrics": {
+        "contracts": 1,
+        "diagnosability_score_change": -0.0,
+        "events": 2,
+        "findings": 1,
+        "findings_by_code": {
+          "telemetry.cardinality": 1
+        },
+        "findings_by_severity": {
+          "warning": 1
+        },
+        "findings_per_k_events": 500.0,
+        "import_loss_rate": 0.0,
+        "labels": {
+          "expected": 1,
+          "f1": 1.0,
+          "matched": 1,
+          "missing": [],
+          "pass": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "unexpected": []
+        },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 2,
+          "import_records": 0,
+          "source_files": 0
+        },
+        "pass": true,
+        "runtime_ms": 0.465,
+        "runtime_per_k_events_ms": 232.5,
+        "validation_pass": true
+      },
+      "pass": true,
+      "semantics_features": [
+        "cardinality budgets",
+        "operability policy"
+      ],
+      "service_owner": "benchmark-platform",
+      "source_paths": [],
+      "tags": [
+        "cardinality",
+        "operability",
+        "runtime"
+      ]
+    },
+    {
+      "checks": {
+        "import_diagnostics": false,
+        "runtime": true,
+        "scenario": false,
+        "static": true,
+        "strict": false
+      },
+      "contract_paths": [
+        "examples/benchmarks/privacy_static.contract.json"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "dataset_metadata": {
+        "checksum": {
+          "cardinality.contract.json": "00d7fa90e9e31efde450fd547011073359732fad074db1628369cd228e4c5134",
+          "cardinality.events.jsonl": "6d0923d8c97fd5de425bea6a86cfbf31d88247a3182730bb427d704bbca998c0",
+          "missing_correlation.contract.json": "485009e10bbe17f92f10fe955f4f8d5fe464cc142947b26216738d71379d27aa",
+          "missing_correlation.events.jsonl": "1823d58b3d0007a249147daed5607e843c6b7a71970c91d5cc5832ebb26c718d",
+          "partial_otlp.diagnostics.json": "5104cdba31f785ff184bd8ee0018327fc0d9060b41adc104032c633926fa71c9",
+          "privacy_static.contract.json": "a31ef92e5c930545b9db3f720317ae70cb20c9fe080b54b94e390fc624a76079",
+          "privacy_static.events.jsonl": "baf38813122f9a3a9528788119028a0a214b56644953674c52c11c9ec94aae14",
+          "privacy_static_source.py": "4987916cc4931310e87c2bf19139fc60d809e64725b13198cc7c65763480cf8d"
+        },
+        "disclosure_status": "public synthetic fixture checked into repository",
+        "id": "public-benchmark-semantics-fixtures",
+        "labels": "Expected finding labels encode exact checker outputs for precision/recall/F1 benchmark accounting.",
+        "license": "repository public license",
+        "reconstruction_status": "reconstructed minimal public fixtures",
+        "retrieval_date": "2026-05-29",
+        "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+        "transformations": [
+          "Minimal JSONL/contract fixtures derived from repository semantics; no private incident claims."
+        ],
+        "validity_threats": [
+          "Small fixtures target semantic failure modes, not population-level prevalence."
+        ],
+        "version": "2026-05-29.benchmark-semantics-v1"
+      },
+      "description": "Public-code-style auth fixture combining raw sensitive telemetry, static secret logging, unbounded label, and missing correlation checks.",
+      "disclosure_status": "public-fixture",
+      "events": 1,
+      "events_path": "examples/benchmarks/privacy_static.events.jsonl",
+      "expected_failure_modes": [
+        "pii_exposure",
+        "secret_logging",
+        "unbounded_source_label",
+        "missing_static_correlation"
+      ],
+      "findings": [
+        {
+          "category": "privacy-security",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.sensitive_value",
+          "contract_path": "$.logs[0].fields.email",
+          "details": {
+            "sensitivity": "personal",
+            "value_preview": "alic\u2026.com"
+          },
+          "disclosure_sensitivity": "responsible-disclosure",
+          "event_index": 1,
+          "formal_clause": "SAT.raw-sensitive-value",
+          "message": "field 'email' appears to contain raw personal data",
+          "path": "event[1].email",
+          "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "privacy-security",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.hyper_pii_disclosure",
+          "contract_path": "$.hyperproperties[0].sensitive_fields",
+          "details": {
+            "field": "email",
+            "property": "auth-no-raw-email",
+            "request_id": null,
+            "trace_id": null,
+            "value_preview": "alic\u2026.com"
+          },
+          "disclosure_sensitivity": "responsible-disclosure",
+          "event_index": 1,
+          "formal_clause": "HYP.pii-non-disclosure",
+          "message": "auth-no-raw-email: log 'auth.failure' exposes raw sensitive field 'email'",
+          "path": "event[1].fields.email",
+          "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "privacy-security",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "static.secret_logging",
+          "details": {
+            "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)"
+          },
+          "disclosure_sensitivity": "responsible-disclosure",
+          "formal_clause": "STATIC.raw-sensitive-log",
+          "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
+          "path": "examples/benchmarks/privacy_static_source.py:2",
+          "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "static.missing_correlation",
+          "details": {
+            "expected_any": [
+              "trace_id",
+              "request_id"
+            ],
+            "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "STATIC.correlation-evidence",
+          "message": "error log may be missing trace/request correlation fields",
+          "path": "examples/benchmarks/privacy_static_source.py:2",
+          "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        },
+        {
+          "category": "operability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "warning",
+            "sarif_level": "warning"
+          },
+          "code": "static.unbounded_label",
+          "details": {
+            "line": "meter.counter(\"auth.login.attempts\", labels={\"email\": user_email, \"status\": \"failed\"})"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "STATIC.cardinality-risk",
+          "message": "metric/tag code appears to use a high-cardinality or user-controlled label without bucketing",
+          "path": "examples/benchmarks/privacy_static_source.py:3",
+          "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
+          "sarif_level": "warning",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        }
+      ],
+      "id": "benchmark-privacy-static-source",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
+      "metrics": {
+        "contracts": 1,
+        "diagnosability_score_change": -0.05,
+        "events": 1,
+        "findings": 5,
+        "findings_by_code": {
+          "static.missing_correlation": 1,
+          "static.secret_logging": 1,
+          "static.unbounded_label": 1,
+          "telemetry.hyper_pii_disclosure": 1,
+          "telemetry.sensitive_value": 1
+        },
+        "findings_by_severity": {
+          "error": 3,
+          "warning": 2
+        },
+        "findings_per_k_events": 5000.0,
+        "import_loss_rate": 0.0,
+        "labels": {
+          "expected": 5,
+          "f1": 1.0,
+          "matched": 5,
+          "missing": [],
+          "pass": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "unexpected": []
+        },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 1,
+          "import_records": 0,
+          "source_files": 1
+        },
+        "pass": true,
+        "runtime_ms": 1.072,
+        "runtime_per_k_events_ms": 1072.0,
+        "validation_pass": false
+      },
+      "pass": true,
+      "semantics_features": [
+        "pii non-disclosure",
+        "static source checks",
+        "correlation-at-source"
+      ],
+      "service_owner": "benchmark-auth",
+      "source_paths": [
+        "examples/benchmarks/privacy_static_source.py"
+      ],
+      "tags": [
+        "privacy",
+        "security",
+        "static",
+        "runtime"
+      ]
+    },
+    {
+      "checks": {
+        "import_diagnostics": true,
+        "runtime": false,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "dataset_metadata": {
+        "checksum": {
+          "cardinality.contract.json": "00d7fa90e9e31efde450fd547011073359732fad074db1628369cd228e4c5134",
+          "cardinality.events.jsonl": "6d0923d8c97fd5de425bea6a86cfbf31d88247a3182730bb427d704bbca998c0",
+          "missing_correlation.contract.json": "485009e10bbe17f92f10fe955f4f8d5fe464cc142947b26216738d71379d27aa",
+          "missing_correlation.events.jsonl": "1823d58b3d0007a249147daed5607e843c6b7a71970c91d5cc5832ebb26c718d",
+          "partial_otlp.diagnostics.json": "5104cdba31f785ff184bd8ee0018327fc0d9060b41adc104032c633926fa71c9",
+          "privacy_static.contract.json": "a31ef92e5c930545b9db3f720317ae70cb20c9fe080b54b94e390fc624a76079",
+          "privacy_static.events.jsonl": "baf38813122f9a3a9528788119028a0a214b56644953674c52c11c9ec94aae14",
+          "privacy_static_source.py": "4987916cc4931310e87c2bf19139fc60d809e64725b13198cc7c65763480cf8d"
+        },
+        "disclosure_status": "public synthetic fixture checked into repository",
+        "id": "public-benchmark-semantics-fixtures",
+        "labels": "Expected finding labels encode exact checker outputs for precision/recall/F1 benchmark accounting.",
+        "license": "repository public license",
+        "reconstruction_status": "reconstructed minimal public fixtures",
+        "retrieval_date": "2026-05-29",
+        "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+        "transformations": [
+          "Minimal JSONL/contract fixtures derived from repository semantics; no private incident claims."
+        ],
+        "validity_threats": [
+          "Small fixtures target semantic failure modes, not population-level prevalence."
+        ],
+        "version": "2026-05-29.benchmark-semantics-v1"
+      },
+      "description": "Partial OTLP-import diagnostics fixture where a malformed public JSONL record is skipped and invalidates complete-import claims.",
+      "disclosure_status": "public-fixture",
+      "events": 0,
+      "events_path": null,
+      "expected_failure_modes": [
+        "partial_otlp_import",
+        "malformed_record"
+      ],
+      "findings": [
+        {
+          "category": "input",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "warning",
+            "sarif_level": "warning"
+          },
+          "code": "otlp.malformed_record",
+          "details": {
+            "invalidates_contract_claim": true,
+            "record_index": 1
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "OTLP.malformed-record",
+          "message": "OTLP JSONL record 2 was malformed and skipped",
+          "path": "records[1]",
+          "remediation": "Fix or exclude malformed OTLP JSONL records before asserting full export coverage.",
+          "sarif_level": "warning",
+          "service_owner": "contract service owner",
+          "severity": "warning"
+        }
+      ],
+      "id": "benchmark-partial-otlp-diagnostics",
+      "import_diagnostics": {
+        "diagnostics": [
+          {
+            "code": "otlp.malformed_record",
+            "details": {
+              "record_index": 1
+            },
+            "invalidates_contract_claim": true,
+            "message": "OTLP JSONL record 2 was malformed and skipped",
+            "path": "records[1]",
+            "severity": "warning"
+          }
+        ],
+        "summary": {
+          "diagnostics": 1,
+          "events": 2,
+          "invalidating_diagnostics": 1,
+          "records": 3
+        }
+      },
+      "import_diagnostics_path": "examples/benchmarks/partial_otlp.diagnostics.json",
+      "metrics": {
+        "contracts": 0,
+        "diagnosability_score_change": -0.0,
+        "events": 0,
+        "findings": 1,
+        "findings_by_code": {
+          "otlp.malformed_record": 1
+        },
+        "findings_by_severity": {
+          "warning": 1
+        },
+        "findings_per_k_events": 0.0,
+        "import_loss_rate": 0.333333,
+        "labels": {
+          "expected": 1,
+          "f1": 1.0,
+          "matched": 1,
+          "missing": [],
+          "pass": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "unexpected": []
+        },
+        "memory_envelope": {
+          "diagnostics": 1,
+          "events_indexed": 0,
+          "import_records": 3,
+          "source_files": 0
+        },
+        "pass": true,
+        "runtime_ms": 0.013,
+        "runtime_per_k_events_ms": 0.0,
+        "validation_pass": true
+      },
+      "pass": true,
+      "semantics_features": [
+        "import loss accounting",
+        "diagnostic claim validity"
+      ],
+      "service_owner": "collector-platform",
+      "source_paths": [],
+      "tags": [
+        "otlp",
+        "import",
+        "diagnostics"
+      ]
     }
   ],
   "summary": {
+    "cases": 10,
     "config": "benchmarks/builtin.json",
-    "contracts": 5,
-    "events": 24,
-    "findings": 22,
+    "contracts": 8,
+    "datasets": [
+      "checkout-payment-timeout-pass",
+      "collector-export-semantics-fixtures",
+      "gitlab-2017-database-outage-reconstructed",
+      "otlp-collector-mixed-signals-pass",
+      "owasp-securetea-signin-current-static-and-hyperproperty",
+      "public-benchmark-semantics-fixtures",
+      "temporal-logic-properties-fail"
+    ],
+    "events": 30,
+    "filters": {},
+    "findings": 35,
     "findings_by_code": {
+      "otlp.dropped_evidence": 2,
+      "otlp.malformed_record": 1,
+      "otlp.unsupported_metric": 1,
+      "otlp.unsupported_top_level": 1,
       "scenario.missing_field": 3,
-      "static.secret_logging": 2,
+      "static.missing_correlation": 1,
+      "static.secret_logging": 3,
+      "static.unbounded_label": 1,
       "telemetry.allowed_values": 4,
-      "telemetry.hyper_pii_disclosure": 3,
+      "telemetry.cardinality": 1,
+      "telemetry.correlation_missing": 2,
+      "telemetry.hyper_pii_disclosure": 4,
       "telemetry.missing_field": 3,
       "telemetry.numeric_max": 2,
+      "telemetry.sensitive_value": 1,
       "telemetry.temporal_absence": 1,
       "telemetry.temporal_deadline": 1,
       "telemetry.temporal_order": 1,
@@ -848,10 +1887,95 @@
       "telemetry.temporal_safety": 1
     },
     "findings_by_severity": {
-      "error": 22
+      "error": 27,
+      "info": 1,
+      "warning": 7
+    },
+    "findings_per_k_events": 1166.666667,
+    "import_loss_rate": 1.0,
+    "label_metrics": {
+      "cases": 8,
+      "expected": 35,
+      "f1": 1.0,
+      "matched": 35,
+      "precision": 1.0,
+      "recall": 1.0,
+      "unexpected": 0
+    },
+    "memory_envelope": {
+      "diagnostics": 5,
+      "events_indexed": 30,
+      "import_records": 4,
+      "source_files": 2
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 9.924
+    "runtime_ms": 16.256,
+    "runtime_per_k_events_ms": 541.866667,
+    "top_remediations": [
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "medium",
+        "findings": 4,
+        "incident_readiness_benefit": "reduces sensitive telemetry exposure",
+        "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+        "semantic_property": "privacy-security",
+        "severity": "error"
+      },
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "medium",
+        "findings": 4,
+        "incident_readiness_benefit": "improves benchmark semantic coverage",
+        "remediation": "Normalize the field to one of the declared allowed values.",
+        "semantic_property": "schema",
+        "severity": "error"
+      },
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "medium",
+        "findings": 3,
+        "incident_readiness_benefit": "restores incident question evidence",
+        "remediation": "Attach the required attribute/tag/field to the signal.",
+        "semantic_property": "diagnosability",
+        "severity": "error"
+      },
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "small-to-medium",
+        "findings": 2,
+        "incident_readiness_benefit": "bounds importer claim validity",
+        "remediation": "Inspect collector/exporter dropped-count fields before relying on complete contract evidence.",
+        "semantic_property": "input",
+        "severity": "warning"
+      },
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "small-to-medium",
+        "findings": 1,
+        "incident_readiness_benefit": "restores incident question evidence",
+        "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
+        "semantic_property": "diagnosability",
+        "severity": "warning"
+      },
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "small-to-medium",
+        "findings": 1,
+        "incident_readiness_benefit": "reduces noisy or costly telemetry",
+        "remediation": "Bucket, hash, drop, or bound labels with excessive cardinality.",
+        "semantic_property": "operability",
+        "severity": "warning"
+      },
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "small-to-medium",
+        "findings": 1,
+        "incident_readiness_benefit": "bounds importer claim validity",
+        "remediation": "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.",
+        "semantic_property": "input",
+        "severity": "info"
+      }
+    ]
   }
 }

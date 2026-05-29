@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -209,6 +210,257 @@ def write_diagnostics(report: dict[str, Any], path: str | Path) -> None:
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps({"summary": report["summary"], "diagnostics": report["diagnostics"]}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def convert_events_to_otlp_payload(events: list[dict[str, Any]]) -> dict[str, Any]:
+    payload: dict[str, Any] = {"resourceSpans": [], "resourceMetrics": [], "resourceLogs": []}
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        kind = event.get("kind")
+        service = str(event.get("service") or event.get("attributes", {}).get("service.name") or event.get("tags", {}).get("service.name") or event.get("fields", {}).get("service.name") or "")
+        resource = {"attributes": _otlp_attributes({"service.name": service} if service else {})}
+        scope = event.get("scope") if isinstance(event.get("scope"), dict) else {}
+        scope_obj = {key: value for key, value in {"name": scope.get("name", "telemetry-contracts.roundtrip"), "version": scope.get("version")}.items() if value}
+        if kind == "span":
+            payload["resourceSpans"].append({"resource": resource, "scopeSpans": [{"scope": scope_obj, "spans": [_event_to_otlp_span(event)]}]})
+        elif kind == "metric":
+            metric_type = str(event.get("metric_type") or "gauge")
+            payload["resourceMetrics"].append({"resource": resource, "scopeMetrics": [{"scope": scope_obj, "metrics": [_event_to_otlp_metric(event, metric_type)]}]})
+        elif kind == "log":
+            payload["resourceLogs"].append({"resource": resource, "scopeLogs": [{"scope": scope_obj, "logRecords": [_event_to_otlp_log(event)]}]})
+    return {key: value for key, value in payload.items() if value}
+
+
+def analyze_otlp_report(report: dict[str, Any], cardinality_threshold: int = 2) -> dict[str, Any]:
+    events = [event for event in report.get("events", []) if isinstance(event, dict)]
+    diagnostics = [item for item in report.get("diagnostics", []) if isinstance(item, dict)]
+    values_by_key: dict[str, set[str]] = {}
+    pii: list[dict[str, Any]] = []
+    temporality: dict[str, int] = {}
+    missing_temporality: list[str] = []
+    schemas: dict[str, int] = {}
+    for index, event in enumerate(events):
+        attrs = _event_attrs(event)
+        for key, value in attrs.items():
+            values_by_key.setdefault(key, set()).add(str(value))
+            risk = _pii_secret_risk(key, value)
+            if risk:
+                pii.append({"event_index": index, "kind": event.get("kind"), "field": key, "risk": risk, "value_preview": _safe_preview(value)})
+        for scope_name in ("resource", "scope"):
+            schema = event.get(scope_name, {}).get("schema_url") if isinstance(event.get(scope_name), dict) else None
+            if schema:
+                schemas[str(schema)] = schemas.get(str(schema), 0) + 1
+        if event.get("kind") == "metric":
+            temp = event.get("aggregation_temporality")
+            if temp:
+                temporality[str(temp)] = temporality.get(str(temp), 0) + 1
+            elif event.get("metric_type") in {"sum", "histogram", "exponentialHistogram"}:
+                missing_temporality.append(str(event.get("name", "metric")))
+    cardinality = [
+        {"field": key, "distinct_values": len(values), "risk": "high_cardinality_label"}
+        for key, values in sorted(values_by_key.items())
+        if len(values) > cardinality_threshold or re.search(r"(user|tenant|session|request|trace|span|cart|account).*id$", key)
+    ]
+    unsupported = [item for item in diagnostics if str(item.get("code")) in {"otlp.unsupported_metric", "otlp.unsupported_top_level", "otlp.skipped_record", "otlp.malformed_record"}]
+    dropped = [item for item in diagnostics if str(item.get("code")) == "otlp.dropped_evidence"]
+    unknown_schemas = [{"schema_url": key, "events": value} for key, value in sorted(schemas.items()) if not key.startswith("https://opentelemetry.io/schemas/")]
+    risk_count = len(dropped) + len(cardinality) + len(pii) + len(missing_temporality) + len(unsupported) + len(unknown_schemas)
+    return {
+        "summary": {
+            **report.get("summary", {}),
+            "collector_risk_count": risk_count,
+            "dropped_evidence": len(dropped),
+            "cardinality_risks": len(cardinality),
+            "pii_secret_risks": len(pii),
+            "unsupported_features": len(unsupported),
+            "unknown_schemas": len(unknown_schemas),
+            "missing_temporality": len(missing_temporality),
+        },
+        "dropped_fields": dropped,
+        "unknown_schemas": unknown_schemas,
+        "cardinality_risks": cardinality,
+        "pii_secret_risks": pii,
+        "temporality": {"counts": dict(sorted(temporality.items())), "missing_for_metrics": sorted(set(missing_temporality))},
+        "unsupported_features": unsupported,
+        "limitations": [
+            "Cardinality is estimated over the supplied finite export, not backend-wide production series.",
+            "PII/secret risk checks are heuristic field-name and value-pattern checks for triage.",
+            "Unsupported-feature diagnostics bound the validity of contract claims made from this export.",
+        ],
+    }
+
+
+def format_collector_analysis_markdown(report: dict[str, Any]) -> str:
+    summary = report["summary"]
+    lines = [
+        "# Collector export analysis",
+        "",
+        f"- Events: {summary.get('events', 0)}",
+        f"- Diagnostics: {summary.get('diagnostics', 0)}",
+        f"- Invalidating diagnostics: {summary.get('invalidating_diagnostics', 0)}",
+        f"- Collector risk count: {summary.get('collector_risk_count', 0)}",
+        f"- Dropped evidence: {summary.get('dropped_evidence', 0)}",
+        f"- Cardinality risks: {summary.get('cardinality_risks', 0)}",
+        f"- PII/secret risks: {summary.get('pii_secret_risks', 0)}",
+        f"- Unsupported features: {summary.get('unsupported_features', 0)}",
+        f"- Unknown schemas: {summary.get('unknown_schemas', 0)}",
+        f"- Missing temporality: {summary.get('missing_temporality', 0)}",
+        "",
+        "## Temporality",
+        "",
+        f"- Counts: `{json.dumps(report.get('temporality', {}).get('counts', {}), sort_keys=True)}`",
+        f"- Missing for metrics: `{json.dumps(report.get('temporality', {}).get('missing_for_metrics', []), sort_keys=True)}`",
+        "",
+    ]
+    for section, title in (
+        ("dropped_fields", "Dropped evidence"),
+        ("cardinality_risks", "Cardinality risks"),
+        ("pii_secret_risks", "PII/secret risks"),
+        ("unknown_schemas", "Unknown schemas"),
+        ("unsupported_features", "Unsupported OTLP features"),
+    ):
+        lines.extend([f"## {title}", ""])
+        items = report.get(section, [])
+        if not items:
+            lines.append("None.")
+        else:
+            for item in items:
+                lines.append(f"- `{json.dumps(item, sort_keys=True)}`")
+        lines.append("")
+    lines.extend(["## Limitations", ""])
+    lines.extend(f"- {item}" for item in report.get("limitations", []))
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _event_to_otlp_span(event: dict[str, Any]) -> dict[str, Any]:
+    span = {
+        "traceId": event.get("trace_id"),
+        "spanId": event.get("span_id"),
+        "parentSpanId": event.get("parent_span_id"),
+        "name": event.get("name"),
+        "kind": event.get("span_kind"),
+        "startTimeUnixNano": _string_int(event.get("start_time_unix_nano")),
+        "endTimeUnixNano": _string_int(event.get("end_time_unix_nano")),
+        "attributes": _otlp_attributes(event.get("attributes", {})),
+        "status": event.get("status"),
+    }
+    span_events = []
+    for item in event.get("events", []) if isinstance(event.get("events"), list) else []:
+        if isinstance(item, dict):
+            span_events.append({"name": item.get("name"), "timeUnixNano": _string_int(item.get("time_unix_nano")), "attributes": _otlp_attributes(item.get("attributes", {}))})
+    if span_events:
+        span["events"] = span_events
+    links = []
+    for item in event.get("links", []) if isinstance(event.get("links"), list) else []:
+        if isinstance(item, dict):
+            links.append({"traceId": item.get("trace_id"), "spanId": item.get("span_id"), "attributes": _otlp_attributes(item.get("attributes", {}))})
+    if links:
+        span["links"] = links
+    return _drop_none(span)
+
+
+def _event_to_otlp_metric(event: dict[str, Any], metric_type: str) -> dict[str, Any]:
+    point = {
+        "attributes": _otlp_attributes(event.get("tags", {})),
+        "startTimeUnixNano": _string_int(event.get("start_time_unix_nano")),
+        "timeUnixNano": _string_int(event.get("time_unix_nano")),
+        "traceId": event.get("trace_id"),
+        "spanId": event.get("span_id"),
+    }
+    if metric_type in {"sum", "gauge"}:
+        point["asDouble" if isinstance(event.get("value"), float) else "asInt"] = event.get("value")
+    elif metric_type == "histogram":
+        point.update({"count": _string_int(event.get("count")), "sum": event.get("sum", event.get("value")), "min": event.get("min"), "max": event.get("max"), "bucketCounts": [_string_int(v) for v in event.get("bucket_counts", [])], "explicitBounds": event.get("explicit_bounds", [])})
+    elif metric_type == "exponentialHistogram":
+        point.update({"count": _string_int(event.get("count")), "sum": event.get("sum", event.get("value")), "min": event.get("min"), "max": event.get("max"), "scale": event.get("scale"), "zeroCount": _string_int(event.get("zero_count")), "positive": event.get("positive"), "negative": event.get("negative")})
+    elif metric_type == "summary":
+        point.update({"count": _string_int(event.get("count")), "sum": event.get("sum", event.get("value")), "quantileValues": event.get("quantiles", [])})
+    exemplars = []
+    for item in event.get("exemplars", []) if isinstance(event.get("exemplars"), list) else []:
+        if isinstance(item, dict):
+            exemplar = {"timeUnixNano": _string_int(item.get("time_unix_nano")), "asDouble": item.get("value"), "traceId": item.get("trace_id"), "spanId": item.get("span_id"), "filteredAttributes": _otlp_attributes(item.get("filtered_attributes", {}))}
+            exemplars.append(_drop_none(exemplar))
+    if exemplars:
+        point["exemplars"] = exemplars
+    data = {"dataPoints": [_drop_none(point)]}
+    if event.get("aggregation_temporality"):
+        data["aggregationTemporality"] = event.get("aggregation_temporality")
+    if event.get("is_monotonic") is not None:
+        data["isMonotonic"] = event.get("is_monotonic")
+    return _drop_none({"name": event.get("name"), "description": event.get("description"), "unit": event.get("unit"), metric_type: data})
+
+
+def _event_to_otlp_log(event: dict[str, Any]) -> dict[str, Any]:
+    fields = dict(event.get("fields", {})) if isinstance(event.get("fields"), dict) else {}
+    if event.get("name"):
+        fields.setdefault("log.name", event.get("name"))
+    body = event.get("body")
+    if body is None and event.get("message"):
+        body = event.get("message")
+    return _drop_none(
+        {
+            "timeUnixNano": _string_int(event.get("time_unix_nano")),
+            "observedTimeUnixNano": _string_int(event.get("observed_time_unix_nano")),
+            "severityText": event.get("severity"),
+            "severityNumber": event.get("severity_number"),
+            "traceId": event.get("trace_id"),
+            "spanId": event.get("span_id"),
+            "body": _otlp_any_value(body),
+            "attributes": _otlp_attributes(fields),
+        }
+    )
+
+
+def _otlp_attributes(attrs: Any) -> list[dict[str, Any]]:
+    if not isinstance(attrs, dict):
+        return []
+    return [{"key": str(key), "value": _otlp_any_value(value)} for key, value in sorted(attrs.items()) if value is not None]
+
+
+def _otlp_any_value(value: Any) -> dict[str, Any]:
+    if isinstance(value, bool):
+        return {"boolValue": value}
+    if isinstance(value, int) and not isinstance(value, bool):
+        return {"intValue": str(value)}
+    if isinstance(value, float):
+        return {"doubleValue": value}
+    if isinstance(value, list):
+        return {"arrayValue": {"values": [_otlp_any_value(item) for item in value]}}
+    if isinstance(value, dict):
+        return {"kvlistValue": {"values": _otlp_attributes(value)}}
+    return {"stringValue": "" if value is None else str(value)}
+
+
+def _string_int(value: Any) -> str | None:
+    if value is None:
+        return None
+    return str(int(value)) if isinstance(value, (int, float)) and not isinstance(value, bool) else str(value)
+
+
+def _event_attrs(event: dict[str, Any]) -> dict[str, Any]:
+    attrs: dict[str, Any] = {}
+    for key in ("attributes", "tags", "fields"):
+        if isinstance(event.get(key), dict):
+            attrs.update(event[key])
+    return attrs
+
+
+def _pii_secret_risk(key: str, value: Any) -> str | None:
+    text = str(value)
+    if re.search(r"(password|passwd|secret|token|api[_-]?key|authorization|credential|cookie)", key, re.I):
+        return "sensitive_field_name"
+    if re.search(r"Bearer\s+[A-Za-z0-9._-]+|eyJ[A-Za-z0-9._-]+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", text):
+        return "sensitive_value_pattern"
+    return None
+
+
+def _safe_preview(value: Any) -> str:
+    text = str(value)
+    if len(text) <= 12:
+        return text
+    return text[:4] + "…" + text[-4:]
 
 
 def _span_event(span: dict[str, Any], resource: dict[str, Any], scope: dict[str, Any], path: str, diagnostics: list[ImportDiagnostic]) -> dict[str, Any]:
