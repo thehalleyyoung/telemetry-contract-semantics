@@ -18,6 +18,7 @@ This repository turns that thesis into executable checks:
 - A benchmark harness for built-in or user-provided contract/event corpora.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
+- An executable small-step `evaluate-semantics` command that emits contract-evaluation derivations and checks their denotation against the deterministic validator on golden and historical traces.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
@@ -25,7 +26,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: `100_STEPS.md` currently has 29 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: `100_STEPS.md` currently has 30 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -91,6 +92,11 @@ python3 -m telemetry_contracts.cli explain telemetry.strict_unexpected_field \
 python3 -m telemetry_contracts.cli describe-model \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
   --format markdown
+
+python3 -m telemetry_contracts.cli evaluate-semantics \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict --format markdown --fail-on never
 
 python3 -m telemetry_contracts.cli equivalence \
   --contract case_studies/gitlab_2017_database_outage/contract.json \
@@ -213,6 +219,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 
 ## Architecture
 
+- `telemetry_contracts.core_semantics` implements the mechanizable small-step contract-evaluation model and reports denotation alignment with `validate_events`.
 - `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
 - `telemetry_contracts.validator` checks emitted telemetry against signal, field, correlation, and alternative-obligation specifications.
@@ -227,7 +234,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -301,6 +308,20 @@ python3 -m telemetry_contracts.cli validate \
 
 `reports/gitlab_2017_strict_validation.json` records 14 findings on that bounded derivative, including one undeclared signal, one unmodeled collector service, two unexpected fields, and one undocumented collector transformation. `reports/gitlab_2017_strict_explain.md` explains the `telemetry.strict_unexpected_field` code against those concrete observed examples. This demonstrates the closed-world utility on a historical public-data reconstruction without claiming access to GitLab private telemetry.
 
+Generate the checked-in small-step semantic-evaluation report for the same drift derivative:
+
+```bash
+python3 -m telemetry_contracts.cli evaluate-semantics \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict \
+  --format markdown \
+  --output reports/gitlab_2017_semantic_evaluation.md \
+  --fail-on never
+```
+
+`reports/gitlab_2017_semantic_evaluation.md` records `aligned_with_checker=true`: the small-step denotation and `validate_events` both produce the same 14 finding signatures over 7 input events, including the strict closed-world findings. This is mechanized alignment evidence for this implementation and fixture, not a proof about all possible telemetry systems.
+
 Generate the checked-in alternative-obligation witness report:
 
 ```bash
@@ -335,6 +356,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Strict mode is a closed-world check over the supplied finite event artifact; escape hatches are explicit but do not prove a collector pipeline is correctly configured.
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
 - Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
+- The small-step semantic evaluator is an executable artifact aligned with the current checker through tests and reports; it is not a separately machine-checked theorem prover.
 
 ## Development
 

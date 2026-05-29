@@ -35,7 +35,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Hyperproperty satisfaction:** privacy and multi-tenant isolation obligations may quantify over pairs or sets of traces, not just one execution.
 - **Assume-guarantee structure:** service code, libraries, collectors, deployment environment, and on-call workflows each get explicit assumptions and guarantees so failures are assigned to the right layer.
 
-The near-term formal deliverable should be a mechanizable core semantics in repository documentation plus golden fixtures demonstrating alignment between the semantics and the current deterministic checker.
+The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, the `evaluate-semantics` CLI, golden pytest fixtures, and a GitLab 2017 strict-drift report demonstrating denotation alignment with the deterministic checker. Future work should deepen this into proof-obligation templates and independent mechanization.
 
 ## Algorithms
 

@@ -1,0 +1,1597 @@
+{
+  "denotation": {
+    "checker_finding_signatures": [
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.spans[0].fields.source",
+        "event_index": 5,
+        "message": "field 'source' value 'lvm_snapshot' is not allowed",
+        "path": "event[5].source",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.numeric_max",
+        "contract_path": "$.spans[0].fields.backup_age_hours",
+        "event_index": 5,
+        "message": "field 'backup_age_hours' value 6 is above maximum 1",
+        "path": "event[5].backup_age_hours",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.spans[0].fields.source_environment",
+        "event_index": 5,
+        "message": "field 'source_environment' value 'staging' is not allowed",
+        "path": "event[5].source_environment",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.numeric_max",
+        "contract_path": "$.metrics[0].value",
+        "event_index": 1,
+        "message": "field 'value' value 4294967296 is above maximum 104857600",
+        "path": "event[1].value",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.metrics[1].value",
+        "event_index": 3,
+        "message": "field 'value' value False is not allowed",
+        "path": "event[3].value",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.logs[0].fields.target_role",
+        "event_index": 2,
+        "message": "field 'target_role' value 'primary' is not allowed",
+        "path": "event[2].target_role",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.missing_field",
+        "contract_path": "$.logs[0].fields.correlation_id",
+        "event_index": 2,
+        "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+        "path": "event[2].correlation_id",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.missing_field",
+        "contract_path": "$.logs[0].fields.command_guard_result",
+        "event_index": 2,
+        "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+        "path": "event[2].command_guard_result",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.missing_field",
+        "contract_path": "$.logs[1].fields.alert_delivered",
+        "event_index": 4,
+        "message": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'",
+        "path": "event[4].alert_delivered",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_unexpected_field",
+        "contract_path": "$.metrics[name=postgres.replication.lag_bytes]",
+        "event_index": 1,
+        "message": "metric 'postgres.replication.lag_bytes' emitted undeclared field 'collector_pipeline'",
+        "path": "event[1].tags.collector_pipeline",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_undocumented_transformation",
+        "contract_path": "$.metadata.transformation_preservation.approved_transformations",
+        "event_index": 1,
+        "message": "collector transformation 'tail_sampling' is not documented by contract metadata",
+        "path": "event[1].transformations",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_unexpected_field",
+        "contract_path": "$.logs[name=backup.pg_dump.failed]",
+        "event_index": 4,
+        "message": "log 'backup.pg_dump.failed' emitted undeclared field 'notification_status'",
+        "path": "event[4].fields.notification_status",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_undeclared_signal",
+        "contract_path": "$.logs",
+        "event_index": 6,
+        "message": "log 'database.replication.debug' is not declared by the contract",
+        "path": "event[6].name",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_unmodeled_service",
+        "contract_path": "$.service",
+        "event_index": 7,
+        "message": "event service 'collector-gateway' is not modeled by contract service 'gitlab.com-database'",
+        "path": "event[7].service",
+        "severity": "error"
+      }
+    ],
+    "finding_signatures": [
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.spans[0].fields.source",
+        "event_index": 5,
+        "message": "field 'source' value 'lvm_snapshot' is not allowed",
+        "path": "event[5].source",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.numeric_max",
+        "contract_path": "$.spans[0].fields.backup_age_hours",
+        "event_index": 5,
+        "message": "field 'backup_age_hours' value 6 is above maximum 1",
+        "path": "event[5].backup_age_hours",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.spans[0].fields.source_environment",
+        "event_index": 5,
+        "message": "field 'source_environment' value 'staging' is not allowed",
+        "path": "event[5].source_environment",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.numeric_max",
+        "contract_path": "$.metrics[0].value",
+        "event_index": 1,
+        "message": "field 'value' value 4294967296 is above maximum 104857600",
+        "path": "event[1].value",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.metrics[1].value",
+        "event_index": 3,
+        "message": "field 'value' value False is not allowed",
+        "path": "event[3].value",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.allowed_values",
+        "contract_path": "$.logs[0].fields.target_role",
+        "event_index": 2,
+        "message": "field 'target_role' value 'primary' is not allowed",
+        "path": "event[2].target_role",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.missing_field",
+        "contract_path": "$.logs[0].fields.correlation_id",
+        "event_index": 2,
+        "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+        "path": "event[2].correlation_id",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.missing_field",
+        "contract_path": "$.logs[0].fields.command_guard_result",
+        "event_index": 2,
+        "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+        "path": "event[2].command_guard_result",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.missing_field",
+        "contract_path": "$.logs[1].fields.alert_delivered",
+        "event_index": 4,
+        "message": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'",
+        "path": "event[4].alert_delivered",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_unexpected_field",
+        "contract_path": "$.metrics[name=postgres.replication.lag_bytes]",
+        "event_index": 1,
+        "message": "metric 'postgres.replication.lag_bytes' emitted undeclared field 'collector_pipeline'",
+        "path": "event[1].tags.collector_pipeline",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_undocumented_transformation",
+        "contract_path": "$.metadata.transformation_preservation.approved_transformations",
+        "event_index": 1,
+        "message": "collector transformation 'tail_sampling' is not documented by contract metadata",
+        "path": "event[1].transformations",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_unexpected_field",
+        "contract_path": "$.logs[name=backup.pg_dump.failed]",
+        "event_index": 4,
+        "message": "log 'backup.pg_dump.failed' emitted undeclared field 'notification_status'",
+        "path": "event[4].fields.notification_status",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_undeclared_signal",
+        "contract_path": "$.logs",
+        "event_index": 6,
+        "message": "log 'database.replication.debug' is not declared by the contract",
+        "path": "event[6].name",
+        "severity": "error"
+      },
+      {
+        "code": "telemetry.strict_unmodeled_service",
+        "contract_path": "$.service",
+        "event_index": 7,
+        "message": "event service 'collector-gateway' is not modeled by contract service 'gitlab.com-database'",
+        "path": "event[7].service",
+        "severity": "error"
+      }
+    ],
+    "mismatches": {
+      "extra_in_small_step": [],
+      "missing_from_small_step": []
+    }
+  },
+  "event_structure": {
+    "concurrency": [],
+    "concurrency_pair_count": 0,
+    "diagrams": [
+      {
+        "mermaid": "flowchart TD\n  e0[\"metric:postgres.replication.lag_bytes\"]\n  e1[\"log:database.destructive_command\"]\n  e2[\"metric:backup.pg_dump.success\"]\n  e3[\"log:backup.pg_dump.failed\"]\n  e5[\"log:database.replication.debug\"]\n  e4[\"span:disaster_recovery.restore_attempt\"]\n  e0 -->|hb| e1\n  e1 -->|hb| e2\n  e2 -->|hb| e3\n  e3 -->|hb| e5\n  e5 -->|hb| e4",
+        "title": "window-0 group all-observations"
+      }
+    ],
+    "edge_count": 5,
+    "edges": [
+      {
+        "evidence": "timestamp order",
+        "from": "e0",
+        "relation": "happens-before",
+        "to": "e1"
+      },
+      {
+        "evidence": "timestamp order",
+        "from": "e1",
+        "relation": "happens-before",
+        "to": "e2"
+      },
+      {
+        "evidence": "timestamp order",
+        "from": "e2",
+        "relation": "happens-before",
+        "to": "e3"
+      },
+      {
+        "evidence": "timestamp order",
+        "from": "e3",
+        "relation": "happens-before",
+        "to": "e5"
+      },
+      {
+        "evidence": "timestamp order",
+        "from": "e5",
+        "relation": "happens-before",
+        "to": "e4"
+      }
+    ],
+    "incident_windows": [
+      {
+        "end_ms": 4000.0,
+        "group": [
+          "all-observations"
+        ],
+        "id": "window-0",
+        "node_ids": [
+          "e0",
+          "e1",
+          "e2",
+          "e3",
+          "e5",
+          "e4"
+        ],
+        "start_ms": 0.0
+      }
+    ],
+    "model": "finite-event-structure",
+    "node_count": 6,
+    "nodes": [
+      {
+        "correlation_id": null,
+        "end_timestamp_ms": null,
+        "id": "e0",
+        "index": 0,
+        "kind": "metric",
+        "label": "metric:postgres.replication.lag_bytes",
+        "name": "postgres.replication.lag_bytes",
+        "parent_span_id": null,
+        "request_id": null,
+        "service": "gitlab.com-database",
+        "span_id": null,
+        "timestamp_ms": 0.0,
+        "trace_id": null
+      },
+      {
+        "correlation_id": null,
+        "end_timestamp_ms": null,
+        "id": "e1",
+        "index": 1,
+        "kind": "log",
+        "label": "log:database.destructive_command",
+        "name": "database.destructive_command",
+        "parent_span_id": null,
+        "request_id": null,
+        "service": "gitlab.com-database",
+        "span_id": null,
+        "timestamp_ms": 1000.0,
+        "trace_id": null
+      },
+      {
+        "correlation_id": null,
+        "end_timestamp_ms": null,
+        "id": "e2",
+        "index": 2,
+        "kind": "metric",
+        "label": "metric:backup.pg_dump.success",
+        "name": "backup.pg_dump.success",
+        "parent_span_id": null,
+        "request_id": null,
+        "service": "gitlab.com-database",
+        "span_id": null,
+        "timestamp_ms": 2000.0,
+        "trace_id": null
+      },
+      {
+        "correlation_id": null,
+        "end_timestamp_ms": null,
+        "id": "e3",
+        "index": 3,
+        "kind": "log",
+        "label": "log:backup.pg_dump.failed",
+        "name": "backup.pg_dump.failed",
+        "parent_span_id": null,
+        "request_id": null,
+        "service": "gitlab.com-database",
+        "span_id": null,
+        "timestamp_ms": 3000.0,
+        "trace_id": null
+      },
+      {
+        "correlation_id": null,
+        "end_timestamp_ms": null,
+        "id": "e4",
+        "index": 4,
+        "kind": "span",
+        "label": "span:disaster_recovery.restore_attempt",
+        "name": "disaster_recovery.restore_attempt",
+        "parent_span_id": null,
+        "request_id": null,
+        "service": "gitlab.com-database",
+        "span_id": null,
+        "timestamp_ms": 4000.0,
+        "trace_id": null
+      },
+      {
+        "correlation_id": null,
+        "end_timestamp_ms": null,
+        "id": "e5",
+        "index": 5,
+        "kind": "log",
+        "label": "log:database.replication.debug",
+        "name": "database.replication.debug",
+        "parent_span_id": null,
+        "request_id": null,
+        "service": "gitlab.com-database",
+        "span_id": null,
+        "timestamp_ms": 3500.0,
+        "trace_id": null
+      }
+    ]
+  },
+  "findings": [
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source",
+      "details": {
+        "allowed_values": [
+          "verified_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 5,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source' value 'lvm_snapshot' is not allowed",
+      "path": "event[5].source",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.spans[0].fields.backup_age_hours",
+      "disclosure_sensitivity": "internal",
+      "event_index": 5,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'backup_age_hours' value 6 is above maximum 1",
+      "path": "event[5].backup_age_hours",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source_environment",
+      "details": {
+        "allowed_values": [
+          "production_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 5,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source_environment' value 'staging' is not allowed",
+      "path": "event[5].source_environment",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.metrics[0].value",
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'value' value 4294967296 is above maximum 104857600",
+      "path": "event[1].value",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.metrics[1].value",
+      "details": {
+        "allowed_values": [
+          true
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'value' value False is not allowed",
+      "path": "event[3].value",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.logs[0].fields.target_role",
+      "details": {
+        "allowed_values": [
+          "secondary"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'target_role' value 'primary' is not allowed",
+      "path": "event[2].target_role",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.correlation_id",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+      "path": "event[2].correlation_id",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.command_guard_result",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+      "path": "event[2].command_guard_result",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[1].fields.alert_delivered",
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'",
+      "path": "event[4].alert_delivered",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_unexpected_field",
+      "contract_path": "$.metrics[name=postgres.replication.lag_bytes]",
+      "details": {
+        "container": "tags",
+        "field": "collector_pipeline",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "STRICT.field-closed-world",
+      "message": "metric 'postgres.replication.lag_bytes' emitted undeclared field 'collector_pipeline'",
+      "path": "event[1].tags.collector_pipeline",
+      "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_undocumented_transformation",
+      "contract_path": "$.metadata.transformation_preservation.approved_transformations",
+      "details": {
+        "approved_transformations": [
+          "sampling"
+        ],
+        "transformation": "tail_sampling"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "STRICT.transformation-documented",
+      "message": "collector transformation 'tail_sampling' is not documented by contract metadata",
+      "path": "event[1].transformations",
+      "remediation": "Document the collector transformation under metadata.transformation_preservation.approved_transformations or strict allow_collector_transformations.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_unexpected_field",
+      "contract_path": "$.logs[name=backup.pg_dump.failed]",
+      "details": {
+        "container": "fields",
+        "field": "notification_status",
+        "kind": "log",
+        "name": "backup.pg_dump.failed"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "STRICT.field-closed-world",
+      "message": "log 'backup.pg_dump.failed' emitted undeclared field 'notification_status'",
+      "path": "event[4].fields.notification_status",
+      "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_undeclared_signal",
+      "contract_path": "$.logs",
+      "details": {
+        "kind": "log",
+        "name": "database.replication.debug"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 6,
+      "formal_clause": "STRICT.signal-closed-world",
+      "message": "log 'database.replication.debug' is not declared by the contract",
+      "path": "event[6].name",
+      "remediation": "Declare the emitted signal in spans, metrics, logs, scenarios, or alternative obligations, or add an explicit strict allow_undeclared_signals escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_unmodeled_service",
+      "contract_path": "$.service",
+      "details": {
+        "allowed_services": [
+          "gitlab.com-database"
+        ],
+        "service": "collector-gateway"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 7,
+      "formal_clause": "STRICT.service-closed-world",
+      "message": "event service 'collector-gateway' is not modeled by contract service 'gitlab.com-database'",
+      "path": "event[7].service",
+      "remediation": "Either emit telemetry for the modeled service or add a bounded allow_unmodeled_services escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "model": {
+    "judgement": "\u27e8T,C,\u03c3\u27e9 \u21d3 R",
+    "name": "contract-small-step-semantics-v1",
+    "relation": "A finite trace T and contract C evaluate by deterministic small steps: well-formedness, service projection, signal obligations, correlation, temporal obligations, alternative disjunctions, and optional strict closed-world checks. The denotation R is the ordered multiset of checker finding signatures; alignment holds when the small-step denotation equals validate_events(C,T).",
+    "rules": [
+      {
+        "meaning": "Evaluate contract shape and schema obligations before telemetry obligations.",
+        "name": "WF"
+      },
+      {
+        "meaning": "Restrict runtime satisfaction to events for C.service or unscoped events.",
+        "name": "PROJECT"
+      },
+      {
+        "meaning": "For each required span/log/metric, find witnesses and check field predicates.",
+        "name": "SIGNAL"
+      },
+      {
+        "meaning": "Check configured shared correlation keys across required signal kinds.",
+        "name": "CORRELATION"
+      },
+      {
+        "meaning": "Check finite ordered sequences within declared incident windows.",
+        "name": "TEMPORAL"
+      },
+      {
+        "meaning": "Evaluate required finite disjunctions over equivalent evidence paths.",
+        "name": "ALTERNATIVE"
+      },
+      {
+        "meaning": "Optionally strengthen satisfaction with closed-world checks.",
+        "name": "STRICT"
+      }
+    ]
+  },
+  "service": "gitlab.com-database",
+  "small_steps": [
+    {
+      "evidence": {
+        "contract_service": "gitlab.com-database",
+        "input_events": 7
+      },
+      "finding_count": 0,
+      "findings": [],
+      "label": "contract well-formedness",
+      "rule": "WF",
+      "status": "satisfied"
+    },
+    {
+      "evidence": {
+        "counts_by_kind": {
+          "log": 3,
+          "metric": 2,
+          "span": 1
+        },
+        "ignored_events": 1,
+        "retained_events": 6,
+        "service": "gitlab.com-database"
+      },
+      "finding_count": 0,
+      "findings": [],
+      "label": "service projection",
+      "rule": "PROJECT",
+      "status": "satisfied"
+    },
+    {
+      "evidence": {
+        "contract_path": "$.spans[0]",
+        "fields": [
+          {
+            "missing_event_lines": [],
+            "name": "backup_age_hours",
+            "present_event_lines": [
+              5
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "source",
+            "present_event_lines": [
+              5
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "source_environment",
+            "present_event_lines": [
+              5
+            ],
+            "required": true,
+            "status": "present"
+          }
+        ],
+        "kind": "span",
+        "matching_event_lines": [
+          5
+        ],
+        "name": "disaster_recovery.restore_attempt",
+        "required": true
+      },
+      "finding_count": 3,
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.spans[0].fields.source",
+          "details": {
+            "allowed_values": [
+              "verified_backup"
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'source' value 'lvm_snapshot' is not allowed",
+          "path": "event[5].source",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.numeric_max",
+          "contract_path": "$.spans[0].fields.backup_age_hours",
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.numeric-upper-bound",
+          "message": "field 'backup_age_hours' value 6 is above maximum 1",
+          "path": "event[5].backup_age_hours",
+          "remediation": "Investigate or clamp values above the declared maximum.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.spans[0].fields.source_environment",
+          "details": {
+            "allowed_values": [
+              "production_backup"
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'source_environment' value 'staging' is not allowed",
+          "path": "event[5].source_environment",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "label": "span disaster_recovery.restore_attempt",
+      "rule": "SIGNAL",
+      "status": "violated"
+    },
+    {
+      "evidence": {
+        "contract_path": "$.metrics[0]",
+        "fields": [
+          {
+            "missing_event_lines": [],
+            "name": "incident_id",
+            "present_event_lines": [
+              1
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "primary_host",
+            "present_event_lines": [
+              1
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "replica_host",
+            "present_event_lines": [
+              1
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "value",
+            "present_event_lines": [
+              1
+            ],
+            "required": true,
+            "status": "present"
+          }
+        ],
+        "kind": "metric",
+        "matching_event_lines": [
+          1
+        ],
+        "name": "postgres.replication.lag_bytes",
+        "required": true
+      },
+      "finding_count": 1,
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.numeric_max",
+          "contract_path": "$.metrics[0].value",
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "SAT.numeric-upper-bound",
+          "message": "field 'value' value 4294967296 is above maximum 104857600",
+          "path": "event[1].value",
+          "remediation": "Investigate or clamp values above the declared maximum.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "label": "metric postgres.replication.lag_bytes",
+      "rule": "SIGNAL",
+      "status": "violated"
+    },
+    {
+      "evidence": {
+        "contract_path": "$.metrics[1]",
+        "fields": [
+          {
+            "missing_event_lines": [],
+            "name": "backup_job_id",
+            "present_event_lines": [
+              3
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "database_version",
+            "present_event_lines": [
+              3
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "destination",
+            "present_event_lines": [
+              3
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "tool_version",
+            "present_event_lines": [
+              3
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "value",
+            "present_event_lines": [
+              3
+            ],
+            "required": true,
+            "status": "present"
+          }
+        ],
+        "kind": "metric",
+        "matching_event_lines": [
+          3
+        ],
+        "name": "backup.pg_dump.success",
+        "required": true
+      },
+      "finding_count": 1,
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.metrics[1].value",
+          "details": {
+            "allowed_values": [
+              true
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'value' value False is not allowed",
+          "path": "event[3].value",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "label": "metric backup.pg_dump.success",
+      "rule": "SIGNAL",
+      "status": "violated"
+    },
+    {
+      "evidence": {
+        "contract_path": "$.logs[0]",
+        "fields": [
+          {
+            "missing_event_lines": [],
+            "name": "actor_role",
+            "present_event_lines": [
+              2
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [
+              2
+            ],
+            "name": "command_guard_result",
+            "present_event_lines": [],
+            "required": true,
+            "status": "absent"
+          },
+          {
+            "missing_event_lines": [
+              2
+            ],
+            "name": "correlation_id",
+            "present_event_lines": [],
+            "required": true,
+            "status": "absent"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "intended_host",
+            "present_event_lines": [
+              2
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "target_host",
+            "present_event_lines": [
+              2
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "target_role",
+            "present_event_lines": [
+              2
+            ],
+            "required": true,
+            "status": "present"
+          }
+        ],
+        "kind": "log",
+        "matching_event_lines": [
+          2
+        ],
+        "name": "database.destructive_command",
+        "required": true
+      },
+      "finding_count": 3,
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.logs[0].fields.target_role",
+          "details": {
+            "allowed_values": [
+              "secondary"
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'target_role' value 'primary' is not allowed",
+          "path": "event[2].target_role",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.correlation_id",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+          "path": "event[2].correlation_id",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.command_guard_result",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+          "path": "event[2].command_guard_result",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "label": "log database.destructive_command",
+      "rule": "SIGNAL",
+      "status": "violated"
+    },
+    {
+      "evidence": {
+        "contract_path": "$.logs[1]",
+        "fields": [
+          {
+            "missing_event_lines": [
+              4
+            ],
+            "name": "alert_delivered",
+            "present_event_lines": [],
+            "required": true,
+            "status": "absent"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "alert_route",
+            "present_event_lines": [
+              4
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "backup_job_id",
+            "present_event_lines": [
+              4
+            ],
+            "required": true,
+            "status": "present"
+          },
+          {
+            "missing_event_lines": [],
+            "name": "destination",
+            "present_event_lines": [
+              4
+            ],
+            "required": true,
+            "status": "present"
+          }
+        ],
+        "kind": "log",
+        "matching_event_lines": [
+          4
+        ],
+        "name": "backup.pg_dump.failed",
+        "required": true
+      },
+      "finding_count": 1,
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[1].fields.alert_delivered",
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'",
+          "path": "event[4].alert_delivered",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "label": "log backup.pg_dump.failed",
+      "rule": "SIGNAL",
+      "status": "violated"
+    },
+    {
+      "evidence": {
+        "declared": false
+      },
+      "finding_count": 0,
+      "findings": [],
+      "label": "correlation policy",
+      "rule": "CORRELATION",
+      "status": "satisfied"
+    },
+    {
+      "evidence": {
+        "sequence_count": 0,
+        "sequences": []
+      },
+      "finding_count": 0,
+      "findings": [],
+      "label": "temporal sequences",
+      "rule": "TEMPORAL",
+      "status": "satisfied"
+    },
+    {
+      "evidence": {
+        "obligations": [
+          {
+            "id": "destructive-command-location-evidence",
+            "required": true,
+            "satisfied": true,
+            "winning_option": "structured-log"
+          }
+        ],
+        "summary": {
+          "groups": 1,
+          "pass": true,
+          "required_groups": 1,
+          "satisfied_groups": 1,
+          "unsatisfied_required_groups": 0
+        }
+      },
+      "finding_count": 0,
+      "findings": [],
+      "label": "alternative obligations",
+      "rule": "ALTERNATIVE",
+      "status": "satisfied"
+    },
+    {
+      "evidence": {
+        "enabled": true,
+        "events_checked": 7
+      },
+      "finding_count": 5,
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_unexpected_field",
+          "contract_path": "$.metrics[name=postgres.replication.lag_bytes]",
+          "details": {
+            "container": "tags",
+            "field": "collector_pipeline",
+            "kind": "metric",
+            "name": "postgres.replication.lag_bytes"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "STRICT.field-closed-world",
+          "message": "metric 'postgres.replication.lag_bytes' emitted undeclared field 'collector_pipeline'",
+          "path": "event[1].tags.collector_pipeline",
+          "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_undocumented_transformation",
+          "contract_path": "$.metadata.transformation_preservation.approved_transformations",
+          "details": {
+            "approved_transformations": [
+              "sampling"
+            ],
+            "transformation": "tail_sampling"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "STRICT.transformation-documented",
+          "message": "collector transformation 'tail_sampling' is not documented by contract metadata",
+          "path": "event[1].transformations",
+          "remediation": "Document the collector transformation under metadata.transformation_preservation.approved_transformations or strict allow_collector_transformations.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_unexpected_field",
+          "contract_path": "$.logs[name=backup.pg_dump.failed]",
+          "details": {
+            "container": "fields",
+            "field": "notification_status",
+            "kind": "log",
+            "name": "backup.pg_dump.failed"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "STRICT.field-closed-world",
+          "message": "log 'backup.pg_dump.failed' emitted undeclared field 'notification_status'",
+          "path": "event[4].fields.notification_status",
+          "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_undeclared_signal",
+          "contract_path": "$.logs",
+          "details": {
+            "kind": "log",
+            "name": "database.replication.debug"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 6,
+          "formal_clause": "STRICT.signal-closed-world",
+          "message": "log 'database.replication.debug' is not declared by the contract",
+          "path": "event[6].name",
+          "remediation": "Declare the emitted signal in spans, metrics, logs, scenarios, or alternative obligations, or add an explicit strict allow_undeclared_signals escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_unmodeled_service",
+          "contract_path": "$.service",
+          "details": {
+            "allowed_services": [
+              "gitlab.com-database"
+            ],
+            "service": "collector-gateway"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 7,
+          "formal_clause": "STRICT.service-closed-world",
+          "message": "event service 'collector-gateway' is not modeled by contract service 'gitlab.com-database'",
+          "path": "event[7].service",
+          "remediation": "Either emit telemetry for the modeled service or add a bounded allow_unmodeled_services escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "label": "closed-world validation",
+      "rule": "STRICT",
+      "status": "violated"
+    }
+  ],
+  "summary": {
+    "aligned_with_checker": true,
+    "events": 7,
+    "findings": 14,
+    "findings_by_code": {
+      "telemetry.allowed_values": 4,
+      "telemetry.missing_field": 3,
+      "telemetry.numeric_max": 2,
+      "telemetry.strict_undeclared_signal": 1,
+      "telemetry.strict_undocumented_transformation": 1,
+      "telemetry.strict_unexpected_field": 2,
+      "telemetry.strict_unmodeled_service": 1
+    },
+    "findings_by_severity": {
+      "error": 14
+    },
+    "pass": false,
+    "relevant_events": 6,
+    "steps": 11
+  }
+}

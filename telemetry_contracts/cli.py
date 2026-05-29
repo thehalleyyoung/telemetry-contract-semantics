@@ -15,6 +15,7 @@ from .preservation import check_transformation_preservation, format_preservation
 from .static_checker import check_sources
 from .alternatives import evaluate_alternative_obligations, format_alternative_obligations_markdown
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
+from .core_semantics import evaluate_contract_semantics, format_core_semantics_markdown
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .explain import explain_finding, format_explanation_markdown
 from .validator import validate_contract_shape, validate_events
@@ -55,6 +56,14 @@ def main(argv: list[str] | None = None) -> int:
     model_parser.add_argument("--events", help="optional JSONL artifact to summarize against the observation model")
     model_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     model_parser.add_argument("--output")
+
+    semantics_parser = subparsers.add_parser("evaluate-semantics", help="emit the executable small-step contract-evaluation derivation")
+    semantics_parser.add_argument("--contract", required=True)
+    semantics_parser.add_argument("--events", required=True)
+    semantics_parser.add_argument("--strict", action="store_true", help="include strict closed-world semantic side conditions")
+    semantics_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    semantics_parser.add_argument("--output")
+    semantics_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
     benchmark_parser = subparsers.add_parser("benchmark", help="run a benchmark suite from a JSON config")
     benchmark_parser.add_argument("--config", default="benchmarks/builtin.json")
@@ -141,6 +150,19 @@ def main(argv: list[str] | None = None) -> int:
                 print(output)
             observed = report.get("observed_findings")
             return 1 if observed and observed["summary"]["unknown_codes"] else 0
+        if args.command == "evaluate-semantics":
+            contract = load_contract(args.contract)
+            report = evaluate_contract_semantics(contract, load_jsonl(args.events), strict=True if args.strict else None)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_core_semantics_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0 if report["summary"]["aligned_with_checker"] else 1
+            if not report["summary"]["aligned_with_checker"]:
+                return 1
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
         if args.command == "explain":
             report = explain_finding(args.code, args.examples)
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_explanation_markdown(report)
