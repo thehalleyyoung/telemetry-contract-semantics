@@ -15,6 +15,13 @@
       "contract": "../case_studies/gitlab_2017_database_outage/contract.json",
       "events": "../case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
       "scenarios": ["restore-readiness"]
+    },
+    {
+      "id": "owasp-securetea-signin-current-static",
+      "description": "Defensive static telemetry privacy/security analysis of a public OWASP SecureTea React sign-in source file.",
+      "metadata": "../case_studies/current/owasp_securetea_signin/metadata.json",
+      "contract": "../case_studies/current/owasp_securetea_signin/contract.json",
+      "sources": ["../case_studies/current/owasp_securetea_signin/Signin.js"]
     }
   ]
 }

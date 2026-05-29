@@ -8,6 +8,19 @@ from .findings import Finding
 
 SignalKind = str
 
+BUILTIN_FORBIDDEN_PATTERNS: dict[str, str] = {
+    "email": r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
+    "bearer_token": r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}",
+    "jwt": r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b",
+    "password_assignment": r"(?i)(password|passwd|pwd)\s*[:=]\s*[^,\s]+",
+    "credit_card": r"\b(?:\d[ -]*?){13,19}\b",
+}
+
+SENSITIVE_FIELD_NAMES = re.compile(r"(?i)(email|password|passwd|pwd|token|secret|authorization|cookie|api[_-]?key|session[_-]?id|ssn|credit[_-]?card)")
+RAW_SECRET_VALUE = re.compile(
+    r"(?i)(\bbearer\s+[A-Za-z0-9._~+/=-]{8,}|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})"
+)
+
 
 def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
     findings: list[Finding] = []
@@ -18,6 +31,18 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
     for section in ("spans", "metrics", "logs"):
         if section in contract and not isinstance(contract[section], list):
             findings.append(Finding("error", "contract.section_type", f"{section} must be a list", f"$.{section}"))
+        for signal_index, spec in enumerate(contract.get(section, []) or []):
+            if isinstance(spec, dict):
+                for field_name, field_spec in _field_specs(spec).items():
+                    if SENSITIVE_FIELD_NAMES.search(field_name) and not _declares_sensitivity(field_spec):
+                        findings.append(
+                            Finding(
+                                "warning",
+                                "contract.sensitive_field_unclassified",
+                                f"field '{field_name}' appears sensitive but has no sensitivity classification",
+                                f"$.{section}[{signal_index}].fields.{field_name}",
+                            )
+                        )
     return findings
 
 
@@ -113,6 +138,8 @@ def _validate_field(field_name: str, spec: dict[str, Any], value: Any, event: di
                     findings.append(Finding("error", "telemetry.pattern", f"field '{field_name}' value {value!r} does not match {pattern!r}", event_path, contract_path, _event_index(event)))
             except re.error as exc:
                 findings.append(Finding("error", "contract.invalid_regex", f"invalid regex for field '{field_name}': {exc}", contract_path))
+    findings.extend(_validate_forbidden_patterns(field_name, spec, value, event, contract_path, event_path))
+    findings.extend(_validate_sensitive_value(field_name, spec, value, event, contract_path, event_path))
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         if "min" in spec and value < spec["min"]:
             findings.append(Finding("error", "telemetry.numeric_min", f"field '{field_name}' value {value} is below minimum {spec['min']}", event_path, contract_path, _event_index(event)))
@@ -144,6 +171,18 @@ def _matches_type(value: Any, expected: str) -> bool:
 def _validate_cardinality(kind: str, name: str, field_specs: dict[str, dict[str, Any]], matches: list[dict[str, Any]], path: str) -> list[Finding]:
     findings: list[Finding] = []
     seen: dict[str, set[Any]] = defaultdict(set)
+    for field_name, field_spec in field_specs.items():
+        cardinality = field_spec.get("cardinality") or {}
+        if isinstance(cardinality, dict) and cardinality.get("policy") in {"bounded", "forbid_unbounded", "budget"} and cardinality.get("max") is None:
+            findings.append(
+                Finding(
+                    "warning",
+                    "telemetry.cardinality_policy",
+                    f"{kind} '{name}' field '{field_name}' declares a bounded cardinality policy without a max",
+                    f"events[{kind}={name}].{field_name}",
+                    f"{path}.fields.{field_name}.cardinality",
+                )
+            )
     for event in matches:
         for field_name, field_spec in field_specs.items():
             value, _ = _lookup_field(event, field_name)
@@ -154,6 +193,89 @@ def _validate_cardinality(kind: str, name: str, field_specs: dict[str, dict[str,
         if max_count is not None and len(values) > max_count:
             findings.append(Finding("warning", "telemetry.cardinality", f"{kind} '{name}' field '{field_name}' has cardinality {len(values)} over hint {max_count}", f"events[{kind}={name}].{field_name}", f"{path}.fields.{field_name}.cardinality", None, {"distinct_values": len(values)}))
     return findings
+
+
+def _declares_sensitivity(spec: dict[str, Any]) -> bool:
+    return bool(spec.get("sensitivity") or spec.get("classification") or spec.get("pii") is not None)
+
+
+def _validate_forbidden_patterns(field_name: str, spec: dict[str, Any], value: Any, event: dict[str, Any], contract_path: str, event_path: str) -> list[Finding]:
+    patterns = spec.get("forbidden_patterns") or []
+    if isinstance(patterns, (str, dict)):
+        patterns = [patterns]
+    if not isinstance(patterns, list) or not isinstance(value, str):
+        return []
+    findings: list[Finding] = []
+    for index, pattern_spec in enumerate(patterns):
+        label = f"forbidden_patterns[{index}]"
+        pattern = pattern_spec
+        if isinstance(pattern_spec, dict):
+            label = str(pattern_spec.get("name", label))
+            pattern = pattern_spec.get("pattern", pattern_spec.get("regex"))
+        elif isinstance(pattern_spec, str) and pattern_spec in BUILTIN_FORBIDDEN_PATTERNS:
+            label = pattern_spec
+            pattern = BUILTIN_FORBIDDEN_PATTERNS[pattern_spec]
+        if not isinstance(pattern, str):
+            continue
+        try:
+            if re.search(pattern, value):
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.forbidden_pattern",
+                        f"field '{field_name}' matched forbidden pattern '{label}'",
+                        event_path,
+                        contract_path,
+                        _event_index(event),
+                        {"pattern": label, "value_preview": _preview(value)},
+                    )
+                )
+        except re.error as exc:
+            findings.append(Finding("error", "contract.invalid_regex", f"invalid forbidden regex for field '{field_name}': {exc}", contract_path))
+    return findings
+
+
+def _validate_sensitive_value(field_name: str, spec: dict[str, Any], value: Any, event: dict[str, Any], contract_path: str, event_path: str) -> list[Finding]:
+    if not isinstance(value, str):
+        return []
+    declared = _declares_sensitivity(spec)
+    sensitivity = str(spec.get("sensitivity") or spec.get("classification") or "").lower()
+    looks_sensitive = bool(SENSITIVE_FIELD_NAMES.search(field_name) or RAW_SECRET_VALUE.search(value))
+    if not looks_sensitive:
+        return []
+    if not declared:
+        return [
+            Finding(
+                "warning",
+                "telemetry.sensitive_unclassified",
+                f"field '{field_name}' appears sensitive but is not classified in the contract",
+                event_path,
+                contract_path,
+                _event_index(event),
+                {"value_preview": _preview(value)},
+            )
+        ]
+    if spec.get("allow_raw_sensitive") is True or sensitivity in {"public", "none"}:
+        return []
+    if RAW_SECRET_VALUE.search(value):
+        return [
+            Finding(
+                "error",
+                "telemetry.sensitive_value",
+                f"field '{field_name}' appears to contain raw {sensitivity or 'sensitive'} data",
+                event_path,
+                contract_path,
+                _event_index(event),
+                {"sensitivity": sensitivity or "unspecified", "value_preview": _preview(value)},
+            )
+        ]
+    return []
+
+
+def _preview(value: str) -> str:
+    if len(value) <= 12:
+        return "<redacted>"
+    return f"{value[:4]}…{value[-4:]}"
 
 
 def _validate_log_patterns(spec: dict[str, Any], matches: list[dict[str, Any]], path: str) -> list[Finding]:

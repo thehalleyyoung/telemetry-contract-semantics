@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 from collections import Counter
 from pathlib import Path
@@ -9,6 +10,7 @@ from typing import Any
 from .findings import Finding, has_at_least
 from .loader import ContractLoadError, load_contract, load_jsonl
 from .scenario import check_scenario, choose_scenario
+from .static_checker import check_sources
 from .validator import validate_events
 
 
@@ -51,8 +53,11 @@ def _run_case(case: Any, base_dir: Path) -> dict[str, Any]:
 
     metadata = _load_metadata(case, base_dir)
     contract_paths = _case_contract_paths(case, base_dir)
-    events_path = _resolve_required_path(case, "events", base_dir)
-    events = load_jsonl(events_path)
+    events_path = _resolve_optional_path(case, "events", base_dir)
+    source_paths = _case_source_paths(case, base_dir)
+    if events_path is None and not source_paths:
+        raise BenchmarkLoadError(f"case {case_id}: must provide events and/or sources")
+    events = load_jsonl(events_path) if events_path is not None else []
 
     started = time.perf_counter()
     all_findings: list[Finding] = []
@@ -64,11 +69,16 @@ def _run_case(case: Any, base_dir: Path) -> dict[str, Any]:
 
     for contract_path in contract_paths:
         contract = load_contract(contract_path)
-        all_findings.extend(validate_events(contract, events))
+        if events_path is not None:
+            all_findings.extend(validate_events(contract, events))
         for scenario_id in scenario_ids:
             if not isinstance(scenario_id, str):
                 raise BenchmarkLoadError(f"case {case_id}: scenario ids must be strings")
+            if events_path is None:
+                raise BenchmarkLoadError(f"case {case_id}: scenario checks require events")
             all_findings.extend(check_scenario(contract, events, choose_scenario(contract, scenario_id=scenario_id)))
+        if source_paths:
+            all_findings.extend(check_sources(contract, source_paths))
 
     runtime_ms = round((time.perf_counter() - started) * 1000, 3)
     finding_dicts = [finding.to_dict() for finding in all_findings]
@@ -80,7 +90,13 @@ def _run_case(case: Any, base_dir: Path) -> dict[str, Any]:
         "id": case_id,
         "description": case.get("description", metadata.get("title", "")),
         "contract_paths": [str(path) for path in contract_paths],
-        "events_path": str(events_path),
+        "events_path": str(events_path) if events_path is not None else None,
+        "source_paths": [str(path) for path in source_paths],
+        "checks": {
+            "runtime": events_path is not None,
+            "scenario": bool(scenario_ids),
+            "static": bool(source_paths),
+        },
         "events": len(events),
         "findings": finding_dicts,
         "metrics": {
@@ -107,6 +123,17 @@ def _case_contract_paths(case: dict[str, Any], base_dir: Path) -> list[Path]:
     return [_resolve_required_path(case, "contract", base_dir)]
 
 
+def _case_source_paths(case: dict[str, Any], base_dir: Path) -> list[Path]:
+    sources = case.get("sources", [])
+    if sources in (None, []):
+        return []
+    if isinstance(sources, str):
+        sources = [sources]
+    if not isinstance(sources, list):
+        raise BenchmarkLoadError(f"case {case.get('id')}: sources must be a path string or list")
+    return [_resolve_path(str(item), base_dir) for item in sources]
+
+
 def _load_metadata(case: dict[str, Any], base_dir: Path) -> dict[str, Any]:
     metadata_path = case.get("metadata")
     if metadata_path is None:
@@ -123,10 +150,20 @@ def _resolve_required_path(case: dict[str, Any], key: str, base_dir: Path) -> Pa
     return _resolve_path(value, base_dir)
 
 
+def _resolve_optional_path(case: dict[str, Any], key: str, base_dir: Path) -> Path | None:
+    value = case.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value:
+        raise BenchmarkLoadError(f"case {case.get('id')}: invalid optional path '{key}'")
+    return _resolve_path(value, base_dir)
+
+
 def _resolve_path(value: str, base_dir: Path) -> Path:
     path = Path(value)
     if not path.is_absolute():
         path = base_dir / path
+    path = Path(os.path.normpath(path))
     if not path.exists():
         raise ContractLoadError(f"benchmark path does not exist: {path}")
     return path
@@ -180,6 +217,8 @@ def _matches_label(finding: dict[str, Any], label: dict[str, Any]) -> bool:
     for key in ("code", "severity", "path", "contract_path", "event_index"):
         if key in label and finding.get(key) != label[key]:
             return False
+    if "path_suffix" in label and not str(finding.get("path", "")).endswith(str(label["path_suffix"])):
+        return False
     return True
 
 
@@ -196,16 +235,17 @@ def format_markdown(report: dict[str, Any]) -> str:
         f"- Findings by code: `{json.dumps(summary['findings_by_code'], sort_keys=True)}`",
         f"- Findings by severity: `{json.dumps(summary['findings_by_severity'], sort_keys=True)}`",
         "",
-        "| Case | Pass | Events | Findings | Validation pass | Label precision | Label recall | Runtime ms |",
-        "| --- | --- | ---: | ---: | --- | ---: | ---: | ---: |",
+        "| Case | Checks | Pass | Events | Findings | Validation pass | Label precision | Label recall | Runtime ms |",
+        "| --- | --- | --- | ---: | ---: | --- | ---: | ---: | ---: |",
     ]
     for case in report["cases"]:
         metrics = case["metrics"]
         labels = metrics.get("labels") or {}
         precision = labels.get("precision", "n/a")
         recall = labels.get("recall", "n/a")
+        checks = ",".join(name for name, enabled in case.get("checks", {}).items() if enabled) or "none"
         lines.append(
-            f"| {case['id']} | `{str(case['pass']).lower()}` | {metrics['events']} | {metrics['findings']} | "
+            f"| {case['id']} | {checks} | `{str(case['pass']).lower()}` | {metrics['events']} | {metrics['findings']} | "
             f"`{str(metrics['validation_pass']).lower()}` | {precision} | {recall} | {metrics['runtime_ms']} |"
         )
     lines.append("")

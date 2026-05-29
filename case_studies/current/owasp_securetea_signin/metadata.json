@@ -1,0 +1,25 @@
+{
+  "title": "Current public-code telemetry privacy/security static analysis: OWASP SecureTea Signin.js",
+  "retrieval_date": "2026-05-29",
+  "source_repository": "https://github.com/OWASP/SecureTea-Project",
+  "source_file": "react_gui/src/views/Signin.js",
+  "source_url": "https://github.com/OWASP/SecureTea-Project/blob/7a2da8756e6addbe379ae9b23905dcdbe68b3814/react_gui/src/views/Signin.js",
+  "raw_source_url": "https://raw.githubusercontent.com/OWASP/SecureTea-Project/7a2da8756e6addbe379ae9b23905dcdbe68b3814/react_gui/src/views/Signin.js",
+  "commit": "7a2da8756e6addbe379ae9b23905dcdbe68b3814",
+  "file_sha": "50a8a687be00dd5c3f70e91636c71e54255b5b20",
+  "license": "MIT License; copied source file is included for reproducible defensive analysis with the upstream MIT license text in LICENSE.SecureTea.md.",
+  "responsible_language": "These are potential telemetry privacy/security findings in public sample code, not a vulnerability disclosure or exploit claim.",
+  "analysis_command": "python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format json --output reports/current_impact.json",
+  "expected_findings": [
+    {
+      "code": "static.secret_logging",
+      "severity": "error",
+      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:27"
+    },
+    {
+      "code": "static.secret_logging",
+      "severity": "error",
+      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:48"
+    }
+  ]
+}

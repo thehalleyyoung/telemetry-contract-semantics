@@ -6,10 +6,12 @@ This repository turns that thesis into executable checks:
 
 - Runtime validation of JSONL telemetry events against contracts.
 - Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
+- Static telemetry security checks for sensitive values in logs and optional high-cardinality/correlation policies.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - A benchmark harness for built-in or user-provided contract/event corpora.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
+- A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - Passing and failing examples for a checkout/payment service.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
@@ -67,6 +69,7 @@ A contract declares a service plus expected telemetry signals:
     "required": true,
     "fields": {
       "tenant_id": {"type": "string", "required": true},
+      "auth_token": {"type": "string", "sensitivity": "token", "forbidden_patterns": ["bearer_token"]},
       "retry_count": {"type": "integer", "min": 0, "max": 3},
       "payment_provider": {"type": "string", "allowed_values": ["stripe", "adyen", "test"]}
     }
@@ -81,10 +84,12 @@ Supported checks include:
 - Primitive field types: string, integer, number, boolean, object, array, null.
 - Allowed values.
 - Regex patterns.
+- `forbidden_patterns`, including built-ins such as `email`, `bearer_token`, `jwt`, `password_assignment`, and `credit_card`.
+- Sensitivity classification for PII, credentials, tokens, and secrets, with warnings for unclassified sensitive-looking fields.
 - Numeric `min`/`max` ranges.
 - Metric `value` checks.
 - Log severity and message pattern checks.
-- Cardinality hints as warnings.
+- Cardinality hints and bounded-cardinality policies as warnings.
 - Sampling and retention metadata as documented assumptions.
 
 ## Runtime event format
@@ -103,7 +108,7 @@ Findings include severity, code, message, event path, contract path, and details
 
 - `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
 - `telemetry_contracts.validator` checks emitted telemetry against signal and field specifications.
-- `telemetry_contracts.static_checker` scans source files for expected instrumentation literals.
+- `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, and `benchmark` commands.
@@ -131,6 +136,8 @@ python3 -m telemetry_contracts.cli validate --contract service.contract.json --e
 
 `examples/real_world/otel_checkout_missing_tenant.*` is a case-study fixture modeled on a common production observability bug: payment failure traces and logs exist, but neither carries the tenant identifier needed to scope blast radius. The validator confirms the bug by reporting `telemetry.missing_field` for `tenant_id`.
 
+`case_studies/current/owasp_securetea_signin/` is a reproducible public-code static case study. It analyzes OWASP SecureTea Project's `react_gui/src/views/Signin.js` at commit `7a2da8756e6addbe379ae9b23905dcdbe68b3814` and produces labeled `static.secret_logging` findings for logging a password value and a cookie value. The repository records source URL, retrieval date, commit, file SHA, license, generated reports, and exact reproduction commands.
+
 
 ## Benchmark harness
 
@@ -141,7 +148,7 @@ python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --
 python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown
 ```
 
-A benchmark config is JSON with a `cases` list. Each case points to a contract, JSONL events, optional scenario ids, optional metadata, and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include number of contracts, events, findings, findings by code/severity, label precision/recall when labels are present, runtime, and pass/fail.
+A benchmark config is JSON with a `cases` list. Each case points to a contract plus JSONL events, source paths, or both; optional scenario ids; optional metadata; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario check flags, number of contracts, events, findings, findings by code/severity, label precision/recall when labels are present, runtime, and pass/fail.
 
 ## Public historical case study
 
@@ -153,6 +160,15 @@ A benchmark config is JSON with a `cases` list. Each case points to a contract, 
 The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot.
 
 See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
+
+## Current public-code case study
+
+`case_studies/current/owasp_securetea_signin/` contains a public-code defensive analysis fixture:
+
+- Source: <https://github.com/OWASP/SecureTea-Project/blob/7a2da8756e6addbe379ae9b23905dcdbe68b3814/react_gui/src/views/Signin.js>
+- Retrieval date: 2026-05-29
+- Finding type: potential telemetry privacy/security anti-patterns in public sample code (`static.secret_logging`), not an exploit or vulnerability disclosure.
+- Generated evidence: `reports/current_impact.json` and `reports/current_impact.md`.
 
 ## LLM-process separation note
 

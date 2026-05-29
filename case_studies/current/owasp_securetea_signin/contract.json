@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "service": "securetea-react-gui",
+  "metadata": {
+    "case_type": "public-code static telemetry privacy/security analysis",
+    "source": "OWASP/SecureTea-Project react_gui/src/views/Signin.js at 7a2da8756e6addbe379ae9b23905dcdbe68b3814",
+    "retrieval_date": "2026-05-29"
+  },
+  "static_expectations": {
+    "spans": [],
+    "metrics": [],
+    "logs": []
+  },
+  "static_rules": {
+    "detect_secret_logging": true,
+    "detect_unbounded_labels": true,
+    "require_correlation_on_error_logs": false
+  }
+}

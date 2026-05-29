@@ -37,3 +37,45 @@ def test_cardinality_hint_is_warning_not_error():
     ]
     findings = validate_events(contract, events)
     assert [(item.severity, item.code) for item in findings] == [("warning", "telemetry.cardinality")]
+
+
+def test_sensitive_schema_and_forbidden_patterns_are_enforced():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "logs": [
+            {
+                "name": "auth.failure",
+                "fields": {
+                    "auth_token": {
+                        "type": "string",
+                        "sensitivity": "token",
+                        "forbidden_patterns": ["bearer_token"],
+                    },
+                    "user_email": {
+                        "type": "string",
+                        "sensitivity": "pii",
+                        "forbidden_patterns": ["email"],
+                    },
+                    "session_id": {"type": "string"},
+                },
+            }
+        ],
+    }
+    events = [
+        {
+            "kind": "log",
+            "service": "svc",
+            "name": "auth.failure",
+            "fields": {
+                "auth_token": "Bearer abcdefghijklmnop",
+                "user_email": "person@example.com",
+                "session_id": "session-123",
+            },
+        }
+    ]
+    findings = validate_events(contract, events)
+    assert "telemetry.forbidden_pattern" in codes(findings)
+    assert "telemetry.sensitive_value" in codes(findings)
+    assert "telemetry.sensitive_unclassified" in codes(findings)
+    assert any(item.to_dict()["category"] == "privacy-security" for item in findings)
