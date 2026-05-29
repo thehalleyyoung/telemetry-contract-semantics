@@ -84,6 +84,9 @@ TAXONOMY: dict[str, dict[str, str]] = {
     "scenario.requirement_type": _entry("scenario", "Describe scenario requirements as objects.", "SCENARIO.requirement-wf"),
     "scenario.missing_signal": _entry("diagnosability", "Emit the signal needed to answer the scenario question.", "ADEQ.required-signal"),
     "scenario.missing_field": _entry("diagnosability", "Emit the field needed to answer the scenario question.", "ADEQ.required-field"),
+    "preservation.contract_obligation": _entry("preservation", "Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation.", "PRES.runtime-obligation"),
+    "preservation.scenario_signal": _entry("preservation", "Keep at least one transformed signal witness for each selected diagnosability requirement.", "PRES.adequacy-signal"),
+    "preservation.scenario_field": _entry("preservation", "Keep the transformed field, or provide an approved surrogate that still answers the selected incident question.", "PRES.adequacy-field"),
     "input.load_error": _entry("input", "Fix the referenced input path or file format.", "INPUT.parse"),
 }
 

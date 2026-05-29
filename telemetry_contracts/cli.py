@@ -11,6 +11,7 @@ from .loader import ContractLoadError, load_contract, load_jsonl
 from .otlp import load_otlp_json, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .semantics import describe_model, format_model_markdown
+from .preservation import check_transformation_preservation, format_preservation_markdown
 from .static_checker import check_sources
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .validator import validate_contract_shape, validate_events
@@ -65,6 +66,16 @@ def main(argv: list[str] | None = None) -> int:
     equivalence_parser.add_argument("--output")
     equivalence_parser.add_argument("--fail-on-difference", action="store_true")
 
+    preservation_parser = subparsers.add_parser("preservation", help="check whether approved transformations preserve contract and scenario obligations")
+    preservation_parser.add_argument("--contract", required=True)
+    preservation_parser.add_argument("--before-events", required=True)
+    preservation_parser.add_argument("--after-events", required=True)
+    preservation_parser.add_argument("--transformation", action="append", default=[])
+    preservation_parser.add_argument("--scenario", action="append", default=[])
+    preservation_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    preservation_parser.add_argument("--output")
+    preservation_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
     report_parser = subparsers.add_parser("report", help="generate operational reports from contracts and telemetry")
     report_subparsers = report_parser.add_subparsers(dest="report_command", required=True)
     readiness_parser = report_subparsers.add_parser("incident-readiness", help="score incident diagnosability and remediation readiness")
@@ -108,6 +119,23 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 1 if args.fail_on_difference and not report["equivalent"] else 0
+        if args.command == "preservation":
+            contract = load_contract(args.contract)
+            report = check_transformation_preservation(
+                contract,
+                load_jsonl(args.before_events),
+                load_jsonl(args.after_events),
+                args.transformation or None,
+                args.scenario or None,
+            )
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_preservation_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
         if args.command == "report":
             contract = load_contract(args.contract)
             events = load_jsonl(args.events)

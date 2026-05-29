@@ -261,6 +261,26 @@
             "$ref": "#/$defs/samplingPolicy"
           },
           "type": "object"
+        },
+        "transformation_preservation": {
+          "properties": {
+            "approved_transformations": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "claim": {
+              "type": "string"
+            },
+            "preserve_scenarios": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
         }
       },
       "type": "object"

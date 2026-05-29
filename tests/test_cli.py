@@ -73,3 +73,25 @@ def test_cli_equivalence_reports_historical_sampled_difference(capsys):
     assert code == 1
     assert '"equivalent": false' in output
     assert "log:backup.pg_dump.failed" in output
+
+
+
+def test_cli_preservation_reports_historical_sampling_regression(capsys):
+    code = main(
+        [
+            "preservation",
+            "--contract",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/contract.json"),
+            "--before-events",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl"),
+            "--after-events",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl"),
+            "--format",
+            "json",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 1
+    assert '"pass": false' in output
+    assert "preservation.scenario_signal" in output

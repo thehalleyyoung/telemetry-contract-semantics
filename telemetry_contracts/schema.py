@@ -68,6 +68,14 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                 "owner": {"type": "string"},
                 "sampling": {"type": "object", "additionalProperties": {"$ref": "#/$defs/samplingPolicy"}},
                 "retention": {"type": "object", "additionalProperties": {"type": "integer"}},
+                "transformation_preservation": {
+                    "type": "object",
+                    "properties": {
+                        "approved_transformations": {"type": "array", "items": {"type": "string"}},
+                        "preserve_scenarios": {"type": "array", "items": {"type": "string"}},
+                        "claim": {"type": "string"},
+                    },
+                },
             },
         },
         "samplingPolicy": {

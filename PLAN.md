@@ -9,7 +9,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 ## Immediate product and research value
 
 - **Drop-in CI value:** lint contracts, validate JSONL or OTLP exports, run static source checks, and fail pull requests only on new or high-severity semantic regressions.
-- **Collector-export value:** analyze OpenTelemetry Collector file-exporter output for preservation of spans, logs, metrics, resources, scopes, exemplars, links, temporality, and provenance.
+- **Collector-export value:** analyze OpenTelemetry Collector file-exporter output for preservation of spans, logs, metrics, resources, scopes, exemplars, links, temporality, provenance, and selected incident-question witnesses before and after approved transformations.
 - **Incident-readiness value:** produce reports that list which incident questions are answerable, which evidence is missing, which service owner is affected, and which remediation is most direct.
 - **Privacy/security value:** flag likely PII, secrets, tenant identifiers, unsafe payload previews, high-cardinality labels, and non-preserving scrubbing or sampling claims.
 - **Research value:** define an executable trace semantics, contract satisfaction relation, refinement relation, and transformation-preservation obligations for observability data.
@@ -57,6 +57,7 @@ The near-term formal deliverable should be a mechanizable core semantics in repo
 - **Import:** `import-otlp` converts collector JSON/JSONL while reporting skipped records, unsupported fields, and preservation risks.
 - **Analyze collector exports:** a dedicated report summarizes OTLP coverage, temporality, dropped evidence, provenance gaps, and collector transformations.
 - **Check source:** `static` finds missing instrumentation, unsafe attributes, PII/secret risks, high-cardinality labels, and source spans linked to contract obligations.
+- **Check transformations:** `preservation` compares source and transformed telemetry to identify newly broken runtime obligations and lost scenario witnesses under declared approved transformations.
 - **Gate regressions:** CI compares a branch against a baseline and fails only on policy-defined new findings, changed obligations, or benchmark regressions.
 - **Prepare incidents:** `report incident-readiness` lists answerable questions, missing evidence, temporal/correlation gaps, privacy risks, and owner-specific remediations.
 - **Explain:** `explain FINDING_CODE` gives formal meaning, operational impact, example traces, and concrete remediation.
