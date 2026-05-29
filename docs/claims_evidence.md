@@ -17,6 +17,7 @@
 - Added `telemetry-contracts explain`, which maps a finding code to its formal clause, operational impact, concrete fix, CI baseline key, and optional observed examples from JSON reports. `reports/gitlab_2017_strict_explain.md` explains `telemetry.strict_unexpected_field` using the checked-in GitLab strict-mode report.
 - Added executable small-step contract semantics in `telemetry_contracts.core_semantics` and `telemetry-contracts evaluate-semantics`. `reports/gitlab_2017_semantic_evaluation.json` and `.md` show the GitLab strict drift derivative evaluated by well-formedness, projection, signal, correlation, temporal, alternative, and strict rules, with denotation alignment against `validate_events`.
 - Added compiled runtime monitors in `telemetry_contracts.monitor` and `telemetry-contracts monitor`. `reports/gitlab_2017_runtime_monitor.json` and `.md` run deterministic required-signal and temporal-property monitors over the sampled/exported GitLab 2017 derivative, reporting the bounded backup-alert `telemetry.temporal_response` counterexample plus the observed active-group/pending-response memory envelope.
+- Added event-window grouping in `telemetry_contracts.windows` and `telemetry-contracts report event-windows`. `reports/gitlab_2017_event_windows.json` and `.md` group the sampled/exported GitLab 2017 derivative by incident id and 2000ms incident slices, localizing event-local findings to ownership windows while keeping missing-signal evidence in `global:contract=all`.
 - Added proof-obligation templates in `telemetry_contracts.proof_obligations` and `telemetry-contracts proof-obligations`. `reports/gitlab_2017_proof_obligations.json` and `.md` instantiate well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity obligations against the GitLab 2017 reconstruction, strict drift derivative, sampled/exported derivative, and built-in benchmark labels.
 - Added executable finite-trace temporal properties for safety, bounded response, absence, ordering, and deadlines. `examples/temporal_logic/` contains paired passing/failing fixtures, and `reports/gitlab_2017_temporal_logic_validation.json` shows a bounded `telemetry.temporal_response` finding on the sampled/exported GitLab 2017 derivative when the backup-failure alert witness is removed.
 - Added finite-trace hyperproperties for PII non-disclosure and tenant non-interference. `examples/hyperproperties/` contains paired fixtures, and `reports/owasp_securetea_hyperproperties.json` records three bounded `telemetry.hyper_pii_disclosure` witnesses over reconstructed public-code SecureTea console-log telemetry.
@@ -44,6 +45,7 @@ To make the novelty claim falsifiable, use this protocol on or after the retriev
 - The contracts and transformation-preservation reports do not prove an incident would have been prevented.
 - The small-step semantic evaluator is mechanizable executable semantics aligned against the repository checker on golden fixtures; it is not an independently verified proof assistant development.
 - Runtime monitor compilation is deterministic Python over finite JSONL streams and reports observed memory state for the supplied artifact; it is not an independently verified streaming-monitor implementation for every collector ordering or unbounded production workload.
+- Event-window grouping is deterministic localization over observed finite event keys and optional time slices. It does not infer private ownership, and event-less findings remain global by design.
 - Proof-obligation reports are finite-artifact evidence checklists. They do not prove universal monitor soundness. Executable contract-version refinement is checked separately by `telemetry-contracts refinement`.
 - Temporal properties are checked over finite supplied artifacts with explicit timestamps and grouping keys; they do not constitute an unbounded temporal-logic model checker.
 - Hyperproperties are checked over finite supplied artifacts and pair/set witnesses; they do not prove universal non-interference or non-disclosure over all executions.
@@ -190,6 +192,22 @@ python3 -m telemetry_contracts.cli monitor \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
   --format markdown \
   --output reports/gitlab_2017_runtime_monitor.md \
+  --fail-on never
+python3 -m telemetry_contracts.cli report event-windows \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --dimension incident \
+  --incident-slice-ms 2000 \
+  --format json \
+  --output reports/gitlab_2017_event_windows.json \
+  --fail-on never
+python3 -m telemetry_contracts.cli report event-windows \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --dimension incident \
+  --incident-slice-ms 2000 \
+  --format markdown \
+  --output reports/gitlab_2017_event_windows.md \
   --fail-on never
 python3 -m telemetry_contracts.cli proof-obligations \
   --contract case_studies/gitlab_2017_database_outage/contract.json \

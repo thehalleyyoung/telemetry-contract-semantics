@@ -35,7 +35,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Hyperproperty satisfaction:** privacy and multi-tenant isolation obligations may quantify over pairs or sets of traces, not just one execution.
 - **Assume-guarantee structure:** service code, libraries, collectors, deployment environment, and on-call workflows each get explicit assumptions and guarantees so failures are assigned to the right layer.
 
-The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, compiled bounded-memory runtime monitors in `telemetry_contracts.monitor`, finite-trace temporal-property monitors for safety/response/absence/ordering/deadlines, finite-trace hyperproperty monitors for PII non-disclosure and tenant non-interference, assume-guarantee layer reports in `telemetry_contracts.assume_guarantee`, contract-version refinement checks in `telemetry_contracts.refinement`, contract composition/inheritance checks in `telemetry_contracts.composition`, the `evaluate-semantics`, `monitor`, `refinement`, and `compose-contract` CLIs, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, GitLab 2017 strict-drift/temporal/runtime-monitor/assume-guarantee/refinement reports, and OWASP SecureTea reconstructed console-log hyperproperty reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into independent mechanization.
+The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, compiled bounded-memory runtime monitors in `telemetry_contracts.monitor`, finite-trace temporal-property monitors for safety/response/absence/ordering/deadlines, finite-trace hyperproperty monitors for PII non-disclosure and tenant non-interference, event-window grouping in `telemetry_contracts.windows`, assume-guarantee layer reports in `telemetry_contracts.assume_guarantee`, contract-version refinement checks in `telemetry_contracts.refinement`, contract composition/inheritance checks in `telemetry_contracts.composition`, the `evaluate-semantics`, `monitor`, `report event-windows`, `refinement`, and `compose-contract` CLIs, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, GitLab 2017 strict-drift/temporal/runtime-monitor/event-window/assume-guarantee/refinement reports, and OWASP SecureTea reconstructed console-log hyperproperty reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into independent mechanization.
 
 ## Algorithms
 
@@ -47,7 +47,7 @@ The near-term formal deliverable now includes a mechanizable executable small-st
 6. **Static analysis:** approximate emitted telemetry using AST-aware detectors and abstract domains for bounded strings, attribute presence, severity, units, privacy class, and path feasibility.
 7. **Refinement checking:** compare contract versions to identify weakened obligations, incompatible assumptions, changed privacy classifications, and non-preserving transformations.
 8. **Benchmark evaluation:** compute labels, precision, recall, F1, findings per K events, runtime per K events, memory envelope, import loss, and diagnosability-score deltas.
-9. **Report generation:** emit JSON, Markdown, and SARIF findings plus service-owner, incident-readiness, alternative-obligation, benchmark, and claims-to-evidence reports.
+9. **Report generation:** emit JSON, Markdown, and SARIF findings plus service-owner, event-window, incident-readiness, alternative-obligation, benchmark, and claims-to-evidence reports.
 
 ## CLI and user workflows
 
@@ -65,6 +65,7 @@ The near-term formal deliverable now includes a mechanizable executable small-st
 - **Audit proof goals:** `proof-obligations` turns a contract plus optional runtime, transformation, and benchmark artifacts into well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity obligations with discharged/violated/pending status.
 - **Gate regressions:** CI compares a branch against a baseline and fails only on policy-defined new findings, changed obligations, or benchmark regressions.
 - **Prepare incidents:** `report incident-readiness` lists answerable questions, missing evidence, temporal/correlation gaps, privacy risks, and owner-specific remediations.
+- **Localize findings:** `report event-windows` groups finite events and event-local findings by trace, request, tenant, deployment, scenario, incident id, and bounded incident slices while preserving event-less contract findings in a global window.
 - **Explain:** `explain FINDING_CODE` gives formal meaning, operational impact, example traces, and concrete remediation.
 - **Benchmark:** `benchmark` runs public and synthetic datasets, produces reproducible tables, and records validity threats.
 

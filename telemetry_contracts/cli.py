@@ -25,6 +25,7 @@ from .proof_obligations import format_proof_obligations_markdown, generate_proof
 from .refinement import check_contract_refinement, format_refinement_markdown
 from .composition import analyze_contract_composition, format_composition_markdown
 from .monitor import format_monitor_markdown, run_compiled_monitor
+from .windows import format_event_window_markdown, generate_event_window_report
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -160,6 +161,16 @@ def main(argv: list[str] | None = None) -> int:
     ag_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     ag_parser.add_argument("--output")
     ag_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
+    windows_parser = report_subparsers.add_parser("event-windows", help="group events and findings by trace, request, tenant, deployment, scenario, and incident slices")
+    windows_parser.add_argument("--contract", required=True)
+    windows_parser.add_argument("--events", required=True)
+    windows_parser.add_argument("--dimension", action="append", default=[], help="window dimension: trace, request, tenant, deployment, scenario, incident, or all")
+    windows_parser.add_argument("--incident-slice-ms", type=int, help="also group events into bounded incident time slices")
+    windows_parser.add_argument("--strict", action="store_true", help="include strict closed-world validation findings before grouping")
+    windows_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    windows_parser.add_argument("--output")
+    windows_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
     args = parser.parse_args(argv)
     try:
@@ -302,6 +313,15 @@ def main(argv: list[str] | None = None) -> int:
             elif args.report_command == "assume-guarantee":
                 report = evaluate_assume_guarantee(contract, events)
                 output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_assume_guarantee_markdown(report)
+            elif args.report_command == "event-windows":
+                report = generate_event_window_report(
+                    contract,
+                    events,
+                    dimensions=args.dimension or None,
+                    strict=True if args.strict else None,
+                    incident_slice_ms=args.incident_slice_ms,
+                )
+                output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_event_window_markdown(report)
             else:
                 report = generate_incident_readiness_report(contract, events, args.scenario or None)
                 output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_incident_readiness_markdown(report)

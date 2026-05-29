@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee refinement composition benchmark taxonomy explain semantics monitor
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement composition benchmark taxonomy explain semantics monitor
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee refinement composition benchmark taxonomy explain semantics monitor
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement composition benchmark taxonomy explain semantics monitor
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -25,6 +25,9 @@ incident-readiness:
 
 assume-guarantee:
 	python3 -m telemetry_contracts.cli report assume-guarantee --contract case_studies/gitlab_2017_database_outage/contract.json --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl --format markdown --fail-on never
+
+event-windows:
+	python3 -m telemetry_contracts.cli report event-windows --contract case_studies/gitlab_2017_database_outage/contract.json --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl --dimension incident --incident-slice-ms 2000 --format markdown --fail-on never
 
 refinement:
 	python3 -m telemetry_contracts.cli refinement --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json --candidate-contract case_studies/gitlab_2017_database_outage/contract.json --format markdown
