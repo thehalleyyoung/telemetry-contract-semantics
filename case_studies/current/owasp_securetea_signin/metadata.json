@@ -29,12 +29,12 @@
     {
       "code": "static.secret_logging",
       "severity": "error",
-      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:27"
+      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69"
     },
     {
       "code": "static.secret_logging",
       "severity": "error",
-      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:48"
+      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41"
     }
   ],
   "runtime_fixture": "reconstructed_console_events.jsonl is a bounded reconstruction of console.log observations from the cited public Signin.js lines; values are synthetic placeholders, not private SecureTea operational data."

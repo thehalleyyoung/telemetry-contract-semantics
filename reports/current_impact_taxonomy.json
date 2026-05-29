@@ -172,7 +172,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:27",
+        "path": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -183,7 +183,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:48",
+        "path": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -348,7 +348,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "examples/benchmarks/privacy_static_source.py:2",
+        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -359,7 +359,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.correlation-evidence",
-        "path": "examples/benchmarks/privacy_static_source.py:2",
+        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -370,7 +370,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.cardinality-risk",
-        "path": "examples/benchmarks/privacy_static_source.py:3",
+        "path": "examples/benchmarks/privacy_static_source.py:3:5-3:91",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -1867,6 +1867,66 @@
           "contract_path",
           "event_index"
         ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.inconsistent_retryability",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.retryability-evidence",
+      "remediation": "Attach a bounded retryable value when the contract requires retry guidance.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.metric_description",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.metric-description",
+      "remediation": "Declare the metric description in the OpenTelemetry metric API call.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.metric_unit",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.metric-unit",
+      "remediation": "Declare the metric unit in the OpenTelemetry metric API call.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
         "default_fail_on": "error",
         "sarif_level": "error"
       },
@@ -1876,6 +1936,46 @@
       "formal_clause": "STATIC.correlation-evidence",
       "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
       "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_error_status",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.error-status",
+      "remediation": "Set the OpenTelemetry span status to ERROR on error paths.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_exception_recording",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.exception-recording",
+      "remediation": "Record caught exceptions on error spans so incident responders can inspect failure type and stack context.",
+      "sarif_level": "warning",
       "service_owner": "contract service owner"
     },
     {
@@ -1896,6 +1996,86 @@
       "formal_clause": "STATIC.signal-literal",
       "remediation": "Add source instrumentation with the expected stable telemetry name.",
       "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "static-coverage",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_meter_name",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.meter-name",
+      "remediation": "Initialize the OpenTelemetry meter with the expected instrumentation scope name.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_remediation_field",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.remediation-evidence",
+      "remediation": "Attach a bounded remediation hint on error spans or logs when the contract requires operator guidance.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_semconv_attribute",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.semconv-attribute",
+      "remediation": "Attach the required semantic-convention attribute in source instrumentation.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "static-coverage",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.missing_tracer_name",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STATIC.tracer-name",
+      "remediation": "Initialize the OpenTelemetry tracer with the expected instrumentation scope name.",
+      "sarif_level": "warning",
       "service_owner": "contract service owner"
     },
     {
@@ -2669,26 +2849,26 @@
   "summary": {
     "categories": {
       "contract": 27,
-      "diagnosability": 27,
+      "diagnosability": 32,
       "input": 7,
       "operability": 3,
       "preservation": 5,
       "privacy-security": 9,
       "refinement": 11,
       "scenario": 2,
-      "schema": 17,
-      "static-coverage": 2
+      "schema": 19,
+      "static-coverage": 4
     },
     "default_severities": {
       "error": 90,
       "info": 3,
-      "warning": 17
+      "warning": 26
     },
-    "rules": 110,
+    "rules": 119,
     "sarif_levels": {
       "error": 90,
       "note": 3,
-      "warning": 17
+      "warning": 26
     }
   }
 }

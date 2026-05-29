@@ -5,8 +5,8 @@ Telemetry Contracts is a standalone prototype for testing **observability as a c
 This repository turns that thesis into executable checks:
 
 - Runtime validation of JSONL telemetry events against contracts.
-- Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
-- Static telemetry security checks for sensitive values in logs and optional high-cardinality/correlation policies.
+- Static checks that resolve expected OpenTelemetry-style span, metric, and log names through Python ASTs and lightweight multi-language source heuristics, with source spans and contract-obligation details.
+- Static telemetry security/API checks for sensitive values in logs, optional high-cardinality/correlation policies, error-span exception/status/remediation/retryability evidence, tracer/meter scope names, metric unit/description metadata, and required semantic-convention attributes.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - Alternative-obligation checks that let one of several equivalent logs/spans/metrics satisfy a required evidence path without duplicate false positives.
 - Temporal-logic checks for safety invariants, bounded responses, absence properties, ordering, and deadlines over finite telemetry traces.
@@ -37,7 +37,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 59 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 64 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -279,6 +279,7 @@ Supported checks include:
 - Assume-guarantee obligations under `assume_guarantee`, grouped as `service_guarantees`, `collector_assumptions`, `environment_assumptions`, and `oncall_obligations`. `report assume-guarantee` checks signal/field witnesses, field predicates, scenarios, temporal properties, alternative evidence, and documented collector transformations, then reports which layer is accountable for each missing or non-preserved witness.
 - Strict validation via `validate --strict` or `metadata.strict_validation.enabled`. Strict mode adds closed-world obligations: each event service must match the modeled service or `allow_unmodeled_services`; each span/log/metric name must be declared in signal sections, scenarios, temporal sequences, or alternative obligations unless `allow_undeclared_signals` names it; emitted attributes/tags/fields must be declared unless `allowed_extra_fields` or `allow_unexpected_fields` permits them; collector transformations must appear in `metadata.transformation_preservation.approved_transformations` or `allow_collector_transformations`.
 - OpenTelemetry semantic-convention linting via `semconv`. The checker reports `semconv.*` warnings for legacy attributes such as `http.method`/`db.system`, missing convention attributes such as `http.request.method`, `http.route`, `http.response.status_code`, `db.system.name`, or `messaging.system`, metric names that encode units without declaring `value.unit`, and `metadata.semantic_conventions.required_attributes` local-policy obligations. Each finding includes the cited convention/local policy and an exact rename/add remediation.
+- Source static analysis via `static`. The checker extracts telemetry observations from Python ASTs and lightweight supported-language source patterns, reports missing required instrumentation with `details.obligation`, records source line/column spans, resolves constants/wrappers/simple string construction, and can enforce optional `static_rules` for correlated error logs, high-cardinality labels, error-span exception/status/remediation/retryability fields, tracer/meter names, metric unit/description API metadata, and required semantic-convention attributes.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
 - Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
@@ -319,7 +320,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.alternatives` evaluates finite disjunctions over semantically equivalent evidence paths and emits witness/counterexample reports.
 - `telemetry_contracts.assume_guarantee` evaluates layer-partitioned service, collector, environment, and on-call obligations over finite telemetry artifacts.
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
-- `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
+- `telemetry_contracts.static_checker` scans Python ASTs and supported source files (`.py`, `.js`, `.jsx`, `.ts`, `.tsx`, `.go`, `.java`, `.cs`, `.rb`, `.rs`) for expected instrumentation names, local constants/concatenations/templates/wrappers, source spans, OpenTelemetry API metadata, and telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` defines diagnosability adequacy for incident questions and verifies minimum observations against emitted telemetry.
 - `telemetry_contracts.equivalence` compares two traces by their scenario answerability signatures.
 - `telemetry_contracts.preservation` checks pre/post transformation preservation for runtime obligations and scenario witnesses.
@@ -341,7 +342,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 ## Example workflow
 
 1. Write a contract for the telemetry needed to debug checkout failures.
-2. Run static checks in CI to catch missing instrumentation names before execution.
+2. Run static checks in CI to catch missing instrumentation names, incomplete error-path evidence, and risky telemetry logging before execution.
 3. Run service tests or staging traffic and export JSONL telemetry.
 4. Validate emitted telemetry against the contract.
 5. Add scenario checks for incident questions such as: “Can on-call identify tenant, cart, provider, retry count, and error class for a payment timeout?”
@@ -564,7 +565,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 
 ## Limitations
 
-- Static checking is literal-based, not a full AST analysis.
+- Static checking now uses Python AST extraction plus lightweight source heuristics for JavaScript, TypeScript, Go, Java, C#, Ruby, and Rust. It resolves local constants, simple concatenation/templates, and common telemetry APIs, but it is not a full interprocedural compiler analysis and may miss dynamic instrumentation.
 - Semantic-convention linting intentionally covers a bounded subset of OpenTelemetry HTTP, database, messaging, and metric-unit guidance plus explicit local policies; it is not a complete semantic-convention compliance suite.
 - OTLP support covers common JSON and JSONL exports for spans, metrics, and logs, including resource/scope metadata, span links/events/status, structured log bodies, observed timestamps, metric exemplars, alias normalization, provenance paths, collector-export analysis, round-trip JSON conversion, and importer diagnostics; protobuf/gRPC collector ingestion is future work.
 - Cardinality is checked over the supplied sample window, not a production time series backend.

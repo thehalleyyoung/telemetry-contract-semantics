@@ -231,17 +231,17 @@
         {
           "code": "static.secret_logging",
           "severity": "error",
-          "path_suffix": "privacy_static_source.py:2"
+          "path_suffix": "privacy_static_source.py:2:5-2:91"
         },
         {
           "code": "static.missing_correlation",
           "severity": "warning",
-          "path_suffix": "privacy_static_source.py:2"
+          "path_suffix": "privacy_static_source.py:2:5-2:91"
         },
         {
           "code": "static.unbounded_label",
           "severity": "warning",
-          "path_suffix": "privacy_static_source.py:3"
+          "path_suffix": "privacy_static_source.py:3:5-3:91"
         }
       ]
     },

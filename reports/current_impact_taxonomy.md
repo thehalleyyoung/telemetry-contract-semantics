@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 110
-- Categories: `{"contract": 27, "diagnosability": 27, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 9, "refinement": 11, "scenario": 2, "schema": 17, "static-coverage": 2}`
-- Default severities: `{"error": 90, "info": 3, "warning": 17}`
-- SARIF levels: `{"error": 90, "note": 3, "warning": 17}`
+- Rules: 119
+- Categories: `{"contract": 27, "diagnosability": 32, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 9, "refinement": 11, "scenario": 2, "schema": 19, "static-coverage": 4}`
+- Default severities: `{"error": 90, "info": 3, "warning": 26}`
+- SARIF levels: `{"error": 90, "note": 3, "warning": 26}`
 
 ## Rule catalog
 
@@ -80,8 +80,17 @@
 | semconv.metric_unit | schema | warning | SEMCONV.metric-unit | warning | warning | internal | contract service owner | Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name. |
 | semconv.missing_attribute | schema | warning | SEMCONV.required-attribute | warning | warning | internal | contract service owner | Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception. |
 | semconv.signal_name | schema | warning | SEMCONV.signal-name | warning | warning | internal | contract service owner | Rename the signal to the cited low-cardinality OpenTelemetry semantic-convention shape. |
+| static.inconsistent_retryability | diagnosability | warning | STATIC.retryability-evidence | warning | warning | internal | contract service owner | Attach a bounded retryable value when the contract requires retry guidance. |
+| static.metric_description | diagnosability | warning | STATIC.metric-description | warning | warning | internal | contract service owner | Declare the metric description in the OpenTelemetry metric API call. |
+| static.metric_unit | schema | warning | STATIC.metric-unit | warning | warning | internal | contract service owner | Declare the metric unit in the OpenTelemetry metric API call. |
 | static.missing_correlation | diagnosability | error | STATIC.correlation-evidence | error | error | internal | contract service owner | Include a trace_id, request_id, or configured correlation field in error logs. |
+| static.missing_error_status | diagnosability | warning | STATIC.error-status | warning | warning | internal | contract service owner | Set the OpenTelemetry span status to ERROR on error paths. |
+| static.missing_exception_recording | diagnosability | warning | STATIC.exception-recording | warning | warning | internal | contract service owner | Record caught exceptions on error spans so incident responders can inspect failure type and stack context. |
 | static.missing_instrumentation | static-coverage | error | STATIC.signal-literal | error | error | internal | contract service owner | Add source instrumentation with the expected stable telemetry name. |
+| static.missing_meter_name | static-coverage | warning | STATIC.meter-name | warning | warning | internal | contract service owner | Initialize the OpenTelemetry meter with the expected instrumentation scope name. |
+| static.missing_remediation_field | diagnosability | warning | STATIC.remediation-evidence | warning | warning | internal | contract service owner | Attach a bounded remediation hint on error spans or logs when the contract requires operator guidance. |
+| static.missing_semconv_attribute | schema | warning | STATIC.semconv-attribute | warning | warning | internal | contract service owner | Attach the required semantic-convention attribute in source instrumentation. |
+| static.missing_tracer_name | static-coverage | warning | STATIC.tracer-name | warning | warning | internal | contract service owner | Initialize the OpenTelemetry tracer with the expected instrumentation scope name. |
 | static.no_sources | static-coverage | error | STATIC.source-domain | error | error | internal | contract service owner | Pass source files or directories to the static checker. |
 | static.secret_logging | privacy-security | error | STATIC.raw-sensitive-log | error | error | responsible-disclosure | contract service owner | Remove the sensitive value from logs or log only a redacted/hash surrogate. |
 | static.unbounded_label | operability | warning | STATIC.cardinality-risk | warning | warning | internal | contract service owner | Avoid user-controlled/high-cardinality metric labels or add bucketing. |
@@ -152,8 +161,8 @@
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.username |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[2].fields.password |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[3].fields.cookie |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:27 |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:48 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41 |
 | otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount |
 | otlp.unsupported_metric | input | OTLP.unsupported-metric | warning | warning | $.resourceMetrics[0].scopeMetrics[0].metrics[5] |
 | otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount |
@@ -168,8 +177,8 @@
 | telemetry.cardinality | operability | SAT.cardinality-bound | warning | warning | events[metric=checkout.requests].tenant_id |
 | telemetry.sensitive_value | privacy-security | SAT.raw-sensitive-value | error | error | event[1].email |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.email |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | examples/benchmarks/privacy_static_source.py:2 |
-| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | examples/benchmarks/privacy_static_source.py:2 |
-| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | examples/benchmarks/privacy_static_source.py:3 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | examples/benchmarks/privacy_static_source.py:3:5-3:91 |
 | otlp.malformed_record | input | OTLP.malformed-record | warning | warning | records[1] |
 

@@ -42,8 +42,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 1.43,
-        "runtime_per_k_events_ms": 286.0,
+        "runtime_ms": 1.629,
+        "runtime_per_k_events_ms": 325.8,
         "validation_pass": true
       },
       "pass": true,
@@ -457,8 +457,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 1.815,
-        "runtime_per_k_events_ms": 363.0,
+        "runtime_ms": 2.517,
+        "runtime_per_k_events_ms": 503.4,
         "validation_pass": false
       },
       "pass": true,
@@ -603,12 +603,19 @@
           },
           "code": "static.secret_logging",
           "details": {
-            "line": "console.log('A password was submitted: ' + this.state.password);"
+            "line": "console.log('A password was submitted: ' + this.state.password);",
+            "source_span": {
+              "column": 5,
+              "end_column": 69,
+              "end_line": 27,
+              "line": 27,
+              "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+            }
           },
           "disclosure_sensitivity": "responsible-disclosure",
           "formal_clause": "STATIC.raw-sensitive-log",
           "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
-          "path": "case_studies/current/owasp_securetea_signin/Signin.js:27",
+          "path": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
           "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -628,12 +635,19 @@
           },
           "code": "static.secret_logging",
           "details": {
-            "line": "console.log(json[\"cookie\"]);"
+            "line": "console.log(json[\"cookie\"]);",
+            "source_span": {
+              "column": 13,
+              "end_column": 41,
+              "end_line": 48,
+              "line": 48,
+              "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+            }
           },
           "disclosure_sensitivity": "responsible-disclosure",
           "formal_clause": "STATIC.raw-sensitive-log",
           "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
-          "path": "case_studies/current/owasp_securetea_signin/Signin.js:48",
+          "path": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
           "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -674,8 +688,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 2.361,
-        "runtime_per_k_events_ms": 787.0,
+        "runtime_ms": 4.575,
+        "runtime_per_k_events_ms": 1525.0,
         "validation_pass": false
       },
       "pass": true,
@@ -728,8 +742,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.715,
-        "runtime_per_k_events_ms": 238.333333,
+        "runtime_ms": 0.89,
+        "runtime_per_k_events_ms": 296.666667,
         "validation_pass": true
       },
       "pass": true,
@@ -958,7 +972,7 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.039,
+        "runtime_ms": 0.033,
         "runtime_per_k_events_ms": 0.0,
         "validation_pass": true
       },
@@ -1182,8 +1196,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.674,
-        "runtime_per_k_events_ms": 84.25,
+        "runtime_ms": 0.932,
+        "runtime_per_k_events_ms": 116.5,
         "validation_pass": false
       },
       "pass": true,
@@ -1319,8 +1333,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.718,
-        "runtime_per_k_events_ms": 239.333333,
+        "runtime_ms": 1.439,
+        "runtime_per_k_events_ms": 479.666667,
         "validation_pass": false
       },
       "pass": true,
@@ -1442,8 +1456,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.465,
-        "runtime_per_k_events_ms": 232.5,
+        "runtime_ms": 0.803,
+        "runtime_per_k_events_ms": 401.5,
         "validation_pass": true
       },
       "pass": true,
@@ -1581,12 +1595,19 @@
           },
           "code": "static.secret_logging",
           "details": {
-            "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)"
+            "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)",
+            "source_span": {
+              "column": 5,
+              "end_column": 91,
+              "end_line": 2,
+              "line": 2,
+              "path": "examples/benchmarks/privacy_static_source.py"
+            }
           },
           "disclosure_sensitivity": "responsible-disclosure",
           "formal_clause": "STATIC.raw-sensitive-log",
           "message": "logging statement appears to include a credential, token, cookie, or other sensitive value",
-          "path": "examples/benchmarks/privacy_static_source.py:2",
+          "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
           "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -1610,12 +1631,19 @@
               "trace_id",
               "request_id"
             ],
-            "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)"
+            "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)",
+            "source_span": {
+              "column": 5,
+              "end_column": 91,
+              "end_line": 2,
+              "line": 2,
+              "path": "examples/benchmarks/privacy_static_source.py"
+            }
           },
           "disclosure_sensitivity": "internal",
           "formal_clause": "STATIC.correlation-evidence",
           "message": "error log may be missing trace/request correlation fields",
-          "path": "examples/benchmarks/privacy_static_source.py:2",
+          "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
           "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
           "sarif_level": "error",
           "service_owner": "contract service owner",
@@ -1635,12 +1663,19 @@
           },
           "code": "static.unbounded_label",
           "details": {
-            "line": "meter.counter(\"auth.login.attempts\", labels={\"email\": user_email, \"status\": \"failed\"})"
+            "line": "meter.counter(\"auth.login.attempts\", labels={\"email\": user_email, \"status\": \"failed\"})",
+            "source_span": {
+              "column": 5,
+              "end_column": 91,
+              "end_line": 3,
+              "line": 3,
+              "path": "examples/benchmarks/privacy_static_source.py"
+            }
           },
           "disclosure_sensitivity": "internal",
           "formal_clause": "STATIC.cardinality-risk",
           "message": "metric/tag code appears to use a high-cardinality or user-controlled label without bucketing",
-          "path": "examples/benchmarks/privacy_static_source.py:3",
+          "path": "examples/benchmarks/privacy_static_source.py:3:5-3:91",
           "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
           "sarif_level": "warning",
           "service_owner": "contract service owner",
@@ -1685,8 +1720,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 1.072,
-        "runtime_per_k_events_ms": 1072.0,
+        "runtime_ms": 1.485,
+        "runtime_per_k_events_ms": 1485.0,
         "validation_pass": false
       },
       "pass": true,
@@ -1910,8 +1945,8 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 16.256,
-    "runtime_per_k_events_ms": 541.866667,
+    "runtime_ms": 28.153,
+    "runtime_per_k_events_ms": 938.433333,
     "top_remediations": [
       {
         "affected_owner": "contract service owner",
