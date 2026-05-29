@@ -13,7 +13,8 @@ CONTRACT_SCHEMA: dict[str, Any] = {
     "properties": {
         "version": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
         "service": {"type": "string"},
-        "metadata": {"type": "object"},
+        "metadata": {"$ref": "#/$defs/metadata"},
+        "privacy_classifications": {"type": "object", "additionalProperties": {"$ref": "#/$defs/privacyClassification"}},
         "field_definitions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/fieldSpec"}},
         "spans": {"type": "array", "items": {"$ref": "#/$defs/spanSignal"}},
         "metrics": {"type": "array", "items": {"$ref": "#/$defs/metricSignal"}},
@@ -44,6 +45,9 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                         "cardinality": {"$ref": "#/$defs/cardinality"},
                         "sensitivity": {"type": "string"},
                         "classification": {"type": "string"},
+                        "privacy_classification": {"type": "string"},
+                        "transformation": {"enum": ["raw", "redacted", "hashed", "tokenized", "bucketed", "omitted"]},
+                        "unit": {"type": "string"},
                         "pii": {"type": "boolean"},
                         "allow_raw_sensitive": {"type": "boolean"},
                         "forbidden_patterns": {
@@ -58,6 +62,35 @@ CONTRACT_SCHEMA: dict[str, Any] = {
             ]
         },
         "fieldMap": {"type": "object", "additionalProperties": {"$ref": "#/$defs/fieldSpec"}},
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "owner": {"type": "string"},
+                "sampling": {"type": "object", "additionalProperties": {"$ref": "#/$defs/samplingPolicy"}},
+                "retention": {"type": "object", "additionalProperties": {"type": "integer"}},
+            },
+        },
+        "samplingPolicy": {
+            "type": "object",
+            "properties": {
+                "strategy": {"enum": ["always_on", "always_off", "parent_based", "probabilistic", "tail_based", "rate_limited"]},
+                "minimum_rate": {"type": "number"},
+                "rate": {"type": "number"},
+                "always_sample_errors": {"type": "boolean"},
+                "always_keep_errors": {"type": "boolean"},
+            },
+        },
+        "privacyClassification": {
+            "type": "object",
+            "required": ["allowed_transformations"],
+            "properties": {
+                "description": {"type": "string"},
+                "allowed_transformations": {
+                    "type": "array",
+                    "items": {"enum": ["raw", "redacted", "hashed", "tokenized", "bucketed", "omitted"]},
+                },
+            },
+        },
         "cardinality": {
             "type": "object",
             "properties": {

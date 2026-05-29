@@ -10,6 +10,32 @@ from .schema import validate_contract_schema
 
 SignalKind = str
 PRIMITIVE_TYPES = {"string", "integer", "number", "boolean", "object", "array", "null"}
+ALLOWED_PRIVACY_TRANSFORMATIONS = {"raw", "redacted", "hashed", "tokenized", "bucketed", "omitted"}
+PRIVACY_PUBLIC_CLASSES = {"public", "none", "non_sensitive", "non-sensitive"}
+UNIT_KINDS: dict[str, str] = {
+    "ns": "duration",
+    "us": "duration",
+    "µs": "duration",
+    "ms": "duration",
+    "s": "duration",
+    "seconds": "duration",
+    "minutes": "duration",
+    "bytes": "bytes",
+    "byte": "bytes",
+    "kb": "bytes",
+    "mb": "bytes",
+    "gb": "bytes",
+    "percent": "percent",
+    "%": "percent",
+    "ratio": "ratio",
+    "count": "count",
+    "timestamp_ms": "timestamp",
+    "timestamp_unix_nano": "timestamp",
+    "iso8601": "timestamp",
+    "usd": "currency",
+    "cents": "currency",
+    "currency": "currency",
+}
 SEVERITY_RANKS = {
     "TRACE": 10,
     "TRACE2": 11,
@@ -59,6 +85,8 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
         findings.append(Finding("warning", "contract.version", "contract version should be 1", "$.version"))
     if not isinstance(contract.get("service"), str) or not contract.get("service"):
         findings.append(Finding("error", "contract.service", "contract must declare a non-empty service", "$.service"))
+    findings.extend(_validate_policy_stubs_shape(contract.get("metadata")))
+    findings.extend(_validate_privacy_classifications_shape(contract.get("privacy_classifications")))
     findings.extend(_validate_field_definitions_shape(contract))
     for section in ("spans", "metrics", "logs"):
         if section in contract and not isinstance(contract[section], list):
@@ -106,7 +134,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                 for field_name, field_spec in raw_fields.items():
                     field_path = f"{signal_path}.{container}.{field_name}"
                     normalized_spec = _resolve_contract_field_spec(str(field_name), field_spec, contract, field_path, findings)
-                    findings.extend(_validate_field_spec(str(field_name), normalized_spec, field_path))
+                    findings.extend(_validate_field_spec(str(field_name), normalized_spec, field_path, contract))
                     if SENSITIVE_FIELD_NAMES.search(str(field_name)) and not _declares_sensitivity(normalized_spec):
                         findings.append(
                             Finding(
@@ -177,6 +205,70 @@ def _validate_conditional_requirement_shape(spec: dict[str, Any], signal_path: s
     return findings
 
 
+def _validate_policy_stubs_shape(metadata: Any) -> list[Finding]:
+    if metadata is None:
+        return []
+    if not isinstance(metadata, dict):
+        return [Finding("error", "contract.policy_stub", "metadata must be an object", "$.metadata")]
+    findings: list[Finding] = []
+    sampling = metadata.get("sampling")
+    if sampling is not None:
+        if not isinstance(sampling, dict):
+            findings.append(Finding("error", "contract.policy_stub", "metadata.sampling must be an object keyed by traces, metrics, or logs", "$.metadata.sampling"))
+        else:
+            for signal, policy in sampling.items():
+                path = f"$.metadata.sampling.{signal}"
+                if signal not in {"traces", "spans", "metrics", "logs"}:
+                    findings.append(Finding("error", "contract.policy_stub", f"sampling policy '{signal}' must target traces/spans, metrics, or logs", path))
+                    continue
+                if not isinstance(policy, dict):
+                    findings.append(Finding("error", "contract.policy_stub", f"sampling policy '{signal}' must be an object", path))
+                    continue
+                rate = policy.get("minimum_rate", policy.get("rate"))
+                if rate is not None and (not isinstance(rate, (int, float)) or isinstance(rate, bool) or rate < 0 or rate > 1):
+                    findings.append(Finding("error", "contract.policy_stub", f"sampling policy '{signal}' rate must be between 0 and 1", f"{path}.minimum_rate"))
+                strategy = policy.get("strategy")
+                if strategy is not None and strategy not in {"always_on", "always_off", "parent_based", "probabilistic", "tail_based", "rate_limited"}:
+                    findings.append(Finding("error", "contract.policy_stub", f"sampling policy '{signal}' has unknown strategy {strategy!r}", f"{path}.strategy"))
+                for key in ("always_sample_errors", "always_keep_errors"):
+                    if key in policy and not isinstance(policy[key], bool):
+                        findings.append(Finding("error", "contract.policy_stub", f"sampling policy '{signal}' {key} must be boolean", f"{path}.{key}"))
+    retention = metadata.get("retention")
+    if retention is not None:
+        if not isinstance(retention, dict):
+            findings.append(Finding("error", "contract.policy_stub", "metadata.retention must be an object with day counts", "$.metadata.retention"))
+        else:
+            for key, value in retention.items():
+                if key not in {"traces_days", "spans_days", "metrics_days", "logs_days"}:
+                    findings.append(Finding("error", "contract.policy_stub", f"retention key '{key}' is not recognized", f"$.metadata.retention.{key}"))
+                elif not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+                    findings.append(Finding("error", "contract.policy_stub", f"retention {key} must be a positive integer day count", f"$.metadata.retention.{key}"))
+    return findings
+
+
+def _validate_privacy_classifications_shape(raw_policy: Any) -> list[Finding]:
+    if raw_policy is None:
+        return []
+    if not isinstance(raw_policy, dict):
+        return [Finding("error", "contract.privacy_policy", "privacy_classifications must be an object", "$.privacy_classifications")]
+    findings: list[Finding] = []
+    for name, policy in raw_policy.items():
+        path = f"$.privacy_classifications.{name}"
+        if not isinstance(name, str) or not name:
+            findings.append(Finding("error", "contract.privacy_policy", "privacy classification names must be non-empty strings", path))
+        if not isinstance(policy, dict):
+            findings.append(Finding("error", "contract.privacy_policy", f"privacy classification '{name}' must be an object", path))
+            continue
+        transformations = policy.get("allowed_transformations")
+        if not isinstance(transformations, list) or not transformations:
+            findings.append(Finding("error", "contract.privacy_policy", f"privacy classification '{name}' must declare allowed_transformations", f"{path}.allowed_transformations"))
+            continue
+        bad = [item for item in transformations if item not in ALLOWED_PRIVACY_TRANSFORMATIONS]
+        if bad:
+            findings.append(Finding("error", "contract.privacy_policy", f"privacy classification '{name}' has unknown transformations {bad!r}", f"{path}.allowed_transformations"))
+    return findings
+
+
 
 def _validate_field_definitions_shape(contract: dict[str, Any]) -> list[Finding]:
     definitions = contract.get("field_definitions")
@@ -188,7 +280,7 @@ def _validate_field_definitions_shape(contract: dict[str, Any]) -> list[Finding]
     for name, raw_spec in definitions.items():
         path = f"$.field_definitions.{name}"
         spec = _resolve_contract_field_spec(str(name), raw_spec, contract, path, findings)
-        findings.extend(_validate_field_spec(str(name), spec, path))
+        findings.extend(_validate_field_spec(str(name), spec, path, contract))
     return findings
 
 
@@ -491,7 +583,7 @@ def _correlation_values(event: dict[str, Any], keys: list[str]) -> set[tuple[str
     return values
 
 
-def _validate_field_spec(field_name: str, spec: dict[str, Any], path: str) -> list[Finding]:
+def _validate_field_spec(field_name: str, spec: dict[str, Any], path: str, contract: dict[str, Any] | None = None) -> list[Finding]:
     findings: list[Finding] = []
     expected_type = spec.get("type")
     if expected_type is not None:
@@ -511,6 +603,24 @@ def _validate_field_spec(field_name: str, spec: dict[str, Any], path: str) -> li
             findings.append(Finding("error", "contract.numeric_bound_type", f"field '{field_name}' {bound} must be numeric", f"{path}.{bound}"))
     if all(bound in spec and isinstance(spec[bound], (int, float)) and not isinstance(spec[bound], bool) for bound in ("min", "max")) and spec["min"] > spec["max"]:
         findings.append(Finding("error", "contract.numeric_bounds", f"field '{field_name}' min must be <= max", path))
+    unit = spec.get("unit")
+    if unit is not None and (not isinstance(unit, str) or unit not in UNIT_KINDS):
+        findings.append(Finding("error", "contract.unit", f"field '{field_name}' has unsupported unit {unit!r}", f"{path}.unit"))
+    transformation = spec.get("transformation")
+    if transformation is not None and transformation not in ALLOWED_PRIVACY_TRANSFORMATIONS:
+        findings.append(Finding("error", "contract.privacy_policy", f"field '{field_name}' has unsupported transformation {transformation!r}", f"{path}.transformation"))
+    classification = _privacy_classification(spec)
+    policies = (contract or {}).get("privacy_classifications")
+    if isinstance(policies, dict) and classification and classification not in PRIVACY_PUBLIC_CLASSES:
+        if classification not in policies:
+            findings.append(Finding("error", "contract.privacy_policy", f"field '{field_name}' references unknown privacy classification '{classification}'", f"{path}.classification"))
+        else:
+            allowed = policies[classification].get("allowed_transformations") if isinstance(policies[classification], dict) else None
+            if isinstance(allowed, list):
+                if transformation is None:
+                    findings.append(Finding("error", "contract.privacy_policy", f"field '{field_name}' classification '{classification}' must declare one of {allowed!r}", f"{path}.transformation"))
+                elif transformation not in allowed:
+                    findings.append(Finding("error", "contract.privacy_policy", f"field '{field_name}' transformation {transformation!r} is not allowed for classification '{classification}'", f"{path}.transformation"))
     return findings
 
 
@@ -568,7 +678,7 @@ def _validate_signal(kind: str, section: str, signal_index: int, spec: dict[str,
         for field_name, field_spec in field_specs.items():
             value, value_path = _lookup_field(event, field_name)
             if value is _MISSING:
-                if field_spec.get("required", True):
+                if field_spec.get("required", True) and field_spec.get("transformation") != "omitted":
                     findings.append(Finding("error", "telemetry.missing_field", f"{kind} '{name}' missing required field '{field_name}'", value_path, f"{path}.fields.{field_name}", _event_index(event)))
                 continue
             findings.extend(_validate_field(field_name, field_spec, value, event, f"{path}.fields.{field_name}"))
@@ -678,12 +788,14 @@ def _validate_field(field_name: str, spec: dict[str, Any], value: Any, event: di
             except re.error as exc:
                 findings.append(Finding("error", "contract.invalid_regex", f"invalid regex for field '{field_name}': {exc}", contract_path))
     findings.extend(_validate_forbidden_patterns(field_name, spec, value, event, contract_path, event_path))
+    findings.extend(_validate_privacy_transformation(field_name, spec, value, event, contract_path, event_path))
     findings.extend(_validate_sensitive_value(field_name, spec, value, event, contract_path, event_path))
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         if "min" in spec and value < spec["min"]:
             findings.append(Finding("error", "telemetry.numeric_min", f"field '{field_name}' value {value} is below minimum {spec['min']}", event_path, contract_path, _event_index(event)))
         if "max" in spec and value > spec["max"]:
             findings.append(Finding("error", "telemetry.numeric_max", f"field '{field_name}' value {value} is above maximum {spec['max']}", event_path, contract_path, _event_index(event)))
+    findings.extend(_validate_unit(field_name, spec, value, event, contract_path, event_path))
     return findings
 
 
@@ -736,6 +848,90 @@ def _validate_cardinality(kind: str, name: str, field_specs: dict[str, dict[str,
 
 def _declares_sensitivity(spec: dict[str, Any]) -> bool:
     return bool(spec.get("sensitivity") or spec.get("classification") or spec.get("pii") is not None)
+
+
+def _privacy_classification(spec: dict[str, Any]) -> str:
+    return str(spec.get("privacy_classification") or spec.get("classification") or spec.get("sensitivity") or "").lower()
+
+
+def _validate_privacy_transformation(field_name: str, spec: dict[str, Any], value: Any, event: dict[str, Any], contract_path: str, event_path: str) -> list[Finding]:
+    transformation = spec.get("transformation")
+    if transformation is None or transformation == "raw":
+        return []
+    message = ""
+    if transformation == "redacted":
+        if not isinstance(value, str) or value.strip().lower() not in {"<redacted>", "[redacted]", "redacted", "***redacted***"}:
+            message = f"field '{field_name}' must be emitted as a redacted sentinel"
+    elif transformation == "hashed":
+        if not isinstance(value, str) or re.fullmatch(r"(sha256:[a-fA-F0-9]{64}|hash:[A-Za-z0-9._:-]{8,})", value) is None:
+            message = f"field '{field_name}' must be emitted as a stable hash token"
+    elif transformation == "tokenized":
+        if not isinstance(value, str) or not (value.startswith("tok_") or value.startswith("tokenized:")):
+            message = f"field '{field_name}' must be emitted as a tokenized surrogate"
+    elif transformation == "bucketed":
+        if isinstance(value, str) and RAW_SECRET_VALUE.search(value):
+            message = f"field '{field_name}' bucketed value still appears to contain raw sensitive data"
+    elif transformation == "omitted":
+        if not (value is None or value == "" or value == "<omitted>"):
+            message = f"field '{field_name}' must be omitted, not emitted with a raw value"
+    if not message:
+        return []
+    return [
+        Finding(
+            "error",
+            "telemetry.privacy_transformation",
+            message,
+            event_path,
+            contract_path,
+            _event_index(event),
+            {"transformation": transformation, "value_preview": _preview(value) if isinstance(value, str) else None},
+        )
+    ]
+
+
+def _validate_unit(field_name: str, spec: dict[str, Any], value: Any, event: dict[str, Any], contract_path: str, event_path: str) -> list[Finding]:
+    unit = spec.get("unit")
+    if not isinstance(unit, str) or unit not in UNIT_KINDS:
+        return []
+    kind = UNIT_KINDS[unit]
+    valid = True
+    expectation = ""
+    if kind == "duration":
+        valid = isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+        expectation = "a non-negative numeric duration"
+    elif kind == "bytes":
+        valid = isinstance(value, int) and not isinstance(value, bool) and value >= 0
+        expectation = "a non-negative integer byte-size value"
+    elif kind == "percent":
+        valid = isinstance(value, (int, float)) and not isinstance(value, bool) and 0 <= value <= 100
+        expectation = "a numeric percentage from 0 through 100"
+    elif kind == "ratio":
+        valid = isinstance(value, (int, float)) and not isinstance(value, bool) and 0 <= value <= 1
+        expectation = "a numeric ratio from 0 through 1"
+    elif kind == "count":
+        valid = isinstance(value, int) and not isinstance(value, bool) and value >= 0
+        expectation = "a non-negative integer count"
+    elif kind == "timestamp":
+        valid = _unit_timestamp_valid(value)
+        expectation = "a positive numeric timestamp or ISO-8601 timestamp string"
+    elif kind == "currency":
+        valid = isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+        expectation = "a non-negative numeric currency amount"
+    if valid:
+        return []
+    return [Finding("error", "telemetry.unit", f"field '{field_name}' with unit {unit!r} must be {expectation}", event_path, contract_path, _event_index(event), {"unit": unit, "value": value})]
+
+
+def _unit_timestamp_valid(value: Any) -> bool:
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return value > 0
+    if not isinstance(value, str):
+        return False
+    try:
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return True
+    except ValueError:
+        return False
 
 
 def _validate_forbidden_patterns(field_name: str, spec: dict[str, Any], value: Any, event: dict[str, Any], contract_path: str, event_path: str) -> list[Finding]:

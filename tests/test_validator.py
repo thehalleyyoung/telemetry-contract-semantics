@@ -213,6 +213,91 @@ def test_log_severity_policy_supports_minimum_thresholds():
     assert validate_events(contract, [{"kind": "log", "service": "svc", "name": "checkout.failed", "severity": "ERROR"}]) == []
 
 
+def test_sampling_retention_policy_stubs_are_machine_readable():
+    good = {
+        "version": "1.0",
+        "service": "svc",
+        "metadata": {
+            "sampling": {
+                "traces": {"strategy": "parent_based", "minimum_rate": 0.25, "always_sample_errors": True},
+                "logs": {"strategy": "always_on", "minimum_rate": 1.0},
+            },
+            "retention": {"traces_days": 7, "metrics_days": 30, "logs_days": 14},
+        },
+    }
+    assert validate_contract_shape(good) == []
+
+    bad = {
+        "version": "1.0",
+        "service": "svc",
+        "metadata": {
+            "sampling": {"traces": {"strategy": "coin_flip", "minimum_rate": 2, "always_sample_errors": "yes"}},
+            "retention": {"logs_days": 0, "debug_days": 3},
+        },
+    }
+    assert "contract.policy_stub" in codes(validate_contract_shape(bad))
+
+
+def test_privacy_classifications_require_allowed_transformations():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "privacy_classifications": {"token": {"allowed_transformations": ["redacted", "hashed", "omitted"]}},
+        "logs": [
+            {
+                "name": "auth",
+                "fields": {
+                    "auth_token": {
+                        "type": "string",
+                        "classification": "token",
+                        "transformation": "hashed",
+                    }
+                },
+            }
+        ],
+    }
+    assert validate_contract_shape(contract) == []
+    findings = validate_events(contract, [{"kind": "log", "service": "svc", "name": "auth", "fields": {"auth_token": "Bearer raw-secret-token"}}])
+    assert "telemetry.privacy_transformation" in codes(findings)
+    assert validate_events(
+        contract,
+        [{"kind": "log", "service": "svc", "name": "auth", "fields": {"auth_token": "sha256:" + "a" * 64}}],
+    ) == []
+
+    missing_transform = {
+        "version": "1.0",
+        "service": "svc",
+        "privacy_classifications": {"token": {"allowed_transformations": ["redacted"]}},
+        "logs": [{"name": "auth", "fields": {"auth_token": {"type": "string", "classification": "token"}}}],
+    }
+    assert "contract.privacy_policy" in codes(validate_contract_shape(missing_transform))
+
+
+def test_units_are_linted_and_validated():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "metrics": [
+            {"name": "latency", "value": {"type": "number", "unit": "ms"}},
+            {"name": "success_ratio", "value": {"type": "number", "unit": "ratio"}},
+        ],
+        "spans": [{"name": "request", "fields": {"attempts": {"type": "integer", "unit": "count"}}}],
+    }
+    assert validate_contract_shape(contract) == []
+    findings = validate_events(
+        contract,
+        [
+            {"kind": "metric", "service": "svc", "name": "latency", "value": -1},
+            {"kind": "metric", "service": "svc", "name": "success_ratio", "value": 1.5},
+            {"kind": "span", "service": "svc", "name": "request", "fields": {"attempts": 1.2}},
+        ],
+    )
+    assert "telemetry.unit" in codes(findings)
+
+    bad_contract = {"version": "1.0", "service": "svc", "metrics": [{"name": "m", "value": {"type": "number", "unit": "parsecs"}}]}
+    assert "contract.unit" in codes(validate_contract_shape(bad_contract))
+
+
 def test_lint_reports_duplicate_signals_and_fields():
     findings = validate_contract_shape(
         {

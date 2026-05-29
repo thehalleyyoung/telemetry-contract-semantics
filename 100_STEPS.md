@@ -16,9 +16,9 @@
 - [ ] Add contract inheritance or composition for shared organization-wide telemetry requirements.
 - [x] Support reusable field dictionaries for common attributes such as tenant_id, trace_id, region, build_sha, and deployment_environment.
 - [x] Add explicit severity policy validation for logs beyond exact matching, including minimum severity thresholds.
-- [ ] Validate sampling and retention metadata against machine-readable policy stubs instead of documenting them only.
-- [ ] Add schema-level privacy classifications with allowed transformations such as redacted, hashed, tokenized, bucketed, or omitted.
-- [ ] Add field-level units validation for durations, bytes, percentages, counts, timestamps, and currency-like values.
+- [x] Validate sampling and retention metadata against machine-readable policy stubs instead of documenting them only.
+- [x] Add schema-level privacy classifications with allowed transformations such as redacted, hashed, tokenized, bucketed, or omitted.
+- [x] Add field-level units validation for durations, bytes, percentages, counts, timestamps, and currency-like values.
 - [ ] Add contract lint warnings for names that violate OpenTelemetry semantic-convention naming guidance.
 - [ ] Support optional and alternative signals where one of several equivalent telemetry paths satisfies a requirement.
 - [ ] Add event-window grouping so validation can reason per trace, per request, per tenant, and per scenario instance.

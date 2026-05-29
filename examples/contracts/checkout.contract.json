@@ -4,8 +4,19 @@
   "metadata": {
     "owner": "payments-platform",
     "sampling": {
-      "traces": "parent-based 10% minimum",
-      "logs": "errors always"
+      "traces": {
+        "strategy": "parent_based",
+        "minimum_rate": 0.1,
+        "always_sample_errors": true
+      },
+      "logs": {
+        "strategy": "always_on",
+        "minimum_rate": 1.0
+      },
+      "metrics": {
+        "strategy": "always_on",
+        "minimum_rate": 1.0
+      }
     },
     "retention": {
       "traces_days": 7,
@@ -42,7 +53,8 @@
           "type": "number",
           "required": true,
           "min": 0,
-          "max": 30000
+          "max": 30000,
+          "unit": "ms"
         }
       }
     },
@@ -60,7 +72,8 @@
           "type": "integer",
           "required": true,
           "min": 0,
-          "max": 3
+          "max": 3,
+          "unit": "count"
         },
         "error_code": {
           "$ref": "#/field_definitions/error_code",
@@ -97,7 +110,8 @@
       "required": true,
       "value": {
         "type": "number",
-        "min": 0
+        "min": 0,
+        "unit": "count"
       },
       "tags": {
         "tenant_id": {
@@ -114,7 +128,8 @@
       "value": {
         "type": "number",
         "min": 0,
-        "max": 30000
+        "max": 30000,
+        "unit": "ms"
       },
       "tags": {
         "payment_provider": {
@@ -258,5 +273,24 @@
         }
       ]
     }
-  ]
+  ],
+  "privacy_classifications": {
+    "token": {
+      "description": "Credentials or bearer tokens must not appear raw in telemetry.",
+      "allowed_transformations": [
+        "redacted",
+        "hashed",
+        "tokenized",
+        "omitted"
+      ]
+    },
+    "identifier": {
+      "description": "Stable user or tenant identifiers may be raw only when explicitly approved.",
+      "allowed_transformations": [
+        "raw",
+        "hashed",
+        "tokenized"
+      ]
+    }
+  }
 }

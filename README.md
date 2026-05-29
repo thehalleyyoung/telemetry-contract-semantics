@@ -67,6 +67,17 @@ A contract declares a service plus expected telemetry signals:
 {
   "version": "1.0",
   "service": "checkout",
+  "metadata": {
+    "sampling": {
+      "traces": {"strategy": "parent_based", "minimum_rate": 0.1, "always_sample_errors": true},
+      "logs": {"strategy": "always_on", "minimum_rate": 1.0}
+    },
+    "retention": {"traces_days": 7, "metrics_days": 30, "logs_days": 14}
+  },
+  "privacy_classifications": {
+    "token": {"allowed_transformations": ["redacted", "hashed", "tokenized", "omitted"]},
+    "identifier": {"allowed_transformations": ["raw", "hashed", "tokenized"]}
+  },
   "correlation": {"keys": ["trace_id", "request_id"], "require_on": ["spans", "logs"]},
   "field_definitions": {
     "tenant_id": {"type": "string", "required": true, "pattern": "tenant-[a-z0-9-]+"}
@@ -86,9 +97,10 @@ A contract declares a service plus expected telemetry signals:
     "required": true,
     "fields": {
       "tenant_id": {"$ref": "#/field_definitions/tenant_id"},
-      "auth_token": {"type": "string", "sensitivity": "token", "forbidden_patterns": ["bearer_token"]},
-      "retry_count": {"type": "integer", "min": 0, "max": 3},
+      "auth_token": {"type": "string", "classification": "token", "transformation": "redacted", "forbidden_patterns": ["bearer_token"]},
+      "retry_count": {"type": "integer", "unit": "count", "min": 0, "max": 3},
       "payment_provider": {"type": "string", "allowed_values": ["stripe", "adyen", "test"]},
+      "duration_ms": {"type": "number", "unit": "ms", "min": 0, "max": 30000},
       "error_code": {"type": "string", "required": false},
       "remediation_hint": {"type": "string", "required": false},
       "retryable": {"type": "boolean", "required": false}
@@ -111,7 +123,9 @@ Supported checks include:
 - Regex patterns.
 - `forbidden_patterns`, including built-ins such as `email`, `bearer_token`, `jwt`, `password_assignment`, and `credit_card`.
 - Sensitivity classification for PII, credentials, tokens, and secrets, with warnings for unclassified sensitive-looking fields.
+- Schema-level `privacy_classifications` that restrict fields to allowed transformations: `redacted`, `hashed`, `tokenized`, `bucketed`, or `omitted`.
 - Numeric `min`/`max` ranges.
+- Unit validation for durations, bytes, percentages, ratios, counts, timestamps, and currency-like values.
 - Metric `value` checks.
 - Log severity and message pattern checks.
 - Log `severity_policy` minimum thresholds, for example `{"min": "ERROR"}`.
@@ -120,7 +134,7 @@ Supported checks include:
 - Cross-signal correlation policies requiring shared keys such as `trace_id` or `request_id` across configured signal kinds.
 - Temporal sequence checks over spans, metrics, and logs using timestamps and optional `group_by` incident windows.
 - Duplicate signal and duplicate field diagnostics during contract linting.
-- Sampling and retention metadata as documented assumptions.
+- Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`.
 
 ## Runtime event format
 
@@ -211,7 +225,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Static checking is literal-based, not a full AST or OpenTelemetry semantic analysis.
 - OTLP support covers common JSON exports for spans, metrics, and logs; protobuf/gRPC collector ingestion is future work.
 - Cardinality is checked over the supplied sample window, not a production time series backend.
-- Sampling and retention are represented as contract metadata rather than verified against infrastructure.
+- Sampling and retention stubs are linted for machine-readable contract shape, but not verified against live collector or backend configuration.
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
 
 ## Development

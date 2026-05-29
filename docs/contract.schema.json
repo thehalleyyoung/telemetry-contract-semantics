@@ -174,6 +174,9 @@
             "pii": {
               "type": "boolean"
             },
+            "privacy_classification": {
+              "type": "string"
+            },
             "ref": {
               "type": "string"
             },
@@ -186,8 +189,21 @@
             "sensitivity": {
               "type": "string"
             },
+            "transformation": {
+              "enum": [
+                "raw",
+                "redacted",
+                "hashed",
+                "tokenized",
+                "bucketed",
+                "omitted"
+              ]
+            },
             "type": {
               "$ref": "#/$defs/primitive"
+            },
+            "unit": {
+              "type": "string"
             }
           },
           "type": "object"
@@ -229,6 +245,26 @@
         }
       ]
     },
+    "metadata": {
+      "properties": {
+        "owner": {
+          "type": "string"
+        },
+        "retention": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "sampling": {
+          "additionalProperties": {
+            "$ref": "#/$defs/samplingPolicy"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
     "metricSignal": {
       "allOf": [
         {
@@ -260,6 +296,57 @@
         "dict",
         "list"
       ]
+    },
+    "privacyClassification": {
+      "properties": {
+        "allowed_transformations": {
+          "items": {
+            "enum": [
+              "raw",
+              "redacted",
+              "hashed",
+              "tokenized",
+              "bucketed",
+              "omitted"
+            ]
+          },
+          "type": "array"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "allowed_transformations"
+      ],
+      "type": "object"
+    },
+    "samplingPolicy": {
+      "properties": {
+        "always_keep_errors": {
+          "type": "boolean"
+        },
+        "always_sample_errors": {
+          "type": "boolean"
+        },
+        "minimum_rate": {
+          "type": "number"
+        },
+        "rate": {
+          "type": "number"
+        },
+        "strategy": {
+          "enum": [
+            "always_on",
+            "always_off",
+            "parent_based",
+            "probabilistic",
+            "tail_based",
+            "rate_limited"
+          ]
+        }
+      },
+      "type": "object"
     },
     "scenario": {
       "properties": {
@@ -428,13 +515,19 @@
       "type": "array"
     },
     "metadata": {
-      "type": "object"
+      "$ref": "#/$defs/metadata"
     },
     "metrics": {
       "items": {
         "$ref": "#/$defs/metricSignal"
       },
       "type": "array"
+    },
+    "privacy_classifications": {
+      "additionalProperties": {
+        "$ref": "#/$defs/privacyClassification"
+      },
+      "type": "object"
     },
     "scenarios": {
       "items": {
