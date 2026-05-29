@@ -9,8 +9,15 @@ Sources:
 
 Public facts used include replication lag/failure, a destructive operation intended for the secondary but run on the primary, absent pg_dump backups due to a PostgreSQL version mismatch, cron notifications rejected by DMARC, and recovery from a roughly six-hour-old LVM snapshot.
 
+`reconstructed_events_sampled_missing_alert.jsonl` is a deliberately degraded derivative of the reconstructed fixture that simulates a sampled/exported stream missing the backup-failure log. It is used to validate observational-equivalence reporting: the comparison is scoped to whether the `restore-readiness` incident question retains the same minimum evidence, not to byte equality with the original fixture.
+
 Run:
 
 ```bash
 python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown
+python3 -m telemetry_contracts.cli equivalence \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --left-events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --right-events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --scenario restore-readiness --format markdown
 ```

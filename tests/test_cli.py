@@ -49,3 +49,27 @@ def test_cli_describe_model_summarizes_historical_fixture(capsys):
     assert '"event_count": 5' in output
     assert '"metric": 2' in output
     assert "postgres.replication.lag_bytes" in output
+
+
+def test_cli_equivalence_reports_historical_sampled_difference(capsys):
+    code = main(
+        [
+            "equivalence",
+            "--contract",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/contract.json"),
+            "--left-events",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl"),
+            "--right-events",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl"),
+            "--scenario",
+            "restore-readiness",
+            "--format",
+            "json",
+            "--fail-on-difference",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 1
+    assert '"equivalent": false' in output
+    assert "log:backup.pg_dump.failed" in output

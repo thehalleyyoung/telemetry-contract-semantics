@@ -1,0 +1,186 @@
+{
+  "comparisons": [
+    {
+      "deltas": [
+        {
+          "field": "$signal",
+          "left": "present",
+          "requirement": "log:backup.pg_dump.failed",
+          "right": "missing"
+        },
+        {
+          "field": "alert_route",
+          "left": "present",
+          "requirement": "log:backup.pg_dump.failed",
+          "right": "missing"
+        },
+        {
+          "field": "backup_job_id",
+          "left": "present",
+          "requirement": "log:backup.pg_dump.failed",
+          "right": "missing"
+        },
+        {
+          "field": "destination",
+          "left": "present",
+          "requirement": "log:backup.pg_dump.failed",
+          "right": "missing"
+        }
+      ],
+      "equivalent": false,
+      "id": "restore-readiness",
+      "left_answerable": false,
+      "left_signature": {
+        "answerable": false,
+        "observations": [
+          {
+            "field_status": {
+              "command_guard_result": false,
+              "correlation_id": false,
+              "intended_host": true,
+              "target_host": true,
+              "target_role": true
+            },
+            "missing_fields": [
+              "command_guard_result",
+              "correlation_id"
+            ],
+            "requirement": "log:database.destructive_command",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "backup_job_id": true,
+              "database_version": true,
+              "destination": true,
+              "tool_version": true
+            },
+            "missing_fields": [],
+            "requirement": "metric:backup.pg_dump.success",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "alert_delivered": false,
+              "alert_route": true,
+              "backup_job_id": true,
+              "destination": true
+            },
+            "missing_fields": [
+              "alert_delivered"
+            ],
+            "requirement": "log:backup.pg_dump.failed",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "backup_age_hours": true,
+              "source": true,
+              "source_environment": true
+            },
+            "missing_fields": [],
+            "requirement": "span:disaster_recovery.restore_attempt",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "incident_id": true,
+              "primary_host": true,
+              "replica_host": true
+            },
+            "missing_fields": [],
+            "requirement": "metric:postgres.replication.lag_bytes",
+            "signal_present": true
+          }
+        ]
+      },
+      "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?",
+      "right_answerable": false,
+      "right_signature": {
+        "answerable": false,
+        "observations": [
+          {
+            "field_status": {
+              "command_guard_result": false,
+              "correlation_id": false,
+              "intended_host": true,
+              "target_host": true,
+              "target_role": true
+            },
+            "missing_fields": [
+              "command_guard_result",
+              "correlation_id"
+            ],
+            "requirement": "log:database.destructive_command",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "backup_job_id": true,
+              "database_version": true,
+              "destination": true,
+              "tool_version": true
+            },
+            "missing_fields": [],
+            "requirement": "metric:backup.pg_dump.success",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "alert_delivered": false,
+              "alert_route": false,
+              "backup_job_id": false,
+              "destination": false
+            },
+            "missing_fields": [
+              "alert_delivered",
+              "alert_route",
+              "backup_job_id",
+              "destination"
+            ],
+            "requirement": "log:backup.pg_dump.failed",
+            "signal_present": false
+          },
+          {
+            "field_status": {
+              "backup_age_hours": true,
+              "source": true,
+              "source_environment": true
+            },
+            "missing_fields": [],
+            "requirement": "span:disaster_recovery.restore_attempt",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "incident_id": true,
+              "primary_host": true,
+              "replica_host": true
+            },
+            "missing_fields": [],
+            "requirement": "metric:postgres.replication.lag_bytes",
+            "signal_present": true
+          }
+        ]
+      }
+    }
+  ],
+  "equivalent": false,
+  "limitations": [
+    "Equivalence is scoped to selected contract scenarios and their declared minimum observations.",
+    "This relation compares question answerability signatures, not raw values or byte equality.",
+    "Historical case-study fixtures are reconstructed from public facts when their metadata says so."
+  ],
+  "model": {
+    "name": "observational-equivalence-v1",
+    "relation": "Two finite telemetry traces are observationally equivalent for a declared debugging task when the diagnosability answer signature for every selected incident question is identical: the same questions are answerable, the same minimum observations are witnessed, and the same required fields are present or absent. Extra events, event order, concrete values, and byte representation are ignored unless they change that question-level signature."
+  },
+  "service": "gitlab.com-database",
+  "summary": {
+    "different_questions": 1,
+    "equivalent_questions": 0,
+    "left_events": 5,
+    "questions_compared": 1,
+    "right_events": 4
+  }
+}

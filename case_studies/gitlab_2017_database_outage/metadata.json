@@ -40,6 +40,12 @@
     ]
   },
   "labels_description": "Expected findings are precision-oriented labels for this fixture: the benchmark passes only when every labeled finding is reproduced and no extra finding appears.",
+  "equivalence_fixture": {
+    "path": "reconstructed_events_sampled_missing_alert.jsonl",
+    "purpose": "A degraded derivative used to validate observational-equivalence reports against a historical reconstruction.",
+    "transformation": "Drops the backup.pg_dump.failed log to simulate a sampled or incomplete exported stream.",
+    "expected_result": "Not observationally equivalent for restore-readiness because the backup failure observation and its route/job/destination fields are no longer witnessed."
+  },
   "expected_findings": [
     {"code": "telemetry.allowed_values", "severity": "error", "path": "event[5].source", "contract_path": "$.spans[0].fields.source", "event_index": 5},
     {"code": "telemetry.numeric_max", "severity": "error", "path": "event[5].backup_age_hours", "contract_path": "$.spans[0].fields.backup_age_hours", "event_index": 5},

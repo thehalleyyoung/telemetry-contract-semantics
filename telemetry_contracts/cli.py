@@ -14,6 +14,7 @@ from .semantics import describe_model, format_model_markdown
 from .static_checker import check_sources
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .validator import validate_contract_shape, validate_events
+from .equivalence import compare_observational_equivalence, format_equivalence_markdown
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -55,6 +56,15 @@ def main(argv: list[str] | None = None) -> int:
     benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     benchmark_parser.add_argument("--output")
 
+    equivalence_parser = subparsers.add_parser("equivalence", help="compare two telemetry files by incident-question answerability")
+    equivalence_parser.add_argument("--contract", required=True)
+    equivalence_parser.add_argument("--left-events", required=True)
+    equivalence_parser.add_argument("--right-events", required=True)
+    equivalence_parser.add_argument("--scenario", action="append", default=[])
+    equivalence_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    equivalence_parser.add_argument("--output")
+    equivalence_parser.add_argument("--fail-on-difference", action="store_true")
+
     report_parser = subparsers.add_parser("report", help="generate operational reports from contracts and telemetry")
     report_subparsers = report_parser.add_subparsers(dest="report_command", required=True)
     readiness_parser = report_subparsers.add_parser("incident-readiness", help="score incident diagnosability and remediation readiness")
@@ -89,6 +99,15 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
+        if args.command == "equivalence":
+            contract = load_contract(args.contract)
+            report = compare_observational_equivalence(contract, load_jsonl(args.left_events), load_jsonl(args.right_events), args.scenario or None)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_equivalence_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 1 if args.fail_on_difference and not report["equivalent"] else 0
         if args.command == "report":
             contract = load_contract(args.contract)
             events = load_jsonl(args.events)
