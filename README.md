@@ -19,6 +19,7 @@ This repository turns that thesis into executable checks:
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
 - A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
 - An executable small-step `evaluate-semantics` command that emits contract-evaluation derivations and checks their denotation against the deterministic validator on golden and historical traces.
+- A `proof-obligations` command that instantiates well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity proof-goal templates against contracts, runtime traces, transformation pairs, and benchmark labels.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
@@ -26,7 +27,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: `100_STEPS.md` currently has 30 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: `100_STEPS.md` currently has 31 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -109,6 +110,15 @@ python3 -m telemetry_contracts.cli preservation \
   --before-events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
   --after-events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
   --format markdown --fail-on never
+
+python3 -m telemetry_contracts.cli proof-obligations \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict \
+  --before-events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --after-events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --benchmark-config benchmarks/builtin.json \
+  --format markdown
 ```
 
 If installed as a package, the same CLI is available as `telemetry-contracts`.
@@ -197,6 +207,7 @@ Supported checks include:
 - Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
 - Transformation preservation for approved telemetry changes. `preservation` implements an obligation-local relation: if a runtime contract obligation or selected scenario witness is satisfied before transformation, it must remain satisfied after transformation. Reports identify new contract failures plus lost incident-question signals/fields, and checked-in GitLab 2017 reports demonstrate a sampled/exported derivative that removes the backup-failure alert witness.
+- Proof-obligation reports for the implemented contract language. `proof-obligations` catalogs 24 feature groups and instantiates templates for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity. When concrete artifacts are supplied, obligations are marked `discharged` or `violated`; refinement remains a template-only family until the dedicated refinement checker lands.
 - Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
 
 ## Runtime event format
@@ -230,11 +241,12 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.scenario` defines diagnosability adequacy for incident questions and verifies minimum observations against emitted telemetry.
 - `telemetry_contracts.equivalence` compares two traces by their scenario answerability signatures.
 - `telemetry_contracts.preservation` checks pre/post transformation preservation for runtime obligations and scenario witnesses.
+- `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, semantics, preservation, and benchmark evidence.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -322,6 +334,22 @@ python3 -m telemetry_contracts.cli evaluate-semantics \
 
 `reports/gitlab_2017_semantic_evaluation.md` records `aligned_with_checker=true`: the small-step denotation and `validate_events` both produce the same 14 finding signatures over 7 input events, including the strict closed-world findings. This is mechanized alignment evidence for this implementation and fixture, not a proof about all possible telemetry systems.
 
+Generate the checked-in proof-obligation report for the same public reconstruction, its strict drift derivative, the sampled/exported derivative, and the built-in benchmark labels:
+
+```bash
+python3 -m telemetry_contracts.cli proof-obligations \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict \
+  --before-events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --after-events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --benchmark-config benchmarks/builtin.json \
+  --format markdown \
+  --output reports/gitlab_2017_proof_obligations.md
+```
+
+`reports/gitlab_2017_proof_obligations.md` catalogs 24 feature groups and 72 instantiated obligations for those supplied artifacts: 59 discharged, 10 violated, and 3 pending refinement templates. The violations are bounded to the checked-in strict-drift and sampled/exported fixtures; the report does not claim access to GitLab private telemetry or prove universal monitor soundness.
+
 Generate the checked-in alternative-obligation witness report:
 
 ```bash
@@ -357,6 +385,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
 - Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
 - The small-step semantic evaluator is an executable artifact aligned with the current checker through tests and reports; it is not a separately machine-checked theorem prover.
+- Proof-obligation reports are executable evidence checklists over finite artifacts. They are useful for review and reproducibility, but refinement templates are not discharged until the future refinement checker is implemented.
 
 ## Development
 

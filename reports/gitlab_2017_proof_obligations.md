@@ -1,0 +1,296 @@
+# Proof-obligation report: gitlab.com-database
+
+- Model: `telemetry-contract-proof-obligations-v1`
+- Features cataloged: 24
+- Obligations: 72
+- Discharged: 59
+- Violated: 10
+- Pending templates: 3
+- Status counts: `{"discharged": 59, "pending": 3, "violated": 10}`
+- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 19, "preservation": 3, "refinement": 3, "satisfaction": 19, "well-formedness": 27}`
+- Events: 7
+- Strict mode: `true`
+
+## Relation
+
+A proof obligation is an executable template tying one telemetry-contract feature to a formal clause, premises, a desired conclusion, and repository evidence that can discharge or violate it on finite artifacts. These templates are not independent machine-checked proofs; they are reproducible proof goals and evidence links for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity.
+
+## Obligations
+
+### well-formedness
+
+- **well-formedness:WF.allowed-values** `discharged` — allowed values / `WF.allowed-values`
+  - Template: If contract service `gitlab.com-database` uses allowed values, every syntax premise for WF.allowed-values is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.alternative-obligation** `discharged` — alternative obligations / `WF.alternative-obligation`
+  - Template: If contract service `gitlab.com-database` uses alternative obligations, every syntax premise for WF.alternative-obligation is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.conditional** `discharged` — conditional requirements / `WF.conditional`
+  - Template: If contract service `gitlab.com-database` uses conditional requirements, every syntax premise for WF.conditional is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.field-definitions** `discharged` — field definitions / `WF.field-definitions`
+  - Template: If contract service `gitlab.com-database` uses field definitions, every syntax premise for WF.field-definitions is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.field-reference** `discharged` — field definitions / `WF.field-reference`
+  - Template: If contract service `gitlab.com-database` uses field definitions, every syntax premise for WF.field-reference is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.field-reference-acyclic** `discharged` — field definitions / `WF.field-reference-acyclic`
+  - Template: If contract service `gitlab.com-database` uses field definitions, every syntax premise for WF.field-reference-acyclic is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.field-type** `discharged` — field predicates / `WF.field-type`
+  - Template: If contract service `gitlab.com-database` uses field predicates, every syntax premise for WF.field-type is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.forbidden-pattern** `discharged` — forbidden patterns and sensitive values / `WF.forbidden-pattern`
+  - Template: If contract service `gitlab.com-database` uses forbidden patterns and sensitive values, every syntax premise for WF.forbidden-pattern is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.numeric-bound** `discharged` — numeric bounds / `WF.numeric-bound`
+  - Template: If contract service `gitlab.com-database` uses numeric bounds, every syntax premise for WF.numeric-bound is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.numeric-interval** `discharged` — numeric bounds / `WF.numeric-interval`
+  - Template: If contract service `gitlab.com-database` uses numeric bounds, every syntax premise for WF.numeric-interval is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.policy-stub** `discharged` — policy stubs / `WF.policy-stub`
+  - Template: If contract service `gitlab.com-database` uses policy stubs, every syntax premise for WF.policy-stub is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.privacy-classification** `discharged` — privacy classifications / `WF.privacy-classification`
+  - Template: If contract service `gitlab.com-database` uses privacy classifications, every syntax premise for WF.privacy-classification is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.privacy-policy** `discharged` — privacy classifications / `WF.privacy-policy`
+  - Template: If contract service `gitlab.com-database` uses privacy classifications, every syntax premise for WF.privacy-policy is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.regex** `discharged` — regex patterns / `WF.regex`
+  - Template: If contract service `gitlab.com-database` uses regex patterns, every syntax premise for WF.regex is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.required-boolean** `discharged` — field predicates / `WF.required-boolean`
+  - Template: If contract service `gitlab.com-database` uses field predicates, every syntax premise for WF.required-boolean is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.schema** `discharged` — contract header / `WF.schema`
+  - Template: If contract service `gitlab.com-database` uses contract header, every syntax premise for WF.schema is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.service** `discharged` — contract header / `WF.service`
+  - Template: If contract service `gitlab.com-database` uses contract header, every syntax premise for WF.service is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.severity-policy** `discharged` — log severity and message policies / `WF.severity-policy`
+  - Template: If contract service `gitlab.com-database` uses log severity and message policies, every syntax premise for WF.severity-policy is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.signal-name** `discharged` — signal declarations / `WF.signal-name`
+  - Template: If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.signal-name is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.signal-object** `discharged` — signal declarations / `WF.signal-object`
+  - Template: If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.signal-object is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.signal-section** `discharged` — signal declarations / `WF.signal-section`
+  - Template: If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.signal-section is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.strict-policy** `discharged` — strict closed world / `WF.strict-policy`
+  - Template: If contract service `gitlab.com-database` uses strict closed world, every syntax premise for WF.strict-policy is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.temporal-sequence** `discharged` — temporal sequences / `WF.temporal-sequence`
+  - Template: If contract service `gitlab.com-database` uses temporal sequences, every syntax premise for WF.temporal-sequence is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.unique-field** `discharged` — signal declarations / `WF.unique-field`
+  - Template: If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.unique-field is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.unique-signal** `discharged` — signal declarations / `WF.unique-signal`
+  - Template: If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.unique-signal is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.unit** `discharged` — units / `WF.unit`
+  - Template: If contract service `gitlab.com-database` uses units, every syntax premise for WF.unit is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.version** `discharged` — contract header / `WF.version`
+  - Template: If contract service `gitlab.com-database` uses contract header, every syntax premise for WF.version is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+
+### satisfaction
+
+- **satisfaction:ADEQ.alternative-observation** `discharged` — alternative obligations / `ADEQ.alternative-observation`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:ADEQ.required-field** `discharged` — scenario adequacy / `ADEQ.required-field`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:ADEQ.required-signal** `discharged` — scenario adequacy / `ADEQ.required-signal`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.allowed-values** `violated` — allowed values / `SAT.allowed-values`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.allowed_values": 4}`
+- **satisfaction:SAT.alternative-disjunction** `discharged` — alternative obligations / `SAT.alternative-disjunction`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.field-type** `discharged` — field predicates / `SAT.field-type`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.log-message** `discharged` — log severity and message policies / `SAT.log-message`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.log-severity** `discharged` — log severity and message policies / `SAT.log-severity`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.log-severity-threshold** `discharged` — log severity and message policies / `SAT.log-severity-threshold`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.numeric-lower-bound** `discharged` — numeric bounds / `SAT.numeric-lower-bound`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.numeric-upper-bound** `violated` — numeric bounds / `SAT.numeric-upper-bound`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.numeric_max": 2}`
+- **satisfaction:SAT.regex** `discharged` — regex patterns / `SAT.regex`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.regex-domain** `discharged` — regex patterns / `SAT.regex-domain`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.required-field** `violated` — field predicates / `SAT.required-field`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.missing_field": 3}`
+- **satisfaction:SAT.required-signal** `discharged` — required signals / `SAT.required-signal`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:STRICT.field-closed-world** `violated` — strict closed world / `STRICT.field-closed-world`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.strict_unexpected_field": 2}`
+- **satisfaction:STRICT.service-closed-world** `violated` — strict closed world / `STRICT.service-closed-world`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.strict_unmodeled_service": 1}`
+- **satisfaction:STRICT.signal-closed-world** `violated` — strict closed world / `STRICT.signal-closed-world`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.strict_undeclared_signal": 1}`
+- **satisfaction:STRICT.transformation-documented** `violated` — strict closed world / `STRICT.transformation-documented`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+  - Finding codes: `{"telemetry.strict_undocumented_transformation": 1}`
+
+### preservation
+
+- **preservation:PRES.runtime-obligation** `violated` — transformation preservation / `PRES.runtime-obligation`
+  - Template: If source trace T satisfies an obligation and approved transformation Δ produces T′, then T′ preserves the same obligation-local evidence.
+  - Evidence: check_transformation_preservation
+  - Finding codes: `{"preservation.contract_obligation": 1}`
+- **preservation:PRES.adequacy-signal** `violated` — transformation preservation / `PRES.adequacy-signal`
+  - Template: If source trace T satisfies an obligation and approved transformation Δ produces T′, then T′ preserves the same obligation-local evidence.
+  - Evidence: check_transformation_preservation
+  - Finding codes: `{"preservation.scenario_signal": 1}`
+- **preservation:PRES.adequacy-field** `violated` — transformation preservation / `PRES.adequacy-field`
+  - Template: If source trace T satisfies an obligation and approved transformation Δ produces T′, then T′ preserves the same obligation-local evidence.
+  - Evidence: check_transformation_preservation
+  - Finding codes: `{"preservation.scenario_field": 3}`
+
+### refinement
+
+- **refinement:REF.requirement-preservation** `pending` — contract refinement / `REF.requirement-preservation`
+  - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation
+- **refinement:REF.privacy-nonweakening** `pending` — contract refinement / `REF.privacy-nonweakening`
+  - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation
+- **refinement:REF.assumption-compatibility** `pending` — contract refinement / `REF.assumption-compatibility`
+  - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation
+
+### monitor-soundness
+
+- **monitor-soundness:MON.soundness.ADEQ.alternative-observation** `discharged` — alternative obligations / `MON.soundness.ADEQ.alternative-observation`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.ADEQ.required-field** `discharged` — scenario adequacy / `MON.soundness.ADEQ.required-field`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.ADEQ.required-signal** `discharged` — scenario adequacy / `MON.soundness.ADEQ.required-signal`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.allowed-values** `discharged` — allowed values / `MON.soundness.SAT.allowed-values`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.alternative-disjunction** `discharged` — alternative obligations / `MON.soundness.SAT.alternative-disjunction`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.field-type** `discharged` — field predicates / `MON.soundness.SAT.field-type`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.log-message** `discharged` — log severity and message policies / `MON.soundness.SAT.log-message`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.log-severity** `discharged` — log severity and message policies / `MON.soundness.SAT.log-severity`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.log-severity-threshold** `discharged` — log severity and message policies / `MON.soundness.SAT.log-severity-threshold`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.numeric-lower-bound** `discharged` — numeric bounds / `MON.soundness.SAT.numeric-lower-bound`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.numeric-upper-bound** `discharged` — numeric bounds / `MON.soundness.SAT.numeric-upper-bound`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.regex** `discharged` — regex patterns / `MON.soundness.SAT.regex`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.regex-domain** `discharged` — regex patterns / `MON.soundness.SAT.regex-domain`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.required-field** `discharged` — field predicates / `MON.soundness.SAT.required-field`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.required-signal** `discharged` — required signals / `MON.soundness.SAT.required-signal`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.STRICT.field-closed-world** `discharged` — strict closed world / `MON.soundness.STRICT.field-closed-world`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.STRICT.service-closed-world** `discharged` — strict closed world / `MON.soundness.STRICT.service-closed-world`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.STRICT.signal-closed-world** `discharged` — strict closed world / `MON.soundness.STRICT.signal-closed-world`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.STRICT.transformation-documented** `discharged` — strict closed world / `MON.soundness.STRICT.transformation-documented`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+
+### benchmark-label-validity
+
+- **benchmark-label-validity:BENCH.label-validity** `discharged` — benchmark labels / `BENCH.label-validity`
+  - Template: Every expected label is matched by one finding, and every produced finding is either labeled or explicitly outside the benchmark claim.
+  - Evidence: run_benchmark(benchmarks/builtin.json) pass=True
+
+## Feature catalog
+
+- **contract header** — clauses `WF.schema, WF.version, WF.service`; families `well-formedness`
+- **signal declarations** — clauses `WF.signal-section, WF.signal-object, WF.signal-name, WF.unique-signal, WF.unique-field`; families `well-formedness, satisfaction, refinement`
+- **required signals** — clauses `SAT.required-signal`; families `satisfaction, preservation, monitor-soundness, refinement`
+- **field predicates** — clauses `WF.field-type, WF.required-boolean, SAT.required-field, SAT.field-type`; families `well-formedness, satisfaction, preservation, monitor-soundness, refinement`
+- **allowed values** — clauses `WF.allowed-values, SAT.allowed-values`; families `well-formedness, satisfaction, refinement`
+- **regex patterns** — clauses `WF.regex, SAT.regex, SAT.regex-domain`; families `well-formedness, satisfaction, refinement`
+- **forbidden patterns and sensitive values** — clauses `WF.forbidden-pattern, SAT.forbidden-pattern, SAT.raw-sensitive-value`; families `well-formedness, satisfaction, preservation, refinement`
+- **numeric bounds** — clauses `WF.numeric-bound, WF.numeric-interval, SAT.numeric-lower-bound, SAT.numeric-upper-bound`; families `well-formedness, satisfaction, refinement`
+- **units** — clauses `WF.unit, SAT.unit`; families `well-formedness, satisfaction, refinement`
+- **privacy classifications** — clauses `WF.privacy-classification, WF.privacy-policy, SAT.privacy-preservation, SAT.sensitive-classification`; families `well-formedness, satisfaction, preservation, refinement`
+- **policy stubs** — clauses `WF.policy-stub`; families `well-formedness, preservation, refinement`
+- **field definitions** — clauses `WF.field-definitions, WF.field-reference, WF.field-reference-acyclic`; families `well-formedness, satisfaction, refinement`
+- **conditional requirements** — clauses `WF.conditional, SAT.conditional-obligation`; families `well-formedness, satisfaction, monitor-soundness, refinement`
+- **log severity and message policies** — clauses `WF.severity-policy, SAT.log-message, SAT.log-severity, SAT.log-severity-threshold`; families `well-formedness, satisfaction, monitor-soundness, refinement`
+- **cardinality policies** — clauses `SAT.cardinality-bound, SAT.cardinality-policy`; families `satisfaction, preservation, refinement`
+- **correlation policies** — clauses `SAT.correlation-presence, SAT.correlation-intersection`; families `well-formedness, satisfaction, monitor-soundness, refinement`
+- **temporal sequences** — clauses `WF.temporal-sequence, SAT.temporal-presence, SAT.temporal-window`; families `well-formedness, satisfaction, monitor-soundness, refinement`
+- **alternative obligations** — clauses `WF.alternative-obligation, SAT.alternative-disjunction, ADEQ.alternative-observation`; families `well-formedness, satisfaction, preservation, refinement`
+- **strict closed world** — clauses `WF.strict-policy, STRICT.service-closed-world, STRICT.signal-closed-world, STRICT.field-closed-world, STRICT.transformation-documented`; families `well-formedness, satisfaction, preservation, refinement`
+- **scenario adequacy** — clauses `SCENARIO.selection, SCENARIO.requirement-wf, ADEQ.required-signal, ADEQ.required-field`; families `satisfaction, preservation, monitor-soundness, refinement`
+- **transformation preservation** — clauses `PRES.runtime-obligation, PRES.adequacy-signal, PRES.adequacy-field`; families `preservation`
+- **static instrumentation evidence** — clauses `STATIC.signal-literal, STATIC.source-domain, STATIC.raw-sensitive-log, STATIC.correlation-evidence, STATIC.cardinality-risk`; families `satisfaction, monitor-soundness, benchmark-label-validity`
+- **benchmark labels** — clauses `BENCH.label-validity`; families `benchmark-label-validity`
+- **contract refinement** — clauses `REF.requirement-preservation, REF.privacy-nonweakening, REF.assumption-compatibility`; families `refinement`
+
+## Limitations
+
+- Templates are executable proof goals with finite evidence links, not an independently verified theorem-prover development.
+- Refinement obligations are templates until a dedicated refinement checker is supplied in a future roadmap step.
+- Monitor-soundness evidence is bounded to deterministic checker and small-step semantic alignment on supplied finite traces.
+- Benchmark-label validity describes checked-in labels and reports; it is not a universal precision/recall claim.

@@ -1,0 +1,1637 @@
+{
+  "feature_catalog": [
+    {
+      "clauses": [
+        "WF.schema",
+        "WF.version",
+        "WF.service"
+      ],
+      "families": [
+        "well-formedness"
+      ],
+      "feature": "contract header"
+    },
+    {
+      "clauses": [
+        "WF.signal-section",
+        "WF.signal-object",
+        "WF.signal-name",
+        "WF.unique-signal",
+        "WF.unique-field"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "refinement"
+      ],
+      "feature": "signal declarations"
+    },
+    {
+      "clauses": [
+        "SAT.required-signal"
+      ],
+      "families": [
+        "satisfaction",
+        "preservation",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "required signals"
+    },
+    {
+      "clauses": [
+        "WF.field-type",
+        "WF.required-boolean",
+        "SAT.required-field",
+        "SAT.field-type"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "preservation",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "field predicates"
+    },
+    {
+      "clauses": [
+        "WF.allowed-values",
+        "SAT.allowed-values"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "refinement"
+      ],
+      "feature": "allowed values"
+    },
+    {
+      "clauses": [
+        "WF.regex",
+        "SAT.regex",
+        "SAT.regex-domain"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "refinement"
+      ],
+      "feature": "regex patterns"
+    },
+    {
+      "clauses": [
+        "WF.forbidden-pattern",
+        "SAT.forbidden-pattern",
+        "SAT.raw-sensitive-value"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "forbidden patterns and sensitive values"
+    },
+    {
+      "clauses": [
+        "WF.numeric-bound",
+        "WF.numeric-interval",
+        "SAT.numeric-lower-bound",
+        "SAT.numeric-upper-bound"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "refinement"
+      ],
+      "feature": "numeric bounds"
+    },
+    {
+      "clauses": [
+        "WF.unit",
+        "SAT.unit"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "refinement"
+      ],
+      "feature": "units"
+    },
+    {
+      "clauses": [
+        "WF.privacy-classification",
+        "WF.privacy-policy",
+        "SAT.privacy-preservation",
+        "SAT.sensitive-classification"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "privacy classifications"
+    },
+    {
+      "clauses": [
+        "WF.policy-stub"
+      ],
+      "families": [
+        "well-formedness",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "policy stubs"
+    },
+    {
+      "clauses": [
+        "WF.field-definitions",
+        "WF.field-reference",
+        "WF.field-reference-acyclic"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "refinement"
+      ],
+      "feature": "field definitions"
+    },
+    {
+      "clauses": [
+        "WF.conditional",
+        "SAT.conditional-obligation"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "conditional requirements"
+    },
+    {
+      "clauses": [
+        "WF.severity-policy",
+        "SAT.log-message",
+        "SAT.log-severity",
+        "SAT.log-severity-threshold"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "log severity and message policies"
+    },
+    {
+      "clauses": [
+        "SAT.cardinality-bound",
+        "SAT.cardinality-policy"
+      ],
+      "families": [
+        "satisfaction",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "cardinality policies"
+    },
+    {
+      "clauses": [
+        "SAT.correlation-presence",
+        "SAT.correlation-intersection"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "correlation policies"
+    },
+    {
+      "clauses": [
+        "WF.temporal-sequence",
+        "SAT.temporal-presence",
+        "SAT.temporal-window"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "temporal sequences"
+    },
+    {
+      "clauses": [
+        "WF.alternative-obligation",
+        "SAT.alternative-disjunction",
+        "ADEQ.alternative-observation"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "alternative obligations"
+    },
+    {
+      "clauses": [
+        "WF.strict-policy",
+        "STRICT.service-closed-world",
+        "STRICT.signal-closed-world",
+        "STRICT.field-closed-world",
+        "STRICT.transformation-documented"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "preservation",
+        "refinement"
+      ],
+      "feature": "strict closed world"
+    },
+    {
+      "clauses": [
+        "SCENARIO.selection",
+        "SCENARIO.requirement-wf",
+        "ADEQ.required-signal",
+        "ADEQ.required-field"
+      ],
+      "families": [
+        "satisfaction",
+        "preservation",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "scenario adequacy"
+    },
+    {
+      "clauses": [
+        "PRES.runtime-obligation",
+        "PRES.adequacy-signal",
+        "PRES.adequacy-field"
+      ],
+      "families": [
+        "preservation"
+      ],
+      "feature": "transformation preservation"
+    },
+    {
+      "clauses": [
+        "STATIC.signal-literal",
+        "STATIC.source-domain",
+        "STATIC.raw-sensitive-log",
+        "STATIC.correlation-evidence",
+        "STATIC.cardinality-risk"
+      ],
+      "families": [
+        "satisfaction",
+        "monitor-soundness",
+        "benchmark-label-validity"
+      ],
+      "feature": "static instrumentation evidence"
+    },
+    {
+      "clauses": [
+        "BENCH.label-validity"
+      ],
+      "families": [
+        "benchmark-label-validity"
+      ],
+      "feature": "benchmark labels"
+    },
+    {
+      "clauses": [
+        "REF.requirement-preservation",
+        "REF.privacy-nonweakening",
+        "REF.assumption-compatibility"
+      ],
+      "families": [
+        "refinement"
+      ],
+      "feature": "contract refinement"
+    }
+  ],
+  "limitations": [
+    "Templates are executable proof goals with finite evidence links, not an independently verified theorem-prover development.",
+    "Refinement obligations are templates until a dedicated refinement checker is supplied in a future roadmap step.",
+    "Monitor-soundness evidence is bounded to deterministic checker and small-step semantic alignment on supplied finite traces.",
+    "Benchmark-label validity describes checked-in labels and reports; it is not a universal precision/recall claim."
+  ],
+  "model": {
+    "families": [
+      "well-formedness",
+      "satisfaction",
+      "preservation",
+      "refinement",
+      "monitor-soundness",
+      "benchmark-label-validity"
+    ],
+    "name": "telemetry-contract-proof-obligations-v1",
+    "relation": "A proof obligation is an executable template tying one telemetry-contract feature to a formal clause, premises, a desired conclusion, and repository evidence that can discharge or violate it on finite artifacts. These templates are not independent machine-checked proofs; they are reproducible proof goals and evidence links for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity."
+  },
+  "obligations": [
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "allowed values",
+      "findings": [],
+      "formal_clause": "WF.allowed-values",
+      "id": "well-formedness:WF.allowed-values",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses allowed values, every syntax premise for WF.allowed-values is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "alternative obligations",
+      "findings": [],
+      "formal_clause": "WF.alternative-obligation",
+      "id": "well-formedness:WF.alternative-obligation",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses alternative obligations, every syntax premise for WF.alternative-obligation is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "conditional requirements",
+      "findings": [],
+      "formal_clause": "WF.conditional",
+      "id": "well-formedness:WF.conditional",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses conditional requirements, every syntax premise for WF.conditional is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "field definitions",
+      "findings": [],
+      "formal_clause": "WF.field-definitions",
+      "id": "well-formedness:WF.field-definitions",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses field definitions, every syntax premise for WF.field-definitions is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "field definitions",
+      "findings": [],
+      "formal_clause": "WF.field-reference",
+      "id": "well-formedness:WF.field-reference",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses field definitions, every syntax premise for WF.field-reference is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "field definitions",
+      "findings": [],
+      "formal_clause": "WF.field-reference-acyclic",
+      "id": "well-formedness:WF.field-reference-acyclic",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses field definitions, every syntax premise for WF.field-reference-acyclic is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "field predicates",
+      "findings": [],
+      "formal_clause": "WF.field-type",
+      "id": "well-formedness:WF.field-type",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses field predicates, every syntax premise for WF.field-type is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "forbidden patterns and sensitive values",
+      "findings": [],
+      "formal_clause": "WF.forbidden-pattern",
+      "id": "well-formedness:WF.forbidden-pattern",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses forbidden patterns and sensitive values, every syntax premise for WF.forbidden-pattern is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "numeric bounds",
+      "findings": [],
+      "formal_clause": "WF.numeric-bound",
+      "id": "well-formedness:WF.numeric-bound",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses numeric bounds, every syntax premise for WF.numeric-bound is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "numeric bounds",
+      "findings": [],
+      "formal_clause": "WF.numeric-interval",
+      "id": "well-formedness:WF.numeric-interval",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses numeric bounds, every syntax premise for WF.numeric-interval is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "policy stubs",
+      "findings": [],
+      "formal_clause": "WF.policy-stub",
+      "id": "well-formedness:WF.policy-stub",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses policy stubs, every syntax premise for WF.policy-stub is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "privacy classifications",
+      "findings": [],
+      "formal_clause": "WF.privacy-classification",
+      "id": "well-formedness:WF.privacy-classification",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses privacy classifications, every syntax premise for WF.privacy-classification is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "privacy classifications",
+      "findings": [],
+      "formal_clause": "WF.privacy-policy",
+      "id": "well-formedness:WF.privacy-policy",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses privacy classifications, every syntax premise for WF.privacy-policy is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "regex patterns",
+      "findings": [],
+      "formal_clause": "WF.regex",
+      "id": "well-formedness:WF.regex",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses regex patterns, every syntax premise for WF.regex is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "field predicates",
+      "findings": [],
+      "formal_clause": "WF.required-boolean",
+      "id": "well-formedness:WF.required-boolean",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses field predicates, every syntax premise for WF.required-boolean is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "contract header",
+      "findings": [],
+      "formal_clause": "WF.schema",
+      "id": "well-formedness:WF.schema",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses contract header, every syntax premise for WF.schema is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "contract header",
+      "findings": [],
+      "formal_clause": "WF.service",
+      "id": "well-formedness:WF.service",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses contract header, every syntax premise for WF.service is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "WF.severity-policy",
+      "id": "well-formedness:WF.severity-policy",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses log severity and message policies, every syntax premise for WF.severity-policy is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "signal declarations",
+      "findings": [],
+      "formal_clause": "WF.signal-name",
+      "id": "well-formedness:WF.signal-name",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.signal-name is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "signal declarations",
+      "findings": [],
+      "formal_clause": "WF.signal-object",
+      "id": "well-formedness:WF.signal-object",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.signal-object is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "signal declarations",
+      "findings": [],
+      "formal_clause": "WF.signal-section",
+      "id": "well-formedness:WF.signal-section",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.signal-section is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "strict closed world",
+      "findings": [],
+      "formal_clause": "WF.strict-policy",
+      "id": "well-formedness:WF.strict-policy",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses strict closed world, every syntax premise for WF.strict-policy is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "temporal sequences",
+      "findings": [],
+      "formal_clause": "WF.temporal-sequence",
+      "id": "well-formedness:WF.temporal-sequence",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses temporal sequences, every syntax premise for WF.temporal-sequence is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "signal declarations",
+      "findings": [],
+      "formal_clause": "WF.unique-field",
+      "id": "well-formedness:WF.unique-field",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.unique-field is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "signal declarations",
+      "findings": [],
+      "formal_clause": "WF.unique-signal",
+      "id": "well-formedness:WF.unique-signal",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses signal declarations, every syntax premise for WF.unique-signal is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "units",
+      "findings": [],
+      "formal_clause": "WF.unit",
+      "id": "well-formedness:WF.unit",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses units, every syntax premise for WF.unit is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "contract header",
+      "findings": [],
+      "formal_clause": "WF.version",
+      "id": "well-formedness:WF.version",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses contract header, every syntax premise for WF.version is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "alternative obligations",
+      "findings": [],
+      "formal_clause": "ADEQ.alternative-observation",
+      "id": "satisfaction:ADEQ.alternative-observation",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "scenario adequacy",
+      "findings": [],
+      "formal_clause": "ADEQ.required-field",
+      "id": "satisfaction:ADEQ.required-field",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "scenario adequacy",
+      "findings": [],
+      "formal_clause": "ADEQ.required-signal",
+      "id": "satisfaction:ADEQ.required-signal",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "allowed values",
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.spans[0].fields.source",
+          "details": {
+            "allowed_values": [
+              "verified_backup"
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'source' value 'lvm_snapshot' is not allowed",
+          "path": "event[5].source",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.spans[0].fields.source_environment",
+          "details": {
+            "allowed_values": [
+              "production_backup"
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'source_environment' value 'staging' is not allowed",
+          "path": "event[5].source_environment",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.metrics[1].value",
+          "details": {
+            "allowed_values": [
+              true
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'value' value False is not allowed",
+          "path": "event[3].value",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.allowed_values",
+          "contract_path": "$.logs[0].fields.target_role",
+          "details": {
+            "allowed_values": [
+              "secondary"
+            ]
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.allowed-values",
+          "message": "field 'target_role' value 'primary' is not allowed",
+          "path": "event[2].target_role",
+          "remediation": "Normalize the field to one of the declared allowed values.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "SAT.allowed-values",
+      "id": "satisfaction:SAT.allowed-values",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "alternative obligations",
+      "findings": [],
+      "formal_clause": "SAT.alternative-disjunction",
+      "id": "satisfaction:SAT.alternative-disjunction",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "field predicates",
+      "findings": [],
+      "formal_clause": "SAT.field-type",
+      "id": "satisfaction:SAT.field-type",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "SAT.log-message",
+      "id": "satisfaction:SAT.log-message",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "SAT.log-severity",
+      "id": "satisfaction:SAT.log-severity",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "SAT.log-severity-threshold",
+      "id": "satisfaction:SAT.log-severity-threshold",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "numeric bounds",
+      "findings": [],
+      "formal_clause": "SAT.numeric-lower-bound",
+      "id": "satisfaction:SAT.numeric-lower-bound",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "numeric bounds",
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.numeric_max",
+          "contract_path": "$.spans[0].fields.backup_age_hours",
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.numeric-upper-bound",
+          "message": "field 'backup_age_hours' value 6 is above maximum 1",
+          "path": "event[5].backup_age_hours",
+          "remediation": "Investigate or clamp values above the declared maximum.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.numeric_max",
+          "contract_path": "$.metrics[0].value",
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "SAT.numeric-upper-bound",
+          "message": "field 'value' value 4294967296 is above maximum 104857600",
+          "path": "event[1].value",
+          "remediation": "Investigate or clamp values above the declared maximum.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "SAT.numeric-upper-bound",
+      "id": "satisfaction:SAT.numeric-upper-bound",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "regex patterns",
+      "findings": [],
+      "formal_clause": "SAT.regex",
+      "id": "satisfaction:SAT.regex",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "regex patterns",
+      "findings": [],
+      "formal_clause": "SAT.regex-domain",
+      "id": "satisfaction:SAT.regex-domain",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "field predicates",
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.correlation_id",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+          "path": "event[2].correlation_id",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.command_guard_result",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+          "path": "event[2].command_guard_result",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[1].fields.alert_delivered",
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'",
+          "path": "event[4].alert_delivered",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "SAT.required-field",
+      "id": "satisfaction:SAT.required-field",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "required signals",
+      "findings": [],
+      "formal_clause": "SAT.required-signal",
+      "id": "satisfaction:SAT.required-signal",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "strict closed world",
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_unexpected_field",
+          "contract_path": "$.metrics[name=postgres.replication.lag_bytes]",
+          "details": {
+            "container": "tags",
+            "field": "collector_pipeline",
+            "kind": "metric",
+            "name": "postgres.replication.lag_bytes"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "STRICT.field-closed-world",
+          "message": "metric 'postgres.replication.lag_bytes' emitted undeclared field 'collector_pipeline'",
+          "path": "event[1].tags.collector_pipeline",
+          "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_unexpected_field",
+          "contract_path": "$.logs[name=backup.pg_dump.failed]",
+          "details": {
+            "container": "fields",
+            "field": "notification_status",
+            "kind": "log",
+            "name": "backup.pg_dump.failed"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "STRICT.field-closed-world",
+          "message": "log 'backup.pg_dump.failed' emitted undeclared field 'notification_status'",
+          "path": "event[4].fields.notification_status",
+          "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "STRICT.field-closed-world",
+      "id": "satisfaction:STRICT.field-closed-world",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "strict closed world",
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_unmodeled_service",
+          "contract_path": "$.service",
+          "details": {
+            "allowed_services": [
+              "gitlab.com-database"
+            ],
+            "service": "collector-gateway"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 7,
+          "formal_clause": "STRICT.service-closed-world",
+          "message": "event service 'collector-gateway' is not modeled by contract service 'gitlab.com-database'",
+          "path": "event[7].service",
+          "remediation": "Either emit telemetry for the modeled service or add a bounded allow_unmodeled_services escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "STRICT.service-closed-world",
+      "id": "satisfaction:STRICT.service-closed-world",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "strict closed world",
+      "findings": [
+        {
+          "category": "schema",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_undeclared_signal",
+          "contract_path": "$.logs",
+          "details": {
+            "kind": "log",
+            "name": "database.replication.debug"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 6,
+          "formal_clause": "STRICT.signal-closed-world",
+          "message": "log 'database.replication.debug' is not declared by the contract",
+          "path": "event[6].name",
+          "remediation": "Declare the emitted signal in spans, metrics, logs, scenarios, or alternative obligations, or add an explicit strict allow_undeclared_signals escape hatch.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "STRICT.signal-closed-world",
+      "id": "satisfaction:STRICT.signal-closed-world",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "strict closed world",
+      "findings": [
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.strict_undocumented_transformation",
+          "contract_path": "$.metadata.transformation_preservation.approved_transformations",
+          "details": {
+            "approved_transformations": [
+              "sampling"
+            ],
+            "transformation": "tail_sampling"
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "STRICT.transformation-documented",
+          "message": "collector transformation 'tail_sampling' is not documented by contract metadata",
+          "path": "event[1].transformations",
+          "remediation": "Document the collector transformation under metadata.transformation_preservation.approved_transformations or strict allow_collector_transformations.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "STRICT.transformation-documented",
+      "id": "satisfaction:STRICT.transformation-documented",
+      "status": "violated",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "check_transformation_preservation",
+      "family": "preservation",
+      "feature": "transformation preservation",
+      "findings": [
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "preservation.contract_obligation",
+          "contract_path": "$.logs[1]",
+          "details": {
+            "introduced_finding": {
+              "category": "diagnosability",
+              "ci": {
+                "baseline_key_fields": [
+                  "code",
+                  "path",
+                  "contract_path",
+                  "event_index"
+                ],
+                "default_fail_on": "error",
+                "sarif_level": "error"
+              },
+              "code": "telemetry.missing_signal",
+              "contract_path": "$.logs[1]",
+              "disclosure_sensitivity": "internal",
+              "formal_clause": "SAT.required-signal",
+              "message": "required log 'backup.pg_dump.failed' was not emitted",
+              "path": "events[log=backup.pg_dump.failed]",
+              "remediation": "Emit the required span, metric, or log on the exercised path.",
+              "sarif_level": "error",
+              "service_owner": "contract service owner",
+              "severity": "error"
+            }
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "PRES.runtime-obligation",
+          "message": "transformation introduced telemetry.missing_signal: required log 'backup.pg_dump.failed' was not emitted",
+          "path": "events[log=backup.pg_dump.failed]",
+          "remediation": "Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "PRES.runtime-obligation",
+      "id": "preservation:PRES.runtime-obligation",
+      "status": "violated",
+      "template": "If source trace T satisfies an obligation and approved transformation \u0394 produces T\u2032, then T\u2032 preserves the same obligation-local evidence."
+    },
+    {
+      "evidence": "check_transformation_preservation",
+      "family": "preservation",
+      "feature": "transformation preservation",
+      "findings": [
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "preservation.scenario_signal",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+          "details": {
+            "scenario": "restore-readiness",
+            "source": "present",
+            "transformed": "missing"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "PRES.adequacy-signal",
+          "message": "transformation removed diagnosability witness $signal for log:backup.pg_dump.failed in scenario 'restore-readiness'",
+          "path": "events[log=backup.pg_dump.failed]",
+          "remediation": "Keep at least one transformed signal witness for each selected diagnosability requirement.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "PRES.adequacy-signal",
+      "id": "preservation:PRES.adequacy-signal",
+      "status": "violated",
+      "template": "If source trace T satisfies an obligation and approved transformation \u0394 produces T\u2032, then T\u2032 preserves the same obligation-local evidence."
+    },
+    {
+      "evidence": "check_transformation_preservation",
+      "family": "preservation",
+      "feature": "transformation preservation",
+      "findings": [
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "preservation.scenario_field",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
+          "details": {
+            "scenario": "restore-readiness",
+            "source": "present",
+            "transformed": "missing"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "PRES.adequacy-field",
+          "message": "transformation removed diagnosability witness alert_route for log:backup.pg_dump.failed in scenario 'restore-readiness'",
+          "path": "events[log=backup.pg_dump.failed].alert_route",
+          "remediation": "Keep the transformed field, or provide an approved surrogate that still answers the selected incident question.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "preservation.scenario_field",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
+          "details": {
+            "scenario": "restore-readiness",
+            "source": "present",
+            "transformed": "missing"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "PRES.adequacy-field",
+          "message": "transformation removed diagnosability witness backup_job_id for log:backup.pg_dump.failed in scenario 'restore-readiness'",
+          "path": "events[log=backup.pg_dump.failed].backup_job_id",
+          "remediation": "Keep the transformed field, or provide an approved surrogate that still answers the selected incident question.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "preservation.scenario_field",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
+          "details": {
+            "scenario": "restore-readiness",
+            "source": "present",
+            "transformed": "missing"
+          },
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "PRES.adequacy-field",
+          "message": "transformation removed diagnosability witness destination for log:backup.pg_dump.failed in scenario 'restore-readiness'",
+          "path": "events[log=backup.pg_dump.failed].destination",
+          "remediation": "Keep the transformed field, or provide an approved surrogate that still answers the selected incident question.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "formal_clause": "PRES.adequacy-field",
+      "id": "preservation:PRES.adequacy-field",
+      "status": "violated",
+      "template": "If source trace T satisfies an obligation and approved transformation \u0394 produces T\u2032, then T\u2032 preserves the same obligation-local evidence."
+    },
+    {
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation",
+      "family": "refinement",
+      "feature": "contract refinement",
+      "findings": [],
+      "formal_clause": "REF.requirement-preservation",
+      "id": "refinement:REF.requirement-preservation",
+      "status": "pending",
+      "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
+    },
+    {
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation",
+      "family": "refinement",
+      "feature": "contract refinement",
+      "findings": [],
+      "formal_clause": "REF.privacy-nonweakening",
+      "id": "refinement:REF.privacy-nonweakening",
+      "status": "pending",
+      "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
+    },
+    {
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation",
+      "family": "refinement",
+      "feature": "contract refinement",
+      "findings": [],
+      "formal_clause": "REF.assumption-compatibility",
+      "id": "refinement:REF.assumption-compatibility",
+      "status": "pending",
+      "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "alternative obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.ADEQ.alternative-observation",
+      "id": "monitor-soundness:MON.soundness.ADEQ.alternative-observation",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "scenario adequacy",
+      "findings": [],
+      "formal_clause": "MON.soundness.ADEQ.required-field",
+      "id": "monitor-soundness:MON.soundness.ADEQ.required-field",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "scenario adequacy",
+      "findings": [],
+      "formal_clause": "MON.soundness.ADEQ.required-signal",
+      "id": "monitor-soundness:MON.soundness.ADEQ.required-signal",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "allowed values",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.allowed-values",
+      "id": "monitor-soundness:MON.soundness.SAT.allowed-values",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "alternative obligations",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.alternative-disjunction",
+      "id": "monitor-soundness:MON.soundness.SAT.alternative-disjunction",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "field predicates",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.field-type",
+      "id": "monitor-soundness:MON.soundness.SAT.field-type",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.log-message",
+      "id": "monitor-soundness:MON.soundness.SAT.log-message",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.log-severity",
+      "id": "monitor-soundness:MON.soundness.SAT.log-severity",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "log severity and message policies",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.log-severity-threshold",
+      "id": "monitor-soundness:MON.soundness.SAT.log-severity-threshold",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "numeric bounds",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.numeric-lower-bound",
+      "id": "monitor-soundness:MON.soundness.SAT.numeric-lower-bound",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "numeric bounds",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.numeric-upper-bound",
+      "id": "monitor-soundness:MON.soundness.SAT.numeric-upper-bound",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "regex patterns",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.regex",
+      "id": "monitor-soundness:MON.soundness.SAT.regex",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "regex patterns",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.regex-domain",
+      "id": "monitor-soundness:MON.soundness.SAT.regex-domain",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "field predicates",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.required-field",
+      "id": "monitor-soundness:MON.soundness.SAT.required-field",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "required signals",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.required-signal",
+      "id": "monitor-soundness:MON.soundness.SAT.required-signal",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "strict closed world",
+      "findings": [],
+      "formal_clause": "MON.soundness.STRICT.field-closed-world",
+      "id": "monitor-soundness:MON.soundness.STRICT.field-closed-world",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "strict closed world",
+      "findings": [],
+      "formal_clause": "MON.soundness.STRICT.service-closed-world",
+      "id": "monitor-soundness:MON.soundness.STRICT.service-closed-world",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "strict closed world",
+      "findings": [],
+      "formal_clause": "MON.soundness.STRICT.signal-closed-world",
+      "id": "monitor-soundness:MON.soundness.STRICT.signal-closed-world",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "strict closed world",
+      "findings": [],
+      "formal_clause": "MON.soundness.STRICT.transformation-documented",
+      "id": "monitor-soundness:MON.soundness.STRICT.transformation-documented",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "run_benchmark(benchmarks/builtin.json) pass=True",
+      "family": "benchmark-label-validity",
+      "feature": "benchmark labels",
+      "findings": [],
+      "formal_clause": "BENCH.label-validity",
+      "id": "benchmark-label-validity:BENCH.label-validity",
+      "status": "discharged",
+      "template": "Every expected label is matched by one finding, and every produced finding is either labeled or explicitly outside the benchmark claim."
+    }
+  ],
+  "service": "gitlab.com-database",
+  "summary": {
+    "discharged": 59,
+    "events": 7,
+    "family_counts": {
+      "benchmark-label-validity": 1,
+      "monitor-soundness": 19,
+      "preservation": 3,
+      "refinement": 3,
+      "satisfaction": 19,
+      "well-formedness": 27
+    },
+    "features_cataloged": 24,
+    "obligations": 72,
+    "pending": 3,
+    "status_counts": {
+      "discharged": 59,
+      "pending": 3,
+      "violated": 10
+    },
+    "strict": true,
+    "violated": 10
+  }
+}

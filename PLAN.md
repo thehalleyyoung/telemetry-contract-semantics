@@ -35,7 +35,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Hyperproperty satisfaction:** privacy and multi-tenant isolation obligations may quantify over pairs or sets of traces, not just one execution.
 - **Assume-guarantee structure:** service code, libraries, collectors, deployment environment, and on-call workflows each get explicit assumptions and guarantees so failures are assigned to the right layer.
 
-The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, the `evaluate-semantics` CLI, golden pytest fixtures, and a GitLab 2017 strict-drift report demonstrating denotation alignment with the deterministic checker. Future work should deepen this into proof-obligation templates and independent mechanization.
+The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, the `evaluate-semantics` CLI, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, and GitLab 2017 strict-drift reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into a refinement checker and independent mechanization.
 
 ## Algorithms
 
@@ -58,6 +58,7 @@ The near-term formal deliverable now includes a mechanizable executable small-st
 - **Analyze collector exports:** a dedicated report summarizes OTLP coverage, temporality, dropped evidence, provenance gaps, and collector transformations.
 - **Check source:** `static` finds missing instrumentation, unsafe attributes, PII/secret risks, high-cardinality labels, and source spans linked to contract obligations.
 - **Check transformations:** `preservation` compares source and transformed telemetry to identify newly broken runtime obligations and lost scenario witnesses under declared approved transformations.
+- **Audit proof goals:** `proof-obligations` turns a contract plus optional runtime, transformation, and benchmark artifacts into well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity obligations with discharged/violated/pending status.
 - **Gate regressions:** CI compares a branch against a baseline and fails only on policy-defined new findings, changed obligations, or benchmark regressions.
 - **Prepare incidents:** `report incident-readiness` lists answerable questions, missing evidence, temporal/correlation gaps, privacy risks, and owner-specific remediations.
 - **Explain:** `explain FINDING_CODE` gives formal meaning, operational impact, example traces, and concrete remediation.

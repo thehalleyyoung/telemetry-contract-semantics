@@ -20,6 +20,7 @@ from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .explain import explain_finding, format_explanation_markdown
 from .validator import validate_contract_shape, validate_events
 from .equivalence import compare_observational_equivalence, format_equivalence_markdown
+from .proof_obligations import format_proof_obligations_markdown, generate_proof_obligations_report
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -99,6 +100,17 @@ def main(argv: list[str] | None = None) -> int:
     preservation_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     preservation_parser.add_argument("--output")
     preservation_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
+    obligations_parser = subparsers.add_parser("proof-obligations", help="instantiate formal proof-obligation templates for a contract and evidence artifacts")
+    obligations_parser.add_argument("--contract", required=True)
+    obligations_parser.add_argument("--events", help="optional JSONL runtime trace evidence")
+    obligations_parser.add_argument("--strict", action="store_true", help="include strict closed-world satisfaction obligations")
+    obligations_parser.add_argument("--before-events", help="optional source JSONL trace for preservation evidence")
+    obligations_parser.add_argument("--after-events", help="optional transformed JSONL trace for preservation evidence")
+    obligations_parser.add_argument("--benchmark-config", help="optional benchmark config for label-validity evidence")
+    obligations_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    obligations_parser.add_argument("--output")
+    obligations_parser.add_argument("--fail-on-violated", action="store_true")
 
     report_parser = subparsers.add_parser("report", help="generate operational reports from contracts and telemetry")
     report_subparsers = report_parser.add_subparsers(dest="report_command", required=True)
@@ -197,6 +209,24 @@ def main(argv: list[str] | None = None) -> int:
             if args.fail_on == "never":
                 return 0
             return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
+        if args.command == "proof-obligations":
+            contract = load_contract(args.contract)
+            before_events = load_jsonl(args.before_events) if args.before_events else None
+            after_events = load_jsonl(args.after_events) if args.after_events else None
+            report = generate_proof_obligations_report(
+                contract,
+                load_jsonl(args.events) if args.events else None,
+                strict=True if args.strict else None,
+                source_events=before_events,
+                transformed_events=after_events,
+                benchmark_config=args.benchmark_config,
+            )
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_proof_obligations_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 1 if args.fail_on_violated and report["summary"]["violated"] else 0
         if args.command == "report":
             contract = load_contract(args.contract)
             events = load_jsonl(args.events)

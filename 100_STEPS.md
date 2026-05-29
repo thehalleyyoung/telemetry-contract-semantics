@@ -1,6 +1,6 @@
 # 100 Steps Toward Semantically Grounded, Immediately Useful Telemetry Contracts
 
-This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 30 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
+This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 31 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
 
 ## Phase 0 — Verified foundation already present
 
@@ -32,7 +32,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 - [x] 023. Define observational equivalence for debugging tasks so sampled, scrubbed, or aggregated streams can be compared by the questions they still answer, not by byte equality.
 - [x] 024. Formalize semantic preservation for redaction, hashing, tokenization, bucketing, omission, sampling, retention, and aggregation, then fail contracts when an approved transformation destroys required diagnosability or privacy evidence.
 - [x] 025. Add a mechanizable small-step or denotational semantics for contract evaluation and align it with the deterministic checker through golden traces.
-- [ ] 026. Add proof-obligation templates for every contract feature: well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity.
+- [x] 026. Add proof-obligation templates for every contract feature: well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity.
 - [ ] 027. Add temporal-logic examples for safety, bounded response, absence, ordering, and deadline properties, each paired with a failing and passing telemetry fixture.
 - [ ] 028. Add hyperproperty examples for PII non-disclosure and tenant non-interference over pairs or sets of traces, each producing actionable privacy-risk findings.
 - [ ] 029. Define assume-guarantee contracts that separate service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations.

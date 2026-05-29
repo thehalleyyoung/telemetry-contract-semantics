@@ -145,3 +145,29 @@ def test_cli_explain_unknown_code_fails(capsys):
 
     assert code == 1
     assert "Unknown finding code" in output
+
+
+def test_cli_proof_obligations_reports_historical_evidence(capsys):
+    case = ROOT / "case_studies/gitlab_2017_database_outage"
+    code = main(
+        [
+            "proof-obligations",
+            "--contract",
+            str(case / "contract.json"),
+            "--events",
+            str(case / "reconstructed_events_strict_drift.jsonl"),
+            "--strict",
+            "--before-events",
+            str(case / "reconstructed_events.jsonl"),
+            "--after-events",
+            str(case / "reconstructed_events_sampled_missing_alert.jsonl"),
+            "--format",
+            "json",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert '"features_cataloged": 24' in output
+    assert '"formal_clause": "STRICT.field-closed-world"' in output
+    assert '"formal_clause": "PRES.adequacy-signal"' in output
