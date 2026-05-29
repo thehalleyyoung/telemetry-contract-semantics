@@ -50,6 +50,7 @@ FEATURE_CATALOG = [
     {"feature": "cardinality policies", "clauses": ["SAT.cardinality-bound", "SAT.cardinality-policy"], "families": ["satisfaction", "preservation", "refinement"]},
     {"feature": "correlation policies", "clauses": ["SAT.correlation-presence", "SAT.correlation-intersection"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
     {"feature": "temporal sequences", "clauses": ["WF.temporal-sequence", "SAT.temporal-presence", "SAT.temporal-window"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
+    {"feature": "temporal logic properties", "clauses": ["WF.temporal-property", "SAT.temporal-safety", "SAT.temporal-absence", "SAT.temporal-response", "SAT.temporal-order", "SAT.temporal-deadline"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
     {"feature": "alternative obligations", "clauses": ["WF.alternative-obligation", "SAT.alternative-disjunction", "ADEQ.alternative-observation"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
     {"feature": "strict closed world", "clauses": ["WF.strict-policy", "STRICT.service-closed-world", "STRICT.signal-closed-world", "STRICT.field-closed-world", "STRICT.transformation-documented"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
     {"feature": "scenario adequacy", "clauses": ["SCENARIO.selection", "SCENARIO.requirement-wf", "ADEQ.required-signal", "ADEQ.required-field"], "families": ["satisfaction", "preservation", "monitor-soundness", "refinement"]},
@@ -346,6 +347,8 @@ def _present_features(contract: dict[str, Any]) -> dict[str, bool]:
         features["correlation policies"] = True
     if isinstance(contract.get("temporal_sequences"), list) and contract["temporal_sequences"]:
         features["temporal sequences"] = True
+    if isinstance(contract.get("temporal_properties"), list) and contract["temporal_properties"]:
+        features["temporal logic properties"] = True
     if isinstance(contract.get("alternative_obligations"), list) and contract["alternative_obligations"]:
         features["alternative obligations"] = True
     if _strict_enabled(contract, None):
@@ -391,6 +394,7 @@ def _satisfaction_clauses(features: dict[str, bool], strict_enabled: bool) -> se
         "cardinality policies": {"SAT.cardinality-bound", "SAT.cardinality-policy"},
         "correlation policies": {"SAT.correlation-presence", "SAT.correlation-intersection"},
         "temporal sequences": {"SAT.temporal-presence", "SAT.temporal-window"},
+        "temporal logic properties": {"SAT.temporal-safety", "SAT.temporal-absence", "SAT.temporal-response", "SAT.temporal-order", "SAT.temporal-deadline"},
         "alternative obligations": {"SAT.alternative-disjunction"},
         "scenario adequacy": {"ADEQ.required-signal", "ADEQ.required-field", "ADEQ.alternative-observation"},
     }

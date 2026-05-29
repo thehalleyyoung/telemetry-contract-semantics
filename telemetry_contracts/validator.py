@@ -146,6 +146,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                         )
     findings.extend(_validate_correlation_policy_shape(contract.get("correlation")))
     findings.extend(_validate_temporal_sequences_shape(contract.get("temporal_sequences")))
+    findings.extend(_validate_temporal_properties_shape(contract.get("temporal_properties")))
     findings.extend(_validate_alternative_obligations_shape(contract.get("alternative_obligations")))
     return findings
 
@@ -392,6 +393,7 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]], *, s
             findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events, contract))
     findings.extend(_validate_correlation_policy(contract, relevant_events))
     findings.extend(_validate_temporal_sequences(contract, relevant_events))
+    findings.extend(_validate_temporal_properties(contract, relevant_events))
     from .alternatives import alternative_obligation_findings
 
     findings.extend(alternative_obligation_findings(contract, relevant_events))
@@ -801,6 +803,111 @@ def _validate_temporal_sequences_shape(raw_sequences: Any) -> list[Finding]:
     return findings
 
 
+TEMPORAL_PROPERTY_TYPES = {"safety", "bounded_response", "absence", "ordering", "deadline"}
+
+
+def _validate_temporal_properties_shape(raw_properties: Any) -> list[Finding]:
+    if raw_properties is None:
+        return []
+    if not isinstance(raw_properties, list):
+        return [Finding("error", "contract.temporal_property", "temporal_properties must be an array", "$.temporal_properties")]
+    findings: list[Finding] = []
+    for index, prop in enumerate(raw_properties):
+        path = f"$.temporal_properties[{index}]"
+        if not isinstance(prop, dict):
+            findings.append(Finding("error", "contract.temporal_property", "temporal property must be an object", path))
+            continue
+        if prop.get("id") is not None and not isinstance(prop.get("id"), str):
+            findings.append(Finding("error", "contract.temporal_property", "temporal property id must be a string", f"{path}.id"))
+        prop_type = prop.get("type")
+        if prop_type not in TEMPORAL_PROPERTY_TYPES:
+            findings.append(Finding("error", "contract.temporal_property", f"temporal property type must be one of {sorted(TEMPORAL_PROPERTY_TYPES)}", f"{path}.type"))
+            continue
+        group_by = prop.get("group_by", [])
+        if group_by and (not isinstance(group_by, list) or not all(isinstance(item, str) and item for item in group_by)):
+            findings.append(Finding("error", "contract.temporal_property", "temporal property group_by must be an array of strings", f"{path}.group_by"))
+        if prop_type == "safety":
+            findings.extend(_validate_temporal_selector_shape(prop.get("match"), f"{path}.match"))
+            findings.extend(_validate_temporal_predicate_shape(prop.get("condition"), f"{path}.condition", required=True))
+        elif prop_type == "absence":
+            findings.extend(_validate_temporal_selector_shape(prop.get("forbidden"), f"{path}.forbidden"))
+        elif prop_type == "bounded_response":
+            findings.extend(_validate_temporal_selector_shape(prop.get("trigger"), f"{path}.trigger"))
+            findings.extend(_validate_temporal_selector_shape(prop.get("response"), f"{path}.response"))
+            findings.extend(_validate_positive_time_bound(prop, path, "within_ms"))
+        elif prop_type == "ordering":
+            findings.extend(_validate_temporal_selector_shape(prop.get("before"), f"{path}.before"))
+            findings.extend(_validate_temporal_selector_shape(prop.get("after"), f"{path}.after"))
+            if "allow_equal_timestamps" in prop and not isinstance(prop["allow_equal_timestamps"], bool):
+                findings.append(Finding("error", "contract.temporal_property", "allow_equal_timestamps must be boolean", f"{path}.allow_equal_timestamps"))
+        elif prop_type == "deadline":
+            findings.extend(_validate_temporal_selector_shape(prop.get("match"), f"{path}.match"))
+            if prop.get("start") is not None:
+                findings.extend(_validate_temporal_selector_shape(prop.get("start"), f"{path}.start"))
+            findings.extend(_validate_positive_time_bound(prop, path, "within_ms"))
+    return findings
+
+
+def _validate_temporal_selector_shape(selector: Any, path: str) -> list[Finding]:
+    if not isinstance(selector, dict):
+        return [Finding("error", "contract.temporal_property", "temporal selector must be an object", path)]
+    findings: list[Finding] = []
+    kind = _normalize_signal_kind(selector.get("kind", selector.get("signal")))
+    if kind not in {"span", "log", "metric"}:
+        findings.append(Finding("error", "contract.temporal_property", "temporal selector kind must be span, log, or metric", f"{path}.kind"))
+    if not isinstance(selector.get("name"), str) or not selector.get("name"):
+        findings.append(Finding("error", "contract.temporal_property", "temporal selector name must be a non-empty string", f"{path}.name"))
+    findings.extend(_validate_temporal_predicate_shape(selector, path, required=False))
+    return findings
+
+
+def _validate_temporal_predicate_shape(predicate: Any, path: str, *, required: bool) -> list[Finding]:
+    if predicate is None and not required:
+        return []
+    if not isinstance(predicate, dict):
+        return [Finding("error", "contract.temporal_property", "temporal predicate must be an object", path)]
+    findings: list[Finding] = []
+    has_predicate = False
+    if "field" in predicate:
+        has_predicate = True
+        if not isinstance(predicate.get("field"), str) or not predicate.get("field"):
+            findings.append(Finding("error", "contract.temporal_property", "temporal predicate field must be a non-empty string", f"{path}.field"))
+    for key in ("present",):
+        if key in predicate:
+            has_predicate = True
+            if not isinstance(predicate[key], bool):
+                findings.append(Finding("error", "contract.temporal_property", f"temporal predicate {key} must be boolean", f"{path}.{key}"))
+    if "allowed_values" in predicate:
+        has_predicate = True
+        if not isinstance(predicate["allowed_values"], list):
+            findings.append(Finding("error", "contract.temporal_property", "temporal predicate allowed_values must be an array", f"{path}.allowed_values"))
+    for key in ("min", "max"):
+        if key in predicate:
+            has_predicate = True
+            if not isinstance(predicate[key], (int, float)) or isinstance(predicate[key], bool):
+                findings.append(Finding("error", "contract.temporal_property", f"temporal predicate {key} must be numeric", f"{path}.{key}"))
+    if "pattern" in predicate:
+        has_predicate = True
+        if not isinstance(predicate["pattern"], str):
+            findings.append(Finding("error", "contract.temporal_property", "temporal predicate pattern must be a string", f"{path}.pattern"))
+        else:
+            findings.extend(_validate_regex(predicate["pattern"], f"{path}.pattern", "invalid temporal predicate regex", code="contract.temporal_property"))
+    if "equals" in predicate or "not_equals" in predicate:
+        has_predicate = True
+    if required and not has_predicate:
+        findings.append(Finding("error", "contract.temporal_property", "temporal predicate must declare at least one field condition", path))
+    if has_predicate and "field" not in predicate:
+        findings.append(Finding("error", "contract.temporal_property", "temporal predicate with conditions must declare field", f"{path}.field"))
+    return findings
+
+
+def _validate_positive_time_bound(prop: dict[str, Any], path: str, key: str) -> list[Finding]:
+    value = prop.get(key)
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or value <= 0:
+        return [Finding("error", "contract.temporal_property", f"temporal property {key} must be a positive number", f"{path}.{key}")]
+    return []
+
+
 def _validate_temporal_sequences(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
     raw_sequences = contract.get("temporal_sequences", []) or []
     if not isinstance(raw_sequences, list):
@@ -822,6 +929,31 @@ def _validate_temporal_sequences(contract: dict[str, Any], events: list[dict[str
             continue
         for group_key, group_events in groups.items():
             findings.extend(_validate_temporal_group(sequence, normalized_steps, group_key, group_events, path))
+    return findings
+
+
+def _validate_temporal_properties(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+    raw_properties = contract.get("temporal_properties", []) or []
+    if not isinstance(raw_properties, list):
+        return []
+    findings: list[Finding] = []
+    for index, prop in enumerate(raw_properties):
+        if not isinstance(prop, dict) or prop.get("required", True) is False:
+            continue
+        prop_type = prop.get("type")
+        if prop_type not in TEMPORAL_PROPERTY_TYPES:
+            continue
+        path = f"$.temporal_properties[{index}]"
+        if prop_type == "safety":
+            findings.extend(_validate_temporal_property_safety(prop, events, path))
+        elif prop_type == "absence":
+            findings.extend(_validate_temporal_property_absence(prop, events, path))
+        elif prop_type == "bounded_response":
+            findings.extend(_validate_temporal_property_response(prop, events, path))
+        elif prop_type == "ordering":
+            findings.extend(_validate_temporal_property_ordering(prop, events, path))
+        elif prop_type == "deadline":
+            findings.extend(_validate_temporal_property_deadline(prop, events, path))
     return findings
 
 
@@ -869,6 +1001,226 @@ def _validate_temporal_group(sequence: dict[str, Any], steps: list[dict[str, Any
     if isinstance(window_ms, (int, float)) and not isinstance(window_ms, bool) and matched[-1][1] - matched[0][1] > window_ms:
         return [Finding("error", "telemetry.temporal_window", _temporal_message(sequence, f"sequence exceeded {window_ms}ms window"), "events", f"{path}.window_ms", details={"group": group_key, "elapsed_ms": matched[-1][1] - matched[0][1]})]
     return []
+
+
+def _validate_temporal_property_safety(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    selector = prop.get("match")
+    condition = prop.get("condition")
+    if not isinstance(selector, dict) or not isinstance(condition, dict):
+        return []
+    findings: list[Finding] = []
+    for event in events:
+        if _event_matches_temporal_selector(event, selector, apply_predicate=False) and not _temporal_predicate_matches(event, condition):
+            findings.append(
+                Finding(
+                    "error",
+                    "telemetry.temporal_safety",
+                    _temporal_property_message(prop, f"safety condition failed for {event.get('kind')} {event.get('name')!r}"),
+                    _temporal_predicate_path(event, condition),
+                    f"{path}.condition",
+                    _event_index(event),
+                    {"property": prop.get("id"), "event": _event_index(event)},
+                )
+            )
+    return findings
+
+
+def _validate_temporal_property_absence(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    selector = prop.get("forbidden")
+    if not isinstance(selector, dict):
+        return []
+    findings: list[Finding] = []
+    for event in events:
+        if _event_matches_temporal_selector(event, selector):
+            findings.append(
+                Finding(
+                    "error",
+                    "telemetry.temporal_absence",
+                    _temporal_property_message(prop, f"forbidden event {event.get('kind')} {event.get('name')!r} was observed"),
+                    f"event[{_event_index(event)}]",
+                    f"{path}.forbidden",
+                    _event_index(event),
+                    {"property": prop.get("id")},
+                )
+            )
+    return findings
+
+
+def _validate_temporal_property_response(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    trigger = prop.get("trigger")
+    response = prop.get("response")
+    within_ms = prop.get("within_ms")
+    if not isinstance(trigger, dict) or not isinstance(response, dict) or not isinstance(within_ms, (int, float)) or isinstance(within_ms, bool):
+        return []
+    findings: list[Finding] = []
+    grouped = _groups_for_temporal_property(events, prop.get("group_by", []))
+    for group_key, group_events in grouped.items():
+        response_events = [event for event in group_events if _event_matches_temporal_selector(event, response)]
+        for event in group_events:
+            if not _event_matches_temporal_selector(event, trigger):
+                continue
+            timestamp = _event_timestamp_ms(event)
+            witness = _first_event_between(response_events, timestamp, None if timestamp is None else timestamp + float(within_ms))
+            if witness is None:
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.temporal_response",
+                        _temporal_property_message(prop, f"no response {response.get('name')!r} within {within_ms}ms after trigger {trigger.get('name')!r}"),
+                        f"event[{_event_index(event)}]",
+                        f"{path}.response",
+                        _event_index(event),
+                        {"property": prop.get("id"), "group": group_key, "within_ms": within_ms},
+                    )
+                )
+    return findings
+
+
+def _validate_temporal_property_ordering(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    before = prop.get("before")
+    after = prop.get("after")
+    if not isinstance(before, dict) or not isinstance(after, dict):
+        return []
+    findings: list[Finding] = []
+    allow_equal = prop.get("allow_equal_timestamps", True) is not False
+    grouped = _groups_for_temporal_property(events, prop.get("group_by", []))
+    for group_key, group_events in grouped.items():
+        before_times = [_event_timestamp_ms(event) for event in group_events if _event_matches_temporal_selector(event, before)]
+        before_times = [timestamp for timestamp in before_times if timestamp is not None]
+        for event in group_events:
+            if not _event_matches_temporal_selector(event, after):
+                continue
+            after_time = _event_timestamp_ms(event)
+            if after_time is None:
+                continue
+            ordered = any(timestamp <= after_time if allow_equal else timestamp < after_time for timestamp in before_times)
+            if not ordered:
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.temporal_order",
+                        _temporal_property_message(prop, f"{after.get('name')!r} occurred without prior {before.get('name')!r}"),
+                        f"event[{_event_index(event)}]",
+                        f"{path}.before",
+                        _event_index(event),
+                        {"property": prop.get("id"), "group": group_key},
+                    )
+                )
+    return findings
+
+
+def _validate_temporal_property_deadline(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    selector = prop.get("match")
+    within_ms = prop.get("within_ms")
+    if not isinstance(selector, dict) or not isinstance(within_ms, (int, float)) or isinstance(within_ms, bool):
+        return []
+    findings: list[Finding] = []
+    start = prop.get("start")
+    grouped = _groups_for_temporal_property(events, prop.get("group_by", []))
+    for group_key, group_events in grouped.items():
+        group_times = [_event_timestamp_ms(event) for event in group_events]
+        group_times = [timestamp for timestamp in group_times if timestamp is not None]
+        start_times = (
+            [_event_timestamp_ms(event) for event in group_events if isinstance(start, dict) and _event_matches_temporal_selector(event, start)]
+            if isinstance(start, dict)
+            else group_times
+        )
+        start_times = [timestamp for timestamp in start_times if timestamp is not None]
+        if not start_times:
+            continue
+        base = min(start_times)
+        for event in group_events:
+            if not _event_matches_temporal_selector(event, selector):
+                continue
+            timestamp = _event_timestamp_ms(event)
+            if timestamp is not None and timestamp - base > float(within_ms):
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.temporal_deadline",
+                        _temporal_property_message(prop, f"{selector.get('name')!r} missed {within_ms}ms deadline by {timestamp - base - float(within_ms):.3f}ms"),
+                        f"event[{_event_index(event)}]",
+                        f"{path}.within_ms",
+                        _event_index(event),
+                        {"property": prop.get("id"), "group": group_key, "elapsed_ms": timestamp - base},
+                    )
+                )
+    return findings
+
+
+def _groups_for_temporal_property(events: list[dict[str, Any]], group_by: Any) -> dict[tuple[Any, ...], list[dict[str, Any]]]:
+    keys = group_by if isinstance(group_by, list) and all(isinstance(item, str) for item in group_by) else []
+    groups: dict[tuple[Any, ...], list[dict[str, Any]]] = defaultdict(list)
+    for event in events:
+        if not keys:
+            groups[("__all__",)].append(event)
+            continue
+        values: list[Any] = []
+        for key in keys:
+            value, _ = _lookup_field(event, key)
+            values.append(value if value is not _MISSING else f"__missing__:{key}:event[{_event_index(event)}]")
+        groups[tuple(values)].append(event)
+    return groups
+
+
+def _event_matches_temporal_selector(event: dict[str, Any], selector: dict[str, Any], *, apply_predicate: bool = True) -> bool:
+    if event.get("kind") != _normalize_signal_kind(selector.get("kind", selector.get("signal"))):
+        return False
+    if event.get("name") != selector.get("name"):
+        return False
+    return not apply_predicate or _temporal_predicate_matches(event, selector, default=True)
+
+
+def _temporal_predicate_matches(event: dict[str, Any], predicate: dict[str, Any], *, default: bool = False) -> bool:
+    field = predicate.get("field")
+    if not isinstance(field, str) or not field:
+        return default
+    value, _ = _lookup_field(event, field)
+    is_present = value is not _MISSING
+    if "present" in predicate and predicate["present"] is not is_present:
+        return False
+    if "equals" in predicate and (not is_present or value != predicate["equals"]):
+        return False
+    if "not_equals" in predicate and (not is_present or value == predicate["not_equals"]):
+        return False
+    allowed_values = predicate.get("allowed_values")
+    if isinstance(allowed_values, list) and (not is_present or value not in allowed_values):
+        return False
+    if "min" in predicate and (not isinstance(value, (int, float)) or isinstance(value, bool) or value < predicate["min"]):
+        return False
+    if "max" in predicate and (not isinstance(value, (int, float)) or isinstance(value, bool) or value > predicate["max"]):
+        return False
+    if "pattern" in predicate:
+        if not isinstance(value, str) or re.search(str(predicate["pattern"]), value) is None:
+            return False
+    return is_present if not any(key in predicate for key in ("present", "equals", "not_equals", "allowed_values", "min", "max", "pattern")) else True
+
+
+def _temporal_predicate_path(event: dict[str, Any], predicate: dict[str, Any]) -> str:
+    field = predicate.get("field")
+    if isinstance(field, str) and field:
+        _, path = _lookup_field(event, field)
+        return path
+    return f"event[{_event_index(event)}]"
+
+
+def _first_event_between(events: list[dict[str, Any]], start_ms: float | None, end_ms: float | None) -> dict[str, Any] | None:
+    if start_ms is None or end_ms is None:
+        return None
+    candidates = [
+        (event, timestamp)
+        for event in events
+        for timestamp in [_event_timestamp_ms(event)]
+        if timestamp is not None and start_ms <= timestamp <= end_ms
+    ]
+    if not candidates:
+        return None
+    return min(candidates, key=lambda item: item[1])[0]
+
+
+def _temporal_property_message(prop: dict[str, Any], problem: str) -> str:
+    label = prop.get("id") if isinstance(prop.get("id"), str) else "temporal property"
+    return f"{label}: {problem}"
 
 
 def _event_matches_step(event: dict[str, Any], step: dict[str, Any]) -> bool:
@@ -967,11 +1319,11 @@ def _validate_field_spec(field_name: str, spec: dict[str, Any], path: str, contr
     return findings
 
 
-def _validate_regex(pattern: str, path: str, message: str) -> list[Finding]:
+def _validate_regex(pattern: str, path: str, message: str, *, code: str = "contract.invalid_regex") -> list[Finding]:
     try:
         re.compile(pattern)
     except re.error as exc:
-        return [Finding("error", "contract.invalid_regex", f"{message}: {exc}", path)]
+        return [Finding("error", code, f"{message}: {exc}", path)]
     return []
 
 

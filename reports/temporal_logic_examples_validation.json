@@ -1,0 +1,152 @@
+{
+  "findings": [
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_safety",
+      "contract_path": "$.temporal_properties[0].condition",
+      "details": {
+        "event": 1,
+        "property": "backup-success-safety"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SAT.temporal-safety",
+      "message": "backup-success-safety: safety condition failed for metric 'backup.pg_dump.success'",
+      "path": "event[1].value",
+      "remediation": "Keep every matched event inside the declared temporal invariant.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_response",
+      "contract_path": "$.temporal_properties[1].response",
+      "details": {
+        "group": [
+          "trace-late"
+        ],
+        "property": "request-failure-alert-response",
+        "within_ms": 1000
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.temporal-response",
+      "message": "request-failure-alert-response: no response 'request.alerted' within 1000ms after trigger 'request.failed'",
+      "path": "event[2]",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_absence",
+      "contract_path": "$.temporal_properties[2].forbidden",
+      "details": {
+        "property": "no-raw-secret-logs"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.temporal-absence",
+      "message": "no-raw-secret-logs: forbidden event log 'debug.raw_secret_preview' was observed",
+      "path": "event[4]",
+      "remediation": "Do not emit the forbidden event in traces covered by this absence property.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_order",
+      "contract_path": "$.temporal_properties[3].before",
+      "details": {
+        "group": [
+          "deploy-2"
+        ],
+        "property": "deploy-start-before-finish"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 5,
+      "formal_clause": "SAT.temporal-order",
+      "message": "deploy-start-before-finish: 'deploy.finished' occurred without prior 'deploy.started'",
+      "path": "event[5]",
+      "remediation": "Emit telemetry in the order required by the temporal property or sequence.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_deadline",
+      "contract_path": "$.temporal_properties[4].within_ms",
+      "details": {
+        "elapsed_ms": 6001.0,
+        "group": [
+          "incident-2"
+        ],
+        "property": "restore-deadline"
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 8,
+      "formal_clause": "SAT.temporal-deadline",
+      "message": "restore-deadline: 'incident.restored' missed 5000ms deadline by 1001.000ms",
+      "path": "event[8]",
+      "remediation": "Emit the deadline-bound event before the declared time budget expires.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "ok": false
+}

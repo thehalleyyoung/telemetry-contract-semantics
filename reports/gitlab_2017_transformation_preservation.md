@@ -7,8 +7,8 @@
 - Transformed events: 4
 - Events removed: 1
 - Scenarios checked: 1
-- Preservation findings: 5
-- Findings by code: `{"preservation.contract_obligation": 1, "preservation.scenario_field": 3, "preservation.scenario_signal": 1}`
+- Preservation findings: 6
+- Findings by code: `{"preservation.contract_obligation": 2, "preservation.scenario_field": 3, "preservation.scenario_signal": 1}`
 
 ## Relation
 
@@ -18,6 +18,8 @@ For a contract C, source trace T, transformed trace T′, and approved transform
 
 - **error `preservation.contract_obligation`** at `events[log=backup.pg_dump.failed]`: transformation introduced telemetry.missing_signal: required log 'backup.pg_dump.failed' was not emitted
   - Details: `{"introduced_finding": {"category": "diagnosability", "ci": {"baseline_key_fields": ["code", "path", "contract_path", "event_index"], "default_fail_on": "error", "sarif_level": "error"}, "code": "telemetry.missing_signal", "contract_path": "$.logs[1]", "disclosure_sensitivity": "internal", "formal_clause": "SAT.required-signal", "message": "required log 'backup.pg_dump.failed' was not emitted", "path": "events[log=backup.pg_dump.failed]", "remediation": "Emit the required span, metric, or log on the exercised path.", "sarif_level": "error", "service_owner": "contract service owner", "severity": "error"}}`
+- **error `preservation.contract_obligation`** at `event[3]`: transformation introduced telemetry.temporal_response: backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'
+  - Details: `{"introduced_finding": {"category": "diagnosability", "ci": {"baseline_key_fields": ["code", "path", "contract_path", "event_index"], "default_fail_on": "error", "sarif_level": "error"}, "code": "telemetry.temporal_response", "contract_path": "$.temporal_properties[0].response", "details": {"group": ["pg_dump_daily"], "property": "backup-failure-alert-within-response-window", "within_ms": 1500}, "disclosure_sensitivity": "internal", "event_index": 3, "formal_clause": "SAT.temporal-response", "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'", "path": "event[3]", "remediation": "Emit the required response event inside the bounded response window after each trigger.", "sarif_level": "error", "service_owner": "contract service owner", "severity": "error"}}`
 - **error `preservation.scenario_signal`** at `events[log=backup.pg_dump.failed]`: transformation removed diagnosability witness $signal for log:backup.pg_dump.failed in scenario 'restore-readiness'
   - Details: `{"scenario": "restore-readiness", "source": "present", "transformed": "missing"}`
 - **error `preservation.scenario_field`** at `events[log=backup.pg_dump.failed].alert_route`: transformation removed diagnosability witness alert_route for log:backup.pg_dump.failed in scenario 'restore-readiness'

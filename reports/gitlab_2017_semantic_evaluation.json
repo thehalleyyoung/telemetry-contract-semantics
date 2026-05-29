@@ -777,7 +777,7 @@
   "model": {
     "judgement": "\u27e8T,C,\u03c3\u27e9 \u21d3 R",
     "name": "contract-small-step-semantics-v1",
-    "relation": "A finite trace T and contract C evaluate by deterministic small steps: well-formedness, service projection, signal obligations, correlation, temporal obligations, alternative disjunctions, and optional strict closed-world checks. The denotation R is the ordered multiset of checker finding signatures; alignment holds when the small-step denotation equals validate_events(C,T).",
+    "relation": "A finite trace T and contract C evaluate by deterministic small steps: well-formedness, service projection, signal obligations, correlation, temporal sequence and temporal-logic obligations, alternative disjunctions, and optional strict closed-world checks. The denotation R is the ordered multiset of checker finding signatures; alignment holds when the small-step denotation equals validate_events(C,T).",
     "rules": [
       {
         "meaning": "Evaluate contract shape and schema obligations before telemetry obligations.",
@@ -798,6 +798,10 @@
       {
         "meaning": "Check finite ordered sequences within declared incident windows.",
         "name": "TEMPORAL"
+      },
+      {
+        "meaning": "Check safety, absence, bounded-response, ordering, and deadline properties over finite traces.",
+        "name": "TEMPORAL-PROPERTY"
       },
       {
         "meaning": "Evaluate required finite disjunctions over equivalent evidence paths.",
@@ -1391,6 +1395,32 @@
     },
     {
       "evidence": {
+        "properties": [
+          {
+            "group_by": [
+              "backup_job_id"
+            ],
+            "id": "backup-failure-alert-within-response-window",
+            "type": "bounded_response",
+            "within_ms": 1500
+          },
+          {
+            "group_by": [],
+            "id": "replication-lag-before-destructive-command",
+            "type": "ordering",
+            "within_ms": null
+          }
+        ],
+        "property_count": 2
+      },
+      "finding_count": 0,
+      "findings": [],
+      "label": "temporal logic properties",
+      "rule": "TEMPORAL-PROPERTY",
+      "status": "satisfied"
+    },
+    {
+      "evidence": {
         "obligations": [
           {
             "id": "destructive-command-location-evidence",
@@ -1592,6 +1622,6 @@
     },
     "pass": false,
     "relevant_events": 6,
-    "steps": 11
+    "steps": 12
   }
 }

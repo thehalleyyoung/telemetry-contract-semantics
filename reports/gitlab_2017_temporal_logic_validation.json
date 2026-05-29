@@ -1,0 +1,271 @@
+{
+  "findings": [
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source",
+      "details": {
+        "allowed_values": [
+          "verified_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source' value 'lvm_snapshot' is not allowed",
+      "path": "event[4].source",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.spans[0].fields.backup_age_hours",
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'backup_age_hours' value 6 is above maximum 1",
+      "path": "event[4].backup_age_hours",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source_environment",
+      "details": {
+        "allowed_values": [
+          "production_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source_environment' value 'staging' is not allowed",
+      "path": "event[4].source_environment",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.metrics[0].value",
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'value' value 4294967296 is above maximum 104857600",
+      "path": "event[1].value",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.metrics[1].value",
+      "details": {
+        "allowed_values": [
+          true
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'value' value False is not allowed",
+      "path": "event[3].value",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.logs[0].fields.target_role",
+      "details": {
+        "allowed_values": [
+          "secondary"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'target_role' value 'primary' is not allowed",
+      "path": "event[2].target_role",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.correlation_id",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+      "path": "event[2].correlation_id",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.command_guard_result",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+      "path": "event[2].command_guard_result",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_signal",
+      "contract_path": "$.logs[1]",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.required-signal",
+      "message": "required log 'backup.pg_dump.failed' was not emitted",
+      "path": "events[log=backup.pg_dump.failed]",
+      "remediation": "Emit the required span, metric, or log on the exercised path.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_response",
+      "contract_path": "$.temporal_properties[0].response",
+      "details": {
+        "group": [
+          "pg_dump_daily"
+        ],
+        "property": "backup-failure-alert-within-response-window",
+        "within_ms": 1500
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.temporal-response",
+      "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+      "path": "event[3]",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "ok": false
+}

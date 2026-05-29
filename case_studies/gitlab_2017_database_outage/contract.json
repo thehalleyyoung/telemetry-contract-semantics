@@ -167,6 +167,40 @@
       }
     }
   ],
+  "temporal_properties": [
+    {
+      "id": "backup-failure-alert-within-response-window",
+      "type": "bounded_response",
+      "description": "A failed pg_dump backup metric should be followed by a routed backup-failure alert in the same backup job within 1500ms in this bounded reconstruction.",
+      "group_by": [
+        "backup_job_id"
+      ],
+      "trigger": {
+        "kind": "metric",
+        "name": "backup.pg_dump.success",
+        "field": "value",
+        "equals": false
+      },
+      "response": {
+        "kind": "log",
+        "name": "backup.pg_dump.failed"
+      },
+      "within_ms": 1500
+    },
+    {
+      "id": "replication-lag-before-destructive-command",
+      "type": "ordering",
+      "description": "The reconstruction keeps replication-lag evidence before the destructive-command log so reports show the stale-replica context before the operator action.",
+      "before": {
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes"
+      },
+      "after": {
+        "kind": "log",
+        "name": "database.destructive_command"
+      }
+    }
+  ],
   "scenarios": [
     {
       "id": "restore-readiness",

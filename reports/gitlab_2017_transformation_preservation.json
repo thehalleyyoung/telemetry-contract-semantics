@@ -63,6 +63,63 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "preservation.contract_obligation",
+      "contract_path": "$.temporal_properties[0].response",
+      "details": {
+        "introduced_finding": {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.temporal_response",
+          "contract_path": "$.temporal_properties[0].response",
+          "details": {
+            "group": [
+              "pg_dump_daily"
+            ],
+            "property": "backup-failure-alert-within-response-window",
+            "within_ms": 1500
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "SAT.temporal-response",
+          "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+          "path": "event[3]",
+          "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "PRES.runtime-obligation",
+      "message": "transformation introduced telemetry.temporal_response: backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+      "path": "event[3]",
+      "remediation": "Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "preservation.scenario_signal",
       "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
       "details": {
@@ -467,20 +524,20 @@
   "summary": {
     "events_removed": 1,
     "findings_by_code": {
-      "preservation.contract_obligation": 1,
+      "preservation.contract_obligation": 2,
       "preservation.scenario_field": 3,
       "preservation.scenario_signal": 1
     },
     "findings_by_severity": {
-      "error": 5
+      "error": 6
     },
     "pass": false,
-    "preservation_findings": 5,
+    "preservation_findings": 6,
     "scenarios_checked": 1,
     "source_events": 5,
     "source_findings": 9,
     "transformed_events": 4,
-    "transformed_findings": 9
+    "transformed_findings": 10
   },
   "transformed_findings": [
     {
@@ -714,6 +771,37 @@
       "message": "required log 'backup.pg_dump.failed' was not emitted",
       "path": "events[log=backup.pg_dump.failed]",
       "remediation": "Emit the required span, metric, or log on the exercised path.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_response",
+      "contract_path": "$.temporal_properties[0].response",
+      "details": {
+        "group": [
+          "pg_dump_daily"
+        ],
+        "property": "backup-failure-alert-within-response-window",
+        "within_ms": 1500
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.temporal-response",
+      "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+      "path": "event[3]",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
       "sarif_level": "error",
       "service_owner": "contract service owner",
       "severity": "error"

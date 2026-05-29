@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "service": "temporal-demo",
+  "metadata": {
+    "purpose": "Temporal-logic examples for safety, bounded response, absence, ordering, and deadline properties."
+  },
+  "temporal_properties": [
+    {
+      "id": "backup-success-safety",
+      "type": "safety",
+      "description": "Every observed backup success metric must be true.",
+      "match": {"kind": "metric", "name": "backup.pg_dump.success"},
+      "condition": {"field": "value", "equals": true}
+    },
+    {
+      "id": "request-failure-alert-response",
+      "type": "bounded_response",
+      "description": "Every request failure must be followed by an alert within one second in the same trace.",
+      "group_by": ["trace_id"],
+      "trigger": {"kind": "log", "name": "request.failed"},
+      "response": {"kind": "log", "name": "request.alerted"},
+      "within_ms": 1000
+    },
+    {
+      "id": "no-raw-secret-logs",
+      "type": "absence",
+      "description": "Raw secret preview logs must be absent.",
+      "forbidden": {"kind": "log", "name": "debug.raw_secret_preview"}
+    },
+    {
+      "id": "deploy-start-before-finish",
+      "type": "ordering",
+      "description": "A deployment finish span must have a prior deployment start span in the same deployment.",
+      "group_by": ["deployment_id"],
+      "before": {"kind": "span", "name": "deploy.started"},
+      "after": {"kind": "span", "name": "deploy.finished"}
+    },
+    {
+      "id": "restore-deadline",
+      "type": "deadline",
+      "description": "Restore attempts must complete within five seconds of the incident opening in the same incident slice.",
+      "group_by": ["incident_id"],
+      "start": {"kind": "log", "name": "incident.opened"},
+      "match": {"kind": "span", "name": "incident.restored"},
+      "within_ms": 5000
+    }
+  ]
+}

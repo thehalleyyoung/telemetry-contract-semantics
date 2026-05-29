@@ -449,3 +449,23 @@ def test_temporal_sequences_require_ordered_steps_within_window():
         {"kind": "metric", "service": "svc", "name": "request.count", "trace_id": "a", "timestamp_ms": 1100, "value": 1},
     ]
     assert "telemetry.temporal_missing_step" in codes(validate_events(contract, missing_step))
+
+
+def test_temporal_logic_properties_cover_safety_response_absence_ordering_and_deadline():
+    contract = load_contract(ROOT / "examples/temporal_logic/contract.json")
+    assert validate_contract_shape(contract) == []
+    assert validate_events(contract, load_jsonl(ROOT / "examples/temporal_logic/passing.jsonl")) == []
+
+    findings = validate_events(contract, load_jsonl(ROOT / "examples/temporal_logic/failing.jsonl"))
+    finding_codes = codes(findings)
+    assert "telemetry.temporal_safety" in finding_codes
+    assert "telemetry.temporal_response" in finding_codes
+    assert "telemetry.temporal_absence" in finding_codes
+    assert "telemetry.temporal_order" in finding_codes
+    assert "telemetry.temporal_deadline" in finding_codes
+
+
+def test_gitlab_temporal_property_finds_missing_backup_alert_response():
+    contract = load_contract(ROOT / "case_studies/gitlab_2017_database_outage/contract.json")
+    findings = validate_events(contract, load_jsonl(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl"))
+    assert "telemetry.temporal_response" in codes(findings)

@@ -22,6 +22,19 @@
       "metadata": "../case_studies/current/owasp_securetea_signin/metadata.json",
       "contract": "../case_studies/current/owasp_securetea_signin/contract.json",
       "sources": ["../case_studies/current/owasp_securetea_signin/Signin.js"]
+    },
+    {
+      "id": "temporal-logic-properties-fail",
+      "description": "Bounded temporal-logic fixture covering safety, bounded response, absence, ordering, and deadline violations.",
+      "contract": "../examples/temporal_logic/contract.json",
+      "events": "../examples/temporal_logic/failing.jsonl",
+      "expected_findings": [
+        {"code": "telemetry.temporal_safety", "severity": "error", "event_index": 1},
+        {"code": "telemetry.temporal_response", "severity": "error", "event_index": 2},
+        {"code": "telemetry.temporal_absence", "severity": "error", "event_index": 4},
+        {"code": "telemetry.temporal_order", "severity": "error", "event_index": 5},
+        {"code": "telemetry.temporal_deadline", "severity": "error", "event_index": 8}
+      ]
     }
   ]
 }

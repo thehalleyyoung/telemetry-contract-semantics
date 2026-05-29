@@ -44,7 +44,8 @@
     "path": "reconstructed_events_sampled_missing_alert.jsonl",
     "purpose": "A degraded derivative used to validate observational-equivalence reports against a historical reconstruction.",
     "transformation": "Drops the backup.pg_dump.failed log to simulate a sampled or incomplete exported stream.",
-    "expected_result": "Not observationally equivalent for restore-readiness because the backup failure observation and its route/job/destination fields are no longer witnessed."
+    "expected_result": "Not observationally equivalent for restore-readiness because the backup failure observation and its route/job/destination fields are no longer witnessed.",
+    "temporal_logic_expected_result": "Validation also reports telemetry.temporal_response for the backup-failure-alert-within-response-window property because the failed backup metric no longer has a backup.pg_dump.failed response witness within 1500ms."
   },
   "strict_drift_fixture": {
     "path": "reconstructed_events_strict_drift.jsonl",

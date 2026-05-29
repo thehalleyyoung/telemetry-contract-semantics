@@ -5,13 +5,13 @@
 - Pass: `false`
 - Aligned with deterministic checker: `true`
 - Events: 7 input / 6 service-relevant
-- Small steps: 11
+- Small steps: 12
 - Findings: 14
 - Findings by code: `{'telemetry.allowed_values': 4, 'telemetry.missing_field': 3, 'telemetry.numeric_max': 2, 'telemetry.strict_undeclared_signal': 1, 'telemetry.strict_undocumented_transformation': 1, 'telemetry.strict_unexpected_field': 2, 'telemetry.strict_unmodeled_service': 1}`
 
 ## Relation
 
-A finite trace T and contract C evaluate by deterministic small steps: well-formedness, service projection, signal obligations, correlation, temporal obligations, alternative disjunctions, and optional strict closed-world checks. The denotation R is the ordered multiset of checker finding signatures; alignment holds when the small-step denotation equals validate_events(C,T).
+A finite trace T and contract C evaluate by deterministic small steps: well-formedness, service projection, signal obligations, correlation, temporal sequence and temporal-logic obligations, alternative disjunctions, and optional strict closed-world checks. The denotation R is the ordered multiset of checker finding signatures; alignment holds when the small-step denotation equals validate_events(C,T).
 
 ## Rules
 
@@ -20,6 +20,7 @@ A finite trace T and contract C evaluate by deterministic small steps: well-form
 - **SIGNAL** — For each required span/log/metric, find witnesses and check field predicates.
 - **CORRELATION** — Check configured shared correlation keys across required signal kinds.
 - **TEMPORAL** — Check finite ordered sequences within declared incident windows.
+- **TEMPORAL-PROPERTY** — Check safety, absence, bounded-response, ordering, and deadline properties over finite traces.
 - **ALTERNATIVE** — Evaluate required finite disjunctions over equivalent evidence paths.
 - **STRICT** — Optionally strengthen satisfaction with closed-world checks.
 
@@ -103,13 +104,19 @@ A finite trace T and contract C evaluate by deterministic small steps: well-form
 - Findings: 0
 - Evidence: `{'sequence_count': 0, 'sequences': []}`
 
-### 10. ALTERNATIVE — alternative obligations
+### 10. TEMPORAL-PROPERTY — temporal logic properties
+
+- Status: `satisfied`
+- Findings: 0
+- Evidence: `{'property_count': 2, 'properties': [{'id': 'backup-failure-alert-within-response-window', 'type': 'bounded_response', 'group_by': ['backup_job_id'], 'within_ms': 1500}, {'id': 'replication-lag-before-destructive-command', 'type': 'ordering', 'group_by': [], 'within_ms': None}]}`
+
+### 11. ALTERNATIVE — alternative obligations
 
 - Status: `satisfied`
 - Findings: 0
 - Evidence: `{'summary': {'groups': 1, 'required_groups': 1, 'satisfied_groups': 1, 'unsatisfied_required_groups': 0, 'pass': True}, 'obligations': [{'id': 'destructive-command-location-evidence', 'required': True, 'satisfied': True, 'winning_option': 'structured-log'}]}`
 
-### 11. STRICT — closed-world validation
+### 12. STRICT — closed-world validation
 
 - Status: `violated`
 - Findings: 5

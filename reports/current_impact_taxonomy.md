@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 69
-- Categories: `{"contract": 24, "diagnosability": 15, "input": 1, "operability": 3, "preservation": 4, "privacy-security": 6, "scenario": 2, "schema": 12, "static-coverage": 2}`
-- Default severities: `{"error": 64, "warning": 5}`
-- SARIF levels: `{"error": 64, "warning": 5}`
+- Rules: 75
+- Categories: `{"contract": 25, "diagnosability": 20, "input": 1, "operability": 3, "preservation": 4, "privacy-security": 6, "scenario": 2, "schema": 12, "static-coverage": 2}`
+- Default severities: `{"error": 70, "warning": 5}`
+- SARIF levels: `{"error": 70, "warning": 5}`
 
 ## Rule catalog
 
@@ -34,6 +34,7 @@
 | contract.signal_name | contract | error | WF.signal-name | error | error | internal | contract service owner | Give each signal a stable telemetry name. |
 | contract.signal_type | contract | error | WF.signal-object | error | error | internal | contract service owner | Describe each signal as an object. |
 | contract.strict_policy | contract | error | WF.strict-policy | error | error | internal | contract service owner | Declare strict-validation escape hatches as bounded service, signal, field, or transformation lists. |
+| contract.temporal_property | contract | error | WF.temporal-property | error | error | internal | contract service owner | Declare temporal properties with a valid type, selectors, predicates, grouping keys, and positive time bounds. |
 | contract.temporal_sequence | contract | error | WF.temporal-sequence | error | error | internal | contract service owner | Declare temporal sequences with valid steps, kinds, group_by keys, and positive windows. |
 | contract.unit | schema | error | WF.unit | error | error | internal | contract service owner | Use a supported unit such as ms, bytes, percent, count, timestamp_ms, or usd. |
 | contract.version | contract | error | WF.version | error | error | internal | contract service owner | Declare contract version 1.0. |
@@ -76,23 +77,28 @@
 | telemetry.strict_undocumented_transformation | preservation | error | STRICT.transformation-documented | error | error | internal | contract service owner | Document the collector transformation under metadata.transformation_preservation.approved_transformations or strict allow_collector_transformations. |
 | telemetry.strict_unexpected_field | schema | error | STRICT.field-closed-world | error | error | internal | contract service owner | Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch. |
 | telemetry.strict_unmodeled_service | schema | error | STRICT.service-closed-world | error | error | internal | contract service owner | Either emit telemetry for the modeled service or add a bounded allow_unmodeled_services escape hatch. |
+| telemetry.temporal_absence | diagnosability | error | SAT.temporal-absence | error | error | internal | contract service owner | Do not emit the forbidden event in traces covered by this absence property. |
+| telemetry.temporal_deadline | diagnosability | error | SAT.temporal-deadline | error | error | internal | contract service owner | Emit the deadline-bound event before the declared time budget expires. |
 | telemetry.temporal_missing_step | diagnosability | error | SAT.temporal-presence | error | error | internal | contract service owner | Emit every event required by the temporal sequence in the grouped incident window. |
+| telemetry.temporal_order | diagnosability | error | SAT.temporal-order | error | error | internal | contract service owner | Emit telemetry in the order required by the temporal property or sequence. |
+| telemetry.temporal_response | diagnosability | error | SAT.temporal-response | error | error | internal | contract service owner | Emit the required response event inside the bounded response window after each trigger. |
+| telemetry.temporal_safety | diagnosability | error | SAT.temporal-safety | error | error | internal | contract service owner | Keep every matched event inside the declared temporal invariant. |
 | telemetry.temporal_window | diagnosability | error | SAT.temporal-window | error | error | internal | contract service owner | Emit the temporal sequence within the declared bounded window. |
 | telemetry.unit | schema | error | SAT.unit | error | error | internal | contract service owner | Emit a value that satisfies the field's declared unit constraints. |
 
 ## Observed finding coverage
 
-- Findings: 14
+- Findings: 19
 - Unknown codes: `[]`
-- By code: `{"scenario.missing_field": 3, "static.secret_logging": 2, "telemetry.allowed_values": 4, "telemetry.missing_field": 3, "telemetry.numeric_max": 2}`
-- By category: `{"diagnosability": 6, "privacy-security": 2, "schema": 6}`
-- By formal clause: `{"ADEQ.required-field": 3, "SAT.allowed-values": 4, "SAT.numeric-upper-bound": 2, "SAT.required-field": 3, "STATIC.raw-sensitive-log": 2}`
-- By SARIF level: `{"error": 14}`
-- By service owner: `{"contract service owner": 14}`
+- By code: `{"scenario.missing_field": 3, "static.secret_logging": 2, "telemetry.allowed_values": 4, "telemetry.missing_field": 3, "telemetry.numeric_max": 2, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
+- By category: `{"diagnosability": 11, "privacy-security": 2, "schema": 6}`
+- By formal clause: `{"ADEQ.required-field": 3, "SAT.allowed-values": 4, "SAT.numeric-upper-bound": 2, "SAT.required-field": 3, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.raw-sensitive-log": 2}`
+- By SARIF level: `{"error": 19}`
+- By service owner: `{"contract service owner": 19}`
 
 | Source | Findings |
 | --- | ---: |
-| reports/current_impact.json | 14 |
+| reports/current_impact.json | 19 |
 
 | Code | Category | Formal clause | Severity | SARIF | Path |
 | --- | --- | --- | --- | --- | --- |
@@ -110,4 +116,9 @@
 | scenario.missing_field | diagnosability | ADEQ.required-field | error | error | events[log=backup.pg_dump.failed].alert_delivered |
 | static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:27 |
 | static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:48 |
+| telemetry.temporal_safety | diagnosability | SAT.temporal-safety | error | error | event[1].value |
+| telemetry.temporal_response | diagnosability | SAT.temporal-response | error | error | event[2] |
+| telemetry.temporal_absence | diagnosability | SAT.temporal-absence | error | error | event[4] |
+| telemetry.temporal_order | diagnosability | SAT.temporal-order | error | error | event[5] |
+| telemetry.temporal_deadline | diagnosability | SAT.temporal-deadline | error | error | event[8] |
 

@@ -492,6 +492,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "contract.temporal_property",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.temporal-property",
+      "remediation": "Declare temporal properties with a valid type, selectors, predicates, grouping keys, and positive time bounds.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "contract.temporal_sequence",
       "default_severity": "error",
       "disclosure_sensitivity": "internal",
@@ -1332,11 +1352,111 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "telemetry.temporal_absence",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-absence",
+      "remediation": "Do not emit the forbidden event in traces covered by this absence property.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_deadline",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-deadline",
+      "remediation": "Emit the deadline-bound event before the declared time budget expires.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.temporal_missing_step",
       "default_severity": "error",
       "disclosure_sensitivity": "internal",
       "formal_clause": "SAT.temporal-presence",
       "remediation": "Emit every event required by the temporal sequence in the grouped incident window.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_order",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-order",
+      "remediation": "Emit telemetry in the order required by the temporal property or sequence.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_response",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-response",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_safety",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.temporal-safety",
+      "remediation": "Keep every matched event inside the declared temporal invariant.",
       "sarif_level": "error",
       "service_owner": "contract service owner"
     },
@@ -1390,8 +1510,8 @@
   },
   "summary": {
     "categories": {
-      "contract": 24,
-      "diagnosability": 15,
+      "contract": 25,
+      "diagnosability": 20,
       "input": 1,
       "operability": 3,
       "preservation": 4,
@@ -1401,12 +1521,12 @@
       "static-coverage": 2
     },
     "default_severities": {
-      "error": 64,
+      "error": 70,
       "warning": 5
     },
-    "rules": 69,
+    "rules": 75,
     "sarif_levels": {
-      "error": 64,
+      "error": 70,
       "warning": 5
     }
   }

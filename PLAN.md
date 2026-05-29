@@ -35,7 +35,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Hyperproperty satisfaction:** privacy and multi-tenant isolation obligations may quantify over pairs or sets of traces, not just one execution.
 - **Assume-guarantee structure:** service code, libraries, collectors, deployment environment, and on-call workflows each get explicit assumptions and guarantees so failures are assigned to the right layer.
 
-The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, the `evaluate-semantics` CLI, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, and GitLab 2017 strict-drift reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into a refinement checker and independent mechanization.
+The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, finite-trace temporal-property monitors for safety/response/absence/ordering/deadlines, the `evaluate-semantics` CLI, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, and GitLab 2017 strict-drift/temporal reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into a refinement checker and independent mechanization.
 
 ## Algorithms
 

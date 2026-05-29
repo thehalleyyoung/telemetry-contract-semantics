@@ -1,13 +1,13 @@
 # Proof-obligation report: gitlab.com-database
 
 - Model: `telemetry-contract-proof-obligations-v1`
-- Features cataloged: 24
-- Obligations: 72
-- Discharged: 59
+- Features cataloged: 25
+- Obligations: 83
+- Discharged: 70
 - Violated: 10
 - Pending templates: 3
-- Status counts: `{"discharged": 59, "pending": 3, "violated": 10}`
-- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 19, "preservation": 3, "refinement": 3, "satisfaction": 19, "well-formedness": 27}`
+- Status counts: `{"discharged": 70, "pending": 3, "violated": 10}`
+- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 24, "preservation": 3, "refinement": 3, "satisfaction": 24, "well-formedness": 28}`
 - Events: 7
 - Strict mode: `true`
 
@@ -85,6 +85,9 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **well-formedness:WF.strict-policy** `discharged` — strict closed world / `WF.strict-policy`
   - Template: If contract service `gitlab.com-database` uses strict closed world, every syntax premise for WF.strict-policy is decidable before telemetry is read.
   - Evidence: validate_contract_shape
+- **well-formedness:WF.temporal-property** `discharged` — temporal logic properties / `WF.temporal-property`
+  - Template: If contract service `gitlab.com-database` uses temporal logic properties, every syntax premise for WF.temporal-property is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
 - **well-formedness:WF.temporal-sequence** `discharged` — temporal sequences / `WF.temporal-sequence`
   - Template: If contract service `gitlab.com-database` uses temporal sequences, every syntax premise for WF.temporal-sequence is decidable before telemetry is read.
   - Evidence: validate_contract_shape
@@ -151,6 +154,21 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **satisfaction:SAT.required-signal** `discharged` — required signals / `SAT.required-signal`
   - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
   - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.temporal-absence** `discharged` — temporal logic properties / `SAT.temporal-absence`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.temporal-deadline** `discharged` — temporal logic properties / `SAT.temporal-deadline`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.temporal-order** `discharged` — temporal logic properties / `SAT.temporal-order`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.temporal-response** `discharged` — temporal logic properties / `SAT.temporal-response`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
+- **satisfaction:SAT.temporal-safety** `discharged` — temporal logic properties / `SAT.temporal-safety`
+  - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
+  - Evidence: validate_events over 7 supplied events
 - **satisfaction:STRICT.field-closed-world** `violated` — strict closed world / `STRICT.field-closed-world`
   - Template: For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates.
   - Evidence: validate_events over 7 supplied events
@@ -173,7 +191,7 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **preservation:PRES.runtime-obligation** `violated` — transformation preservation / `PRES.runtime-obligation`
   - Template: If source trace T satisfies an obligation and approved transformation Δ produces T′, then T′ preserves the same obligation-local evidence.
   - Evidence: check_transformation_preservation
-  - Finding codes: `{"preservation.contract_obligation": 1}`
+  - Finding codes: `{"preservation.contract_obligation": 2}`
 - **preservation:PRES.adequacy-signal** `violated` — transformation preservation / `PRES.adequacy-signal`
   - Template: If source trace T satisfies an obligation and approved transformation Δ produces T′, then T′ preserves the same obligation-local evidence.
   - Evidence: check_transformation_preservation
@@ -187,13 +205,13 @@ A proof obligation is an executable template tying one telemetry-contract featur
 
 - **refinement:REF.requirement-preservation** `pending` — contract refinement / `REF.requirement-preservation`
   - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
-  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
 - **refinement:REF.privacy-nonweakening** `pending` — contract refinement / `REF.privacy-nonweakening`
   - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
-  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
 - **refinement:REF.assumption-compatibility** `pending` — contract refinement / `REF.assumption-compatibility`
   - Template: For base contract C and candidate C′, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible.
-  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation
+  - Evidence: template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation
 
 ### monitor-soundness
 
@@ -242,6 +260,21 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **monitor-soundness:MON.soundness.SAT.required-signal** `discharged` — required signals / `MON.soundness.SAT.required-signal`
   - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
   - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.temporal-absence** `discharged` — temporal logic properties / `MON.soundness.SAT.temporal-absence`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.temporal-deadline** `discharged` — temporal logic properties / `MON.soundness.SAT.temporal-deadline`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.temporal-order** `discharged` — temporal logic properties / `MON.soundness.SAT.temporal-order`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.temporal-response** `discharged` — temporal logic properties / `MON.soundness.SAT.temporal-response`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
+- **monitor-soundness:MON.soundness.SAT.temporal-safety** `discharged` — temporal logic properties / `MON.soundness.SAT.temporal-safety`
+  - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
+  - Evidence: evaluate_contract_semantics alignment
 - **monitor-soundness:MON.soundness.STRICT.field-closed-world** `discharged` — strict closed world / `MON.soundness.STRICT.field-closed-world`
   - Template: A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation.
   - Evidence: evaluate_contract_semantics alignment
@@ -280,6 +313,7 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **cardinality policies** — clauses `SAT.cardinality-bound, SAT.cardinality-policy`; families `satisfaction, preservation, refinement`
 - **correlation policies** — clauses `SAT.correlation-presence, SAT.correlation-intersection`; families `well-formedness, satisfaction, monitor-soundness, refinement`
 - **temporal sequences** — clauses `WF.temporal-sequence, SAT.temporal-presence, SAT.temporal-window`; families `well-formedness, satisfaction, monitor-soundness, refinement`
+- **temporal logic properties** — clauses `WF.temporal-property, SAT.temporal-safety, SAT.temporal-absence, SAT.temporal-response, SAT.temporal-order, SAT.temporal-deadline`; families `well-formedness, satisfaction, monitor-soundness, refinement`
 - **alternative obligations** — clauses `WF.alternative-obligation, SAT.alternative-disjunction, ADEQ.alternative-observation`; families `well-formedness, satisfaction, preservation, refinement`
 - **strict closed world** — clauses `WF.strict-policy, STRICT.service-closed-world, STRICT.signal-closed-world, STRICT.field-closed-world, STRICT.transformation-documented`; families `well-formedness, satisfaction, preservation, refinement`
 - **scenario adequacy** — clauses `SCENARIO.selection, SCENARIO.requirement-wf, ADEQ.required-signal, ADEQ.required-field`; families `satisfaction, preservation, monitor-soundness, refinement`

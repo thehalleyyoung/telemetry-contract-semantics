@@ -168,6 +168,6 @@ def test_cli_proof_obligations_reports_historical_evidence(capsys):
     output = capsys.readouterr().out
 
     assert code == 0
-    assert '"features_cataloged": 24' in output
+    assert '"features_cataloged": 25' in output
     assert '"formal_clause": "STRICT.field-closed-world"' in output
     assert '"formal_clause": "PRES.adequacy-signal"' in output

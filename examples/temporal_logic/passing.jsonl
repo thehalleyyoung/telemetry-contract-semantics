@@ -1,0 +1,7 @@
+{"kind":"metric","service":"temporal-demo","name":"backup.pg_dump.success","value":true,"tags":{"backup_job_id":"pg_dump_daily"},"timestamp_ms":0}
+{"kind":"log","service":"temporal-demo","name":"request.failed","trace_id":"trace-ok","severity":"ERROR","timestamp_ms":1000}
+{"kind":"log","service":"temporal-demo","name":"request.alerted","trace_id":"trace-ok","severity":"ERROR","timestamp_ms":1500}
+{"kind":"span","service":"temporal-demo","name":"deploy.started","attributes":{"deployment_id":"deploy-1"},"timestamp_ms":2000}
+{"kind":"span","service":"temporal-demo","name":"deploy.finished","attributes":{"deployment_id":"deploy-1"},"timestamp_ms":2500}
+{"kind":"log","service":"temporal-demo","name":"incident.opened","fields":{"incident_id":"incident-1"},"timestamp_ms":3000}
+{"kind":"span","service":"temporal-demo","name":"incident.restored","attributes":{"incident_id":"incident-1"},"timestamp_ms":7000}

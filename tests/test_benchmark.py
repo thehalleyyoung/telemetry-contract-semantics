@@ -12,7 +12,7 @@ HISTORICAL_EVENTS = ROOT / "case_studies/gitlab_2017_database_outage/reconstruct
 def test_builtin_benchmark_reports_labeled_historical_case():
     report = run_benchmark(BUILTIN)
     assert report["summary"]["pass"] is True
-    assert report["summary"]["contracts"] == 3
+    assert report["summary"]["contracts"] == 4
     assert report["summary"]["events"] > 0
     historical = next(case for case in report["cases"] if case["id"] == "gitlab-2017-database-outage-reconstructed")
     labels = historical["metrics"]["labels"]
@@ -27,6 +27,10 @@ def test_builtin_benchmark_reports_labeled_historical_case():
     assert current["checks"]["static"] is True
     assert current["metrics"]["labels"]["precision"] == 1.0
     assert current["metrics"]["findings_by_code"]["static.secret_logging"] == 2
+    temporal = next(case for case in report["cases"] if case["id"] == "temporal-logic-properties-fail")
+    assert temporal["metrics"]["labels"]["expected"] == 5
+    assert temporal["metrics"]["labels"]["precision"] == 1.0
+    assert temporal["metrics"]["findings_by_code"]["telemetry.temporal_response"] == 1
 
 
 def test_benchmark_markdown_and_cli(capsys):

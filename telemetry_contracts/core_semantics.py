@@ -15,6 +15,7 @@ from .validator import (
     _validate_correlation_policy,
     _validate_signal,
     _validate_strict_events,
+    _validate_temporal_properties,
     _validate_temporal_sequences,
     validate_contract_shape,
     validate_events,
@@ -26,7 +27,7 @@ CORE_SEMANTICS_MODEL: dict[str, Any] = {
     "relation": (
         "A finite trace T and contract C evaluate by deterministic small steps: "
         "well-formedness, service projection, signal obligations, correlation, "
-        "temporal obligations, alternative disjunctions, and optional strict closed-world "
+        "temporal sequence and temporal-logic obligations, alternative disjunctions, and optional strict closed-world "
         "checks. The denotation R is the ordered multiset of checker finding signatures; "
         "alignment holds when the small-step denotation equals validate_events(C,T)."
     ),
@@ -36,6 +37,7 @@ CORE_SEMANTICS_MODEL: dict[str, Any] = {
         {"name": "SIGNAL", "meaning": "For each required span/log/metric, find witnesses and check field predicates."},
         {"name": "CORRELATION", "meaning": "Check configured shared correlation keys across required signal kinds."},
         {"name": "TEMPORAL", "meaning": "Check finite ordered sequences within declared incident windows."},
+        {"name": "TEMPORAL-PROPERTY", "meaning": "Check safety, absence, bounded-response, ordering, and deadline properties over finite traces."},
         {"name": "ALTERNATIVE", "meaning": "Evaluate required finite disjunctions over equivalent evidence paths."},
         {"name": "STRICT", "meaning": "Optionally strengthen satisfaction with closed-world checks."},
     ],
@@ -93,6 +95,10 @@ def evaluate_contract_semantics(contract: dict[str, Any], events: list[dict[str,
     temporal_findings = _validate_temporal_sequences(contract, relevant_events)
     step_findings.extend(temporal_findings)
     steps.append(_step("TEMPORAL", "temporal sequences", temporal_findings, _temporal_evidence(contract)))
+
+    temporal_property_findings = _validate_temporal_properties(contract, relevant_events)
+    step_findings.extend(temporal_property_findings)
+    steps.append(_step("TEMPORAL-PROPERTY", "temporal logic properties", temporal_property_findings, _temporal_property_evidence(contract)))
 
     alternative_report = evaluate_alternative_obligations(contract, relevant_events)
     alternative_findings = alternative_obligation_findings(contract, relevant_events)
@@ -287,6 +293,25 @@ def _temporal_evidence(contract: dict[str, Any]) -> dict[str, Any]:
             {"id": sequence.get("id", index), "steps": len(sequence.get("steps", []) or []), "window_ms": sequence.get("window_ms")}
             for index, sequence in enumerate(sequences)
             if isinstance(sequence, dict)
+        ],
+    }
+
+
+def _temporal_property_evidence(contract: dict[str, Any]) -> dict[str, Any]:
+    properties = contract.get("temporal_properties") or []
+    if not isinstance(properties, list):
+        return {"property_count": 0}
+    return {
+        "property_count": len(properties),
+        "properties": [
+            {
+                "id": prop.get("id", index),
+                "type": prop.get("type"),
+                "group_by": prop.get("group_by", []),
+                "within_ms": prop.get("within_ms"),
+            }
+            for index, prop in enumerate(properties)
+            if isinstance(prop, dict)
         ],
     }
 

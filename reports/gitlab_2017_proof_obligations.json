@@ -227,6 +227,23 @@
     },
     {
       "clauses": [
+        "WF.temporal-property",
+        "SAT.temporal-safety",
+        "SAT.temporal-absence",
+        "SAT.temporal-response",
+        "SAT.temporal-order",
+        "SAT.temporal-deadline"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "temporal logic properties"
+    },
+    {
+      "clauses": [
         "WF.alternative-obligation",
         "SAT.alternative-disjunction",
         "ADEQ.alternative-observation"
@@ -555,6 +572,16 @@
       "id": "well-formedness:WF.strict-policy",
       "status": "discharged",
       "template": "If contract service `gitlab.com-database` uses strict closed world, every syntax premise for WF.strict-policy is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "WF.temporal-property",
+      "id": "well-formedness:WF.temporal-property",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses temporal logic properties, every syntax premise for WF.temporal-property is decidable before telemetry is read."
     },
     {
       "evidence": "validate_contract_shape",
@@ -998,6 +1025,56 @@
     {
       "evidence": "validate_events over 7 supplied events",
       "family": "satisfaction",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "SAT.temporal-absence",
+      "id": "satisfaction:SAT.temporal-absence",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "SAT.temporal-deadline",
+      "id": "satisfaction:SAT.temporal-deadline",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "SAT.temporal-order",
+      "id": "satisfaction:SAT.temporal-order",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "SAT.temporal-response",
+      "id": "satisfaction:SAT.temporal-response",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "SAT.temporal-safety",
+      "id": "satisfaction:SAT.temporal-safety",
+      "status": "discharged",
+      "template": "For finite trace T and contract C, all witnesses required by this clause exist and satisfy declared predicates."
+    },
+    {
+      "evidence": "validate_events over 7 supplied events",
+      "family": "satisfaction",
       "feature": "strict closed world",
       "findings": [
         {
@@ -1239,6 +1316,63 @@
           "sarif_level": "error",
           "service_owner": "contract service owner",
           "severity": "error"
+        },
+        {
+          "category": "preservation",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "preservation.contract_obligation",
+          "contract_path": "$.temporal_properties[0].response",
+          "details": {
+            "introduced_finding": {
+              "category": "diagnosability",
+              "ci": {
+                "baseline_key_fields": [
+                  "code",
+                  "path",
+                  "contract_path",
+                  "event_index"
+                ],
+                "default_fail_on": "error",
+                "sarif_level": "error"
+              },
+              "code": "telemetry.temporal_response",
+              "contract_path": "$.temporal_properties[0].response",
+              "details": {
+                "group": [
+                  "pg_dump_daily"
+                ],
+                "property": "backup-failure-alert-within-response-window",
+                "within_ms": 1500
+              },
+              "disclosure_sensitivity": "internal",
+              "event_index": 3,
+              "formal_clause": "SAT.temporal-response",
+              "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+              "path": "event[3]",
+              "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+              "sarif_level": "error",
+              "service_owner": "contract service owner",
+              "severity": "error"
+            }
+          },
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "PRES.runtime-obligation",
+          "message": "transformation introduced telemetry.temporal_response: backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+          "path": "event[3]",
+          "remediation": "Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
         }
       ],
       "formal_clause": "PRES.runtime-obligation",
@@ -1381,7 +1515,7 @@
       "template": "If source trace T satisfies an obligation and approved transformation \u0394 produces T\u2032, then T\u2032 preserves the same obligation-local evidence."
     },
     {
-      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation",
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
       "family": "refinement",
       "feature": "contract refinement",
       "findings": [],
@@ -1391,7 +1525,7 @@
       "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
     },
     {
-      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation",
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
       "family": "refinement",
       "feature": "contract refinement",
       "findings": [],
@@ -1401,7 +1535,7 @@
       "template": "For base contract C and candidate C\u2032, every required evidence obligation is preserved, privacy obligations are not weakened, and assumptions are compatible."
     },
     {
-      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, transformation preservation",
+      "evidence": "template instantiated for service `gitlab.com-database` with features allowed values, alternative obligations, contract header, field predicates, log severity and message policies, numeric bounds, regex patterns, required signals, scenario adequacy, signal declarations, temporal logic properties, transformation preservation",
       "family": "refinement",
       "feature": "contract refinement",
       "findings": [],
@@ -1563,6 +1697,56 @@
     {
       "evidence": "evaluate_contract_semantics alignment",
       "family": "monitor-soundness",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.temporal-absence",
+      "id": "monitor-soundness:MON.soundness.SAT.temporal-absence",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.temporal-deadline",
+      "id": "monitor-soundness:MON.soundness.SAT.temporal-deadline",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.temporal-order",
+      "id": "monitor-soundness:MON.soundness.SAT.temporal-order",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.temporal-response",
+      "id": "monitor-soundness:MON.soundness.SAT.temporal-response",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
+      "feature": "temporal logic properties",
+      "findings": [],
+      "formal_clause": "MON.soundness.SAT.temporal-safety",
+      "id": "monitor-soundness:MON.soundness.SAT.temporal-safety",
+      "status": "discharged",
+      "template": "A bounded monitor for this clause is sound when each emitted violation corresponds to a violated semantic obligation in the small-step denotation."
+    },
+    {
+      "evidence": "evaluate_contract_semantics alignment",
+      "family": "monitor-soundness",
       "feature": "strict closed world",
       "findings": [],
       "formal_clause": "MON.soundness.STRICT.field-closed-world",
@@ -1613,21 +1797,21 @@
   ],
   "service": "gitlab.com-database",
   "summary": {
-    "discharged": 59,
+    "discharged": 70,
     "events": 7,
     "family_counts": {
       "benchmark-label-validity": 1,
-      "monitor-soundness": 19,
+      "monitor-soundness": 24,
       "preservation": 3,
       "refinement": 3,
-      "satisfaction": 19,
-      "well-formedness": 27
+      "satisfaction": 24,
+      "well-formedness": 28
     },
-    "features_cataloged": 24,
-    "obligations": 72,
+    "features_cataloged": 25,
+    "obligations": 83,
     "pending": 3,
     "status_counts": {
-      "discharged": 59,
+      "discharged": 70,
       "pending": 3,
       "violated": 10
     },
