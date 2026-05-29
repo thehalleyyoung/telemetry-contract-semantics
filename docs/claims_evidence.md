@@ -7,6 +7,7 @@
 - Added a reconstructed public historical case study for the GitLab.com 2017 database outage with source citations, fixture metadata, expected findings, and tests.
 - Added a current public-code case study for OWASP SecureTea Project `Signin.js` at commit `7a2da8756e6addbe379ae9b23905dcdbe68b3814`, with exact source URL, retrieval date, file SHA, license note, copied MIT-licensed source, labeled findings, and generated reports in `reports/current_impact.json` and `reports/current_impact.md`.
 - Added core schema/static-analysis improvements: finding taxonomy with remediation, sensitivity classification, forbidden-pattern checks, sensitive-value detection, bounded-cardinality policy warnings, source locations, and static rules for sensitive-value logging.
+- Added incident-readiness JSON/Markdown reports for the reconstructed GitLab 2017 fixture in `reports/gitlab_2017_incident_readiness.json` and `reports/gitlab_2017_incident_readiness.md`, scoring required evidence, temporal/correlation coverage, privacy risk, remediation completeness, unanswered questions, and top remediation groups.
 
 ## Bounded novelty claim
 
@@ -51,6 +52,20 @@ python3 -m telemetry_contracts.cli static \
   --contract case_studies/current/owasp_securetea_signin/contract.json \
   case_studies/current/owasp_securetea_signin/Signin.js \
   --format json --fail-on never
+python3 -m telemetry_contracts.cli report incident-readiness \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --scenario restore-readiness \
+  --format json \
+  --output reports/gitlab_2017_incident_readiness.json \
+  --fail-on never
+python3 -m telemetry_contracts.cli report incident-readiness \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --scenario restore-readiness \
+  --format markdown \
+  --output reports/gitlab_2017_incident_readiness.md \
+  --fail-on never
 ```
 
-The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json` and `case_studies/current/owasp_securetea_signin/metadata.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 3 contracts, 10 runtime events, 14 total labeled findings, and 1.0 precision/recall for the current static case.
+The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json` and `case_studies/current/owasp_securetea_signin/metadata.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 3 contracts, 10 runtime events, 14 total labeled findings, and 1.0 precision/recall for the current static case. The GitLab incident-readiness report records 12 findings, 3 missing required-evidence obligations, 3 missing fields for the `restore-readiness` question, and 100% remediation text coverage for those bounded findings.

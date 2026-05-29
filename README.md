@@ -8,6 +8,7 @@ This repository turns that thesis into executable checks:
 - Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
 - Static telemetry security checks for sensitive values in logs and optional high-cardinality/correlation policies.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
+- Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - A benchmark harness for built-in or user-provided contract/event corpora.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
@@ -41,6 +42,11 @@ python3 -m telemetry_contracts.cli scenario \
   --contract examples/contracts/checkout.contract.json \
   --events examples/telemetry/passing.jsonl \
   --id payment-timeout
+
+python3 -m telemetry_contracts.cli report incident-readiness \
+  --contract examples/contracts/checkout.contract.json \
+  --events examples/telemetry/passing.jsonl \
+  --format markdown
 
 python3 -m telemetry_contracts.cli import-otlp \
   --input examples/real_world/otel_checkout_missing_tenant.otlp.json \
@@ -135,6 +141,7 @@ Supported checks include:
 - Temporal sequence checks over spans, metrics, and logs using timestamps and optional `group_by` incident windows.
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`.
+- Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
 
 ## Runtime event format
 
@@ -156,8 +163,9 @@ Findings include severity, code, message, event path, contract path, and details
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
+- `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
-- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, and `benchmark` commands.
+- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `report incident-readiness`, and `benchmark` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -207,6 +215,19 @@ The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It en
 
 See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
 
+Generate a bounded incident-readiness report for this historical reconstruction:
+
+```bash
+python3 -m telemetry_contracts.cli report incident-readiness \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --scenario restore-readiness \
+  --format markdown \
+  --fail-on never
+```
+
+The command reports missing evidence for the declared restore-readiness question and phrases the result as artifact-scoped evidence over reconstructed public facts, not as a claim about GitLab's private telemetry.
+
 ## Current public-code case study
 
 `case_studies/current/owasp_securetea_signin/` contains a public-code defensive analysis fixture:
@@ -227,6 +248,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Cardinality is checked over the supplied sample window, not a production time series backend.
 - Sampling and retention stubs are linted for machine-readable contract shape, but not verified against live collector or backend configuration.
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
+- Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
 
 ## Development
 

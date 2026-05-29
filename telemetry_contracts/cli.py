@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from .findings import Finding, has_at_least
+from .incident_report import format_incident_readiness_markdown, generate_incident_readiness_report
 from .loader import ContractLoadError, load_contract, load_jsonl
 from .otlp import load_otlp_json, write_jsonl
 from .scenario import check_scenario, choose_scenario
@@ -48,6 +49,16 @@ def main(argv: list[str] | None = None) -> int:
     benchmark_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     benchmark_parser.add_argument("--output")
 
+    report_parser = subparsers.add_parser("report", help="generate operational reports from contracts and telemetry")
+    report_subparsers = report_parser.add_subparsers(dest="report_command", required=True)
+    readiness_parser = report_subparsers.add_parser("incident-readiness", help="score incident diagnosability and remediation readiness")
+    readiness_parser.add_argument("--contract", required=True)
+    readiness_parser.add_argument("--events", required=True)
+    readiness_parser.add_argument("--scenario", action="append", default=[])
+    readiness_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    readiness_parser.add_argument("--output")
+    readiness_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
     args = parser.parse_args(argv)
     try:
         if args.command == "import-otlp":
@@ -63,6 +74,18 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
+        if args.command == "report":
+            contract = load_contract(args.contract)
+            events = load_jsonl(args.events)
+            report = generate_incident_readiness_report(contract, events, args.scenario or None)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_incident_readiness_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
         contract = load_contract(args.contract)
         if args.command == "lint-contract":
             findings = validate_contract_shape(contract)

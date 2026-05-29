@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario benchmark
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness benchmark
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario benchmark
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness benchmark
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -19,6 +19,9 @@ static:
 
 scenario:
 	python3 -m telemetry_contracts.cli scenario --contract examples/contracts/checkout.contract.json --events examples/telemetry/passing.jsonl --id payment-timeout
+
+incident-readiness:
+	python3 -m telemetry_contracts.cli report incident-readiness --contract examples/contracts/checkout.contract.json --events examples/telemetry/passing.jsonl --format markdown
 
 benchmark:
 	python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown

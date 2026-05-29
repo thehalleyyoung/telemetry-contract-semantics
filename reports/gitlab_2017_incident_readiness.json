@@ -1,0 +1,267 @@
+{
+  "coverage": {
+    "correlation": {
+      "failed": 0,
+      "notes": "no correlation policy declared",
+      "passed": 0,
+      "score": 100
+    },
+    "privacy": {
+      "failed": 0,
+      "passed": 1,
+      "risk_level": "none",
+      "score": 100
+    },
+    "remediation": {
+      "failed": 0,
+      "passed": 12,
+      "score": 100
+    },
+    "required_evidence": {
+      "failed": 3,
+      "missing": [
+        "log:database.destructive_command.correlation_id",
+        "log:database.destructive_command.command_guard_result",
+        "log:backup.pg_dump.failed.alert_delivered"
+      ],
+      "passed": 24,
+      "score": 89
+    },
+    "temporal": {
+      "failed": 0,
+      "notes": "no temporal_sequences declared",
+      "passed": 0,
+      "score": 100
+    }
+  },
+  "findings": [
+    {
+      "category": "schema",
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source",
+      "details": {
+        "allowed_values": [
+          "verified_backup"
+        ]
+      },
+      "event_index": 5,
+      "message": "field 'source' value 'lvm_snapshot' is not allowed",
+      "path": "event[5].source",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.spans[0].fields.backup_age_hours",
+      "event_index": 5,
+      "message": "field 'backup_age_hours' value 6 is above maximum 1",
+      "path": "event[5].backup_age_hours",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source_environment",
+      "details": {
+        "allowed_values": [
+          "production_backup"
+        ]
+      },
+      "event_index": 5,
+      "message": "field 'source_environment' value 'staging' is not allowed",
+      "path": "event[5].source_environment",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.metrics[0].value",
+      "event_index": 1,
+      "message": "field 'value' value 4294967296 is above maximum 104857600",
+      "path": "event[1].value",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.metrics[1].value",
+      "details": {
+        "allowed_values": [
+          true
+        ]
+      },
+      "event_index": 3,
+      "message": "field 'value' value False is not allowed",
+      "path": "event[3].value",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.logs[0].fields.target_role",
+      "details": {
+        "allowed_values": [
+          "secondary"
+        ]
+      },
+      "event_index": 2,
+      "message": "field 'target_role' value 'primary' is not allowed",
+      "path": "event[2].target_role",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.correlation_id",
+      "event_index": 2,
+      "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+      "path": "event[2].correlation_id",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.command_guard_result",
+      "event_index": 2,
+      "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+      "path": "event[2].command_guard_result",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[1].fields.alert_delivered",
+      "event_index": 4,
+      "message": "log 'backup.pg_dump.failed' missing required field 'alert_delivered'",
+      "path": "event[4].alert_delivered",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].correlation_id",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].command_guard_result",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].requires[2].fields",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed].alert_delivered",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "severity": "error"
+    }
+  ],
+  "limitations": [
+    "Scores are computed from the supplied finite telemetry file and contract, not from production exhaustiveness.",
+    "Historical case-study events are reconstructed fixtures when their metadata says so; findings bound answerability for this artifact only."
+  ],
+  "owner": "",
+  "service": "gitlab.com-database",
+  "summary": {
+    "events": 5,
+    "findings": 12,
+    "findings_by_category": {
+      "diagnosability": 6,
+      "schema": 6
+    },
+    "findings_by_code": {
+      "scenario.missing_field": 3,
+      "telemetry.allowed_values": 4,
+      "telemetry.missing_field": 3,
+      "telemetry.numeric_max": 2
+    },
+    "findings_by_severity": {
+      "error": 12
+    },
+    "incident_readiness_score": 96,
+    "pass": false
+  },
+  "top_remediations": [
+    {
+      "category": "schema",
+      "code": "telemetry.allowed_values",
+      "count": 4,
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "scenario.missing_field",
+      "count": 3,
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "code": "telemetry.missing_field",
+      "count": 3,
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "code": "telemetry.numeric_max",
+      "count": 2,
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "severity": "error"
+    }
+  ],
+  "unanswered_questions": [
+    {
+      "answerable": false,
+      "id": "restore-readiness",
+      "missing_evidence": [
+        {
+          "category": "diagnosability",
+          "code": "scenario.missing_field",
+          "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+          "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+          "path": "events[log=database.destructive_command].correlation_id",
+          "remediation": "Emit the field needed to answer the scenario question.",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "code": "scenario.missing_field",
+          "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+          "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+          "path": "events[log=database.destructive_command].command_guard_result",
+          "remediation": "Emit the field needed to answer the scenario question.",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "code": "scenario.missing_field",
+          "contract_path": "$.scenarios[restore-readiness].requires[2].fields",
+          "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",
+          "path": "events[log=backup.pg_dump.failed].alert_delivered",
+          "remediation": "Emit the field needed to answer the scenario question.",
+          "severity": "error"
+        }
+      ],
+      "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+    }
+  ]
+}
