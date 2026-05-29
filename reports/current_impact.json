@@ -22,7 +22,7 @@
         "findings_by_severity": {},
         "labels": null,
         "pass": true,
-        "runtime_ms": 1.018,
+        "runtime_ms": 1.349,
         "validation_pass": true
       },
       "pass": true,
@@ -362,7 +362,7 @@
             "sarif_level": "error"
           },
           "code": "scenario.missing_field",
-          "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
           "details": {
             "adequacy_model": "diagnosability-adequacy-v1",
             "matching_event_indices": [
@@ -410,7 +410,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 0.873,
+        "runtime_ms": 1.402,
         "validation_pass": false
       },
       "pass": true,
@@ -501,7 +501,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.229,
+        "runtime_ms": 1.986,
         "validation_pass": false
       },
       "pass": true,
@@ -527,6 +527,6 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 4.833
+    "runtime_ms": 7.8
   }
 }

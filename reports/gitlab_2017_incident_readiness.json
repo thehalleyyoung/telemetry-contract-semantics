@@ -26,6 +26,16 @@
             "missing": [
               {
                 "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
                 "code": "scenario.missing_field",
                 "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
                 "details": {
@@ -52,6 +62,16 @@
               },
               {
                 "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
                 "code": "scenario.missing_field",
                 "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
                 "details": {
@@ -93,6 +113,79 @@
           },
           {
             "contract_path": "$.scenarios[restore-readiness].minimum_observations[1]",
+            "evidence_path": "events[alternative=destructive-command-location-evidence]",
+            "fields": [
+              "target_host",
+              "intended_host",
+              "target_role"
+            ],
+            "index": 1,
+            "matching_event_indices": [
+              1
+            ],
+            "missing_fields": [],
+            "name": "destructive-command-location-evidence",
+            "observed_fields": [
+              "intended_host",
+              "target_host",
+              "target_role"
+            ],
+            "options": [
+              {
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[1].any_of[0]",
+                "evidence_path": "events[log=database.destructive_command]",
+                "fields": [
+                  "target_host",
+                  "intended_host",
+                  "target_role"
+                ],
+                "id": "structured-log",
+                "matching_event_indices": [
+                  1
+                ],
+                "missing_fields": [],
+                "name": "database.destructive_command",
+                "observed_fields": [
+                  "intended_host",
+                  "target_host",
+                  "target_role"
+                ],
+                "satisfied": true,
+                "signal": "log",
+                "status": "satisfied",
+                "witness_event_index": 1
+              },
+              {
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[1].any_of[1]",
+                "evidence_path": "events[span=database.destructive_command]",
+                "fields": [
+                  "target_host",
+                  "intended_host",
+                  "target_role"
+                ],
+                "id": "operation-span",
+                "matching_event_indices": [],
+                "missing_fields": [
+                  "intended_host",
+                  "target_host",
+                  "target_role"
+                ],
+                "name": "database.destructive_command",
+                "observed_fields": [],
+                "satisfied": false,
+                "signal": "span",
+                "status": "missing-signal",
+                "witness_event_index": null
+              }
+            ],
+            "purpose": "Accept either structured log or operation span evidence for host/role location, while other observations still require guard and correlation details.",
+            "satisfied": true,
+            "signal": "alternative",
+            "status": "satisfied",
+            "winning_option": "structured-log"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
             "evidence_path": "events[metric=backup.pg_dump.success]",
             "fields": [
               "backup_job_id",
@@ -100,7 +193,7 @@
               "database_version",
               "tool_version"
             ],
-            "index": 1,
+            "index": 2,
             "matching_event_indices": [
               2
             ],
@@ -117,7 +210,7 @@
             "status": "satisfied"
           },
           {
-            "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
             "evidence_path": "events[log=backup.pg_dump.failed]",
             "fields": [
               "backup_job_id",
@@ -125,15 +218,25 @@
               "alert_route",
               "alert_delivered"
             ],
-            "index": 2,
+            "index": 3,
             "matching_event_indices": [
               3
             ],
             "missing": [
               {
                 "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
                 "code": "scenario.missing_field",
-                "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
                 "details": {
                   "adequacy_model": "diagnosability-adequacy-v1",
                   "matching_event_indices": [
@@ -171,14 +274,14 @@
             "status": "missing-fields"
           },
           {
-            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
             "evidence_path": "events[span=disaster_recovery.restore_attempt]",
             "fields": [
               "source",
               "backup_age_hours",
               "source_environment"
             ],
-            "index": 3,
+            "index": 4,
             "matching_event_indices": [
               4
             ],
@@ -194,14 +297,14 @@
             "status": "satisfied"
           },
           {
-            "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[5]",
             "evidence_path": "events[metric=postgres.replication.lag_bytes]",
             "fields": [
               "primary_host",
               "replica_host",
               "incident_id"
             ],
-            "index": 4,
+            "index": 5,
             "matching_event_indices": [
               0
             ],
@@ -392,6 +495,16 @@
   "findings": [
     {
       "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.allowed_values",
       "contract_path": "$.spans[0].fields.source",
       "details": {
@@ -411,6 +524,16 @@
     },
     {
       "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.numeric_max",
       "contract_path": "$.spans[0].fields.backup_age_hours",
       "disclosure_sensitivity": "internal",
@@ -425,6 +548,16 @@
     },
     {
       "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.allowed_values",
       "contract_path": "$.spans[0].fields.source_environment",
       "details": {
@@ -444,6 +577,16 @@
     },
     {
       "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.numeric_max",
       "contract_path": "$.metrics[0].value",
       "disclosure_sensitivity": "internal",
@@ -458,6 +601,16 @@
     },
     {
       "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.allowed_values",
       "contract_path": "$.metrics[1].value",
       "details": {
@@ -477,6 +630,16 @@
     },
     {
       "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.allowed_values",
       "contract_path": "$.logs[0].fields.target_role",
       "details": {
@@ -496,6 +659,16 @@
     },
     {
       "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.missing_field",
       "contract_path": "$.logs[0].fields.correlation_id",
       "disclosure_sensitivity": "internal",
@@ -510,6 +683,16 @@
     },
     {
       "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.missing_field",
       "contract_path": "$.logs[0].fields.command_guard_result",
       "disclosure_sensitivity": "internal",
@@ -524,6 +707,16 @@
     },
     {
       "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "telemetry.missing_field",
       "contract_path": "$.logs[1].fields.alert_delivered",
       "disclosure_sensitivity": "internal",
@@ -538,6 +731,16 @@
     },
     {
       "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "scenario.missing_field",
       "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
       "details": {
@@ -564,6 +767,16 @@
     },
     {
       "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "scenario.missing_field",
       "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
       "details": {
@@ -590,8 +803,18 @@
     },
     {
       "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "scenario.missing_field",
-      "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
       "details": {
         "adequacy_model": "diagnosability-adequacy-v1",
         "matching_event_indices": [
@@ -692,6 +915,16 @@
           "missing": [
             {
               "category": "diagnosability",
+              "ci": {
+                "baseline_key_fields": [
+                  "code",
+                  "path",
+                  "contract_path",
+                  "event_index"
+                ],
+                "default_fail_on": "error",
+                "sarif_level": "error"
+              },
               "code": "scenario.missing_field",
               "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
               "details": {
@@ -718,6 +951,16 @@
             },
             {
               "category": "diagnosability",
+              "ci": {
+                "baseline_key_fields": [
+                  "code",
+                  "path",
+                  "contract_path",
+                  "event_index"
+                ],
+                "default_fail_on": "error",
+                "sarif_level": "error"
+              },
               "code": "scenario.missing_field",
               "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
               "details": {
@@ -759,6 +1002,79 @@
         },
         {
           "contract_path": "$.scenarios[restore-readiness].minimum_observations[1]",
+          "evidence_path": "events[alternative=destructive-command-location-evidence]",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ],
+          "index": 1,
+          "matching_event_indices": [
+            1
+          ],
+          "missing_fields": [],
+          "name": "destructive-command-location-evidence",
+          "observed_fields": [
+            "intended_host",
+            "target_host",
+            "target_role"
+          ],
+          "options": [
+            {
+              "contract_path": "$.scenarios[restore-readiness].minimum_observations[1].any_of[0]",
+              "evidence_path": "events[log=database.destructive_command]",
+              "fields": [
+                "target_host",
+                "intended_host",
+                "target_role"
+              ],
+              "id": "structured-log",
+              "matching_event_indices": [
+                1
+              ],
+              "missing_fields": [],
+              "name": "database.destructive_command",
+              "observed_fields": [
+                "intended_host",
+                "target_host",
+                "target_role"
+              ],
+              "satisfied": true,
+              "signal": "log",
+              "status": "satisfied",
+              "witness_event_index": 1
+            },
+            {
+              "contract_path": "$.scenarios[restore-readiness].minimum_observations[1].any_of[1]",
+              "evidence_path": "events[span=database.destructive_command]",
+              "fields": [
+                "target_host",
+                "intended_host",
+                "target_role"
+              ],
+              "id": "operation-span",
+              "matching_event_indices": [],
+              "missing_fields": [
+                "intended_host",
+                "target_host",
+                "target_role"
+              ],
+              "name": "database.destructive_command",
+              "observed_fields": [],
+              "satisfied": false,
+              "signal": "span",
+              "status": "missing-signal",
+              "witness_event_index": null
+            }
+          ],
+          "purpose": "Accept either structured log or operation span evidence for host/role location, while other observations still require guard and correlation details.",
+          "satisfied": true,
+          "signal": "alternative",
+          "status": "satisfied",
+          "winning_option": "structured-log"
+        },
+        {
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
           "evidence_path": "events[metric=backup.pg_dump.success]",
           "fields": [
             "backup_job_id",
@@ -766,7 +1082,7 @@
             "database_version",
             "tool_version"
           ],
-          "index": 1,
+          "index": 2,
           "matching_event_indices": [
             2
           ],
@@ -783,7 +1099,7 @@
           "status": "satisfied"
         },
         {
-          "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
           "evidence_path": "events[log=backup.pg_dump.failed]",
           "fields": [
             "backup_job_id",
@@ -791,15 +1107,25 @@
             "alert_route",
             "alert_delivered"
           ],
-          "index": 2,
+          "index": 3,
           "matching_event_indices": [
             3
           ],
           "missing": [
             {
               "category": "diagnosability",
+              "ci": {
+                "baseline_key_fields": [
+                  "code",
+                  "path",
+                  "contract_path",
+                  "event_index"
+                ],
+                "default_fail_on": "error",
+                "sarif_level": "error"
+              },
               "code": "scenario.missing_field",
-              "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+              "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
               "details": {
                 "adequacy_model": "diagnosability-adequacy-v1",
                 "matching_event_indices": [
@@ -837,14 +1163,14 @@
           "status": "missing-fields"
         },
         {
-          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
           "evidence_path": "events[span=disaster_recovery.restore_attempt]",
           "fields": [
             "source",
             "backup_age_hours",
             "source_environment"
           ],
-          "index": 3,
+          "index": 4,
           "matching_event_indices": [
             4
           ],
@@ -860,14 +1186,14 @@
           "status": "satisfied"
         },
         {
-          "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[5]",
           "evidence_path": "events[metric=postgres.replication.lag_bytes]",
           "fields": [
             "primary_host",
             "replica_host",
             "incident_id"
           ],
-          "index": 4,
+          "index": 5,
           "matching_event_indices": [
             0
           ],
@@ -886,6 +1212,16 @@
       "missing_evidence": [
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "scenario.missing_field",
           "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
           "details": {
@@ -912,6 +1248,16 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "scenario.missing_field",
           "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
           "details": {
@@ -938,8 +1284,18 @@
         },
         {
           "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
           "code": "scenario.missing_field",
-          "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields",
           "details": {
             "adequacy_model": "diagnosability-adequacy-v1",
             "matching_event_indices": [

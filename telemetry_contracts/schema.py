@@ -24,6 +24,7 @@ CONTRACT_SCHEMA: dict[str, Any] = {
         "static_expectations": {"$ref": "#/$defs/staticExpectations"},
         "static_rules": {"type": "object"},
         "scenarios": {"type": "array", "items": {"$ref": "#/$defs/scenario"}},
+        "alternative_obligations": {"type": "array", "items": {"$ref": "#/$defs/alternativeObligation"}},
     },
     "$defs": {
         "primitive": {"enum": ["string", "integer", "number", "boolean", "object", "array", "null", "str", "int", "float", "bool", "dict", "list"]},
@@ -220,14 +221,41 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                 "minimum_observations": {"type": "array", "items": {"$ref": "#/$defs/scenarioRequirement"}},
             },
         },
-        "scenarioRequirement": {
+        "alternativeObligation": {
+            "type": "object",
+            "required": ["id", "any_of"],
+            "properties": {
+                "id": {"type": "string"},
+                "purpose": {"type": "string"},
+                "description": {"type": "string"},
+                "required": {"type": "boolean"},
+                "any_of": {"type": "array", "items": {"$ref": "#/$defs/alternativeOption"}},
+            },
+        },
+        "alternativeOption": {
             "type": "object",
             "required": ["signal", "name"],
             "properties": {
+                "id": {"type": "string"},
+                "signal": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                "kind": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                "name": {"type": "string"},
+                "fields": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+        "scenarioRequirement": {
+            "type": "object",
+            "anyOf": [
+                {"required": ["signal", "name"]},
+                {"required": ["any_of"]},
+            ],
+            "properties": {
+                "id": {"type": "string"},
                 "signal": {"enum": ["span", "log", "metric"]},
                 "name": {"type": "string"},
                 "purpose": {"type": "string"},
                 "fields": {"type": "array", "items": {"type": "string"}},
+                "any_of": {"type": "array", "items": {"$ref": "#/$defs/alternativeOption"}},
             },
         },
     },

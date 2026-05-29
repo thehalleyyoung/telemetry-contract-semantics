@@ -10,7 +10,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 
 - **Drop-in CI value:** lint contracts, validate JSONL or OTLP exports, run static source checks, and fail pull requests only on new or high-severity semantic regressions.
 - **Collector-export value:** analyze OpenTelemetry Collector file-exporter output for preservation of spans, logs, metrics, resources, scopes, exemplars, links, temporality, provenance, and selected incident-question witnesses before and after approved transformations.
-- **Incident-readiness value:** produce reports that list which incident questions are answerable, which evidence is missing, which service owner is affected, and which remediation is most direct.
+- **Incident-readiness value:** produce reports that list which incident questions are answerable, which evidence is missing, which service owner is affected, and which remediation is most direct. Alternative-obligation reports should explain when one equivalent evidence path witnesses an obligation so teams avoid duplicate false positives.
 - **Privacy/security value:** flag likely PII, secrets, tenant identifiers, unsafe payload previews, high-cardinality labels, and non-preserving scrubbing or sampling claims.
 - **Research value:** define an executable trace semantics, contract satisfaction relation, refinement relation, and transformation-preservation obligations for observability data.
 - **Artifact value:** keep claims reproducible through tests, fixtures, public datasets, benchmark reports, machine-readable finding-taxonomy coverage, checksums, retrieval dates, and a claims-to-evidence matrix.
@@ -27,7 +27,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 
 ### Semantic relations
 
-- **Satisfaction (`T ⊨ C`):** a finite trace satisfies a contract when all required presence, type, unit, range, allowed-value, forbidden-pattern, correlation, severity, temporal, privacy, and scenario-answerability obligations hold under declared assumptions.
+- **Satisfaction (`T ⊨ C`):** a finite trace satisfies a contract when all required presence, type, unit, range, allowed-value, forbidden-pattern, correlation, severity, temporal, privacy, alternative-disjunction, and scenario-answerability obligations hold under declared assumptions.
 - **Adequacy:** a trace is adequate for an incident question when it contains the minimal evidence needed to distinguish the contract's expected causes, mitigations, and owner actions.
 - **Observational equivalence:** two traces are equivalent for a debugging task when they answer the same contract-declared questions, even if one is scrubbed, sampled, or aggregated.
 - **Refinement:** a contract refines another when it preserves required evidence, strengthens guarantees only compatibly, does not weaken privacy obligations, and makes assumptions no harder to satisfy without notice.
@@ -47,7 +47,7 @@ The near-term formal deliverable should be a mechanizable core semantics in repo
 6. **Static analysis:** approximate emitted telemetry using AST-aware detectors and abstract domains for bounded strings, attribute presence, severity, units, privacy class, and path feasibility.
 7. **Refinement checking:** compare contract versions to identify weakened obligations, incompatible assumptions, changed privacy classifications, and non-preserving transformations.
 8. **Benchmark evaluation:** compute labels, precision, recall, F1, findings per K events, runtime per K events, memory envelope, import loss, and diagnosability-score deltas.
-9. **Report generation:** emit JSON, Markdown, and SARIF findings plus service-owner, incident-readiness, benchmark, and claims-to-evidence reports.
+9. **Report generation:** emit JSON, Markdown, and SARIF findings plus service-owner, incident-readiness, alternative-obligation, benchmark, and claims-to-evidence reports.
 
 ## CLI and user workflows
 

@@ -1,5 +1,73 @@
 {
   "$defs": {
+    "alternativeObligation": {
+      "properties": {
+        "any_of": {
+          "items": {
+            "$ref": "#/$defs/alternativeOption"
+          },
+          "type": "array"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "any_of"
+      ],
+      "type": "object"
+    },
+    "alternativeOption": {
+      "properties": {
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "signal": {
+          "enum": [
+            "span",
+            "log",
+            "metric",
+            "spans",
+            "logs",
+            "metrics"
+          ]
+        }
+      },
+      "required": [
+        "signal",
+        "name"
+      ],
+      "type": "object"
+    },
     "baseSignal": {
       "properties": {
         "attributes": {
@@ -407,12 +475,34 @@
       "type": "object"
     },
     "scenarioRequirement": {
+      "anyOf": [
+        {
+          "required": [
+            "signal",
+            "name"
+          ]
+        },
+        {
+          "required": [
+            "any_of"
+          ]
+        }
+      ],
       "properties": {
+        "any_of": {
+          "items": {
+            "$ref": "#/$defs/alternativeOption"
+          },
+          "type": "array"
+        },
         "fields": {
           "items": {
             "type": "string"
           },
           "type": "array"
+        },
+        "id": {
+          "type": "string"
         },
         "name": {
           "type": "string"
@@ -428,10 +518,6 @@
           ]
         }
       },
-      "required": [
-        "signal",
-        "name"
-      ],
       "type": "object"
     },
     "severityPolicy": {
@@ -539,6 +625,12 @@
   "$id": "https://example.org/telemetry-contracts/contract.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "properties": {
+    "alternative_obligations": {
+      "items": {
+        "$ref": "#/$defs/alternativeObligation"
+      },
+      "type": "array"
+    },
     "correlation": {
       "$ref": "#/$defs/correlationPolicy"
     },

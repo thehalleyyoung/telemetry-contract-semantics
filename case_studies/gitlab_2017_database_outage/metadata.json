@@ -58,6 +58,6 @@
     {"code": "telemetry.missing_field", "severity": "error", "path": "event[4].alert_delivered", "contract_path": "$.logs[1].fields.alert_delivered", "event_index": 4},
     {"code": "scenario.missing_field", "severity": "error", "path": "events[log=database.destructive_command].correlation_id", "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields"},
     {"code": "scenario.missing_field", "severity": "error", "path": "events[log=database.destructive_command].command_guard_result", "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields"},
-    {"code": "scenario.missing_field", "severity": "error", "path": "events[log=backup.pg_dump.failed].alert_delivered", "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields"}
+    {"code": "scenario.missing_field", "severity": "error", "path": "events[log=backup.pg_dump.failed].alert_delivered", "contract_path": "$.scenarios[restore-readiness].minimum_observations[3].fields"}
   ]
 }

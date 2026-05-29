@@ -10,8 +10,12 @@
     ],
     "reconstruction": "Events are synthetic fixtures derived from public facts; they are not GitLab raw telemetry.",
     "transformation_preservation": {
-      "approved_transformations": ["sampling"],
-      "preserve_scenarios": ["restore-readiness"],
+      "approved_transformations": [
+        "sampling"
+      ],
+      "preserve_scenarios": [
+        "restore-readiness"
+      ],
       "claim": "The sampled/degraded derivative must preserve every restore-readiness witness that the reconstructed source trace already contains."
     }
   },
@@ -20,9 +24,26 @@
       "name": "disaster_recovery.restore_attempt",
       "required": true,
       "fields": {
-        "source": {"type": "string", "required": true, "allowed_values": ["verified_backup"]},
-        "backup_age_hours": {"type": "number", "required": true, "min": 0, "max": 1},
-        "source_environment": {"type": "string", "required": true, "allowed_values": ["production_backup"]}
+        "source": {
+          "type": "string",
+          "required": true,
+          "allowed_values": [
+            "verified_backup"
+          ]
+        },
+        "backup_age_hours": {
+          "type": "number",
+          "required": true,
+          "min": 0,
+          "max": 1
+        },
+        "source_environment": {
+          "type": "string",
+          "required": true,
+          "allowed_values": [
+            "production_backup"
+          ]
+        }
       }
     }
   ],
@@ -30,22 +51,52 @@
     {
       "name": "postgres.replication.lag_bytes",
       "required": true,
-      "value": {"type": "number", "min": 0, "max": 104857600},
+      "value": {
+        "type": "number",
+        "min": 0,
+        "max": 104857600
+      },
       "tags": {
-        "primary_host": {"type": "string", "required": true},
-        "replica_host": {"type": "string", "required": true},
-        "incident_id": {"type": "string", "required": true}
+        "primary_host": {
+          "type": "string",
+          "required": true
+        },
+        "replica_host": {
+          "type": "string",
+          "required": true
+        },
+        "incident_id": {
+          "type": "string",
+          "required": true
+        }
       }
     },
     {
       "name": "backup.pg_dump.success",
       "required": true,
-      "value": {"type": "boolean", "allowed_values": [true]},
+      "value": {
+        "type": "boolean",
+        "allowed_values": [
+          true
+        ]
+      },
       "tags": {
-        "backup_job_id": {"type": "string", "required": true},
-        "destination": {"type": "string", "required": true},
-        "database_version": {"type": "string", "required": true},
-        "tool_version": {"type": "string", "required": true}
+        "backup_job_id": {
+          "type": "string",
+          "required": true
+        },
+        "destination": {
+          "type": "string",
+          "required": true
+        },
+        "database_version": {
+          "type": "string",
+          "required": true
+        },
+        "tool_version": {
+          "type": "string",
+          "required": true
+        }
       }
     }
   ],
@@ -56,12 +107,36 @@
       "severity": "ERROR",
       "message_pattern": "production database directory removal|destructive command",
       "fields": {
-        "actor_role": {"type": "string", "required": true},
-        "target_host": {"type": "string", "required": true},
-        "intended_host": {"type": "string", "required": true},
-        "target_role": {"type": "string", "required": true, "allowed_values": ["secondary"]},
-        "correlation_id": {"type": "string", "required": true},
-        "command_guard_result": {"type": "string", "required": true, "allowed_values": ["blocked"]}
+        "actor_role": {
+          "type": "string",
+          "required": true
+        },
+        "target_host": {
+          "type": "string",
+          "required": true
+        },
+        "intended_host": {
+          "type": "string",
+          "required": true
+        },
+        "target_role": {
+          "type": "string",
+          "required": true,
+          "allowed_values": [
+            "secondary"
+          ]
+        },
+        "correlation_id": {
+          "type": "string",
+          "required": true
+        },
+        "command_guard_result": {
+          "type": "string",
+          "required": true,
+          "allowed_values": [
+            "blocked"
+          ]
+        }
       }
     },
     {
@@ -70,10 +145,25 @@
       "severity": "ERROR",
       "message_pattern": "pg_dump.*version mismatch|cron email rejected",
       "fields": {
-        "backup_job_id": {"type": "string", "required": true},
-        "destination": {"type": "string", "required": true},
-        "alert_route": {"type": "string", "required": true},
-        "alert_delivered": {"type": "boolean", "required": true, "allowed_values": [true]}
+        "backup_job_id": {
+          "type": "string",
+          "required": true
+        },
+        "destination": {
+          "type": "string",
+          "required": true
+        },
+        "alert_route": {
+          "type": "string",
+          "required": true
+        },
+        "alert_delivered": {
+          "type": "boolean",
+          "required": true,
+          "allowed_values": [
+            true
+          ]
+        }
       }
     }
   ],
@@ -82,11 +172,115 @@
       "id": "restore-readiness",
       "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?",
       "minimum_observations": [
-        {"signal": "log", "name": "database.destructive_command", "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.", "fields": ["target_host", "intended_host", "target_role", "correlation_id", "command_guard_result"]},
-        {"signal": "metric", "name": "backup.pg_dump.success", "purpose": "Show whether a restorable logical backup existed with enough destination and version metadata to select it.", "fields": ["backup_job_id", "destination", "database_version", "tool_version"]},
-        {"signal": "log", "name": "backup.pg_dump.failed", "purpose": "Show whether backup failure alerts were routed and delivered to responders.", "fields": ["backup_job_id", "destination", "alert_route", "alert_delivered"]},
-        {"signal": "span", "name": "disaster_recovery.restore_attempt", "purpose": "Explain the recovery source, its freshness, and whether it came from production backup evidence.", "fields": ["source", "backup_age_hours", "source_environment"]},
-        {"signal": "metric", "name": "postgres.replication.lag_bytes", "purpose": "Bound replica freshness and connect replication state to the incident slice.", "fields": ["primary_host", "replica_host", "incident_id"]}
+        {
+          "signal": "log",
+          "name": "database.destructive_command",
+          "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role",
+            "correlation_id",
+            "command_guard_result"
+          ]
+        },
+        {
+          "id": "destructive-command-location-evidence",
+          "purpose": "Accept either structured log or operation span evidence for host/role location, while other observations still require guard and correlation details.",
+          "any_of": [
+            {
+              "id": "structured-log",
+              "signal": "log",
+              "name": "database.destructive_command",
+              "fields": [
+                "target_host",
+                "intended_host",
+                "target_role"
+              ]
+            },
+            {
+              "id": "operation-span",
+              "signal": "span",
+              "name": "database.destructive_command",
+              "fields": [
+                "target_host",
+                "intended_host",
+                "target_role"
+              ]
+            }
+          ]
+        },
+        {
+          "signal": "metric",
+          "name": "backup.pg_dump.success",
+          "purpose": "Show whether a restorable logical backup existed with enough destination and version metadata to select it.",
+          "fields": [
+            "backup_job_id",
+            "destination",
+            "database_version",
+            "tool_version"
+          ]
+        },
+        {
+          "signal": "log",
+          "name": "backup.pg_dump.failed",
+          "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+          "fields": [
+            "backup_job_id",
+            "destination",
+            "alert_route",
+            "alert_delivered"
+          ]
+        },
+        {
+          "signal": "span",
+          "name": "disaster_recovery.restore_attempt",
+          "purpose": "Explain the recovery source, its freshness, and whether it came from production backup evidence.",
+          "fields": [
+            "source",
+            "backup_age_hours",
+            "source_environment"
+          ]
+        },
+        {
+          "signal": "metric",
+          "name": "postgres.replication.lag_bytes",
+          "purpose": "Bound replica freshness and connect replication state to the incident slice.",
+          "fields": [
+            "primary_host",
+            "replica_host",
+            "incident_id"
+          ]
+        }
+      ]
+    }
+  ],
+  "alternative_obligations": [
+    {
+      "id": "destructive-command-location-evidence",
+      "purpose": "A destructive-command location witness may be emitted as either a structured log or an equivalent span; one concrete witness avoids duplicate false positives for the absent representation.",
+      "required": true,
+      "any_of": [
+        {
+          "id": "structured-log",
+          "signal": "log",
+          "name": "database.destructive_command",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ]
+        },
+        {
+          "id": "operation-span",
+          "signal": "span",
+          "name": "database.destructive_command",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ]
+        }
       ]
     }
   ]

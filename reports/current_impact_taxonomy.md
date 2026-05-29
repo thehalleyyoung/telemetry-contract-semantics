@@ -1,16 +1,17 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 61
-- Categories: `{"contract": 22, "diagnosability": 13, "input": 1, "operability": 3, "preservation": 3, "privacy-security": 6, "scenario": 2, "schema": 9, "static-coverage": 2}`
-- Default severities: `{"error": 56, "warning": 5}`
-- SARIF levels: `{"error": 56, "warning": 5}`
+- Rules: 64
+- Categories: `{"contract": 23, "diagnosability": 15, "input": 1, "operability": 3, "preservation": 3, "privacy-security": 6, "scenario": 2, "schema": 9, "static-coverage": 2}`
+- Default severities: `{"error": 59, "warning": 5}`
+- SARIF levels: `{"error": 59, "warning": 5}`
 
 ## Rule catalog
 
 | Code | Category | Severity | Formal clause | SARIF | CI fail-on | Disclosure | Owner | Remediation |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | contract.allowed_values_type | contract | error | WF.allowed-values | error | error | internal | contract service owner | Declare allowed_values as an array. |
+| contract.alternative_obligation | contract | error | WF.alternative-obligation | error | error | internal | contract service owner | Declare each alternative obligation with an id and a non-empty any_of list of signal options. |
 | contract.conditional_requirement | contract | error | WF.conditional | error | error | internal | contract service owner | Declare conditional requirements with an if field condition and then fields list. |
 | contract.duplicate_field | contract | error | WF.unique-field | error | error | internal | contract service owner | Declare each field name in only one of fields, attributes, or tags for a signal. |
 | contract.duplicate_signal | contract | error | WF.unique-signal | error | error | internal | contract service owner | Keep one contract definition per signal name and kind. |
@@ -39,6 +40,7 @@
 | preservation.contract_obligation | preservation | error | PRES.runtime-obligation | error | error | internal | contract service owner | Change or configure the transformation so transformed telemetry still satisfies obligations that held before transformation. |
 | preservation.scenario_field | preservation | error | PRES.adequacy-field | error | error | internal | contract service owner | Keep the transformed field, or provide an approved surrogate that still answers the selected incident question. |
 | preservation.scenario_signal | preservation | error | PRES.adequacy-signal | error | error | internal | contract service owner | Keep at least one transformed signal witness for each selected diagnosability requirement. |
+| scenario.alternative_missing | diagnosability | error | ADEQ.alternative-observation | error | error | internal | contract service owner | Emit one alternative observation that can answer the scenario question. |
 | scenario.missing_field | diagnosability | error | ADEQ.required-field | error | error | internal | contract service owner | Emit the field needed to answer the scenario question. |
 | scenario.missing_signal | diagnosability | error | ADEQ.required-signal | error | error | internal | contract service owner | Emit the signal needed to answer the scenario question. |
 | scenario.not_found | scenario | error | SCENARIO.selection | error | error | internal | contract service owner | Add or select a scenario that matches the incident question. |
@@ -49,6 +51,7 @@
 | static.secret_logging | privacy-security | error | STATIC.raw-sensitive-log | error | error | responsible-disclosure | contract service owner | Remove the sensitive value from logs or log only a redacted/hash surrogate. |
 | static.unbounded_label | operability | warning | STATIC.cardinality-risk | warning | warning | internal | contract service owner | Avoid user-controlled/high-cardinality metric labels or add bucketing. |
 | telemetry.allowed_values | schema | error | SAT.allowed-values | error | error | internal | contract service owner | Normalize the field to one of the declared allowed values. |
+| telemetry.alternative_missing | diagnosability | error | SAT.alternative-disjunction | error | error | internal | contract service owner | Emit at least one of the declared alternative evidence options with its required fields. |
 | telemetry.cardinality | operability | warning | SAT.cardinality-bound | warning | warning | internal | contract service owner | Bucket, hash, drop, or bound labels with excessive cardinality. |
 | telemetry.cardinality_policy | operability | warning | SAT.cardinality-policy | warning | warning | internal | contract service owner | Declare a max cardinality or explicitly allow unbounded values. |
 | telemetry.conditional_missing_field | diagnosability | error | SAT.conditional-obligation | error | error | internal | contract service owner | When the triggering field is present, emit all fields required by the conditional requirement. |

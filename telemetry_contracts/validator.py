@@ -146,6 +146,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                         )
     findings.extend(_validate_correlation_policy_shape(contract.get("correlation")))
     findings.extend(_validate_temporal_sequences_shape(contract.get("temporal_sequences")))
+    findings.extend(_validate_alternative_obligations_shape(contract.get("alternative_obligations")))
     return findings
 
 
@@ -350,6 +351,50 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> l
             findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events, contract))
     findings.extend(_validate_correlation_policy(contract, relevant_events))
     findings.extend(_validate_temporal_sequences(contract, relevant_events))
+    from .alternatives import alternative_obligation_findings
+
+    findings.extend(alternative_obligation_findings(contract, relevant_events))
+    return findings
+
+
+def _validate_alternative_obligations_shape(raw: Any) -> list[Finding]:
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        return [Finding("error", "contract.alternative_obligation", "alternative_obligations must be a list", "$.alternative_obligations")]
+    findings: list[Finding] = []
+    seen_ids: dict[str, int] = {}
+    for index, group in enumerate(raw):
+        path = f"$.alternative_obligations[{index}]"
+        if not isinstance(group, dict):
+            findings.append(Finding("error", "contract.alternative_obligation", "alternative obligation must be an object", path))
+            continue
+        group_id = group.get("id")
+        if not isinstance(group_id, str) or not group_id:
+            findings.append(Finding("error", "contract.alternative_obligation", "alternative obligation must declare a non-empty id", f"{path}.id"))
+        elif group_id in seen_ids:
+            findings.append(Finding("error", "contract.alternative_obligation", f"alternative obligation '{group_id}' is declared more than once", f"{path}.id", f"$.alternative_obligations[{seen_ids[group_id]}].id"))
+        else:
+            seen_ids[group_id] = index
+        if "required" in group and not isinstance(group["required"], bool):
+            findings.append(Finding("error", "contract.required_type", "alternative obligation required flag must be a boolean", f"{path}.required"))
+        options = group.get("any_of")
+        if not isinstance(options, list) or not options:
+            findings.append(Finding("error", "contract.alternative_obligation", "alternative obligation any_of must be a non-empty list", f"{path}.any_of"))
+            continue
+        for option_index, option in enumerate(options):
+            option_path = f"{path}.any_of[{option_index}]"
+            if not isinstance(option, dict):
+                findings.append(Finding("error", "contract.alternative_obligation", "alternative option must be an object", option_path))
+                continue
+            signal = _normalize_signal_kind(option.get("signal", option.get("kind")))
+            if signal not in {"span", "log", "metric"}:
+                findings.append(Finding("error", "contract.alternative_obligation", "alternative option signal must be span, log, or metric", f"{option_path}.signal"))
+            if not isinstance(option.get("name"), str) or not option.get("name"):
+                findings.append(Finding("error", "contract.signal_name", "alternative option must declare a non-empty name", f"{option_path}.name"))
+            fields = option.get("fields", [])
+            if not isinstance(fields, list) or not all(isinstance(field, str) and field for field in fields):
+                findings.append(Finding("error", "contract.alternative_obligation", "alternative option fields must be an array of non-empty strings", f"{option_path}.fields"))
     return findings
 
 

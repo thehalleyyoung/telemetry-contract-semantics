@@ -50,6 +50,16 @@
           },
           {
             "field_status": {
+              "intended_host": true,
+              "target_host": true,
+              "target_role": true
+            },
+            "missing_fields": [],
+            "requirement": "alternative:destructive-command-location-evidence",
+            "signal_present": true
+          },
+          {
+            "field_status": {
               "backup_job_id": true,
               "database_version": true,
               "destination": true,
@@ -112,6 +122,16 @@
               "correlation_id"
             ],
             "requirement": "log:database.destructive_command",
+            "signal_present": true
+          },
+          {
+            "field_status": {
+              "intended_host": true,
+              "target_host": true,
+              "target_role": true
+            },
+            "missing_fields": [],
+            "requirement": "alternative:destructive-command-location-evidence",
             "signal_present": true
           },
           {

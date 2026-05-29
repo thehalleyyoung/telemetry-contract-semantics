@@ -21,7 +21,7 @@ def test_incident_readiness_report_scores_historical_missing_evidence():
     assert report["event_structure"]["model"] == "finite-event-structure"
     assert report["event_structure"]["node_count"] == 5
     assert report["adequacy"]["model"]["name"] == "diagnosability-adequacy-v1"
-    assert len(report["adequacy"]["questions"][0]["minimum_observations"]) == 5
+    assert len(report["adequacy"]["questions"][0]["minimum_observations"]) == 6
     assert report["unanswered_questions"][0]["id"] == "restore-readiness"
     assert len(report["unanswered_questions"][0]["missing_evidence"]) == 3
     assert report["unanswered_questions"][0]["minimum_observations"][0]["status"] == "missing-fields"

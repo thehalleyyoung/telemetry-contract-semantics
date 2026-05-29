@@ -4,6 +4,7 @@ from typing import Any
 
 from .findings import Finding
 from .validator import _MISSING, _lookup_field
+from .alternatives import evaluate_alternative_requirement
 
 ADEQUACY_MODEL = {
     "name": "diagnosability-adequacy-v1",
@@ -66,6 +67,27 @@ def evaluate_scenario_adequacy(contract: dict[str, Any], events: list[dict[str, 
                     "missing": [finding.to_dict()],
                 }
             )
+            continue
+        if "any_of" in requirement:
+            observation = evaluate_alternative_requirement(requirement, events, contract_path)
+            observation["index"] = index
+            if not observation["satisfied"]:
+                finding = Finding(
+                    "error",
+                    "scenario.alternative_missing",
+                    f"scenario '{scenario.get('id')}' requires one satisfied alternative observation",
+                    observation.get("evidence_path", "events[alternative]"),
+                    contract_path,
+                    details={
+                        "adequacy_model": ADEQUACY_MODEL["name"],
+                        "question": scenario.get("question", ""),
+                        "purpose": requirement.get("purpose", ""),
+                        "options": observation.get("options", []),
+                    },
+                )
+                findings.append(finding)
+                observation["missing"] = [finding.to_dict()]
+            observations.append(observation)
             continue
         kind = requirement.get("signal") or requirement.get("kind")
         name = requirement.get("name")

@@ -1,6 +1,6 @@
 # 100 Steps Toward Semantically Grounded, Immediately Useful Telemetry Contracts
 
-This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 24 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
+This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 27 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
 
 ## Phase 0 — Verified foundation already present
 
@@ -41,7 +41,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 ## Phase 2 — Contract language and runtime monitors that teams can gate in CI
 
 - [ ] 031. Add contract composition or inheritance for shared organization policies, with refinement tests proving service contracts do not silently weaken required evidence.
-- [ ] 032. Add optional and alternative signal obligations so semantically equivalent evidence paths can satisfy the same diagnosability requirement without duplicate false positives.
+- [x] 032. Add optional and alternative signal obligations so semantically equivalent evidence paths can satisfy the same diagnosability requirement without duplicate false positives.
 - [ ] 033. Add strict-mode validation for unexpected fields, undeclared signal names, unmodeled services, and undocumented collector transformations, with documented escape hatches.
 - [x] 034. Generate a machine-readable finding taxonomy with severity, category, formal clause, remediation, disclosure sensitivity, service owner, and CI/SARIF mapping.
 - [ ] 035. Add monitor compilation from contract clauses to bounded-memory runtime checks over finite traces and sliding windows, with determinism tests.

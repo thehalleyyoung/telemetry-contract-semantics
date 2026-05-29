@@ -32,6 +32,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "contract.alternative_obligation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.alternative-obligation",
+      "remediation": "Declare each alternative obligation with an id and a non-empty any_of list of signal options.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "contract.conditional_requirement",
       "default_severity": "error",
       "disclosure_sensitivity": "internal",
@@ -592,6 +612,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "scenario.alternative_missing",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.alternative-observation",
+      "remediation": "Emit one alternative observation that can answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "scenario.missing_field",
       "default_severity": "error",
       "disclosure_sensitivity": "internal",
@@ -777,6 +817,26 @@
       "disclosure_sensitivity": "internal",
       "formal_clause": "SAT.allowed-values",
       "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.alternative_missing",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.alternative-disjunction",
+      "remediation": "Emit at least one of the declared alternative evidence options with its required fields.",
       "sarif_level": "error",
       "service_owner": "contract service owner"
     },
@@ -1230,8 +1290,8 @@
   },
   "summary": {
     "categories": {
-      "contract": 22,
-      "diagnosability": 13,
+      "contract": 23,
+      "diagnosability": 15,
       "input": 1,
       "operability": 3,
       "preservation": 3,
@@ -1241,12 +1301,12 @@
       "static-coverage": 2
     },
     "default_severities": {
-      "error": 56,
+      "error": 59,
       "warning": 5
     },
-    "rules": 61,
+    "rules": 64,
     "sarif_levels": {
-      "error": 56,
+      "error": 59,
       "warning": 5
     }
   }

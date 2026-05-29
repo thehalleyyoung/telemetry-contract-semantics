@@ -8,6 +8,7 @@ This repository turns that thesis into executable checks:
 - Static checks that source code contains expected OpenTelemetry-style span, metric, and log names.
 - Static telemetry security checks for sensitive values in logs and optional high-cardinality/correlation policies.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
+- Alternative-obligation checks that let one of several equivalent logs/spans/metrics satisfy a required evidence path without duplicate false positives.
 - Observational-equivalence reports that compare two telemetry streams by incident-question answerability instead of byte equality.
 - Transformation-preservation checks that compare source and post-transform streams to catch approved sampling, redaction, omission, retention, or aggregation that destroys contract or incident-question evidence.
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
@@ -50,6 +51,11 @@ python3 -m telemetry_contracts.cli scenario \
 python3 -m telemetry_contracts.cli report incident-readiness \
   --contract examples/contracts/checkout.contract.json \
   --events examples/telemetry/passing.jsonl \
+  --format markdown
+
+python3 -m telemetry_contracts.cli report alternative-obligations \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
   --format markdown
 
 python3 -m telemetry_contracts.cli import-otlp \
@@ -165,8 +171,9 @@ Supported checks include:
 - Temporal sequence checks over spans, metrics, and logs using timestamps and optional `group_by` incident windows.
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`; transformation-preservation defaults may be declared under `metadata.transformation_preservation` with `approved_transformations` and `preserve_scenarios`.
+- Alternative obligations under `alternative_obligations`, where a required finite disjunction passes when at least one declared option has a witness event containing all required fields; `minimum_observations` scenario entries may also use `any_of` for equivalent evidence paths.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
-- Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item names the span, log, or metric plus required fields and a `purpose`. The finite trace is adequate for that question iff every minimum observation is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
+- Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
 - Transformation preservation for approved telemetry changes. `preservation` implements an obligation-local relation: if a runtime contract obligation or selected scenario witness is satisfied before transformation, it must remain satisfied after transformation. Reports identify new contract failures plus lost incident-question signals/fields, and checked-in GitLab 2017 reports demonstrate a sampled/exported derivative that removes the backup-failure alert witness.
 - Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
@@ -187,14 +194,15 @@ Findings include severity, code, message, event path, contract path, and details
 
 `python3 -m telemetry_contracts.cli describe-model` prints the executable observation domain used by the checker. It maps spans, logs, metrics, resources, scopes, exemplars, timestamps, attributes, and provenance to the repository JSONL fields and the OTLP JSON fields currently normalized by `import-otlp`.
 
-The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary and a finite event-structure view, which is useful for checking what kinds, names, fields, correlation keys, timestamps, parent/child edges, log attachments, metric exemplars, and incident-window happens-before diagrams are actually present in a historical or current fixture.
+The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. For alternative obligations, the executable clause is a finite disjunction: a required group is satisfied iff at least one option has a concrete witness event with every declared field; optional groups record acceptable evidence paths without failing absent telemetry. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary and a finite event-structure view, which is useful for checking what kinds, names, fields, correlation keys, timestamps, parent/child edges, log attachments, metric exemplars, and incident-window happens-before diagrams are actually present in a historical or current fixture.
 
 ## Architecture
 
 - `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
-- `telemetry_contracts.validator` checks emitted telemetry against signal, field, and correlation specifications.
+- `telemetry_contracts.validator` checks emitted telemetry against signal, field, correlation, and alternative-obligation specifications.
 - `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
+- `telemetry_contracts.alternatives` evaluates finite disjunctions over semantically equivalent evidence paths and emits witness/counterexample reports.
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` defines diagnosability adequacy for incident questions and verifies minimum observations against emitted telemetry.
@@ -203,7 +211,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
-- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `benchmark`, and `taxonomy` commands.
+- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, and `taxonomy` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -249,7 +257,7 @@ A benchmark config is JSON with a `cases` list. Each case points to a contract p
 - <https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/>
 - <https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/>
 
-The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot.
+The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence: either a structured log or an equivalent span can satisfy the same host/role evidence requirement.
 
 See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
 
@@ -265,6 +273,18 @@ python3 -m telemetry_contracts.cli report incident-readiness \
 ```
 
 The command reports missing evidence for the declared restore-readiness question and phrases the result as artifact-scoped evidence over reconstructed public facts, not as a claim about GitLab's private telemetry.
+
+Generate the checked-in alternative-obligation witness report:
+
+```bash
+python3 -m telemetry_contracts.cli report alternative-obligations \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format markdown \
+  --output reports/gitlab_2017_alternative_obligations.md
+```
+
+The report records `pass=true`: the structured log witnesses the destructive-command location obligation, while the equivalent span option is absent without creating a duplicate false positive.
 
 ## Current public-code case study
 

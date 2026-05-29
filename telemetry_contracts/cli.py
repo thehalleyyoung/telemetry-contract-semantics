@@ -13,6 +13,7 @@ from .scenario import check_scenario, choose_scenario
 from .semantics import describe_model, format_model_markdown
 from .preservation import check_transformation_preservation, format_preservation_markdown
 from .static_checker import check_sources
+from .alternatives import evaluate_alternative_obligations, format_alternative_obligations_markdown
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .validator import validate_contract_shape, validate_events
@@ -92,6 +93,13 @@ def main(argv: list[str] | None = None) -> int:
     readiness_parser.add_argument("--output")
     readiness_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
+    alternative_parser = report_subparsers.add_parser("alternative-obligations", help="explain disjunctive evidence obligations and witnesses")
+    alternative_parser.add_argument("--contract", required=True)
+    alternative_parser.add_argument("--events", required=True)
+    alternative_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    alternative_parser.add_argument("--output")
+    alternative_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
     args = parser.parse_args(argv)
     try:
         if args.command == "import-otlp":
@@ -154,8 +162,13 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "report":
             contract = load_contract(args.contract)
             events = load_jsonl(args.events)
-            report = generate_incident_readiness_report(contract, events, args.scenario or None)
-            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_incident_readiness_markdown(report)
+            if args.report_command == "alternative-obligations":
+                report = evaluate_alternative_obligations(contract, events)
+                serializable_report = {key: value for key, value in report.items() if key != "raw_findings"}
+                output = json.dumps(serializable_report, indent=2, sort_keys=True) if args.format == "json" else format_alternative_obligations_markdown(serializable_report)
+            else:
+                report = generate_incident_readiness_report(contract, events, args.scenario or None)
+                output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_incident_readiness_markdown(report)
             if args.output:
                 Path(args.output).write_text(output + "\n", encoding="utf-8")
             else:

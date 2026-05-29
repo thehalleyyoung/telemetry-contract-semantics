@@ -1,0 +1,73 @@
+{
+  "alternative_obligations": [
+    {
+      "contract_path": "$.alternative_obligations[0]",
+      "id": "destructive-command-location-evidence",
+      "options": [
+        {
+          "contract_path": "$.alternative_obligations[0].any_of[0]",
+          "evidence_path": "events[log=database.destructive_command]",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ],
+          "id": "structured-log",
+          "matching_event_indices": [
+            1
+          ],
+          "missing_fields": [],
+          "name": "database.destructive_command",
+          "observed_fields": [
+            "intended_host",
+            "target_host",
+            "target_role"
+          ],
+          "satisfied": true,
+          "signal": "log",
+          "status": "satisfied",
+          "witness_event_index": 1
+        },
+        {
+          "contract_path": "$.alternative_obligations[0].any_of[1]",
+          "evidence_path": "events[span=database.destructive_command]",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ],
+          "id": "operation-span",
+          "matching_event_indices": [],
+          "missing_fields": [
+            "intended_host",
+            "target_host",
+            "target_role"
+          ],
+          "name": "database.destructive_command",
+          "observed_fields": [],
+          "satisfied": false,
+          "signal": "span",
+          "status": "missing-signal",
+          "witness_event_index": null
+        }
+      ],
+      "purpose": "A destructive-command location witness may be emitted as either a structured log or an equivalent span; one concrete witness avoids duplicate false positives for the absent representation.",
+      "required": true,
+      "satisfied": true,
+      "winning_option": "structured-log"
+    }
+  ],
+  "findings": [],
+  "model": {
+    "name": "alternative-obligations-v1",
+    "relation": "A required alternative obligation A is satisfied by finite trace T when at least one declared option has a concrete witness event in T containing every field listed for that option. Optional alternatives document acceptable evidence paths but do not make T fail when no option is witnessed. This is an executable finite disjunction: T \u22a8 A iff required(A)=false or \u2203 option,witness. option(witness)."
+  },
+  "service": "gitlab.com-database",
+  "summary": {
+    "groups": 1,
+    "pass": true,
+    "required_groups": 1,
+    "satisfied_groups": 1,
+    "unsatisfied_required_groups": 0
+  }
+}
