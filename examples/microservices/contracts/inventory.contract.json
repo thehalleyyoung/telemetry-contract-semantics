@@ -1,0 +1,148 @@
+{
+  "correlation": {
+    "keys": [
+      "trace_id",
+      "request_id"
+    ],
+    "require_on": [
+      "spans",
+      "metrics",
+      "logs"
+    ]
+  },
+  "logs": [
+    {
+      "fields": {
+        "operation": {
+          "required": true,
+          "type": "string"
+        },
+        "request_id": {
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "required": true,
+          "type": "string"
+        },
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "inventory.operation_completed",
+      "required": true,
+      "severity": "INFO",
+      "severity_policy": {
+        "min": "INFO"
+      }
+    }
+  ],
+  "metadata": {
+    "owner": "inventory-team",
+    "retention": {
+      "logs_days": 14,
+      "metrics_days": 30,
+      "traces_days": 7
+    }
+  },
+  "metrics": [
+    {
+      "name": "inventory.requests",
+      "required": true,
+      "tags": {
+        "request_id": {
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "required": true,
+          "type": "string"
+        },
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "count"
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "inventory-handoff-diagnosis",
+      "minimum_observations": [
+        {
+          "fields": [
+            "request_id",
+            "tenant_id",
+            "status",
+            "duration_ms"
+          ],
+          "name": "inventory.reserve",
+          "signal": "span"
+        },
+        {
+          "fields": [
+            "request_id",
+            "tenant_id",
+            "status"
+          ],
+          "name": "inventory.requests",
+          "signal": "metric"
+        },
+        {
+          "fields": [
+            "request_id",
+            "tenant_id",
+            "status"
+          ],
+          "name": "inventory.operation_completed",
+          "signal": "log"
+        }
+      ],
+      "question": "Can an operator join inventory spans, metrics, and logs for a checkout request handoff?"
+    }
+  ],
+  "service": "inventory",
+  "spans": [
+    {
+      "fields": {
+        "duration_ms": {
+          "min": 0,
+          "required": true,
+          "type": "number",
+          "unit": "ms"
+        },
+        "operation": {
+          "required": true,
+          "type": "string"
+        },
+        "request_id": {
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "allowed_values": [
+            "ok",
+            "degraded",
+            "failed"
+          ],
+          "required": true,
+          "type": "string"
+        },
+        "tenant_id": {
+          "pattern": "tenant-[a-z0-9-]+",
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "inventory.reserve",
+      "required": true
+    }
+  ],
+  "version": "1.0"
+}

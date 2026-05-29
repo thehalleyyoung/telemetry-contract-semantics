@@ -1,0 +1,39 @@
+{
+  "claims": [
+    "This fixture validates that telemetry-contracts reports missing incident-readiness evidence for the encoded blind spot."
+  ],
+  "disclosure_status": "public synthetic fixture",
+  "fixture_status": "synthetic reconstruction of a general public incident pattern, not private telemetry",
+  "id": "database_connection_pool_exhaustion",
+  "labels": {
+    "expected_failure_codes": [
+      "telemetry.missing_field",
+      "telemetry.missing_field"
+    ]
+  },
+  "license": "repository public license",
+  "limitations": [
+    "Synthetic finite telemetry; not a prevalence claim and not an assertion about any named production system."
+  ],
+  "owner_notes": [
+    "Route findings to the service owner declared in contract metadata."
+  ],
+  "public_facts": [
+    "Common operations postmortems often require joining symptom, mitigation, and rollback evidence; this fixture encodes that general diagnostic need without naming a third-party incident."
+  ],
+  "reconstructed_telemetry": {
+    "contract": "contract.json",
+    "events": "events.jsonl",
+    "known_omissions": "Intentional missing evidence is captured by expected_findings labels."
+  },
+  "responsible_handling": [
+    "Do not use this synthetic reconstruction as a vulnerability report against third parties."
+  ],
+  "retrieval_date": "2026-05-29",
+  "source_metadata": {
+    "repository": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+    "template": "case_studies/templates/real_world_fixture_template.json"
+  },
+  "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+  "title": "Database Connection Pool Exhaustion"
+}

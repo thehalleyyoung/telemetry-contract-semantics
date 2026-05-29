@@ -22,7 +22,7 @@ This repository turns that thesis into executable checks:
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON/JSONL import for testing OpenTelemetry collector/exporter captures, preserving spans, logs, metrics, exemplars, links, scope/resource metadata, provenance paths, and import diagnostics.
 - Collector-export analysis for dropped evidence, unknown schemas, high-cardinality attributes, PII/secret patterns, metric temporality, and unsupported OTLP features, plus JSONL↔OTLP round-trip conversion for importer regression tests.
-- A benchmark harness for built-in or user-provided contract/event corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, and OTLP import-loss accounting.
+- A benchmark harness for built-in or user-provided contract/event corpora, with multi-contract cases, metadata, filters, label metrics, remediation grouping, diff reports, runtime/memory counters, OTLP import-loss accounting, a ten-service synthetic microservices fixture, and reconstructed incident-readiness blind-spot fixtures.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, semantic-convention, incident-readiness, equivalence, and preservation outputs.
 - SARIF export for runtime/static findings and benchmark reports, plus CI gate helpers that fail on new unbaselined findings while honoring owned, expiring baselines.
 - Deterministic report regeneration and a public claims-to-evidence matrix that links bounded README/report claims to checked-in fixtures, generated artifacts, and tests.
@@ -40,13 +40,13 @@ This repository turns that thesis into executable checks:
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
-- Passing and failing examples for a checkout/payment service.
+- Passing and failing examples for a checkout/payment service, plus `examples/microservices/` for a correlated checkout flow across checkout, payment, inventory, shipping, auth, notification, queue, cache, database, and collector contracts.
 - Operational scorecards and authoring guidance for HTTP APIs, batch jobs, message consumers, cron tasks, stateful workers, privacy-safe telemetry, operational ranges, anti-patterns, CI/review integration, and OTLP importer limitations in `docs/operational_scorecards.md`.
-- JSON report schema documentation for finding, import-diagnostic, scenario, benchmark, service-owner, and claims-evidence report envelopes under `docs/report_schemas/`, with a replication guide and release checklist for bounded public claims.
+- JSON report schema documentation for finding, import-diagnostic, scenario, benchmark, service-owner, and claims-evidence report envelopes under `docs/report_schemas/`, real-world fixture templates under `case_studies/templates/`, with a replication guide and release checklist for bounded public claims.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 89 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 94 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -109,6 +109,16 @@ python3 -m telemetry_contracts.cli validate \
 
 python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
+  --format markdown
+
+python3 -m telemetry_contracts.cli benchmark \
+  --config benchmarks/builtin.json \
+  --case-id synthetic-microservices-checkout-pass \
+  --format markdown
+
+python3 -m telemetry_contracts.cli benchmark \
+  --config benchmarks/builtin.json \
+  --case-id reconstructed-incident-blind-spots \
   --format markdown
 
 python3 -m telemetry_contracts.cli taxonomy \

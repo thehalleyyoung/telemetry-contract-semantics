@@ -29,7 +29,7 @@ def test_checked_in_taxonomy_artifact_matches_generator():
 def test_taxonomy_summarizes_benchmark_findings():
     summary = summarize_findings([ROOT / "reports/current_impact.json"])
 
-    assert summary["summary"]["findings"] == 52
+    assert summary["summary"]["findings"] == 67
     assert summary["summary"]["unknown_codes"] == []
     assert summary["summary"]["by_formal_clause"]["SAT.allowed-values"] == 4
     assert summary["summary"]["by_category"]["privacy-security"] == 24

@@ -407,6 +407,181 @@
           "path_suffix": "unsafe_transformations_source.py:2:5-2:155"
         }
       ]
+    },
+    {
+      "id": "synthetic-microservices-checkout-pass",
+      "description": "Synthetic ten-service checkout flow covering checkout, payment, inventory, shipping, auth, notification, queue, cache, database, and collector contract correlation.",
+      "contracts": [
+        "../examples/microservices/contracts/checkout.contract.json",
+        "../examples/microservices/contracts/payment.contract.json",
+        "../examples/microservices/contracts/inventory.contract.json",
+        "../examples/microservices/contracts/shipping.contract.json",
+        "../examples/microservices/contracts/auth.contract.json",
+        "../examples/microservices/contracts/notification.contract.json",
+        "../examples/microservices/contracts/queue.contract.json",
+        "../examples/microservices/contracts/cache.contract.json",
+        "../examples/microservices/contracts/database.contract.json",
+        "../examples/microservices/contracts/collector.contract.json"
+      ],
+      "events": "../examples/microservices/events.jsonl",
+      "tags": [
+        "microservices",
+        "correlation",
+        "scenario",
+        "runtime"
+      ],
+      "check_types": [
+        "runtime"
+      ],
+      "dataset": "synthetic-microservices-checkout",
+      "expected_failure_modes": [],
+      "semantics_features": [
+        "cross-service correlation",
+        "multi-contract benchmark loading",
+        "service ownership coverage"
+      ],
+      "service_owner": "platform-observability",
+      "disclosure_status": "public-synthetic-fixture"
+    },
+    {
+      "id": "reconstructed-incident-blind-spots",
+      "description": "Disclosure-safe reconstructed incident datasets for queue backlog autoscaling blind spots, cache/CDN purge failures, database pool exhaustion, and missing rollback evidence.",
+      "metadata": "../case_studies/reconstructed_incidents/metadata.json",
+      "contracts": [
+        "../case_studies/reconstructed_incidents/queue_backlog_autoscaling_blind_spot/contract.json",
+        "../case_studies/reconstructed_incidents/cache_cdn_purge_failure/contract.json",
+        "../case_studies/reconstructed_incidents/database_connection_pool_exhaustion/contract.json",
+        "../case_studies/reconstructed_incidents/missing_rollback_evidence/contract.json"
+      ],
+      "events": "../case_studies/reconstructed_incidents/combined_events.jsonl",
+      "tags": [
+        "incident-readiness",
+        "reconstruction",
+        "runtime"
+      ],
+      "check_types": [
+        "runtime"
+      ],
+      "dataset": "reconstructed-incident-blind-spots",
+      "expected_failure_modes": [
+        "queue_autoscaling_blind_spot",
+        "cache_cdn_purge_failure",
+        "database_pool_exhaustion",
+        "missing_rollback_evidence"
+      ],
+      "semantics_features": [
+        "incident readiness evidence",
+        "missing mitigation evidence",
+        "service owner routing"
+      ],
+      "service_owner": "incident-response-platform",
+      "disclosure_status": "public-synthetic-reconstruction",
+      "expected_findings": [
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[1].autoscaling_policy_id",
+          "contract_path": "$.metrics[0].fields.autoscaling_policy_id",
+          "event_index": 1
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[1].observed_backlog_depth",
+          "contract_path": "$.metrics[0].fields.observed_backlog_depth",
+          "event_index": 1
+        },
+        {
+          "code": "telemetry.missing_signal",
+          "severity": "error",
+          "path": "events[log=queue.autoscaling_decision]",
+          "contract_path": "$.logs[0]"
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[2].cache_key_pattern",
+          "contract_path": "$.metrics[0].fields.cache_key_pattern",
+          "event_index": 2
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[2].rollback_plan",
+          "contract_path": "$.metrics[0].fields.rollback_plan",
+          "event_index": 2
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[3].cache_key_pattern",
+          "contract_path": "$.logs[0].fields.cache_key_pattern",
+          "event_index": 3
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[3].rollback_plan",
+          "contract_path": "$.logs[0].fields.rollback_plan",
+          "event_index": 3
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[4].db_system",
+          "contract_path": "$.metrics[0].fields.db_system",
+          "event_index": 4
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[4].max_connections",
+          "contract_path": "$.metrics[0].fields.max_connections",
+          "event_index": 4
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[4].remediation_hint",
+          "contract_path": "$.metrics[0].fields.remediation_hint",
+          "event_index": 4
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[5].db_system",
+          "contract_path": "$.logs[0].fields.db_system",
+          "event_index": 5
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[5].max_connections",
+          "contract_path": "$.logs[0].fields.max_connections",
+          "event_index": 5
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[5].remediation_hint",
+          "contract_path": "$.logs[0].fields.remediation_hint",
+          "event_index": 5
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[6].previous_version",
+          "contract_path": "$.metrics[0].fields.previous_version",
+          "event_index": 6
+        },
+        {
+          "code": "telemetry.missing_field",
+          "severity": "error",
+          "path": "event[7].previous_version",
+          "contract_path": "$.logs[0].fields.previous_version",
+          "event_index": 7
+        }
+      ]
     }
   ]
 }

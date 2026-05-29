@@ -1,0 +1,56 @@
+{
+  "logs": [
+    {
+      "fields": {
+        "autoscaling_policy_id": {
+          "required": true,
+          "type": "string"
+        },
+        "observed_backlog_depth": {
+          "required": true,
+          "type": "number"
+        },
+        "queue_name": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "queue.autoscaling_decision",
+      "required": true,
+      "severity": "ERROR",
+      "severity_policy": {
+        "min": "ERROR"
+      }
+    }
+  ],
+  "metadata": {
+    "owner": "queue-worker-owner"
+  },
+  "metrics": [
+    {
+      "name": "queue.backlog.depth",
+      "required": true,
+      "tags": {
+        "autoscaling_policy_id": {
+          "required": true,
+          "type": "string"
+        },
+        "observed_backlog_depth": {
+          "required": true,
+          "type": "number"
+        },
+        "queue_name": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "count"
+      }
+    }
+  ],
+  "service": "queue-worker",
+  "version": "1.0"
+}

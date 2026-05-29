@@ -1,0 +1,64 @@
+{
+  "logs": [
+    {
+      "fields": {
+        "cache_key_pattern": {
+          "required": true,
+          "type": "string"
+        },
+        "provider_status": {
+          "required": true,
+          "type": "string"
+        },
+        "purge_id": {
+          "required": true,
+          "type": "string"
+        },
+        "rollback_plan": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "cdn.purge_failure",
+      "required": true,
+      "severity": "ERROR",
+      "severity_policy": {
+        "min": "ERROR"
+      }
+    }
+  ],
+  "metadata": {
+    "owner": "cache-control-owner"
+  },
+  "metrics": [
+    {
+      "name": "cdn.purge.request",
+      "required": true,
+      "tags": {
+        "cache_key_pattern": {
+          "required": true,
+          "type": "string"
+        },
+        "provider_status": {
+          "required": true,
+          "type": "string"
+        },
+        "purge_id": {
+          "required": true,
+          "type": "string"
+        },
+        "rollback_plan": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "count"
+      }
+    }
+  ],
+  "service": "cache-control",
+  "version": "1.0"
+}

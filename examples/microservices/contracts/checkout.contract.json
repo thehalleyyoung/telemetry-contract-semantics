@@ -1,0 +1,148 @@
+{
+  "correlation": {
+    "keys": [
+      "trace_id",
+      "request_id"
+    ],
+    "require_on": [
+      "spans",
+      "metrics",
+      "logs"
+    ]
+  },
+  "logs": [
+    {
+      "fields": {
+        "operation": {
+          "required": true,
+          "type": "string"
+        },
+        "request_id": {
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "required": true,
+          "type": "string"
+        },
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "checkout.operation_completed",
+      "required": true,
+      "severity": "INFO",
+      "severity_policy": {
+        "min": "INFO"
+      }
+    }
+  ],
+  "metadata": {
+    "owner": "checkout-team",
+    "retention": {
+      "logs_days": 14,
+      "metrics_days": 30,
+      "traces_days": 7
+    }
+  },
+  "metrics": [
+    {
+      "name": "checkout.requests",
+      "required": true,
+      "tags": {
+        "request_id": {
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "required": true,
+          "type": "string"
+        },
+        "tenant_id": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "count"
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "checkout-handoff-diagnosis",
+      "minimum_observations": [
+        {
+          "fields": [
+            "request_id",
+            "tenant_id",
+            "status",
+            "duration_ms"
+          ],
+          "name": "checkout.request",
+          "signal": "span"
+        },
+        {
+          "fields": [
+            "request_id",
+            "tenant_id",
+            "status"
+          ],
+          "name": "checkout.requests",
+          "signal": "metric"
+        },
+        {
+          "fields": [
+            "request_id",
+            "tenant_id",
+            "status"
+          ],
+          "name": "checkout.operation_completed",
+          "signal": "log"
+        }
+      ],
+      "question": "Can an operator join checkout spans, metrics, and logs for a checkout request handoff?"
+    }
+  ],
+  "service": "checkout",
+  "spans": [
+    {
+      "fields": {
+        "duration_ms": {
+          "min": 0,
+          "required": true,
+          "type": "number",
+          "unit": "ms"
+        },
+        "operation": {
+          "required": true,
+          "type": "string"
+        },
+        "request_id": {
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "allowed_values": [
+            "ok",
+            "degraded",
+            "failed"
+          ],
+          "required": true,
+          "type": "string"
+        },
+        "tenant_id": {
+          "pattern": "tenant-[a-z0-9-]+",
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "checkout.request",
+      "required": true
+    }
+  ],
+  "version": "1.0"
+}

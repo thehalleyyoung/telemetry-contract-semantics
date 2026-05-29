@@ -1,0 +1,64 @@
+{
+  "logs": [
+    {
+      "fields": {
+        "db_system": {
+          "required": true,
+          "type": "string"
+        },
+        "max_connections": {
+          "required": true,
+          "type": "number"
+        },
+        "pool_name": {
+          "required": true,
+          "type": "string"
+        },
+        "remediation_hint": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "db.pool_exhausted",
+      "required": true,
+      "severity": "ERROR",
+      "severity_policy": {
+        "min": "ERROR"
+      }
+    }
+  ],
+  "metadata": {
+    "owner": "database-gateway-owner"
+  },
+  "metrics": [
+    {
+      "name": "db.pool.active_connections",
+      "required": true,
+      "tags": {
+        "db_system": {
+          "required": true,
+          "type": "string"
+        },
+        "max_connections": {
+          "required": true,
+          "type": "number"
+        },
+        "pool_name": {
+          "required": true,
+          "type": "string"
+        },
+        "remediation_hint": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "count"
+      }
+    }
+  ],
+  "service": "database-gateway",
+  "version": "1.0"
+}

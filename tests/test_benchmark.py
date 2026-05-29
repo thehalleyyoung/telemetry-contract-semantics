@@ -14,11 +14,11 @@ DIFF_CANDIDATE = ROOT / "examples/benchmarks/diff_candidate.report.json"
 def test_builtin_benchmark_reports_labeled_historical_case():
     report = run_benchmark(BUILTIN)
     assert report["summary"]["pass"] is True
-    assert report["summary"]["contracts"] == 9
+    assert report["summary"]["contracts"] == 23
     assert report["summary"]["label_metrics"]["f1"] == 1.0
     assert report["summary"]["findings_per_k_events"] > 0
     assert report["summary"]["top_remediations"]
-    assert report["summary"]["events"] > 0
+    assert report["summary"]["events"] == 68
     historical = next(case for case in report["cases"] if case["id"] == "gitlab-2017-database-outage-reconstructed")
     labels = historical["metrics"]["labels"]
     assert historical["metrics"]["validation_pass"] is False
@@ -56,6 +56,15 @@ def test_builtin_benchmark_reports_labeled_historical_case():
     partial = next(case for case in report["cases"] if case["id"] == "benchmark-partial-otlp-diagnostics")
     assert partial["checks"]["import_diagnostics"] is True
     assert partial["metrics"]["import_loss_rate"] == 0.333333
+
+    microservices = next(case for case in report["cases"] if case["id"] == "synthetic-microservices-checkout-pass")
+    assert microservices["metrics"]["contracts"] == 10
+    assert microservices["metrics"]["events"] == 30
+    assert microservices["metrics"]["findings"] == 0
+    incident = next(case for case in report["cases"] if case["id"] == "reconstructed-incident-blind-spots")
+    assert incident["metrics"]["labels"]["expected"] == 15
+    assert incident["metrics"]["labels"]["f1"] == 1.0
+    assert incident["metrics"]["findings_by_code"]["telemetry.missing_field"] == 14
 
 
 def test_benchmark_markdown_and_cli(capsys):

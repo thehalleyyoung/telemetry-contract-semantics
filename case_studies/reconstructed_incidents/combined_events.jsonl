@@ -1,0 +1,7 @@
+{"kind": "metric", "name": "queue.backlog.depth", "service": "queue-worker", "tags": {"queue_name": "checkout-events"}, "timestamp_ms": 2000, "value": 1}
+{"kind": "metric", "name": "cdn.purge.request", "service": "cache-control", "tags": {"provider_status": "failed", "purge_id": "purge-20260529-001"}, "timestamp_ms": 2100, "value": 1}
+{"fields": {"provider_status": "failed", "purge_id": "purge-20260529-001"}, "kind": "log", "message": "cache cdn purge failure", "name": "cdn.purge_failure", "service": "cache-control", "severity": "ERROR", "timestamp_ms": 2110}
+{"kind": "metric", "name": "db.pool.active_connections", "service": "database-gateway", "tags": {"pool_name": "primary-writes"}, "timestamp_ms": 2200, "value": 1}
+{"fields": {"pool_name": "primary-writes"}, "kind": "log", "message": "database connection pool exhaustion", "name": "db.pool_exhausted", "service": "database-gateway", "severity": "ERROR", "timestamp_ms": 2210}
+{"kind": "metric", "name": "deploy.release.status", "service": "deployer", "tags": {"deploy_id": "deploy-20260529-001", "rollback_blocker": "migration irreversible", "service_name": "checkout"}, "timestamp_ms": 2300, "value": 1}
+{"fields": {"deploy_id": "deploy-20260529-001", "rollback_blocker": "migration irreversible", "service_name": "checkout"}, "kind": "log", "message": "missing rollback evidence", "name": "deploy.rollback_decision", "service": "deployer", "severity": "ERROR", "timestamp_ms": 2310}

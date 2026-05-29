@@ -1,0 +1,16 @@
+{
+  "finding_codes": [
+    "scenario.missing_field",
+    "scenario.missing_signal",
+    "semconv.local_policy",
+    "semconv.metric_unit",
+    "semconv.missing_attribute",
+    "telemetry.allowed_values",
+    "telemetry.missing_field",
+    "telemetry.missing_signal",
+    "telemetry.numeric_max",
+    "telemetry.temporal_response"
+  ],
+  "pass": false,
+  "service": "gitlab.com-database"
+}

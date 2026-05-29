@@ -1,0 +1,17 @@
+{
+  "codes": [
+    "telemetry.allowed_values",
+    "telemetry.correlation_missing",
+    "telemetry.log_message",
+    "telemetry.log_severity",
+    "telemetry.log_severity_min",
+    "telemetry.missing_signal",
+    "telemetry.numeric_max",
+    "telemetry.numeric_min",
+    "telemetry.pattern",
+    "telemetry.temporal_missing_step",
+    "telemetry.unit"
+  ],
+  "format": "json",
+  "ok": false
+}

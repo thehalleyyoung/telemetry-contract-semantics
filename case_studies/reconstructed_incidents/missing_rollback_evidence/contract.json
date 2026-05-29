@@ -1,0 +1,64 @@
+{
+  "logs": [
+    {
+      "fields": {
+        "deploy_id": {
+          "required": true,
+          "type": "string"
+        },
+        "previous_version": {
+          "required": true,
+          "type": "string"
+        },
+        "rollback_blocker": {
+          "required": true,
+          "type": "string"
+        },
+        "service_name": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "deploy.rollback_decision",
+      "required": true,
+      "severity": "ERROR",
+      "severity_policy": {
+        "min": "ERROR"
+      }
+    }
+  ],
+  "metadata": {
+    "owner": "deployer-owner"
+  },
+  "metrics": [
+    {
+      "name": "deploy.release.status",
+      "required": true,
+      "tags": {
+        "deploy_id": {
+          "required": true,
+          "type": "string"
+        },
+        "previous_version": {
+          "required": true,
+          "type": "string"
+        },
+        "rollback_blocker": {
+          "required": true,
+          "type": "string"
+        },
+        "service_name": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number",
+        "unit": "count"
+      }
+    }
+  ],
+  "service": "deployer",
+  "version": "1.0"
+}

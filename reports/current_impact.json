@@ -42,8 +42,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 1.434,
-        "runtime_per_k_events_ms": 286.8,
+        "runtime_ms": 1.199,
+        "runtime_per_k_events_ms": 239.8,
         "validation_pass": true
       },
       "pass": true,
@@ -457,8 +457,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 1.402,
-        "runtime_per_k_events_ms": 280.4,
+        "runtime_ms": 1.215,
+        "runtime_per_k_events_ms": 243.0,
         "validation_pass": false
       },
       "pass": true,
@@ -724,8 +724,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 3.86,
-        "runtime_per_k_events_ms": 1286.666667,
+        "runtime_ms": 4.353,
+        "runtime_per_k_events_ms": 1451.0,
         "validation_pass": false
       },
       "pass": true,
@@ -778,8 +778,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.585,
-        "runtime_per_k_events_ms": 195.0,
+        "runtime_ms": 0.461,
+        "runtime_per_k_events_ms": 153.666667,
         "validation_pass": true
       },
       "pass": true,
@@ -1008,7 +1008,7 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.031,
+        "runtime_ms": 0.033,
         "runtime_per_k_events_ms": 0.0,
         "validation_pass": true
       },
@@ -1232,8 +1232,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.509,
-        "runtime_per_k_events_ms": 63.625,
+        "runtime_ms": 0.549,
+        "runtime_per_k_events_ms": 68.625,
         "validation_pass": false
       },
       "pass": true,
@@ -1369,8 +1369,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.446,
-        "runtime_per_k_events_ms": 148.666667,
+        "runtime_ms": 0.454,
+        "runtime_per_k_events_ms": 151.333333,
         "validation_pass": false
       },
       "pass": true,
@@ -1492,8 +1492,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.39,
-        "runtime_per_k_events_ms": 195.0,
+        "runtime_ms": 0.371,
+        "runtime_per_k_events_ms": 185.5,
         "validation_pass": true
       },
       "pass": true,
@@ -1792,8 +1792,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 1.015,
-        "runtime_per_k_events_ms": 1015.0,
+        "runtime_ms": 0.998,
+        "runtime_per_k_events_ms": 998.0,
         "validation_pass": false
       },
       "pass": true,
@@ -2492,8 +2492,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 1.383,
-        "runtime_per_k_events_ms": 1383.0,
+        "runtime_ms": 1.198,
+        "runtime_per_k_events_ms": 1198.0,
         "validation_pass": false
       },
       "pass": true,
@@ -2515,12 +2515,526 @@
         "transformation",
         "payload-preview"
       ]
+    },
+    {
+      "checks": {
+        "import_diagnostics": false,
+        "runtime": true,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/checkout.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/payment.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/inventory.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/shipping.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/auth.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/notification.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/queue.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/cache.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/database.contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/contracts/collector.contract.json"
+      ],
+      "dataset": "synthetic-microservices-checkout",
+      "dataset_metadata": {
+        "disclosure_status": "public-synthetic-fixture",
+        "id": "synthetic-microservices-checkout"
+      },
+      "description": "Synthetic ten-service checkout flow covering checkout, payment, inventory, shipping, auth, notification, queue, cache, database, and collector contract correlation.",
+      "disclosure_status": "public-synthetic-fixture",
+      "events": 30,
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/microservices/events.jsonl",
+      "expected_failure_modes": [],
+      "findings": [],
+      "id": "synthetic-microservices-checkout-pass",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
+      "metrics": {
+        "contracts": 10,
+        "diagnosability_score_change": -0.0,
+        "events": 30,
+        "findings": 0,
+        "findings_by_code": {},
+        "findings_by_severity": {},
+        "findings_per_k_events": 0.0,
+        "import_loss_rate": 0.0,
+        "labels": null,
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 30,
+          "import_records": 0,
+          "source_files": 0
+        },
+        "pass": true,
+        "runtime_ms": 6.427,
+        "runtime_per_k_events_ms": 214.233333,
+        "validation_pass": true
+      },
+      "pass": true,
+      "semantics_features": [
+        "cross-service correlation",
+        "multi-contract benchmark loading",
+        "service ownership coverage"
+      ],
+      "service_owner": "platform-observability",
+      "source_paths": [],
+      "tags": [
+        "microservices",
+        "correlation",
+        "scenario",
+        "runtime"
+      ]
+    },
+    {
+      "checks": {
+        "import_diagnostics": false,
+        "runtime": true,
+        "scenario": false,
+        "static": false,
+        "strict": false
+      },
+      "contract_paths": [
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/reconstructed_incidents/queue_backlog_autoscaling_blind_spot/contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/reconstructed_incidents/cache_cdn_purge_failure/contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/reconstructed_incidents/database_connection_pool_exhaustion/contract.json",
+        "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/reconstructed_incidents/missing_rollback_evidence/contract.json"
+      ],
+      "dataset": "reconstructed-incident-blind-spots",
+      "dataset_metadata": {
+        "disclosure_status": "public-synthetic-reconstruction",
+        "id": "reconstructed-incident-blind-spots",
+        "labels": "Expected missing incident-readiness evidence labels in benchmarks/builtin.json",
+        "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics"
+      },
+      "description": "Disclosure-safe reconstructed incident datasets for queue backlog autoscaling blind spots, cache/CDN purge failures, database pool exhaustion, and missing rollback evidence.",
+      "disclosure_status": "public-synthetic-reconstruction",
+      "events": 7,
+      "events_path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/reconstructed_incidents/combined_events.jsonl",
+      "expected_failure_modes": [
+        "queue_autoscaling_blind_spot",
+        "cache_cdn_purge_failure",
+        "database_pool_exhaustion",
+        "missing_rollback_evidence"
+      ],
+      "findings": [
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.autoscaling_policy_id",
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'queue.backlog.depth' missing required field 'autoscaling_policy_id'",
+          "path": "event[1].autoscaling_policy_id",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.observed_backlog_depth",
+          "disclosure_sensitivity": "internal",
+          "event_index": 1,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'queue.backlog.depth' missing required field 'observed_backlog_depth'",
+          "path": "event[1].observed_backlog_depth",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_signal",
+          "contract_path": "$.logs[0]",
+          "disclosure_sensitivity": "internal",
+          "formal_clause": "SAT.required-signal",
+          "message": "required log 'queue.autoscaling_decision' was not emitted",
+          "path": "events[log=queue.autoscaling_decision]",
+          "remediation": "Emit the required span, metric, or log on the exercised path.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.cache_key_pattern",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'cdn.purge.request' missing required field 'cache_key_pattern'",
+          "path": "event[2].cache_key_pattern",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.rollback_plan",
+          "disclosure_sensitivity": "internal",
+          "event_index": 2,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'cdn.purge.request' missing required field 'rollback_plan'",
+          "path": "event[2].rollback_plan",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.cache_key_pattern",
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'cdn.purge_failure' missing required field 'cache_key_pattern'",
+          "path": "event[3].cache_key_pattern",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.rollback_plan",
+          "disclosure_sensitivity": "internal",
+          "event_index": 3,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'cdn.purge_failure' missing required field 'rollback_plan'",
+          "path": "event[3].rollback_plan",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.db_system",
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'db.pool.active_connections' missing required field 'db_system'",
+          "path": "event[4].db_system",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.max_connections",
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'db.pool.active_connections' missing required field 'max_connections'",
+          "path": "event[4].max_connections",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.remediation_hint",
+          "disclosure_sensitivity": "internal",
+          "event_index": 4,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'db.pool.active_connections' missing required field 'remediation_hint'",
+          "path": "event[4].remediation_hint",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.db_system",
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'db.pool_exhausted' missing required field 'db_system'",
+          "path": "event[5].db_system",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.max_connections",
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'db.pool_exhausted' missing required field 'max_connections'",
+          "path": "event[5].max_connections",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.remediation_hint",
+          "disclosure_sensitivity": "internal",
+          "event_index": 5,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'db.pool_exhausted' missing required field 'remediation_hint'",
+          "path": "event[5].remediation_hint",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.metrics[0].fields.previous_version",
+          "disclosure_sensitivity": "internal",
+          "event_index": 6,
+          "formal_clause": "SAT.required-field",
+          "message": "metric 'deploy.release.status' missing required field 'previous_version'",
+          "path": "event[6].previous_version",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        },
+        {
+          "category": "diagnosability",
+          "ci": {
+            "baseline_key_fields": [
+              "code",
+              "path",
+              "contract_path",
+              "event_index"
+            ],
+            "default_fail_on": "error",
+            "sarif_level": "error"
+          },
+          "code": "telemetry.missing_field",
+          "contract_path": "$.logs[0].fields.previous_version",
+          "disclosure_sensitivity": "internal",
+          "event_index": 7,
+          "formal_clause": "SAT.required-field",
+          "message": "log 'deploy.rollback_decision' missing required field 'previous_version'",
+          "path": "event[7].previous_version",
+          "remediation": "Attach the required attribute/tag/field to the signal.",
+          "sarif_level": "error",
+          "service_owner": "contract service owner",
+          "severity": "error"
+        }
+      ],
+      "id": "reconstructed-incident-blind-spots",
+      "import_diagnostics": null,
+      "import_diagnostics_path": null,
+      "metrics": {
+        "contracts": 4,
+        "diagnosability_score_change": -0.75,
+        "events": 7,
+        "findings": 15,
+        "findings_by_code": {
+          "telemetry.missing_field": 14,
+          "telemetry.missing_signal": 1
+        },
+        "findings_by_severity": {
+          "error": 15
+        },
+        "findings_per_k_events": 2142.857143,
+        "import_loss_rate": 0.0,
+        "labels": {
+          "expected": 15,
+          "f1": 1.0,
+          "matched": 15,
+          "missing": [],
+          "pass": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "unexpected": []
+        },
+        "memory_envelope": {
+          "diagnostics": 0,
+          "events_indexed": 7,
+          "import_records": 0,
+          "source_files": 0
+        },
+        "pass": true,
+        "runtime_ms": 1.774,
+        "runtime_per_k_events_ms": 253.428571,
+        "validation_pass": false
+      },
+      "pass": true,
+      "semantics_features": [
+        "incident readiness evidence",
+        "missing mitigation evidence",
+        "service owner routing"
+      ],
+      "service_owner": "incident-response-platform",
+      "source_paths": [],
+      "tags": [
+        "incident-readiness",
+        "reconstruction",
+        "runtime"
+      ]
     }
   ],
   "summary": {
-    "cases": 11,
+    "cases": 13,
     "config": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/benchmarks/builtin.json",
-    "contracts": 9,
+    "contracts": 23,
     "datasets": [
       "checkout-payment-timeout-pass",
       "collector-export-semantics-fixtures",
@@ -2528,11 +3042,13 @@
       "otlp-collector-mixed-signals-pass",
       "owasp-securetea-signin-current-static-and-hyperproperty",
       "public-benchmark-semantics-fixtures",
+      "reconstructed-incident-blind-spots",
+      "synthetic-microservices-checkout",
       "temporal-logic-properties-fail"
     ],
-    "events": 31,
+    "events": 68,
     "filters": {},
-    "findings": 52,
+    "findings": 67,
     "findings_by_code": {
       "otlp.dropped_evidence": 2,
       "otlp.malformed_record": 1,
@@ -2549,7 +3065,8 @@
       "telemetry.correlation_missing": 2,
       "telemetry.forbidden_pattern": 2,
       "telemetry.hyper_pii_disclosure": 4,
-      "telemetry.missing_field": 3,
+      "telemetry.missing_field": 17,
+      "telemetry.missing_signal": 1,
       "telemetry.numeric_max": 2,
       "telemetry.privacy_transformation": 5,
       "telemetry.sensitive_value": 5,
@@ -2560,32 +3077,41 @@
       "telemetry.temporal_safety": 1
     },
     "findings_by_severity": {
-      "error": 42,
+      "error": 57,
       "info": 1,
       "warning": 9
     },
-    "findings_per_k_events": 1677.419355,
+    "findings_per_k_events": 985.294118,
     "import_loss_rate": 1.0,
     "label_metrics": {
-      "cases": 9,
-      "expected": 52,
+      "cases": 10,
+      "expected": 67,
       "f1": 1.0,
-      "matched": 52,
+      "matched": 67,
       "precision": 1.0,
       "recall": 1.0,
       "unexpected": 0
     },
     "memory_envelope": {
       "diagnostics": 5,
-      "events_indexed": 31,
+      "events_indexed": 68,
       "import_records": 4,
       "source_files": 3
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 18.704,
-    "runtime_per_k_events_ms": 603.354839,
+    "runtime_ms": 26.897,
+    "runtime_per_k_events_ms": 395.544118,
     "top_remediations": [
+      {
+        "affected_owner": "contract service owner",
+        "estimated_effort": "medium",
+        "findings": 17,
+        "incident_readiness_benefit": "restores incident question evidence",
+        "remediation": "Attach the required attribute/tag/field to the signal.",
+        "semantic_property": "diagnosability",
+        "severity": "error"
+      },
       {
         "affected_owner": "contract service owner",
         "estimated_effort": "medium",
@@ -2602,15 +3128,6 @@
         "incident_readiness_benefit": "improves benchmark semantic coverage",
         "remediation": "Normalize the field to one of the declared allowed values.",
         "semantic_property": "schema",
-        "severity": "error"
-      },
-      {
-        "affected_owner": "contract service owner",
-        "estimated_effort": "medium",
-        "findings": 3,
-        "incident_readiness_benefit": "restores incident question evidence",
-        "remediation": "Attach the required attribute/tag/field to the signal.",
-        "semantic_property": "diagnosability",
         "severity": "error"
       },
       {

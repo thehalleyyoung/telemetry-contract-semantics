@@ -17,3 +17,5 @@ Generated from `benchmarks/builtin.json` by deterministic benchmark execution.
 | benchmark-privacy-static-source | runtime,static | 6 | 1.0 | 1.0 | 1.0 | 6000.0 |
 | benchmark-partial-otlp-diagnostics | import_diagnostics | 1 | 1.0 | 1.0 | 1.0 | 0.0 |
 | benchmark-unsafe-transformations-and-payload-preview | runtime,static | 15 | 1.0 | 1.0 | 1.0 | 15000.0 |
+| synthetic-microservices-checkout-pass | runtime | 0 | n/a | n/a | n/a | 0.0 |
+| reconstructed-incident-blind-spots | runtime | 15 | 1.0 | 1.0 | 1.0 | 2142.857143 |

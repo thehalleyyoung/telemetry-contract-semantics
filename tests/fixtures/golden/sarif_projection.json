@@ -1,0 +1,14 @@
+{
+  "minimum_results": 1,
+  "rule_ids": [
+    "telemetry.allowed_values",
+    "telemetry.missing_field",
+    "telemetry.numeric_max",
+    "telemetry.strict_undeclared_signal",
+    "telemetry.strict_undocumented_transformation",
+    "telemetry.strict_unexpected_field",
+    "telemetry.strict_unmodeled_service"
+  ],
+  "tool_name": "telemetry-contracts-golden",
+  "version": "2.1.0"
+}

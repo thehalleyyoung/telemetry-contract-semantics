@@ -1,0 +1,2 @@
+{"kind": "metric", "name": "db.pool.active_connections", "service": "database-gateway", "tags": {"pool_name": "primary-writes"}, "timestamp_ms": 2200, "value": 1}
+{"fields": {"pool_name": "primary-writes"}, "kind": "log", "message": "database connection pool exhaustion", "name": "db.pool_exhausted", "service": "database-gateway", "severity": "ERROR", "timestamp_ms": 2210}

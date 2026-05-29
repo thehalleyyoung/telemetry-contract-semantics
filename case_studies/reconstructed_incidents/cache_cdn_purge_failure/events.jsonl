@@ -1,0 +1,2 @@
+{"kind": "metric", "name": "cdn.purge.request", "service": "cache-control", "tags": {"provider_status": "failed", "purge_id": "purge-20260529-001"}, "timestamp_ms": 2100, "value": 1}
+{"fields": {"provider_status": "failed", "purge_id": "purge-20260529-001"}, "kind": "log", "message": "cache cdn purge failure", "name": "cdn.purge_failure", "service": "cache-control", "severity": "ERROR", "timestamp_ms": 2110}

@@ -2405,6 +2405,605 @@
             "severity": "warning"
           },
           "ruleId": "static.missing_correlation"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].autoscaling_policy_id"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'queue.backlog.depth' missing required field 'autoscaling_policy_id'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.autoscaling_policy_id",
+            "disclosure_sensitivity": "internal",
+            "event_index": 1,
+            "formal_clause": "SAT.required-field",
+            "path": "event[1].autoscaling_policy_id",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].observed_backlog_depth"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'queue.backlog.depth' missing required field 'observed_backlog_depth'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.observed_backlog_depth",
+            "disclosure_sensitivity": "internal",
+            "event_index": 1,
+            "formal_clause": "SAT.required-field",
+            "path": "event[1].observed_backlog_depth",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "events[log=queue.autoscaling_decision]"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "required log 'queue.autoscaling_decision' was not emitted"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_signal",
+            "contract_path": "$.logs[0]",
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "SAT.required-signal",
+            "path": "events[log=queue.autoscaling_decision]",
+            "remediation": "Emit the required span, metric, or log on the exercised path.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_signal"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2].cache_key_pattern"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'cdn.purge.request' missing required field 'cache_key_pattern'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.cache_key_pattern",
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.required-field",
+            "path": "event[2].cache_key_pattern",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[2].rollback_plan"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'cdn.purge.request' missing required field 'rollback_plan'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.rollback_plan",
+            "disclosure_sensitivity": "internal",
+            "event_index": 2,
+            "formal_clause": "SAT.required-field",
+            "path": "event[2].rollback_plan",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[3].cache_key_pattern"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'cdn.purge_failure' missing required field 'cache_key_pattern'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.cache_key_pattern",
+            "disclosure_sensitivity": "internal",
+            "event_index": 3,
+            "formal_clause": "SAT.required-field",
+            "path": "event[3].cache_key_pattern",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[3].rollback_plan"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'cdn.purge_failure' missing required field 'rollback_plan'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.rollback_plan",
+            "disclosure_sensitivity": "internal",
+            "event_index": 3,
+            "formal_clause": "SAT.required-field",
+            "path": "event[3].rollback_plan",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[4].db_system"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'db.pool.active_connections' missing required field 'db_system'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.db_system",
+            "disclosure_sensitivity": "internal",
+            "event_index": 4,
+            "formal_clause": "SAT.required-field",
+            "path": "event[4].db_system",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[4].max_connections"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'db.pool.active_connections' missing required field 'max_connections'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.max_connections",
+            "disclosure_sensitivity": "internal",
+            "event_index": 4,
+            "formal_clause": "SAT.required-field",
+            "path": "event[4].max_connections",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[4].remediation_hint"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'db.pool.active_connections' missing required field 'remediation_hint'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.remediation_hint",
+            "disclosure_sensitivity": "internal",
+            "event_index": 4,
+            "formal_clause": "SAT.required-field",
+            "path": "event[4].remediation_hint",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5].db_system"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'db.pool_exhausted' missing required field 'db_system'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.db_system",
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.required-field",
+            "path": "event[5].db_system",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5].max_connections"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'db.pool_exhausted' missing required field 'max_connections'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.max_connections",
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.required-field",
+            "path": "event[5].max_connections",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[5].remediation_hint"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'db.pool_exhausted' missing required field 'remediation_hint'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.remediation_hint",
+            "disclosure_sensitivity": "internal",
+            "event_index": 5,
+            "formal_clause": "SAT.required-field",
+            "path": "event[5].remediation_hint",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[6].previous_version"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "metric 'deploy.release.status' missing required field 'previous_version'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.metrics[0].fields.previous_version",
+            "disclosure_sensitivity": "internal",
+            "event_index": 6,
+            "formal_clause": "SAT.required-field",
+            "path": "event[6].previous_version",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[7].previous_version"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "log 'deploy.rollback_decision' missing required field 'previous_version'"
+          },
+          "properties": {
+            "case_id": "reconstructed-incident-blind-spots",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.missing_field",
+            "contract_path": "$.logs[0].fields.previous_version",
+            "disclosure_sensitivity": "internal",
+            "event_index": 7,
+            "formal_clause": "SAT.required-field",
+            "path": "event[7].previous_version",
+            "remediation": "Attach the required attribute/tag/field to the signal.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.missing_field"
         }
       ],
       "tool": {
@@ -2698,6 +3297,24 @@
               },
               "shortDescription": {
                 "text": "telemetry.missing_field"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.required-signal"
+              },
+              "help": {
+                "text": "Emit the required span, metric, or log on the exercised path."
+              },
+              "id": "telemetry.missing_signal",
+              "name": "telemetry.missing_signal",
+              "properties": {
+                "category": "diagnosability",
+                "precision": "high",
+                "security-severity": "4.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.missing_signal"
               }
             },
             {

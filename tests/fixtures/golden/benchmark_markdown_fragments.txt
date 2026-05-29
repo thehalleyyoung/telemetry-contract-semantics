@@ -1,0 +1,6 @@
+# Benchmark: built-in telemetry contracts benchmark
+- Cases: 13
+- Contracts: 23
+synthetic-microservices-checkout-pass
+reconstructed-incident-blind-spots
+## Top remediations

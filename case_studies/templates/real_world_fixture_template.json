@@ -1,0 +1,41 @@
+{
+  "claims": [
+    "Bounded claim supported by this fixture."
+  ],
+  "id": "example_fixture_id",
+  "labels": {
+    "expected_findings": [
+      {
+        "code": "telemetry.missing_field",
+        "event_index": 0,
+        "severity": "error"
+      }
+    ]
+  },
+  "limitations": [
+    "Finite fixture; not production telemetry."
+  ],
+  "owner_notes": [
+    "Suggested internal owner routing."
+  ],
+  "public_facts": [
+    "Publicly citeable facts or general pattern; no private claims."
+  ],
+  "reconstructed_telemetry": {
+    "contract": "contract.json",
+    "events": "events.jsonl",
+    "generation_notes": [
+      "How fields were reconstructed or intentionally omitted."
+    ]
+  },
+  "responsible_handling": [
+    "Disclosure-safe summary and non-exploit framing."
+  ],
+  "source_metadata": {
+    "checksums": {},
+    "license": "SPDX or local note",
+    "retrieval_date": "YYYY-MM-DD",
+    "source_url": "https://example.invalid/public-source"
+  },
+  "title": "Human-readable case title"
+}

@@ -134,17 +134,17 @@
 
 ## Observed finding coverage
 
-- Findings: 52
+- Findings: 67
 - Unknown codes: `[]`
-- By code: `{"otlp.dropped_evidence": 2, "otlp.malformed_record": 1, "otlp.unsupported_metric": 1, "otlp.unsupported_top_level": 1, "scenario.missing_field": 3, "static.missing_correlation": 2, "static.pii_logging": 3, "static.secret_logging": 4, "static.unbounded_label": 1, "static.unsafe_payload_preview": 1, "telemetry.allowed_values": 4, "telemetry.cardinality": 1, "telemetry.correlation_missing": 2, "telemetry.forbidden_pattern": 2, "telemetry.hyper_pii_disclosure": 4, "telemetry.missing_field": 3, "telemetry.numeric_max": 2, "telemetry.privacy_transformation": 5, "telemetry.sensitive_value": 5, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
-- By category: `{"diagnosability": 15, "input": 5, "operability": 2, "privacy-security": 24, "schema": 6}`
-- By formal clause: `{"ADEQ.required-field": 3, "HYP.pii-non-disclosure": 4, "OTLP.dropped-evidence": 2, "OTLP.malformed-record": 1, "OTLP.unsupported-metric": 1, "OTLP.unsupported-top-level": 1, "SAT.allowed-values": 4, "SAT.cardinality-bound": 1, "SAT.correlation-presence": 2, "SAT.forbidden-pattern": 2, "SAT.numeric-upper-bound": 2, "SAT.privacy-preservation": 5, "SAT.raw-sensitive-value": 5, "SAT.required-field": 3, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.cardinality-risk": 1, "STATIC.correlation-evidence": 2, "STATIC.payload-preview": 1, "STATIC.pii-sensitive-log": 3, "STATIC.raw-sensitive-log": 4}`
-- By SARIF level: `{"error": 44, "note": 1, "warning": 7}`
-- By service owner: `{"contract service owner": 52}`
+- By code: `{"otlp.dropped_evidence": 2, "otlp.malformed_record": 1, "otlp.unsupported_metric": 1, "otlp.unsupported_top_level": 1, "scenario.missing_field": 3, "static.missing_correlation": 2, "static.pii_logging": 3, "static.secret_logging": 4, "static.unbounded_label": 1, "static.unsafe_payload_preview": 1, "telemetry.allowed_values": 4, "telemetry.cardinality": 1, "telemetry.correlation_missing": 2, "telemetry.forbidden_pattern": 2, "telemetry.hyper_pii_disclosure": 4, "telemetry.missing_field": 17, "telemetry.missing_signal": 1, "telemetry.numeric_max": 2, "telemetry.privacy_transformation": 5, "telemetry.sensitive_value": 5, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
+- By category: `{"diagnosability": 30, "input": 5, "operability": 2, "privacy-security": 24, "schema": 6}`
+- By formal clause: `{"ADEQ.required-field": 3, "HYP.pii-non-disclosure": 4, "OTLP.dropped-evidence": 2, "OTLP.malformed-record": 1, "OTLP.unsupported-metric": 1, "OTLP.unsupported-top-level": 1, "SAT.allowed-values": 4, "SAT.cardinality-bound": 1, "SAT.correlation-presence": 2, "SAT.forbidden-pattern": 2, "SAT.numeric-upper-bound": 2, "SAT.privacy-preservation": 5, "SAT.raw-sensitive-value": 5, "SAT.required-field": 17, "SAT.required-signal": 1, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.cardinality-risk": 1, "STATIC.correlation-evidence": 2, "STATIC.payload-preview": 1, "STATIC.pii-sensitive-log": 3, "STATIC.raw-sensitive-log": 4}`
+- By SARIF level: `{"error": 59, "note": 1, "warning": 7}`
+- By service owner: `{"contract service owner": 67}`
 
 | Source | Findings |
 | --- | ---: |
-| reports/current_impact.json | 52 |
+| reports/current_impact.json | 67 |
 
 | Code | Category | Formal clause | Severity | SARIF | Path |
 | --- | --- | --- | --- | --- | --- |
@@ -200,3 +200,18 @@
 | static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
 | static.unsafe_payload_preview | privacy-security | STATIC.payload-preview | warning | warning | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
 | static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[1].autoscaling_policy_id |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[1].observed_backlog_depth |
+| telemetry.missing_signal | diagnosability | SAT.required-signal | error | error | events[log=queue.autoscaling_decision] |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[2].cache_key_pattern |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[2].rollback_plan |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[3].cache_key_pattern |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[3].rollback_plan |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[4].db_system |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[4].max_connections |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[4].remediation_hint |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[5].db_system |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[5].max_connections |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[5].remediation_hint |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[6].previous_version |
+| telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[7].previous_version |

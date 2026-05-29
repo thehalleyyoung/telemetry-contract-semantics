@@ -1,0 +1,12 @@
+{
+  "failing_codes": [
+    "scenario.missing_field",
+    "telemetry.allowed_values",
+    "telemetry.missing_field",
+    "telemetry.numeric_max"
+  ],
+  "scenarios": [
+    "restore-readiness"
+  ],
+  "score_version": "diagnosability-adequacy-v1"
+}

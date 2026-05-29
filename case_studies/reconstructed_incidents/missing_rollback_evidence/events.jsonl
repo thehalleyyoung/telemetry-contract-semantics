@@ -1,0 +1,2 @@
+{"kind": "metric", "name": "deploy.release.status", "service": "deployer", "tags": {"deploy_id": "deploy-20260529-001", "rollback_blocker": "migration irreversible", "service_name": "checkout"}, "timestamp_ms": 2300, "value": 1}
+{"fields": {"deploy_id": "deploy-20260529-001", "rollback_blocker": "migration irreversible", "service_name": "checkout"}, "kind": "log", "message": "missing rollback evidence", "name": "deploy.rollback_decision", "service": "deployer", "severity": "ERROR", "timestamp_ms": 2310}

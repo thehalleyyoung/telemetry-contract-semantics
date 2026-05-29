@@ -1,0 +1,38 @@
+{
+  "case_ids": [
+    "benchmark-cardinality-budget",
+    "benchmark-missing-correlation",
+    "benchmark-partial-otlp-diagnostics",
+    "benchmark-privacy-static-source",
+    "benchmark-unsafe-transformations-and-payload-preview",
+    "checkout-payment-timeout-pass",
+    "gitlab-2017-database-outage-reconstructed",
+    "otlp-collector-coverage-analysis",
+    "otlp-collector-mixed-signals-pass",
+    "owasp-securetea-signin-current-static-and-hyperproperty",
+    "reconstructed-incident-blind-spots",
+    "synthetic-microservices-checkout-pass",
+    "temporal-logic-properties-fail"
+  ],
+  "summary": {
+    "cases": 13,
+    "contracts": 23,
+    "events": 68,
+    "findings_by_code": {
+      "otlp.dropped_evidence": 2,
+      "telemetry.correlation_missing": 2,
+      "telemetry.missing_field": 17,
+      "telemetry.missing_signal": 1
+    },
+    "label_metrics": {
+      "cases": 10,
+      "expected": 67,
+      "f1": 1.0,
+      "matched": 67,
+      "precision": 1.0,
+      "recall": 1.0,
+      "unexpected": 0
+    },
+    "pass": true
+  }
+}

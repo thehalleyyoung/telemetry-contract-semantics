@@ -1,0 +1,8 @@
+{
+  "diagnostics_by_code": {
+    "otlp.malformed_record": 2,
+    "otlp.skipped_record": 1
+  },
+  "events": 0,
+  "invalidating_diagnostics": 3
+}

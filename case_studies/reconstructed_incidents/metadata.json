@@ -1,0 +1,11 @@
+{
+  "disclosure_status": "public-synthetic-reconstruction",
+  "id": "reconstructed-incident-blind-spots",
+  "labels_description": "Expected missing incident-readiness evidence labels in benchmarks/builtin.json",
+  "limitations": [
+    "Synthetic reconstructions of general public incident patterns; not claims about named private systems."
+  ],
+  "owner": "incident-response-platform",
+  "source_url": "https://github.com/thehalleyyoung/telemetry-contract-semantics",
+  "title": "Disclosure-safe reconstructed incident blind spot suite"
+}
