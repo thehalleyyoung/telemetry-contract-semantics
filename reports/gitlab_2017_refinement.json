@@ -1,0 +1,76 @@
+{
+  "base_service": "gitlab.com-database",
+  "candidate_service": "gitlab.com-database",
+  "evidence": {
+    "alternative_obligation_ids": {
+      "added": [],
+      "preserved": [
+        "destructive-command-location-evidence"
+      ],
+      "removed": []
+    },
+    "required_signals_preserved": [
+      {
+        "kind": "span",
+        "name": "disaster_recovery.restore_attempt"
+      },
+      {
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes"
+      },
+      {
+        "kind": "metric",
+        "name": "backup.pg_dump.success"
+      },
+      {
+        "kind": "log",
+        "name": "database.destructive_command"
+      },
+      {
+        "kind": "log",
+        "name": "backup.pg_dump.failed"
+      }
+    ],
+    "scenario_ids": {
+      "added": [],
+      "preserved": [
+        "restore-readiness"
+      ],
+      "removed": []
+    },
+    "temporal_property_ids": {
+      "added": [],
+      "preserved": [
+        "backup-failure-alert-within-response-window",
+        "replication-lag-before-destructive-command"
+      ],
+      "removed": []
+    }
+  },
+  "findings": [],
+  "limitations": [
+    "The checker is a deterministic finite-contract comparison, not a theorem prover over all possible future contract languages.",
+    "Regex implication and arbitrary predicate implication are conservative: missing inherited predicates are reported, but stronger non-identical regexes are not proved equivalent.",
+    "Historical case-study refinement reports compare checked-in reconstructed contract artifacts, not private production policy evolution."
+  ],
+  "model": {
+    "clauses": [
+      "REF.requirement-preservation",
+      "REF.privacy-nonweakening",
+      "REF.assumption-compatibility"
+    ],
+    "name": "contract-refinement-v1",
+    "notation": "C\u2032 \u2291 C",
+    "relation": "A candidate contract C\u2032 refines a base contract C when every base evidence obligation remains required by C\u2032, predicate changes are strengthening or compatible, privacy and transformation policies are not weakened, and collector/environment/on-call assumptions are not made harder to satisfy."
+  },
+  "summary": {
+    "base_required_signals": 5,
+    "base_scenarios": 1,
+    "candidate_required_signals": 5,
+    "candidate_scenarios": 1,
+    "findings": 0,
+    "findings_by_clause": {},
+    "findings_by_code": {},
+    "refines": true
+  }
+}

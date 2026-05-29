@@ -1,6 +1,6 @@
 # 100 Steps Toward Semantically Grounded, Immediately Useful Telemetry Contracts
 
-This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 34 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
+This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 36 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
 
 ## Phase 0 — Verified foundation already present
 
@@ -36,7 +36,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 - [x] 027. Add temporal-logic examples for safety, bounded response, absence, ordering, and deadline properties, each paired with a failing and passing telemetry fixture.
 - [x] 028. Add hyperproperty examples for PII non-disclosure and tenant non-interference over pairs or sets of traces, each producing actionable privacy-risk findings.
 - [x] 029. Define assume-guarantee contracts that separate service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations.
-- [ ] 030. Define contract refinement so organization, team, service, and incident-specific contracts can be compared for weakening, strengthening, and compatible assumptions.
+- [x] 030. Define contract refinement so organization, team, service, and incident-specific contracts can be compared for weakening, strengthening, and compatible assumptions.
 
 ## Phase 2 — Contract language and runtime monitors that teams can gate in CI
 
@@ -47,7 +47,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 - [ ] 035. Add monitor compilation from contract clauses to bounded-memory runtime checks over finite traces and sliding windows, with determinism tests.
 - [ ] 036. Add event-window grouping by trace, request, tenant, deployment, scenario instance, and incident slice so findings are localized to actionable ownership units.
 - [ ] 037. Add OpenTelemetry semantic-convention linting that cites the relevant convention or local policy and proposes the exact attribute/name remediation.
-- [ ] 038. Add a refinement checker that reports weakened requirements, incompatible assumptions, and non-preserving telemetry transformations between two contract versions.
+- [x] 038. Add a refinement checker that reports weakened requirements, incompatible assumptions, and non-preserving telemetry transformations between two contract versions.
 - [ ] 039. Add contract-diff reports for pull requests showing new obligations, removed obligations, changed privacy classifications, and changed diagnosability claims.
 - [ ] 040. Add regression-gated CI examples that fail on new high-severity findings while allowing audited baseline findings with expiration and owner metadata.
 - [x] 041. Add incident-readiness reports that score each service on required evidence, temporal coverage, correlation coverage, privacy risk, and remediation completeness.

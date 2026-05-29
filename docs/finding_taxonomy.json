@@ -821,6 +821,186 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.assumption_strengthened",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.assumption-compatibility",
+      "remediation": "Do not add harder collector, environment, on-call, sampling, or retention assumptions in a refining contract.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.field_predicate_weakened",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.requirement-preservation",
+      "remediation": "Change the candidate predicate to be equal to or stronger than the inherited base predicate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.malformed_contract",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.well-formedness",
+      "remediation": "Lint both contracts before comparing refinement.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.privacy_weakened",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "REF.privacy-nonweakening",
+      "remediation": "Keep inherited privacy classifications, sensitivity, and allowed transformation sets at least as restrictive.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.required_field_removed",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.requirement-preservation",
+      "remediation": "Keep every required base field required in the candidate contract.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.required_signal_removed",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.requirement-preservation",
+      "remediation": "Keep every required base signal, scenario, temporal property, alternative obligation, and service guarantee required in the candidate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.service_mismatch",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.service-scope",
+      "remediation": "Compare contracts for the same service or declare an organization/team refinement scope.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.strict_policy_weakened",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.requirement-preservation",
+      "remediation": "Keep strict closed-world validation enabled and avoid adding new escape hatches in the candidate.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "refinement",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "refinement.transformation_policy_weakened",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "REF.privacy-nonweakening",
+      "remediation": "Do not approve new transformations or drop inherited preservation scenarios unless the base policy is changed first.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "diagnosability",
       "ci": {
         "baseline_key_fields": [
@@ -1736,17 +1916,18 @@
       "operability": 3,
       "preservation": 5,
       "privacy-security": 8,
+      "refinement": 9,
       "scenario": 2,
       "schema": 12,
       "static-coverage": 2
     },
     "default_severities": {
-      "error": 81,
+      "error": 90,
       "warning": 5
     },
-    "rules": 86,
+    "rules": 95,
     "sarif_levels": {
-      "error": 81,
+      "error": 90,
       "warning": 5
     }
   }

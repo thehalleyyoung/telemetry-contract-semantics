@@ -1,0 +1,413 @@
+{
+  "alternative_obligations": [
+    {
+      "any_of": [
+        {
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ],
+          "id": "structured-log",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        {
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ],
+          "id": "operation-span",
+          "name": "database.destructive_command",
+          "signal": "span"
+        }
+      ],
+      "id": "destructive-command-location-evidence",
+      "purpose": "A destructive-command location witness may be emitted as either a structured log or an equivalent span; one concrete witness avoids duplicate false positives for the absent representation.",
+      "required": true
+    }
+  ],
+  "assume_guarantee": {
+    "collector_assumptions": [
+      {
+        "description": "Collector/exporter output may be sampled only by transformations declared in metadata.transformation_preservation.",
+        "id": "documented-transformations-only",
+        "no_undocumented_transformations": true
+      },
+      {
+        "description": "Collector/exporter sampling must preserve the bounded backup-failure alert response needed for restore-readiness evidence.",
+        "id": "backup-alert-preserved-in-export",
+        "temporal_property": "backup-failure-alert-within-response-window"
+      }
+    ],
+    "environment_assumptions": [
+      {
+        "description": "The backup environment should expose destination and database/tool version evidence for selecting a restorable backup.",
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "database_version",
+          "tool_version"
+        ],
+        "id": "backup-version-and-destination-evidence",
+        "name": "backup.pg_dump.success",
+        "signal": "metric"
+      },
+      {
+        "description": "The database environment should expose primary/replica lag context for stale-replica incident slices.",
+        "fields": [
+          "primary_host",
+          "replica_host",
+          "incident_id"
+        ],
+        "id": "replication-lag-context-evidence",
+        "name": "postgres.replication.lag_bytes",
+        "signal": "metric"
+      }
+    ],
+    "oncall_obligations": [
+      {
+        "description": "On-call diagnostic workflow should expose whether the backup failure alert was delivered to responders.",
+        "equals": true,
+        "field": "alert_delivered",
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "alert_route",
+          "alert_delivered"
+        ],
+        "id": "backup-alert-delivered-to-responders",
+        "name": "backup.pg_dump.failed",
+        "signal": "log"
+      },
+      {
+        "description": "On-call incident evidence should answer the restore-readiness question declared by the contract.",
+        "id": "restore-readiness-question-answerable",
+        "scenario": "restore-readiness"
+      }
+    ],
+    "service_guarantees": [
+      {
+        "description": "Database service/runbook instrumentation should emit enough structured evidence to distinguish intended host, actual target role, correlation id, and guard result.",
+        "fields": [
+          "target_host",
+          "intended_host",
+          "target_role",
+          "correlation_id",
+          "command_guard_result"
+        ],
+        "id": "destructive-command-guard-evidence",
+        "name": "database.destructive_command",
+        "signal": "log"
+      },
+      {
+        "description": "Recovery telemetry should guarantee that the selected restore source is verified, fresh, and from production backup evidence.",
+        "equals": "verified_backup",
+        "field": "source",
+        "fields": [
+          "source",
+          "backup_age_hours",
+          "source_environment"
+        ],
+        "id": "restorable-production-backup-guarantee",
+        "name": "disaster_recovery.restore_attempt",
+        "signal": "span"
+      }
+    ]
+  },
+  "logs": [
+    {
+      "fields": {
+        "actor_role": {
+          "required": true,
+          "type": "string"
+        },
+        "command_guard_result": {
+          "allowed_values": [
+            "blocked"
+          ],
+          "required": true,
+          "type": "string"
+        },
+        "correlation_id": {
+          "required": true,
+          "type": "string"
+        },
+        "intended_host": {
+          "required": true,
+          "type": "string"
+        },
+        "target_host": {
+          "required": true,
+          "type": "string"
+        },
+        "target_role": {
+          "allowed_values": [
+            "primary",
+            "replica",
+            "secondary",
+            "unknown"
+          ],
+          "required": true,
+          "type": "string"
+        }
+      },
+      "message_pattern": "production database directory removal|destructive command",
+      "name": "database.destructive_command",
+      "required": true,
+      "severity": "ERROR"
+    },
+    {
+      "fields": {
+        "alert_delivered": {
+          "allowed_values": [
+            true
+          ],
+          "required": true,
+          "type": "boolean"
+        },
+        "alert_route": {
+          "required": true,
+          "type": "string"
+        },
+        "backup_job_id": {
+          "required": true,
+          "type": "string"
+        },
+        "destination": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "message_pattern": "pg_dump.*version mismatch|cron email rejected",
+      "name": "backup.pg_dump.failed",
+      "required": true,
+      "severity": "ERROR"
+    }
+  ],
+  "metadata": {
+    "case_study": "GitLab.com database outage, 2017-01-31",
+    "purpose": "Executable diagnosability contract reconstructed from public postmortem facts.",
+    "reconstruction": "Events are synthetic fixtures derived from public facts; they are not GitLab raw telemetry.",
+    "refinement_note": "Team baseline used by the contract-refinement case study; it intentionally permits broader recovery-source and backup-age predicates while preserving the same layer assumptions.",
+    "source_urls": [
+      "https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/",
+      "https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/"
+    ],
+    "transformation_preservation": {
+      "approved_transformations": [
+        "sampling"
+      ],
+      "claim": "The sampled/degraded derivative must preserve every restore-readiness witness that the reconstructed source trace already contains.",
+      "preserve_scenarios": [
+        "restore-readiness"
+      ]
+    }
+  },
+  "metrics": [
+    {
+      "name": "postgres.replication.lag_bytes",
+      "required": true,
+      "tags": {
+        "incident_id": {
+          "required": true,
+          "type": "string"
+        },
+        "primary_host": {
+          "required": true,
+          "type": "string"
+        },
+        "replica_host": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "max": 104857600,
+        "min": 0,
+        "type": "number"
+      }
+    },
+    {
+      "name": "backup.pg_dump.success",
+      "required": true,
+      "tags": {
+        "backup_job_id": {
+          "required": true,
+          "type": "string"
+        },
+        "database_version": {
+          "required": true,
+          "type": "string"
+        },
+        "destination": {
+          "required": true,
+          "type": "string"
+        },
+        "tool_version": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "allowed_values": [
+          true
+        ],
+        "type": "boolean"
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "restore-readiness",
+      "minimum_observations": [
+        {
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role",
+            "correlation_id",
+            "command_guard_result"
+          ],
+          "name": "database.destructive_command",
+          "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+          "signal": "log"
+        },
+        {
+          "any_of": [
+            {
+              "fields": [
+                "target_host",
+                "intended_host",
+                "target_role"
+              ],
+              "id": "structured-log",
+              "name": "database.destructive_command",
+              "signal": "log"
+            },
+            {
+              "fields": [
+                "target_host",
+                "intended_host",
+                "target_role"
+              ],
+              "id": "operation-span",
+              "name": "database.destructive_command",
+              "signal": "span"
+            }
+          ],
+          "id": "destructive-command-location-evidence",
+          "purpose": "Accept either structured log or operation span evidence for host/role location, while other observations still require guard and correlation details."
+        },
+        {
+          "fields": [
+            "backup_job_id",
+            "destination",
+            "database_version",
+            "tool_version"
+          ],
+          "name": "backup.pg_dump.success",
+          "purpose": "Show whether a restorable logical backup existed with enough destination and version metadata to select it.",
+          "signal": "metric"
+        },
+        {
+          "fields": [
+            "backup_job_id",
+            "destination",
+            "alert_route",
+            "alert_delivered"
+          ],
+          "name": "backup.pg_dump.failed",
+          "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+          "signal": "log"
+        },
+        {
+          "fields": [
+            "source",
+            "backup_age_hours",
+            "source_environment"
+          ],
+          "name": "disaster_recovery.restore_attempt",
+          "purpose": "Explain the recovery source, its freshness, and whether it came from production backup evidence.",
+          "signal": "span"
+        },
+        {
+          "fields": [
+            "primary_host",
+            "replica_host",
+            "incident_id"
+          ],
+          "name": "postgres.replication.lag_bytes",
+          "purpose": "Bound replica freshness and connect replication state to the incident slice.",
+          "signal": "metric"
+        }
+      ],
+      "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+    }
+  ],
+  "service": "gitlab.com-database",
+  "spans": [
+    {
+      "fields": {
+        "backup_age_hours": {
+          "max": 1,
+          "min": 0,
+          "required": true,
+          "type": "number"
+        },
+        "source": {
+          "allowed_values": [
+            "verified_backup"
+          ],
+          "required": true,
+          "type": "string"
+        },
+        "source_environment": {
+          "allowed_values": [
+            "production_backup"
+          ],
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "disaster_recovery.restore_attempt",
+      "required": true
+    }
+  ],
+  "temporal_properties": [
+    {
+      "description": "A failed pg_dump backup metric should be followed by a routed backup-failure alert in the same backup job within 1500ms in this bounded reconstruction.",
+      "group_by": [
+        "backup_job_id"
+      ],
+      "id": "backup-failure-alert-within-response-window",
+      "response": {
+        "kind": "log",
+        "name": "backup.pg_dump.failed"
+      },
+      "trigger": {
+        "equals": false,
+        "field": "value",
+        "kind": "metric",
+        "name": "backup.pg_dump.success"
+      },
+      "type": "bounded_response",
+      "within_ms": 1500
+    },
+    {
+      "after": {
+        "kind": "log",
+        "name": "database.destructive_command"
+      },
+      "before": {
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes"
+      },
+      "description": "The reconstruction keeps replication-lag evidence before the destructive-command log so reports show the stale-replica context before the operator action.",
+      "id": "replication-lag-before-destructive-command",
+      "type": "ordering"
+    }
+  ],
+  "version": "1.0"
+}
