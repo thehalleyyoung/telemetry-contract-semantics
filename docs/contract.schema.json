@@ -1,0 +1,341 @@
+{
+  "$defs": {
+    "baseSignal": {
+      "properties": {
+        "attributes": {
+          "$ref": "#/$defs/fieldMap"
+        },
+        "fields": {
+          "$ref": "#/$defs/fieldMap"
+        },
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "tags": {
+          "$ref": "#/$defs/fieldMap"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "cardinality": {
+      "properties": {
+        "max": {
+          "type": "integer"
+        },
+        "policy": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "correlationPolicy": {
+      "properties": {
+        "keys": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "require_on": {
+          "items": {
+            "enum": [
+              "spans",
+              "logs",
+              "metrics",
+              "span",
+              "log",
+              "metric"
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "keys"
+      ],
+      "type": "object"
+    },
+    "fieldMap": {
+      "additionalProperties": {
+        "$ref": "#/$defs/fieldSpec"
+      },
+      "type": "object"
+    },
+    "fieldSpec": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "properties": {
+            "allow_raw_sensitive": {
+              "type": "boolean"
+            },
+            "allowed_values": {
+              "type": "array"
+            },
+            "cardinality": {
+              "$ref": "#/$defs/cardinality"
+            },
+            "classification": {
+              "type": "string"
+            },
+            "forbidden_patterns": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/forbiddenPattern"
+                },
+                {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "$ref": "#/$defs/forbiddenPattern"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "max": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "pattern": {
+              "type": "string"
+            },
+            "pii": {
+              "type": "boolean"
+            },
+            "regex": {
+              "type": "string"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "sensitivity": {
+              "type": "string"
+            },
+            "type": {
+              "$ref": "#/$defs/primitive"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "forbiddenPattern": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "regex": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "logSignal": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseSignal"
+        },
+        {
+          "properties": {
+            "message_pattern": {
+              "type": "string"
+            },
+            "severity": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "metricSignal": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseSignal"
+        },
+        {
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/fieldSpec"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "primitive": {
+      "enum": [
+        "string",
+        "integer",
+        "number",
+        "boolean",
+        "object",
+        "array",
+        "null",
+        "str",
+        "int",
+        "float",
+        "bool",
+        "dict",
+        "list"
+      ]
+    },
+    "scenario": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "requires": {
+          "items": {
+            "$ref": "#/$defs/scenarioRequirement"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "requires"
+      ],
+      "type": "object"
+    },
+    "scenarioRequirement": {
+      "properties": {
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "signal": {
+          "enum": [
+            "span",
+            "log",
+            "metric"
+          ]
+        }
+      },
+      "required": [
+        "signal",
+        "name"
+      ],
+      "type": "object"
+    },
+    "spanSignal": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseSignal"
+        }
+      ]
+    },
+    "staticExpectations": {
+      "properties": {
+        "logs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "metrics": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "spans": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "$id": "https://example.org/telemetry-contracts/contract.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "correlation": {
+      "$ref": "#/$defs/correlationPolicy"
+    },
+    "logs": {
+      "items": {
+        "$ref": "#/$defs/logSignal"
+      },
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "metrics": {
+      "items": {
+        "$ref": "#/$defs/metricSignal"
+      },
+      "type": "array"
+    },
+    "scenarios": {
+      "items": {
+        "$ref": "#/$defs/scenario"
+      },
+      "type": "array"
+    },
+    "service": {
+      "type": "string"
+    },
+    "spans": {
+      "items": {
+        "$ref": "#/$defs/spanSignal"
+      },
+      "type": "array"
+    },
+    "static_expectations": {
+      "$ref": "#/$defs/staticExpectations"
+    },
+    "static_rules": {
+      "type": "object"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "service"
+  ],
+  "title": "Telemetry Contracts contract",
+  "type": "object"
+}

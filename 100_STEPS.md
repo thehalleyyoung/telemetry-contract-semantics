@@ -8,9 +8,9 @@
 - [x] Document the contract lint workflow in the quickstart and architecture overview.
 - [x] Add a GitHub Actions CI workflow that runs tests and smoke checks across supported Python versions.
 - [x] Add a responsible disclosure workflow for privacy-preserving public-code and telemetry findings.
-- [ ] Publish a formal JSON Schema for contract files and validate contracts against it in tests and CLI linting.
+- [x] Publish a formal JSON Schema for contract files and validate contracts against it in tests and CLI linting.
 - [ ] Define a versioned contract evolution policy with backwards-compatible additions, deprecations, and migration examples.
-- [ ] Add cross-signal correlation semantics requiring trace IDs, span IDs, request IDs, or configured correlation keys across spans, logs, and metrics.
+- [x] Add cross-signal correlation semantics requiring trace IDs, span IDs, request IDs, or configured correlation keys across spans, logs, and metrics.
 - [ ] Implement temporal ordering checks for required span/log/metric sequences within an incident window.
 - [ ] Implement conditional requirements such as “if error_code is present, emit remediation_hint and retryable”.
 - [ ] Add contract inheritance or composition for shared organization-wide telemetry requirements.

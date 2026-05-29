@@ -1,6 +1,8 @@
 from pathlib import Path
+import json
 
 from telemetry_contracts.loader import load_contract, load_jsonl
+from telemetry_contracts.schema import CONTRACT_SCHEMA
 from telemetry_contracts.validator import validate_contract_shape, validate_events
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -112,3 +114,49 @@ def test_contract_lint_reports_schema_semantic_errors():
     assert "contract.invalid_regex" in finding_codes
     assert "contract.forbidden_patterns_type" in finding_codes
     assert "contract.sensitive_field_unclassified" in finding_codes
+
+
+def test_published_contract_schema_matches_runtime_schema():
+    published = json.loads((ROOT / "docs/contract.schema.json").read_text(encoding="utf-8"))
+    assert published == CONTRACT_SCHEMA
+
+
+def test_contract_schema_validation_rejects_bad_shapes():
+    findings = validate_contract_shape(
+        {
+            "version": "1.0",
+            "service": "svc",
+            "spans": [{"name": "request", "required": "yes"}],
+            "correlation": {"keys": "trace_id"},
+        }
+    )
+    finding_codes = codes(findings)
+    assert "contract.schema" in finding_codes
+    assert "contract.required_type" in finding_codes
+
+
+def test_correlation_policy_requires_shared_keys_across_signals():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "correlation": {"keys": ["trace_id", "request_id"], "require_on": ["spans", "logs"]},
+        "spans": [{"name": "request"}],
+        "logs": [{"name": "failed"}],
+    }
+    missing = validate_events(
+        contract,
+        [
+            {"kind": "span", "service": "svc", "name": "request", "trace_id": "trace-a"},
+            {"kind": "log", "service": "svc", "name": "failed", "fields": {"request_id": "request-b"}},
+        ],
+    )
+    assert "telemetry.correlation_mismatch" in codes(missing)
+
+    passing = validate_events(
+        contract,
+        [
+            {"kind": "span", "service": "svc", "name": "request", "trace_id": "trace-a"},
+            {"kind": "log", "service": "svc", "name": "failed", "fields": {"trace_id": "trace-a"}},
+        ],
+    )
+    assert passing == []

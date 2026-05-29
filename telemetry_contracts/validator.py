@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Any
 
 from .findings import Finding
+from .schema import validate_contract_schema
 
 SignalKind = str
 PRIMITIVE_TYPES = {"string", "integer", "number", "boolean", "object", "array", "null"}
@@ -24,7 +25,7 @@ RAW_SECRET_VALUE = re.compile(
 
 
 def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
-    findings: list[Finding] = []
+    findings: list[Finding] = validate_contract_schema(contract)
     if contract.get("version") not in {"1", "1.0", 1}:
         findings.append(Finding("warning", "contract.version", "contract version should be 1", "$.version"))
     if not isinstance(contract.get("service"), str) or not contract.get("service"):
@@ -67,6 +68,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
                                 field_path,
                             )
                         )
+    findings.extend(_validate_correlation_policy_shape(contract.get("correlation")))
     return findings
 
 
@@ -81,7 +83,99 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> l
             if not isinstance(spec.get("name"), str) or not spec.get("name"):
                 continue
             findings.extend(_validate_signal(kind, section, signal_index, spec, relevant_events))
+    findings.extend(_validate_correlation_policy(contract, relevant_events))
     return findings
+
+
+def _validate_correlation_policy_shape(policy: Any) -> list[Finding]:
+    if policy is None or not isinstance(policy, dict):
+        return []
+    findings: list[Finding] = []
+    keys = policy.get("keys")
+    if not isinstance(keys, list) or not keys or not all(isinstance(key, str) and key for key in keys):
+        findings.append(Finding("error", "contract.schema", "correlation.keys must be a non-empty array of strings", "$.correlation.keys"))
+    require_on = policy.get("require_on", ["spans", "logs"])
+    if not isinstance(require_on, list) or not require_on:
+        findings.append(Finding("error", "contract.schema", "correlation.require_on must be a non-empty array", "$.correlation.require_on"))
+    return findings
+
+
+def _validate_correlation_policy(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+    policy = contract.get("correlation")
+    if not isinstance(policy, dict):
+        return []
+    keys = [key for key in policy.get("keys", []) if isinstance(key, str) and key]
+    if not keys:
+        return []
+    required_kinds = [_normalize_signal_kind(item) for item in policy.get("require_on", ["spans", "logs"])]
+    required_kinds = [kind for kind in required_kinds if kind in {"span", "log", "metric"}]
+    if not required_kinds:
+        return []
+    declared_names = {
+        "span": _declared_required_signal_names(contract, "spans"),
+        "metric": _declared_required_signal_names(contract, "metrics"),
+        "log": _declared_required_signal_names(contract, "logs"),
+    }
+    findings: list[Finding] = []
+    values_by_kind: dict[str, set[tuple[str, Any]]] = {}
+    for kind in required_kinds:
+        kind_events = [
+            event
+            for event in events
+            if event.get("kind") == kind and (not declared_names[kind] or event.get("name") in declared_names[kind])
+        ]
+        values: set[tuple[str, Any]] = set()
+        for event in kind_events:
+            event_values = _correlation_values(event, keys)
+            if not event_values:
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.correlation_missing",
+                        f"{kind} '{event.get('name')}' missing any correlation key from {keys}",
+                        f"event[{_event_index(event)}]",
+                        "$.correlation.keys",
+                        _event_index(event),
+                    )
+                )
+            values.update(event_values)
+        if kind_events and not values:
+            findings.append(Finding("error", "telemetry.correlation_missing", f"no {kind} events carried required correlation keys", f"events[{kind}]", "$.correlation.keys"))
+        values_by_kind[kind] = values
+    populated = [values for values in values_by_kind.values() if values]
+    if len(populated) >= 2 and not set.intersection(*populated):
+        findings.append(
+            Finding(
+                "error",
+                "telemetry.correlation_mismatch",
+                "required signal kinds do not share a correlation key/value pair",
+                "events",
+                "$.correlation",
+                details={"kinds": required_kinds, "keys": keys},
+            )
+        )
+    return findings
+
+
+def _normalize_signal_kind(section_or_kind: Any) -> str:
+    return {"spans": "span", "logs": "log", "metrics": "metric"}.get(str(section_or_kind), str(section_or_kind))
+
+
+def _declared_required_signal_names(contract: dict[str, Any], section: str) -> set[str]:
+    names: set[str] = set()
+    for spec in contract.get(section, []) or []:
+        if isinstance(spec, dict) and spec.get("required", True) and isinstance(spec.get("name"), str):
+            names.add(spec["name"])
+    return names
+
+
+def _correlation_values(event: dict[str, Any], keys: list[str]) -> set[tuple[str, Any]]:
+    values: set[tuple[str, Any]] = set()
+    for key in keys:
+        value, _ = _lookup_field(event, key)
+        if value is not _MISSING and isinstance(value, (str, int, float, bool)):
+            values.add((key, value))
+    return values
 
 
 def _validate_field_spec(field_name: str, spec: dict[str, Any], path: str) -> list[Finding]:

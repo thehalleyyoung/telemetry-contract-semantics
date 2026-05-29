@@ -6,6 +6,7 @@
     "sampling": {"traces": "parent-based 10% minimum", "logs": "errors always"},
     "retention": {"traces_days": 7, "metrics_days": 30, "logs_days": 14}
   },
+  "correlation": {"keys": ["trace_id", "request_id"], "require_on": ["spans", "logs", "metrics"]},
   "spans": [
     {
       "name": "checkout.request",
