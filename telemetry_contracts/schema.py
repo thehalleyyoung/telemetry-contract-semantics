@@ -13,6 +13,8 @@ CONTRACT_SCHEMA: dict[str, Any] = {
     "properties": {
         "version": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
         "service": {"type": "string"},
+        "extends": {"$ref": "#/$defs/contractInheritance"},
+        "inherits": {"$ref": "#/$defs/contractInheritance"},
         "metadata": {"$ref": "#/$defs/metadata"},
         "privacy_classifications": {"type": "object", "additionalProperties": {"$ref": "#/$defs/privacyClassification"}},
         "field_definitions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/fieldSpec"}},
@@ -30,6 +32,12 @@ CONTRACT_SCHEMA: dict[str, Any] = {
         "assume_guarantee": {"$ref": "#/$defs/assumeGuarantee"},
     },
     "$defs": {
+        "contractInheritance": {
+            "anyOf": [
+                {"type": "string"},
+                {"type": "array", "items": {"type": "string"}},
+            ]
+        },
         "primitive": {"enum": ["string", "integer", "number", "boolean", "object", "array", "null", "str", "int", "float", "bool", "dict", "list"]},
         "fieldSpec": {
             "anyOf": [

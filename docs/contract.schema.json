@@ -243,6 +243,19 @@
       },
       "type": "object"
     },
+    "contractInheritance": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      ]
+    },
     "correlationPolicy": {
       "properties": {
         "keys": {
@@ -1087,6 +1100,9 @@
     "correlation": {
       "$ref": "#/$defs/correlationPolicy"
     },
+    "extends": {
+      "$ref": "#/$defs/contractInheritance"
+    },
     "field_definitions": {
       "additionalProperties": {
         "$ref": "#/$defs/fieldSpec"
@@ -1098,6 +1114,9 @@
         "$ref": "#/$defs/hyperproperty"
       },
       "type": "array"
+    },
+    "inherits": {
+      "$ref": "#/$defs/contractInheritance"
     },
     "logs": {
       "items": {

@@ -1,0 +1,107 @@
+{
+  "composition": {
+    "declared_signal_keys": [
+      "log:backup.pg_dump.failed",
+      "log:database.destructive_command",
+      "metric:backup.pg_dump.success",
+      "metric:postgres.replication.lag_bytes",
+      "span:disaster_recovery.restore_attempt"
+    ],
+    "has_composition": true,
+    "inherited_signal_keys": [
+      "log:backup.pg_dump.failed",
+      "log:database.destructive_command",
+      "metric:backup.pg_dump.success",
+      "metric:postgres.replication.lag_bytes",
+      "span:disaster_recovery.restore_attempt"
+    ],
+    "overridden_signal_keys": [
+      "log:backup.pg_dump.failed",
+      "log:database.destructive_command",
+      "metric:backup.pg_dump.success",
+      "metric:postgres.replication.lag_bytes",
+      "span:disaster_recovery.restore_attempt"
+    ],
+    "parents": [
+      {
+        "inherited_signal_keys": [
+          "log:backup.pg_dump.failed",
+          "log:database.destructive_command",
+          "metric:backup.pg_dump.success",
+          "metric:postgres.replication.lag_bytes",
+          "span:disaster_recovery.restore_attempt"
+        ],
+        "parents": [],
+        "path": "case_studies/gitlab_2017_database_outage/org_incident_policy.contract.json",
+        "service": "organization"
+      }
+    ],
+    "path": "case_studies/gitlab_2017_database_outage/composed_contract.json",
+    "resolved_signal_keys": [
+      "log:backup.pg_dump.failed",
+      "log:database.destructive_command",
+      "metric:backup.pg_dump.success",
+      "metric:postgres.replication.lag_bytes",
+      "span:disaster_recovery.restore_attempt"
+    ]
+  },
+  "contract_path": "case_studies/gitlab_2017_database_outage/composed_contract.json",
+  "findings": [],
+  "limitations": [
+    "Composition is finite JSON/YAML contract inheritance; it is not a theorem prover for arbitrary policy languages.",
+    "Weakening detection reuses the deterministic refinement checker, whose predicate implication checks are conservative for regexes and arbitrary predicates.",
+    "Historical case-study composition reports validate checked-in reconstructed contracts and public facts, not private production policy history."
+  ],
+  "model": {
+    "clauses": [
+      "COMP.merge-denotation",
+      "COMP.parent-refinement",
+      "REF.requirement-preservation"
+    ],
+    "name": "contract-composition-v1",
+    "notation": "C = P\u2081 \u2295 \u2026 \u2295 P\u2099 \u2295 \u0394",
+    "relation": "A composed contract is the left-to-right merge of inherited organization/team policies and the service delta. Each parent policy must be refined by the resolved child contract, so inherited required evidence, privacy policies, strict-mode assumptions, temporal/scenario obligations, and assume-guarantee clauses are not silently weakened."
+  },
+  "parent_refinement_reports": [
+    {
+      "findings": [],
+      "path": "case_studies/gitlab_2017_database_outage/org_incident_policy.contract.json",
+      "refines_parent": true,
+      "required_signals_preserved": [
+        {
+          "kind": "span",
+          "name": "disaster_recovery.restore_attempt"
+        },
+        {
+          "kind": "metric",
+          "name": "postgres.replication.lag_bytes"
+        },
+        {
+          "kind": "metric",
+          "name": "backup.pg_dump.success"
+        },
+        {
+          "kind": "log",
+          "name": "database.destructive_command"
+        },
+        {
+          "kind": "log",
+          "name": "backup.pg_dump.failed"
+        }
+      ],
+      "service": "organization"
+    }
+  ],
+  "service": "gitlab.com-database",
+  "summary": {
+    "declared_signals": 5,
+    "direct_parents": 1,
+    "findings": 0,
+    "findings_by_code": {},
+    "has_composition": true,
+    "inherited_signals": 5,
+    "overridden_signals": 5,
+    "resolved_signals": 5,
+    "valid": true
+  }
+}

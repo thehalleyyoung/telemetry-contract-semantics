@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee refinement benchmark taxonomy explain semantics
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee refinement composition benchmark taxonomy explain semantics
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee refinement benchmark taxonomy explain semantics
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee refinement composition benchmark taxonomy explain semantics
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -28,6 +28,9 @@ assume-guarantee:
 
 refinement:
 	python3 -m telemetry_contracts.cli refinement --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json --candidate-contract case_studies/gitlab_2017_database_outage/contract.json --format markdown
+
+composition:
+	python3 -m telemetry_contracts.cli compose-contract --contract case_studies/gitlab_2017_database_outage/composed_contract.json --format markdown
 
 benchmark:
 	python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown

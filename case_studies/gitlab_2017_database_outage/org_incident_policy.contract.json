@@ -1,0 +1,237 @@
+{
+  "assume_guarantee": {
+    "collector_assumptions": [
+      {
+        "description": "Collector/exporter output may be sampled only by transformations declared in metadata.transformation_preservation.",
+        "id": "documented-transformations-only",
+        "no_undocumented_transformations": true
+      },
+      {
+        "description": "Collector/exporter sampling must preserve the bounded backup-failure alert response needed for restore-readiness evidence.",
+        "id": "backup-alert-preserved-in-export",
+        "temporal_property": "backup-failure-alert-within-response-window"
+      }
+    ],
+    "environment_assumptions": [
+      {
+        "description": "The backup environment should expose destination and database/tool version evidence for selecting a restorable backup.",
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "database_version",
+          "tool_version"
+        ],
+        "id": "backup-version-and-destination-evidence",
+        "name": "backup.pg_dump.success",
+        "signal": "metric"
+      },
+      {
+        "description": "The database environment should expose primary/replica lag context for stale-replica incident slices.",
+        "fields": [
+          "primary_host",
+          "replica_host",
+          "incident_id"
+        ],
+        "id": "replication-lag-context-evidence",
+        "name": "postgres.replication.lag_bytes",
+        "signal": "metric"
+      }
+    ],
+    "oncall_obligations": [
+      {
+        "description": "On-call diagnostic workflow should expose whether the backup failure alert was delivered to responders.",
+        "equals": true,
+        "field": "alert_delivered",
+        "fields": [
+          "backup_job_id",
+          "destination",
+          "alert_route",
+          "alert_delivered"
+        ],
+        "id": "backup-alert-delivered-to-responders",
+        "name": "backup.pg_dump.failed",
+        "signal": "log"
+      },
+      {
+        "description": "On-call incident evidence should answer the restore-readiness question declared by the contract.",
+        "id": "restore-readiness-question-answerable",
+        "scenario": "restore-readiness"
+      }
+    ],
+    "service_guarantees": [
+      {
+        "description": "Database service/runbook instrumentation should emit enough structured evidence to distinguish intended host, actual target role, correlation id, and guard result.",
+        "fields": [
+          "target_host",
+          "intended_host",
+          "target_role",
+          "correlation_id",
+          "command_guard_result"
+        ],
+        "id": "destructive-command-guard-evidence",
+        "name": "database.destructive_command",
+        "signal": "log"
+      },
+      {
+        "description": "Recovery telemetry should guarantee that the selected restore source is verified, fresh, and from production backup evidence.",
+        "equals": "verified_backup",
+        "field": "source",
+        "fields": [
+          "source",
+          "backup_age_hours",
+          "source_environment"
+        ],
+        "id": "restorable-production-backup-guarantee",
+        "name": "disaster_recovery.restore_attempt",
+        "signal": "span"
+      }
+    ]
+  },
+  "logs": [
+    {
+      "fields": {
+        "intended_host": {
+          "required": true,
+          "type": "string"
+        },
+        "target_host": {
+          "required": true,
+          "type": "string"
+        },
+        "target_role": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "database.destructive_command",
+      "required": true,
+      "severity": "ERROR"
+    },
+    {
+      "fields": {
+        "alert_route": {
+          "required": true,
+          "type": "string"
+        },
+        "backup_job_id": {
+          "required": true,
+          "type": "string"
+        },
+        "destination": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "backup.pg_dump.failed",
+      "required": true,
+      "severity": "ERROR"
+    }
+  ],
+  "metadata": {
+    "case_study": "GitLab.com database outage, 2017-01-31",
+    "purpose": "Shared incident-readiness baseline used to demonstrate contract inheritance over public reconstructed data.",
+    "refinement_scope": "organization",
+    "source_urls": [
+      "https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/",
+      "https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/"
+    ]
+  },
+  "metrics": [
+    {
+      "name": "postgres.replication.lag_bytes",
+      "required": true,
+      "tags": {
+        "incident_id": {
+          "required": true,
+          "type": "string"
+        },
+        "primary_host": {
+          "required": true,
+          "type": "string"
+        },
+        "replica_host": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "min": 0,
+        "type": "number"
+      }
+    },
+    {
+      "name": "backup.pg_dump.success",
+      "required": true,
+      "tags": {
+        "backup_job_id": {
+          "required": true,
+          "type": "string"
+        },
+        "destination": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "value": {
+        "type": "boolean"
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "restore-readiness",
+      "question": "Can responders identify destructive-command target evidence, backup evidence, and restore-source freshness?",
+      "requires": [
+        {
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role"
+          ],
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        {
+          "fields": [
+            "backup_job_id",
+            "destination"
+          ],
+          "name": "backup.pg_dump.success",
+          "signal": "metric"
+        },
+        {
+          "fields": [
+            "source",
+            "backup_age_hours",
+            "source_environment"
+          ],
+          "name": "disaster_recovery.restore_attempt",
+          "signal": "span"
+        }
+      ]
+    }
+  ],
+  "service": "organization",
+  "spans": [
+    {
+      "fields": {
+        "backup_age_hours": {
+          "min": 0,
+          "required": true,
+          "type": "number"
+        },
+        "source": {
+          "required": true,
+          "type": "string"
+        },
+        "source_environment": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "name": "disaster_recovery.restore_attempt",
+      "required": true
+    }
+  ],
+  "version": "1.0"
+}

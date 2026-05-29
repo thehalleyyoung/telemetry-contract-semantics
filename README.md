@@ -16,6 +16,7 @@ This repository turns that thesis into executable checks:
 - Observational-equivalence reports that compare two telemetry streams by incident-question answerability instead of byte equality.
 - Transformation-preservation checks that compare source and post-transform streams to catch approved sampling, redaction, omission, retention, or aggregation that destroys contract or incident-question evidence.
 - Contract-refinement checks that compare a base and candidate contract for preserved required evidence, strengthened predicates, privacy non-weakening, strict-mode policy preservation, and compatible collector/environment/on-call assumptions.
+- Contract composition/inheritance for shared organization or team policies, with parent-refinement checks so service contracts cannot silently weaken inherited evidence requirements.
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
 - Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
@@ -31,7 +32,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: `100_STEPS.md` currently has 36 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 37 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -123,6 +124,10 @@ python3 -m telemetry_contracts.cli preservation \
 python3 -m telemetry_contracts.cli refinement \
   --base-contract case_studies/gitlab_2017_database_outage/refinement_base_contract.json \
   --candidate-contract case_studies/gitlab_2017_database_outage/contract.json \
+  --format markdown
+
+python3 -m telemetry_contracts.cli compose-contract \
+  --contract case_studies/gitlab_2017_database_outage/composed_contract.json \
   --format markdown
 
 python3 -m telemetry_contracts.cli proof-obligations \
@@ -245,6 +250,7 @@ Supported checks include:
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
 - Transformation preservation for approved telemetry changes. `preservation` implements an obligation-local relation: if a runtime contract obligation or selected scenario witness is satisfied before transformation, it must remain satisfied after transformation. Reports identify new contract failures plus lost incident-question signals/fields, and checked-in GitLab 2017 reports demonstrate a sampled/exported derivative that removes the backup-failure alert witness.
 - Contract refinement for version and scope comparisons. `refinement` checks `C′ ⊑ C`: a candidate contract must preserve required base signals, fields, scenarios, temporal properties, alternative obligations, and service guarantees; predicate changes must be equal or stronger; privacy classifications and transformation policies must not expand allowed exposure; strict-mode escape hatches must not widen; and collector/environment/on-call assumptions must not become harder to satisfy. Reports include exact weakened-requirement, privacy, transformation, and assumption findings.
+- Contract composition/inheritance via top-level `extends` or `inherits`. `load_contract` resolves relative parent policies deterministically (`C = P₁ ⊕ … ⊕ Pₙ ⊕ Δ`), merging shared fields, signal clauses, scenarios, temporal properties, alternatives, metadata, and assume-guarantee structure. `compose-contract` reports inherited, declared, overridden, and resolved signal keys and runs parent refinement checks to prove the resolved service contract preserves inherited evidence.
 - Proof-obligation reports for the implemented contract language. `proof-obligations` catalogs 27 feature groups and instantiates templates for well-formedness, satisfaction, preservation, refinement, monitor soundness, and benchmark-label validity. When concrete runtime/benchmark artifacts are supplied, non-refinement obligations are marked `discharged` or `violated`; use the dedicated `refinement` command for executable contract-version checks.
 - Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
 
@@ -269,7 +275,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 ## Architecture
 
 - `telemetry_contracts.core_semantics` implements the mechanizable small-step contract-evaluation model and reports denotation alignment with `validate_events`.
-- `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
+- `telemetry_contracts.loader` loads JSON/YAML contracts, resolves relative `extends`/`inherits` chains, and reads JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
 - `telemetry_contracts.validator` checks emitted telemetry against signal, field, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications.
 - `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
@@ -281,12 +287,13 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.equivalence` compares two traces by their scenario answerability signatures.
 - `telemetry_contracts.preservation` checks pre/post transformation preservation for runtime obligations and scenario witnesses.
 - `telemetry_contracts.refinement` implements the executable finite-contract refinement relation and JSON/Markdown reports.
+- `telemetry_contracts.composition` analyzes inherited contract denotations and parent-refinement evidence for `compose-contract`.
 - `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, assume-guarantee, semantics, hyperproperty, preservation, and benchmark evidence.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `benchmark`, `taxonomy`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -332,7 +339,7 @@ A benchmark config is JSON with a `cases` list. Each case points to a contract p
 - <https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/>
 - <https://about.gitlab.com/blog/2017/02/01/gitlab-dot-com-database-incident/>
 
-The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence, temporal properties for backup-failure alert response and reconstruction ordering, and assume-guarantee obligations assigning missing guard/backup evidence to service, collector, environment, or on-call layers. `reports/gitlab_2017_temporal_logic_validation.json` shows that the degraded sampled/exported derivative reports `telemetry.temporal_response` when the failed-backup metric has no `backup.pg_dump.failed` response witness within 1500ms; `reports/gitlab_2017_assume_guarantee_sampled.md` turns the same bounded derivative into layer-specific counterexamples. `reports/gitlab_2017_refinement.json` shows that the reconstructed incident contract refines the checked-in broader team baseline, while `reports/gitlab_2017_refinement_weakened.json` shows a deliberate weakened candidate losing required alert-delivery evidence.
+The fixture is clearly labeled as reconstructed, not raw GitLab telemetry. It encodes public facts such as replication lag/failure, a destructive command intended for the secondary but run on the primary, failed pg_dump backups from a PostgreSQL version mismatch, rejected cron notifications, and recovery from a roughly six-hour-old LVM snapshot. Its contract also includes a required alternative obligation for destructive-command location evidence, temporal properties for backup-failure alert response and reconstruction ordering, and assume-guarantee obligations assigning missing guard/backup evidence to service, collector, environment, or on-call layers. `reports/gitlab_2017_temporal_logic_validation.json` shows that the degraded sampled/exported derivative reports `telemetry.temporal_response` when the failed-backup metric has no `backup.pg_dump.failed` response witness within 1500ms; `reports/gitlab_2017_assume_guarantee_sampled.md` turns the same bounded derivative into layer-specific counterexamples. `reports/gitlab_2017_refinement.json` shows that the reconstructed incident contract refines the checked-in broader team baseline, while `reports/gitlab_2017_refinement_weakened.json` shows a deliberate weakened candidate losing required alert-delivery evidence. `case_studies/gitlab_2017_database_outage/composed_contract.json` extends `org_incident_policy.contract.json`; `reports/gitlab_2017_composition.json` records `valid=true` with five inherited signal obligations and zero parent-refinement findings, and `reports/gitlab_2017_composed_validation.json` shows the composed contract produces the same bounded historical findings as the service contract over reconstructed events.
 
 See `docs/claims_evidence.md` for the bounded novelty claim, evidence, limitations, and reproduction protocol.
 
@@ -409,6 +416,22 @@ python3 -m telemetry_contracts.cli refinement \
 
 The passing report records `refines=true` with zero findings for the reconstructed GitLab contract against a broader checked-in baseline. The weakened-candidate report records `refines=false` and a concrete `refinement.required_field_removed` finding for removed backup alert-delivery evidence. These are finite artifact comparisons over public incident-derived fixtures, not claims about GitLab private contract history.
 
+Generate the checked-in composition/inheritance report over the same public reconstruction:
+
+```bash
+python3 -m telemetry_contracts.cli compose-contract \
+  --contract case_studies/gitlab_2017_database_outage/composed_contract.json \
+  --format markdown \
+  --output reports/gitlab_2017_composition.md
+
+python3 -m telemetry_contracts.cli validate \
+  --contract case_studies/gitlab_2017_database_outage/composed_contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format json --fail-on never > reports/gitlab_2017_composed_validation.json
+```
+
+The composition report records `valid=true`, five inherited signal obligations, five overridden service-specific signal clauses, and zero parent-refinement findings for the resolved GitLab reconstruction. The validation report confirms the inherited contract is immediately executable on the checked-in historical fixture; findings remain bounded to reconstructed public facts.
+
 Generate the checked-in alternative-obligation witness report:
 
 ```bash
@@ -458,7 +481,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - Temporal-property monitoring is finite-trace and bounded by supplied timestamps/grouping keys; it is not an unbounded temporal-logic model checker.
 - Hyperproperty monitoring is finite-artifact and pair/set bounded by supplied JSONL events; it identifies concrete privacy-risk witnesses, not universal non-interference over all executions.
 - Assume-guarantee reports assign finite-artifact findings to declared layers; they do not prove organizational accountability or production workflow behavior beyond the supplied contract and trace.
-- Refinement reports compare two finite checked-in contracts. The checker is conservative about regex/arbitrary predicate implication and does not prove that an organization's private contract evolution was safe.
+- Refinement and composition reports compare finite checked-in contracts. The checker is conservative about regex/arbitrary predicate implication and does not prove that an organization's private contract evolution was safe.
 - Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
 - The small-step semantic evaluator is an executable artifact aligned with the current checker through tests and reports; it is not a separately machine-checked theorem prover.
 - Proof-obligation reports are executable evidence checklists over finite artifacts. They are useful for review and reproducibility; dedicated contract-version refinement evidence is produced by the `refinement` command.

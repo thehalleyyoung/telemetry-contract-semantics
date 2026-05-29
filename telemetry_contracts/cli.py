@@ -23,6 +23,7 @@ from .validator import validate_contract_shape, validate_events
 from .equivalence import compare_observational_equivalence, format_equivalence_markdown
 from .proof_obligations import format_proof_obligations_markdown, generate_proof_obligations_report
 from .refinement import check_contract_refinement, format_refinement_markdown
+from .composition import analyze_contract_composition, format_composition_markdown
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -109,6 +110,13 @@ def main(argv: list[str] | None = None) -> int:
     refinement_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     refinement_parser.add_argument("--output")
     refinement_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+
+    composition_parser = subparsers.add_parser("compose-contract", help="resolve inherited contract policies and verify parent refinement")
+    composition_parser.add_argument("--contract", required=True)
+    composition_parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    composition_parser.add_argument("--output")
+    composition_parser.add_argument("--resolved-output", help="optional path for the fully composed contract JSON")
+    composition_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
 
     obligations_parser = subparsers.add_parser("proof-obligations", help="instantiate formal proof-obligation templates for a contract and evidence artifacts")
     obligations_parser.add_argument("--contract", required=True)
@@ -228,6 +236,18 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "refinement":
             report = check_contract_refinement(load_contract(args.base_contract), load_contract(args.candidate_contract))
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_refinement_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            if args.fail_on == "never":
+                return 0
+            return 1 if has_at_least([Finding(item["severity"], item["code"], item["message"], item["path"]) for item in report["findings"]], args.fail_on) else 0
+        if args.command == "compose-contract":
+            report = analyze_contract_composition(args.contract)
+            if args.resolved_output:
+                Path(args.resolved_output).write_text(json.dumps(load_contract(args.contract), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_composition_markdown(report)
             if args.output:
                 Path(args.output).write_text(output + "\n", encoding="utf-8")
             else:

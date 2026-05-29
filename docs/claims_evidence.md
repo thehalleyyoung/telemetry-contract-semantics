@@ -21,6 +21,7 @@
 - Added finite-trace hyperproperties for PII non-disclosure and tenant non-interference. `examples/hyperproperties/` contains paired fixtures, and `reports/owasp_securetea_hyperproperties.json` records three bounded `telemetry.hyper_pii_disclosure` witnesses over reconstructed public-code SecureTea console-log telemetry.
 - Added assume-guarantee telemetry contracts and reports in `telemetry_contracts.assume_guarantee` and `telemetry-contracts report assume-guarantee`. The GitLab 2017 contract now separates service emission guarantees, collector/exporter assumptions, environment assumptions, and on-call diagnostic obligations; `reports/gitlab_2017_assume_guarantee_sampled.md` records layer-specific counterexamples over the sampled/exported derivative.
 - Added executable contract-refinement checking in `telemetry_contracts.refinement` and `telemetry-contracts refinement`. `reports/gitlab_2017_refinement.json` records that the reconstructed GitLab 2017 incident contract refines a checked-in broader baseline fixture, while `reports/gitlab_2017_refinement_weakened.json` records a deliberate weakened candidate with `refinement.required_field_removed`.
+- Added contract composition/inheritance in `telemetry_contracts.loader` and `telemetry_contracts.composition`. `case_studies/gitlab_2017_database_outage/composed_contract.json` extends a shared `org_incident_policy.contract.json`; `reports/gitlab_2017_composition.json` records zero parent-refinement findings, and `reports/gitlab_2017_composed_validation.json` validates the resolved contract over the reconstructed public GitLab 2017 fixture.
 
 ## Bounded novelty claim
 
@@ -216,6 +217,18 @@ python3 -m telemetry_contracts.cli refinement \
   --format markdown \
   --output reports/gitlab_2017_refinement_weakened.md \
   --fail-on never
+python3 -m telemetry_contracts.cli compose-contract \
+  --contract case_studies/gitlab_2017_database_outage/composed_contract.json \
+  --format json \
+  --output reports/gitlab_2017_composition.json
+python3 -m telemetry_contracts.cli compose-contract \
+  --contract case_studies/gitlab_2017_database_outage/composed_contract.json \
+  --format markdown \
+  --output reports/gitlab_2017_composition.md
+python3 -m telemetry_contracts.cli validate \
+  --contract case_studies/gitlab_2017_database_outage/composed_contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
+  --format json --fail-on never > reports/gitlab_2017_composed_validation.json
 python3 -m telemetry_contracts.cli validate \
   --contract examples/temporal_logic/contract.json \
   --events examples/temporal_logic/failing.jsonl \
