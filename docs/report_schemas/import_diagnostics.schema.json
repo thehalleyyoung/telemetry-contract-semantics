@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/telemetry-contracts/import-diagnostics.schema.json",
+  "title": "Telemetry Contracts import diagnostics report",
+  "type": "object",
+  "required": ["summary", "diagnostics"],
+  "properties": {
+    "summary": {
+      "type": "object",
+      "required": ["records", "diagnostics", "invalidating_diagnostics"],
+      "properties": {
+        "records": {"type": "integer", "minimum": 0},
+        "events": {"type": "integer", "minimum": 0},
+        "diagnostics": {"type": "integer", "minimum": 0},
+        "invalidating_diagnostics": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "code", "message", "path"],
+        "properties": {
+          "severity": {"enum": ["info", "warning", "error"]},
+          "code": {"type": "string"},
+          "message": {"type": "string"},
+          "path": {"type": "string"},
+          "invalidates_contract_claim": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

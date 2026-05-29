@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/telemetry-contracts/benchmark-report.schema.json",
+  "title": "Telemetry Contracts benchmark report",
+  "type": "object",
+  "required": ["summary", "cases"],
+  "properties": {
+    "summary": {
+      "type": "object",
+      "required": ["name", "cases", "contracts", "events", "findings", "pass"],
+      "properties": {
+        "name": {"type": "string"},
+        "cases": {"type": "integer", "minimum": 0},
+        "contracts": {"type": "integer", "minimum": 0},
+        "events": {"type": "integer", "minimum": 0},
+        "findings": {"type": "integer", "minimum": 0},
+        "runtime_ms": {"type": "number"},
+        "runtime_per_k_events_ms": {"type": "number"},
+        "findings_per_k_events": {"type": "number"},
+        "label_metrics": {"type": "object"},
+        "top_remediations": {"type": "array"},
+        "pass": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "findings", "metrics", "pass"],
+        "properties": {
+          "id": {"type": "string"},
+          "description": {"type": "string"},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "dataset_metadata": {"type": "object"},
+          "findings": {"type": "array", "items": {"$ref": "finding.schema.json"}},
+          "metrics": {"type": "object"},
+          "pass": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -41,10 +41,12 @@ This repository turns that thesis into executable checks:
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
 - Passing and failing examples for a checkout/payment service.
+- Operational scorecards and authoring guidance for HTTP APIs, batch jobs, message consumers, cron tasks, stateful workers, privacy-safe telemetry, operational ranges, anti-patterns, CI/review integration, and OTLP importer limitations in `docs/operational_scorecards.md`.
+- JSON report schema documentation for finding, import-diagnostic, scenario, benchmark, service-owner, and claims-evidence report envelopes under `docs/report_schemas/`, with a replication guide and release checklist for bounded public claims.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 75 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 84 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -228,6 +230,13 @@ python3 -m telemetry_contracts.cli validate \
 ```
 
 If installed as a package, the same CLI is available as `telemetry-contracts`.
+
+## Operational and replication docs
+
+- `docs/operational_scorecards.md` maps workload scorecards, privacy-safe telemetry examples, operational range clauses, authoring anti-patterns, CI/SARIF/review integration, and OTLP importer limitations to checked-in commands and fixtures.
+- `docs/report_schemas.md` and `docs/report_schemas/*.schema.json` document the JSON envelopes consumed by CI, SARIF, benchmark, service-owner, and claims-evidence workflows.
+- `docs/replication_guide.md` gives exact commands for benchmark metrics, generated reports, historical GitLab analysis, current OWASP SecureTea case-study claims, OTLP importer diagnostics, and paper-table artifacts.
+- `docs/release_checklist.md` records limitations and release gates for mechanized-core scope, static-analysis boundaries, reconstructed-data claims, benchmark validity threats, privacy safeguards, archival metadata, checksums, and deterministic non-AI validation.
 
 ## Contract language
 

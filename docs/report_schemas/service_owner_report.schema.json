@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/telemetry-contracts/service-owner-report.schema.json",
+  "title": "Telemetry Contracts service-owner report",
+  "type": "object",
+  "required": ["summary", "findings"],
+  "properties": {
+    "summary": {"type": "object", "additionalProperties": true},
+    "service": {"type": "string"},
+    "owner": {"type": "string"},
+    "coverage": {"type": "object"},
+    "top_remediations": {"type": "array"},
+    "findings": {"type": "array", "items": {"$ref": "finding.schema.json"}},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

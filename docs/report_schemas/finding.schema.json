@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/telemetry-contracts/finding.schema.json",
+  "title": "Telemetry Contracts finding",
+  "type": "object",
+  "required": ["severity", "code", "message", "path"],
+  "properties": {
+    "severity": {"enum": ["info", "warning", "error"]},
+    "code": {"type": "string"},
+    "message": {"type": "string"},
+    "path": {"type": "string"},
+    "contract_path": {"type": ["string", "null"]},
+    "event_index": {"type": ["integer", "null"]},
+    "category": {"type": "string"},
+    "remediation": {"type": "string"},
+    "disclosure_sensitivity": {"type": "string"},
+    "service_owner": {"type": "string"},
+    "details": {"type": "object"}
+  },
+  "additionalProperties": true
+}

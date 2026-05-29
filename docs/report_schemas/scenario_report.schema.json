@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/telemetry-contracts/scenario-report.schema.json",
+  "title": "Telemetry Contracts scenario report",
+  "type": "object",
+  "required": ["summary", "findings"],
+  "properties": {
+    "summary": {"type": "object", "additionalProperties": true},
+    "scenario": {"type": ["object", "string", "null"]},
+    "requirements": {"type": "array"},
+    "findings": {"type": "array", "items": {"$ref": "finding.schema.json"}}
+  },
+  "additionalProperties": true
+}

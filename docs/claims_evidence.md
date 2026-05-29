@@ -32,6 +32,8 @@
 - Added deterministic regeneration in `telemetry_contracts.regenerate` and `telemetry-contracts regenerate-artifacts`, producing current impact reports, taxonomy coverage reports, and `reports/paper_tables.md` from `benchmarks/builtin.json`.
 - Added `telemetry-contracts claims-matrix` and checked-in `docs/claims_evidence_matrix.json`, linking public claims to bounded artifacts, fixtures, tests, benchmark rows, and limitations.
 - Added service-owner utility surfaces: `telemetry-contracts report service-owner` with checked-in GitLab 2017 sampled/exported reports in `reports/gitlab_2017_service_owner_sampled.json` and `.md`, `telemetry-contracts init` for starter local contract/CI/readiness scaffolds, `telemetry-contracts doctor` with checked-in `reports/local_doctor.md`, common finding output/filter flags, and a documented type-check-friendly public Python API.
+- Added public operational documentation: `docs/operational_scorecards.md` maps HTTP API, batch, message-consumer, cron, and stateful-worker scorecards to formal adequacy criteria and checked-in fixtures; it also documents privacy-safe telemetry designs, operational range examples, authoring anti-patterns, CI/SARIF/review integration, and OTLP importer validity threats.
+- Added JSON report schema documentation in `docs/report_schemas.md` and `docs/report_schemas/*.schema.json` for finding, import-diagnostic, scenario, benchmark, service-owner, and claims-evidence report envelopes. Added `docs/replication_guide.md` and `docs/release_checklist.md` for exact reproduction commands and paper/release limitations.
 
 ## Bounded novelty claim
 
@@ -64,6 +66,8 @@ To make the novelty claim falsifiable, use this protocol on or after the retriev
 - The benchmark does not establish recall over all possible observability failures. Precision/recall/F1 are measured only against checked-in expected labels for the selected finite cases and filters.
 - Static checks use Python AST extraction plus lightweight multi-language source heuristics for checked-in fixtures; they are not full interprocedural compiler analyses and do not prove dynamic instrumentation behavior.
 - Service-owner, doctor, init, and public API surfaces summarize or scaffold finite local artifacts only. They do not inspect private production telemetry backends, prove organizational ownership, or guarantee production deployment correctness.
+- Operational scorecards and JSON schemas document expected report envelopes and adequacy criteria, but they do not make reports valid without running the commands over the cited fixtures. The schemas are intentionally permissive for command-specific details.
+- The replication guide and release checklist are process artifacts; they improve reproducibility but do not add new empirical evidence beyond checked-in public/reconstructed fixtures and deterministic command outputs.
 
 ## Reproducibility protocol
 
@@ -77,6 +81,7 @@ python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --
 python3 -m telemetry_contracts.cli benchmark-diff --baseline examples/benchmarks/diff_baseline.report.json --candidate examples/benchmarks/diff_candidate.report.json --format markdown
 python3 -m telemetry_contracts.cli sarif --findings examples/ci/static_findings.example.json
 python3 -m telemetry_contracts.cli ci-gate --findings examples/ci/static_findings.example.json --baseline examples/ci/baseline.example.json --format markdown
+python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --check-type import_diagnostics --format markdown
 python3 -m telemetry_contracts.cli regenerate-artifacts --write --format markdown
 python3 -m telemetry_contracts.cli claims-matrix --output docs/claims_evidence_matrix.json
 python3 -m telemetry_contracts.cli report service-owner \

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/telemetry-contracts/claims-evidence-matrix.schema.json",
+  "title": "Telemetry Contracts claims-to-evidence matrix",
+  "type": "object",
+  "required": ["claims"],
+  "properties": {
+    "generated_at": {"type": "string"},
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "evidence"],
+        "properties": {
+          "claim": {"type": "string"},
+          "evidence": {"type": "array"},
+          "limitations": {"type": "array", "items": {"type": "string"}},
+          "fixtures": {"type": "array", "items": {"type": "string"}},
+          "commands": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
