@@ -690,6 +690,59 @@
                 },
                 "region": {
                   "startColumn": 5,
+                  "startLine": 26
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include PII or tenant/customer identifiers"
+          },
+          "properties": {
+            "case_id": "owasp-securetea-signin-current-static-and-hyperproperty",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.pii_logging",
+            "details": {
+              "line": "console.log('A email was submitted: ' + this.state.username);",
+              "risk_kind": "pii_or_tenant_identifier",
+              "source_span": {
+                "column": 5,
+                "end_column": 66,
+                "end_line": 26,
+                "line": 26,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.pii-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66",
+            "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.pii_logging"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
+                },
+                "region": {
+                  "startColumn": 5,
                   "startLine": 27
                 }
               }
@@ -714,6 +767,7 @@
             "code": "static.secret_logging",
             "details": {
               "line": "console.log('A password was submitted: ' + this.state.password);",
+              "risk_kind": "credential_or_token",
               "source_span": {
                 "column": 5,
                 "end_column": 69,
@@ -766,6 +820,7 @@
             "code": "static.secret_logging",
             "details": {
               "line": "console.log(json[\"cookie\"]);",
+              "risk_kind": "credential_or_token",
               "source_span": {
                 "column": 13,
                 "end_column": 41,
@@ -1330,6 +1385,7 @@
             "code": "telemetry.sensitive_value",
             "contract_path": "$.logs[0].fields.email",
             "details": {
+              "risk_kind": "email",
               "sensitivity": "personal",
               "value_preview": "alic\u2026.com"
             },
@@ -1425,6 +1481,7 @@
             "code": "static.secret_logging",
             "details": {
               "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)",
+              "risk_kind": "credential_or_token",
               "source_span": {
                 "column": 5,
                 "end_column": 91,
@@ -1442,6 +1499,59 @@
             "severity": "error"
           },
           "ruleId": "static.secret_logging"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include PII or tenant/customer identifiers"
+          },
+          "properties": {
+            "case_id": "benchmark-privacy-static-source",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.pii_logging",
+            "details": {
+              "line": "logger.error(\"auth.failure invalid password=<redacted> email=%s\", secret_password, user_email)",
+              "risk_kind": "pii_or_tenant_identifier",
+              "source_span": {
+                "column": 5,
+                "end_column": 91,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.pii-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
+            "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.pii_logging"
         },
         {
           "level": "error",
@@ -1592,6 +1702,709 @@
             "severity": "warning"
           },
           "ruleId": "otlp.malformed_record"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].auth_token"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'auth_token' matched forbidden pattern 'bearer_token'"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.forbidden_pattern",
+            "contract_path": "$.logs[0].fields.auth_token",
+            "details": {
+              "pattern": "bearer_token",
+              "value_preview": "Bear\u2026wxyz"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.forbidden-pattern",
+            "path": "event[1].auth_token",
+            "remediation": "Redact, hash, or omit values matching forbidden sensitive patterns.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.forbidden_pattern"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].auth_token"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'auth_token' must be emitted as a redacted sentinel"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.privacy_transformation",
+            "contract_path": "$.logs[0].fields.auth_token",
+            "details": {
+              "transformation": "redacted",
+              "value_preview": "Bear\u2026wxyz"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.privacy-preservation",
+            "path": "event[1].auth_token",
+            "remediation": "Emit the field using the transformation required by the contract privacy policy.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.privacy_transformation"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].auth_token"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'auth_token' appears to contain raw credential data"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.sensitive_value",
+            "contract_path": "$.logs[0].fields.auth_token",
+            "details": {
+              "risk_kind": "credential_or_token",
+              "sensitivity": "credential",
+              "value_preview": "Bear\u2026wxyz"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.raw-sensitive-value",
+            "path": "event[1].auth_token",
+            "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.sensitive_value"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].user_email"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'user_email' must be emitted as a stable hash token"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.privacy_transformation",
+            "contract_path": "$.logs[0].fields.user_email",
+            "details": {
+              "transformation": "hashed",
+              "value_preview": "case\u2026.com"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.privacy-preservation",
+            "path": "event[1].user_email",
+            "remediation": "Emit the field using the transformation required by the contract privacy policy.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.privacy_transformation"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].user_email"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'user_email' appears to contain raw personal data"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.sensitive_value",
+            "contract_path": "$.logs[0].fields.user_email",
+            "details": {
+              "risk_kind": "email",
+              "sensitivity": "personal",
+              "value_preview": "case\u2026.com"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.raw-sensitive-value",
+            "path": "event[1].user_email",
+            "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.sensitive_value"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].phone"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'phone' matched forbidden pattern 'phone'"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.forbidden_pattern",
+            "contract_path": "$.logs[0].fields.phone",
+            "details": {
+              "pattern": "phone",
+              "value_preview": "+1 4\u20260199"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.forbidden-pattern",
+            "path": "event[1].phone",
+            "remediation": "Redact, hash, or omit values matching forbidden sensitive patterns.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.forbidden_pattern"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].phone"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'phone' must be emitted as a redacted sentinel"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.privacy_transformation",
+            "contract_path": "$.logs[0].fields.phone",
+            "details": {
+              "transformation": "redacted",
+              "value_preview": "+1 4\u20260199"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.privacy-preservation",
+            "path": "event[1].phone",
+            "remediation": "Emit the field using the transformation required by the contract privacy policy.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.privacy_transformation"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].phone"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'phone' appears to contain raw personal data"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.sensitive_value",
+            "contract_path": "$.logs[0].fields.phone",
+            "details": {
+              "risk_kind": "phone",
+              "sensitivity": "personal",
+              "value_preview": "+1 4\u20260199"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.raw-sensitive-value",
+            "path": "event[1].phone",
+            "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.sensitive_value"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].tenant_id"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'tenant_id' must be emitted as a stable hash token"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.privacy_transformation",
+            "contract_path": "$.logs[0].fields.tenant_id",
+            "details": {
+              "transformation": "hashed",
+              "value_preview": "tena\u2026-123"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.privacy-preservation",
+            "path": "event[1].tenant_id",
+            "remediation": "Emit the field using the transformation required by the contract privacy policy.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.privacy_transformation"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].payload_preview"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'payload_preview' must be emitted as a redacted sentinel"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.privacy_transformation",
+            "contract_path": "$.logs[0].fields.payload_preview",
+            "details": {
+              "transformation": "redacted",
+              "value_preview": "{\"pa\u2026bc\"}"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.privacy-preservation",
+            "path": "event[1].payload_preview",
+            "remediation": "Emit the field using the transformation required by the contract privacy policy.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.privacy_transformation"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "event[1].payload_preview"
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "field 'payload_preview' appears to contain raw payload data"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "telemetry.sensitive_value",
+            "contract_path": "$.logs[0].fields.payload_preview",
+            "details": {
+              "risk_kind": "raw_payload_preview",
+              "sensitivity": "payload",
+              "value_preview": "{\"pa\u2026bc\"}"
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "event_index": 1,
+            "formal_clause": "SAT.raw-sensitive-value",
+            "path": "event[1].payload_preview",
+            "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "telemetry.sensitive_value"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include a credential, token, cookie, or other sensitive value"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.secret_logging",
+            "details": {
+              "line": "logger.error(\"auth.audit failed token=<redacted> email=%s phone=%s tenant_id=<redacted> payload_preview=%s\", token, email, phone, tenant_id, event.get(\"raw_payload\"))",
+              "risk_kind": "credential_or_token",
+              "source_span": {
+                "column": 5,
+                "end_column": 155,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.raw-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.secret_logging"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include PII or tenant/customer identifiers"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.pii_logging",
+            "details": {
+              "line": "logger.error(\"auth.audit failed token=<redacted> email=%s phone=%s tenant_id=<redacted> payload_preview=%s\", token, email, phone, tenant_id, event.get(\"raw_payload\"))",
+              "risk_kind": "pii_or_tenant_identifier",
+              "source_span": {
+                "column": 5,
+                "end_column": 155,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.pii-sensitive-log",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          "ruleId": "static.pii_logging"
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "logging statement appears to include a raw payload or unsafe preview field"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "privacy-security",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "warning",
+              "sarif_level": "warning"
+            },
+            "code": "static.unsafe_payload_preview",
+            "details": {
+              "line": "logger.error(\"auth.audit failed token=<redacted> email=%s phone=%s tenant_id=<redacted> payload_preview=%s\", token, email, phone, tenant_id, event.get(\"raw_payload\"))",
+              "risk_kind": "raw_payload_preview",
+              "source_span": {
+                "column": 5,
+                "end_column": 155,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+              }
+            },
+            "disclosure_sensitivity": "responsible-disclosure",
+            "formal_clause": "STATIC.payload-preview",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "remediation": "Replace raw payload/body previews with allowlisted sanitized previews or omit them.",
+            "sarif_level": "warning",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "static.unsafe_payload_preview"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+                },
+                "region": {
+                  "startColumn": 5,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "error log may be missing trace/request correlation fields"
+          },
+          "properties": {
+            "case_id": "benchmark-unsafe-transformations-and-payload-preview",
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "static.missing_correlation",
+            "details": {
+              "expected_any": [
+                "trace_id",
+                "request_id"
+              ],
+              "line": "logger.error(\"auth.audit failed token=<redacted> email=%s phone=%s tenant_id=<redacted> payload_preview=%s\", token, email, phone, tenant_id, event.get(\"raw_payload\"))",
+              "source_span": {
+                "column": 5,
+                "end_column": 155,
+                "end_line": 2,
+                "line": 2,
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
+              }
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "STATIC.correlation-evidence",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "warning"
+          },
+          "ruleId": "static.missing_correlation"
         }
       ],
       "tool": {
@@ -1709,6 +2522,24 @@
             },
             {
               "fullDescription": {
+                "text": "STATIC.pii-sensitive-log"
+              },
+              "help": {
+                "text": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates."
+              },
+              "id": "static.pii_logging",
+              "name": "static.pii_logging",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "static.pii_logging"
+              }
+            },
+            {
+              "fullDescription": {
                 "text": "STATIC.raw-sensitive-log"
               },
               "help": {
@@ -1741,6 +2572,24 @@
               },
               "shortDescription": {
                 "text": "static.unbounded_label"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "STATIC.payload-preview"
+              },
+              "help": {
+                "text": "Replace raw payload/body previews with allowlisted sanitized previews or omit them."
+              },
+              "id": "static.unsafe_payload_preview",
+              "name": "static.unsafe_payload_preview",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "static.unsafe_payload_preview"
               }
             },
             {
@@ -1799,6 +2648,24 @@
             },
             {
               "fullDescription": {
+                "text": "SAT.forbidden-pattern"
+              },
+              "help": {
+                "text": "Redact, hash, or omit values matching forbidden sensitive patterns."
+              },
+              "id": "telemetry.forbidden_pattern",
+              "name": "telemetry.forbidden_pattern",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.forbidden_pattern"
+              }
+            },
+            {
+              "fullDescription": {
                 "text": "HYP.pii-non-disclosure"
               },
               "help": {
@@ -1849,6 +2716,24 @@
               },
               "shortDescription": {
                 "text": "telemetry.numeric_max"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "SAT.privacy-preservation"
+              },
+              "help": {
+                "text": "Emit the field using the transformation required by the contract privacy policy."
+              },
+              "id": "telemetry.privacy_transformation",
+              "name": "telemetry.privacy_transformation",
+              "properties": {
+                "category": "privacy-security",
+                "precision": "high",
+                "security-severity": "7.0"
+              },
+              "shortDescription": {
+                "text": "telemetry.privacy_transformation"
               }
             },
             {

@@ -27,6 +27,11 @@
       "event_index": 3
     },
     {
+      "code": "static.pii_logging",
+      "severity": "error",
+      "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66"
+    },
+    {
       "code": "static.secret_logging",
       "severity": "error",
       "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69"

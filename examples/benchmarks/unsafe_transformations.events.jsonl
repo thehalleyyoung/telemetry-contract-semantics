@@ -1,0 +1,1 @@
+{"kind":"log","name":"auth.audit","timestamp":"2026-05-29T12:00:00Z","severity":"ERROR","fields":{"auth_token":"Bearer abcdefghijklmnopqrstuvwxyz","user_email":"casey@example.com","phone":"+1 415 555 0199","tenant_id":"tenant-public-123","payload_preview":"{\"password\":\"open-sesame\",\"token\":\"abc\"}","error_code":"AUTH_FAILED"}}

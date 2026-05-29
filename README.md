@@ -6,7 +6,7 @@ This repository turns that thesis into executable checks:
 
 - Runtime validation of JSONL telemetry events against contracts.
 - Static checks that resolve expected OpenTelemetry-style span, metric, and log names through Python ASTs and lightweight multi-language source heuristics, with source spans and contract-obligation details.
-- Static telemetry security/API checks for sensitive values in logs, optional high-cardinality/correlation policies, error-span exception/status/remediation/retryability evidence, tracer/meter scope names, metric unit/description metadata, and required semantic-convention attributes.
+- Static telemetry security/API checks for credentials, PII, tenant identifiers, and unsafe payload previews in logs, precise justified suppression comments, optional high-cardinality/correlation policies, error-span exception/status/remediation/retryability evidence, tracer/meter scope names, metric unit/description metadata, and required semantic-convention attributes. Suppression comments must name the exact finding code, source span, owner, ISO expiry, reason, and disclosure sensitivity, so a stale or imprecise suppression does not hide unrelated findings.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - Alternative-obligation checks that let one of several equivalent logs/spans/metrics satisfy a required evidence path without duplicate false positives.
 - Temporal-logic checks for safety invariants, bounded responses, absence properties, ordering, and deadlines over finite telemetry traces.
@@ -46,7 +46,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 84 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 89 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -229,7 +229,7 @@ python3 -m telemetry_contracts.cli validate \
   --format json --fail-on never
 ```
 
-If installed as a package, the same CLI is available as `telemetry-contracts`.
+If installed as a package, the same CLI is available as `telemetry-contracts`; wheel and editable-install console-script smoke tests are part of the test suite.
 
 ## Operational and replication docs
 
@@ -302,8 +302,8 @@ Supported checks include:
 - Primitive field types: string, integer, number, boolean, object, array, null.
 - Allowed values.
 - Regex patterns.
-- `forbidden_patterns`, including built-ins such as `email`, `bearer_token`, `jwt`, `password_assignment`, and `credit_card`.
-- Sensitivity classification for PII, credentials, tokens, and secrets, with warnings for unclassified sensitive-looking fields.
+- `forbidden_patterns`, including built-ins such as `email`, `phone`, `bearer_token`, `jwt`, `password_assignment`, `credit_card`, and `tenant_identifier`.
+- Sensitivity classification for PII, credentials, tokens, secrets, raw payload previews, and declared tenant identifiers, with warnings for unclassified sensitive-looking fields and runtime risk details for credentials, email, phone, tenant, and payload-preview exposures.
 - Schema-level `privacy_classifications` that restrict fields to allowed transformations: `redacted`, `hashed`, `tokenized`, `bucketed`, or `omitted`.
 - Numeric `min`/`max` ranges.
 - Unit validation for durations, bytes, percentages, ratios, counts, timestamps, and currency-like values.
@@ -324,7 +324,7 @@ Supported checks include:
 - Assume-guarantee obligations under `assume_guarantee`, grouped as `service_guarantees`, `collector_assumptions`, `environment_assumptions`, and `oncall_obligations`. `report assume-guarantee` checks signal/field witnesses, field predicates, scenarios, temporal properties, alternative evidence, and documented collector transformations, then reports which layer is accountable for each missing or non-preserved witness.
 - Strict validation via `validate --strict` or `metadata.strict_validation.enabled`. Strict mode adds closed-world obligations: each event service must match the modeled service or `allow_unmodeled_services`; each span/log/metric name must be declared in signal sections, scenarios, temporal sequences, or alternative obligations unless `allow_undeclared_signals` names it; emitted attributes/tags/fields must be declared unless `allowed_extra_fields` or `allow_unexpected_fields` permits them; collector transformations must appear in `metadata.transformation_preservation.approved_transformations` or `allow_collector_transformations`.
 - OpenTelemetry semantic-convention linting via `semconv`. The checker reports `semconv.*` warnings for legacy attributes such as `http.method`/`db.system`, missing convention attributes such as `http.request.method`, `http.route`, `http.response.status_code`, `db.system.name`, or `messaging.system`, metric names that encode units without declaring `value.unit`, and `metadata.semantic_conventions.required_attributes` local-policy obligations. Each finding includes the cited convention/local policy and an exact rename/add remediation.
-- Source static analysis via `static`. The checker extracts telemetry observations from Python ASTs and lightweight supported-language source patterns, reports missing required instrumentation with `details.obligation`, records source line/column spans, resolves constants/wrappers/simple string construction, and can enforce optional `static_rules` for correlated error logs, high-cardinality labels, error-span exception/status/remediation/retryability fields, tracer/meter names, metric unit/description API metadata, and required semantic-convention attributes.
+- Source static analysis via `static`. The checker extracts telemetry observations from Python ASTs and lightweight supported-language source patterns, reports missing required instrumentation with `details.obligation`, records source line/column spans, resolves constants/wrappers/simple string construction, and can enforce optional `static_rules` for correlated error logs, high-cardinality labels, error-span exception/status/remediation/retryability fields, tracer/meter names, metric unit/description API metadata, and required semantic-convention attributes. Suppression comments must name the exact finding code, source span, owner, ISO expiry, reason, and disclosure sensitivity, so a stale or imprecise suppression does not hide unrelated findings.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
 - Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
@@ -373,7 +373,7 @@ assert not findings
 - `telemetry_contracts.windows` groups concrete events and validation findings into trace/request/tenant/deployment/scenario/incident ownership windows.
 - `telemetry_contracts.loader` loads JSON/YAML contracts, resolves relative `extends`/`inherits` chains, and reads JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
-- `telemetry_contracts.validator` checks emitted telemetry against signal, field, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications.
+- `telemetry_contracts.validator` checks emitted telemetry against signal, field, privacy/PII/secret transformation, correlation, temporal-sequence, temporal-property, hyperproperty, and alternative-obligation specifications.
 - `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
 - `telemetry_contracts.alternatives` evaluates finite disjunctions over semantically equivalent evidence paths and emits witness/counterexample reports.
 - `telemetry_contracts.assume_guarantee` evaluates layer-partitioned service, collector, environment, and on-call obligations over finite telemetry artifacts.

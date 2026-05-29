@@ -14,7 +14,7 @@ DIFF_CANDIDATE = ROOT / "examples/benchmarks/diff_candidate.report.json"
 def test_builtin_benchmark_reports_labeled_historical_case():
     report = run_benchmark(BUILTIN)
     assert report["summary"]["pass"] is True
-    assert report["summary"]["contracts"] == 8
+    assert report["summary"]["contracts"] == 9
     assert report["summary"]["label_metrics"]["f1"] == 1.0
     assert report["summary"]["findings_per_k_events"] > 0
     assert report["summary"]["top_remediations"]
@@ -33,6 +33,7 @@ def test_builtin_benchmark_reports_labeled_historical_case():
     assert current["checks"]["runtime"] is True
     assert current["metrics"]["labels"]["precision"] == 1.0
     assert current["metrics"]["findings_by_code"]["static.secret_logging"] == 2
+    assert current["metrics"]["findings_by_code"]["static.pii_logging"] == 1
     assert current["metrics"]["findings_by_code"]["telemetry.hyper_pii_disclosure"] == 3
     temporal = next(case for case in report["cases"] if case["id"] == "temporal-logic-properties-fail")
     assert temporal["metrics"]["labels"]["expected"] == 5
@@ -70,11 +71,12 @@ def test_benchmark_markdown_and_cli(capsys):
 
 def test_benchmark_filters_and_metadata(capsys):
     report = run_benchmark(BUILTIN, filters={"tag": ["privacy"], "check_type": ["static"]})
-    assert report["summary"]["cases"] == 1
-    case = report["cases"][0]
-    assert case["id"] == "benchmark-privacy-static-source"
+    assert report["summary"]["cases"] == 2
+    cases = {case["id"]: case for case in report["cases"]}
+    case = cases["benchmark-privacy-static-source"]
     assert case["dataset_metadata"]["id"] == "public-benchmark-semantics-fixtures"
     assert "pii non-disclosure" in case["semantics_features"]
+    assert "benchmark-unsafe-transformations-and-payload-preview" in cases
     owner_report = run_benchmark(BUILTIN, filters={"service_owner": ["collector-platform"], "disclosure_status": ["public-fixture"]})
     assert [case["id"] for case in owner_report["cases"]] == ["otlp-collector-coverage-analysis", "benchmark-partial-otlp-diagnostics"]
     assert main(["benchmark", "--config", str(BUILTIN), "--case-id", "benchmark-cardinality-budget", "--format", "markdown"]) == 0

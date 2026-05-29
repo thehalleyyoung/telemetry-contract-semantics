@@ -67,16 +67,20 @@ SEVERITY_RANKS = {
 
 BUILTIN_FORBIDDEN_PATTERNS: dict[str, str] = {
     "email": r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
+    "phone": r"(?<![\w-])(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}(?![\w-])",
     "bearer_token": r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}",
     "jwt": r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b",
     "password_assignment": r"(?i)(password|passwd|pwd)\s*[:=]\s*[^,\s]+",
     "credit_card": r"\b(?:\d[ -]*?){13,19}\b",
+    "tenant_identifier": r"(?i)\b(?:tenant|customer|account)[_-]?[A-Za-z0-9][A-Za-z0-9_.:-]{2,}\b",
 }
 
-SENSITIVE_FIELD_NAMES = re.compile(r"(?i)(email|password|passwd|pwd|token|secret|authorization|cookie|api[_-]?key|session[_-]?id|ssn|credit[_-]?card)")
+SENSITIVE_FIELD_NAMES = re.compile(r"(?i)(email|e[-_]?mail|phone|password|passwd|pwd|token|secret|authorization|cookie|api[_-]?key|session[_-]?id|ssn|credit[_-]?card|raw[_-]?payload|payload[_-]?preview|body[_-]?preview)")
+TENANT_IDENTIFIER_FIELD_NAMES = re.compile(r"(?i)(tenant[_-]?id|customer[_-]?id|account[_-]?id)")
 RAW_SECRET_VALUE = re.compile(
-    r"(?i)(\bbearer\s+[A-Za-z0-9._~+/=-]{8,}|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})"
+    r"(?i)(\bbearer\s+[A-Za-z0-9._~+/=-]{8,}|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|(?<![\w-])(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}(?![\w-]))"
 )
+RAW_PAYLOAD_FIELD = re.compile(r"(?i)(raw[_-]?payload|payload[_-]?preview|body[_-]?preview)")
 
 
 def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
@@ -1873,10 +1877,15 @@ def _validate_sensitive_value(field_name: str, spec: dict[str, Any], value: Any,
         return []
     declared = _declares_sensitivity(spec)
     sensitivity = str(spec.get("sensitivity") or spec.get("classification") or "").lower()
-    looks_sensitive = bool(SENSITIVE_FIELD_NAMES.search(field_name) or RAW_SECRET_VALUE.search(value))
+    looks_sensitive = bool(SENSITIVE_FIELD_NAMES.search(field_name) or TENANT_IDENTIFIER_FIELD_NAMES.search(field_name) or RAW_SECRET_VALUE.search(value))
     if not looks_sensitive:
         return []
+    tenant_identifier_name = bool(TENANT_IDENTIFIER_FIELD_NAMES.search(field_name))
+    intrinsically_sensitive_name = bool(SENSITIVE_FIELD_NAMES.search(field_name))
+    raw_pattern = RAW_SECRET_VALUE.search(value) is not None
     if not declared:
+        if tenant_identifier_name and not intrinsically_sensitive_name and not raw_pattern:
+            return []
         return [
             Finding(
                 "warning",
@@ -1890,7 +1899,11 @@ def _validate_sensitive_value(field_name: str, spec: dict[str, Any], value: Any,
         ]
     if spec.get("allow_raw_sensitive") is True or sensitivity in {"public", "none"}:
         return []
-    if RAW_SECRET_VALUE.search(value):
+    if _looks_privacy_preserved_value(value):
+        return []
+    raw_sensitive_field = bool((SENSITIVE_FIELD_NAMES.search(field_name) or TENANT_IDENTIFIER_FIELD_NAMES.search(field_name)) and transformation_raw_or_missing(spec))
+    unsafe_preview = bool(RAW_PAYLOAD_FIELD.search(field_name) and value.strip() and not _looks_privacy_preserved_value(value))
+    if raw_pattern or raw_sensitive_field or unsafe_preview:
         return [
             Finding(
                 "error",
@@ -1899,10 +1912,29 @@ def _validate_sensitive_value(field_name: str, spec: dict[str, Any], value: Any,
                 event_path,
                 contract_path,
                 _event_index(event),
-                {"sensitivity": sensitivity or "unspecified", "value_preview": _preview(value)},
+                {"sensitivity": sensitivity or "unspecified", "value_preview": _preview(value), "risk_kind": _sensitive_risk_kind(field_name, value)},
             )
         ]
     return []
+
+
+def transformation_raw_or_missing(spec: dict[str, Any]) -> bool:
+    return spec.get("transformation") in (None, "raw")
+
+
+def _sensitive_risk_kind(field_name: str, value: str) -> str:
+    lower = field_name.lower()
+    if any(token in lower for token in ("password", "token", "secret", "authorization", "cookie", "api_key", "session")) or re.search(BUILTIN_FORBIDDEN_PATTERNS["bearer_token"], value):
+        return "credential_or_token"
+    if RAW_PAYLOAD_FIELD.search(field_name):
+        return "raw_payload_preview"
+    if any(token in lower for token in ("tenant", "customer", "account")):
+        return "tenant_identifier"
+    if "phone" in lower:
+        return "phone"
+    if "email" in lower or "e-mail" in lower or "mail" in lower:
+        return "email"
+    return "sensitive_value"
 
 
 def _preview(value: str) -> str:

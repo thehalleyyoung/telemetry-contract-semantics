@@ -234,6 +234,11 @@
           "path_suffix": "privacy_static_source.py:2:5-2:91"
         },
         {
+          "code": "static.pii_logging",
+          "severity": "error",
+          "path_suffix": "privacy_static_source.py:2:5-2:91"
+        },
+        {
           "code": "static.missing_correlation",
           "severity": "warning",
           "path_suffix": "privacy_static_source.py:2:5-2:91"
@@ -274,6 +279,132 @@
           "code": "otlp.malformed_record",
           "severity": "warning",
           "path": "records[1]"
+        }
+      ]
+    },
+    {
+      "id": "benchmark-unsafe-transformations-and-payload-preview",
+      "description": "Privacy/security fixture covering raw credentials, emails, phones, tenant identifiers, unsafe payload previews, and transformation-remediation categories across runtime telemetry and source logging.",
+      "metadata": "../examples/benchmarks/metadata_public_semantics.json",
+      "contract": "../examples/benchmarks/unsafe_transformations.contract.json",
+      "events": "../examples/benchmarks/unsafe_transformations.events.jsonl",
+      "sources": [
+        "../examples/benchmarks/unsafe_transformations_source.py"
+      ],
+      "tags": [
+        "privacy",
+        "security",
+        "runtime",
+        "static",
+        "transformation",
+        "payload-preview"
+      ],
+      "check_types": [
+        "runtime",
+        "static"
+      ],
+      "dataset": "public-benchmark-semantics-fixtures",
+      "expected_failure_modes": [
+        "credential_leak",
+        "pii_exposure",
+        "tenant_identifier_exposure",
+        "unsafe_payload_preview",
+        "unsafe_transformation"
+      ],
+      "semantics_features": [
+        "pii and secret risk checks",
+        "privacy transformations",
+        "static source checks",
+        "remediation categories"
+      ],
+      "service_owner": "benchmark-auth",
+      "disclosure_status": "public-fixture",
+      "expected_findings": [
+        {
+          "code": "telemetry.forbidden_pattern",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.auth_token"
+        },
+        {
+          "code": "telemetry.privacy_transformation",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.auth_token"
+        },
+        {
+          "code": "telemetry.sensitive_value",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.auth_token"
+        },
+        {
+          "code": "telemetry.privacy_transformation",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.user_email"
+        },
+        {
+          "code": "telemetry.sensitive_value",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.user_email"
+        },
+        {
+          "code": "telemetry.forbidden_pattern",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.phone"
+        },
+        {
+          "code": "telemetry.privacy_transformation",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.phone"
+        },
+        {
+          "code": "telemetry.sensitive_value",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.phone"
+        },
+        {
+          "code": "telemetry.privacy_transformation",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.tenant_id"
+        },
+        {
+          "code": "telemetry.privacy_transformation",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.payload_preview"
+        },
+        {
+          "code": "telemetry.sensitive_value",
+          "severity": "error",
+          "event_index": 1,
+          "contract_path": "$.logs[0].fields.payload_preview"
+        },
+        {
+          "code": "static.secret_logging",
+          "severity": "error",
+          "path_suffix": "unsafe_transformations_source.py:2:5-2:155"
+        },
+        {
+          "code": "static.pii_logging",
+          "severity": "error",
+          "path_suffix": "unsafe_transformations_source.py:2:5-2:155"
+        },
+        {
+          "code": "static.unsafe_payload_preview",
+          "severity": "warning",
+          "path_suffix": "unsafe_transformations_source.py:2:5-2:155"
+        },
+        {
+          "code": "static.missing_correlation",
+          "severity": "warning",
+          "path_suffix": "unsafe_transformations_source.py:2:5-2:155"
         }
       ]
     }

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import re
+from datetime import date
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
@@ -9,8 +10,13 @@ from typing import Any, Iterable
 from .findings import Finding
 
 SOURCE_SUFFIXES = {".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".java", ".cs", ".rb", ".rs"}
-SENSITIVE_NAMES = re.compile(r"(?i)(password|passwd|pwd|token|secret|authorization|auth[_-]?token|cookie|api[_-]?key|session[_-]?id|email|phone|tenant[_-]?id|raw[_-]?payload|payload[_-]?preview)")
+SENSITIVE_NAMES = re.compile(r"(?i)(password|passwd|pwd|token|secret|authorization|auth[_-]?token|cookie|api[_-]?key|session[_-]?id|email|e[-_]?mail|phone|tenant[_-]?id|customer[_-]?id|account[_-]?id|raw[_-]?payload|payload[_-]?preview|body[_-]?preview)")
 SECRET_ONLY_NAMES = re.compile(r"(?i)(password|passwd|pwd|token|secret|authorization|auth[_-]?token|cookie|api[_-]?key|session[_-]?id)")
+PII_ONLY_NAMES = re.compile(r"(?i)(email|e[-_]?mail|phone|tenant[_-]?id|customer[_-]?id|account[_-]?id)")
+PAYLOAD_PREVIEW_NAMES = re.compile(r"(?i)(raw[_-]?payload|payload[_-]?preview|body[_-]?preview|request[_-]?body|response[_-]?body)")
+EMAIL_VALUE = re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
+PHONE_VALUE = re.compile(r"(?<![\w-])(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}(?![\w-])")
+SUPPRESSION_RE = re.compile(r"telemetry-contracts:\s*suppress\s+(?P<code>[A-Za-z0-9_.-]+)\s+(?P<meta>.*)")
 LOG_CALL = re.compile(r"(?i)\b(console\.(?:log|error|warn)|logger\.(?:error|warning|warn|info|debug)|log\.(?:Error|Warn|Info|Debug|Printf|Println)|print|printf)\b")
 ERROR_WORDS = re.compile(r"(?i)(error|exception|failed|failure|unauthori[sz]ed|invalid credentials|invalid password|timeout)")
 METRIC_WORDS = re.compile(r"(?i)(counter|histogram|gauge|metric|labels?|tags?|attributes?)")
@@ -94,7 +100,7 @@ def check_sources(contract: dict[str, Any], source_paths: Iterable[str | Path]) 
     findings.extend(_check_static_api_obligations(contract, observations))
     if not files:
         findings.append(Finding("warning", "static.no_sources", "no source files were checked", "source"))
-    return findings
+    return _apply_suppressions(findings, texts)
 
 
 def _extract_observations(path: Path, text: str) -> list[Observation]:
@@ -218,7 +224,11 @@ def _scan_source(path: Path, text: str, contract: dict[str, Any], observations: 
         span = SourceSpan(path, line_number, column, line_number, column + len(stripped))
         line_observations = [item for item in path_observations if item.span.line == line_number]
         if line_number in observed_log_lines and SECRET_ONLY_NAMES.search(stripped):
-            findings.append(Finding("error", "static.secret_logging", "logging statement appears to include a credential, token, cookie, or other sensitive value", span.location(), None, None, {"line": _redact_line(stripped), "source_span": span.to_dict()}))
+            findings.append(Finding("error", "static.secret_logging", "logging statement appears to include a credential, token, cookie, or other sensitive value", span.location(), None, None, {"line": _redact_line(stripped), "source_span": span.to_dict(), "risk_kind": "credential_or_token"}))
+        if line_number in observed_log_lines and (PII_ONLY_NAMES.search(stripped) or EMAIL_VALUE.search(stripped) or PHONE_VALUE.search(stripped)):
+            findings.append(Finding("error", "static.pii_logging", "logging statement appears to include PII or tenant/customer identifiers", span.location(), None, None, {"line": _redact_line(stripped), "source_span": span.to_dict(), "risk_kind": "pii_or_tenant_identifier"}))
+        if line_number in observed_log_lines and PAYLOAD_PREVIEW_NAMES.search(stripped) and not re.search(r"(?i)(redact|hash|sanitize|allowlist|safe_preview)", stripped):
+            findings.append(Finding("warning", "static.unsafe_payload_preview", "logging statement appears to include a raw payload or unsafe preview field", span.location(), None, None, {"line": _redact_line(stripped), "source_span": span.to_dict(), "risk_kind": "raw_payload_preview"}))
         if require_correlation and line_number in observed_log_lines and ERROR_WORDS.search(stripped):
             attrs = {attr for obs in line_observations for attr in obs.attributes}
             if not any(field in stripped or field in attrs for field in correlation_fields):
@@ -257,6 +267,55 @@ def _check_static_api_obligations(contract: dict[str, Any], observations: list[O
                 message = f"error span does not attach required '{field_name}' evidence"
                 findings.append(_api_finding(code, message, obs, {field_name}))
     return findings
+
+
+def _apply_suppressions(findings: list[Finding], texts: list[tuple[Path, str]]) -> list[Finding]:
+    suppressions: list[dict[str, str]] = []
+    for path, text in texts:
+        suppressions.extend(_parse_suppression_comments(path, text))
+    if not suppressions:
+        return findings
+    kept: list[Finding] = []
+    for finding in findings:
+        if any(_suppression_matches(finding, suppression) for suppression in suppressions):
+            continue
+        kept.append(finding)
+    return kept
+
+
+def _parse_suppression_comments(path: Path, text: str) -> list[dict[str, str]]:
+    parsed: list[dict[str, str]] = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        match = SUPPRESSION_RE.search(line)
+        if not match:
+            continue
+        meta = dict(re.findall(r"(owner|expiry|span|sensitivity|reason)=([^\s]+)", match.group("meta")))
+        required = {"owner", "expiry", "span", "sensitivity", "reason"}
+        if not required <= meta.keys():
+            continue
+        try:
+            if date.fromisoformat(meta["expiry"]) < date.today():
+                continue
+        except ValueError:
+            continue
+        meta.update({"code": match.group("code"), "path": str(path), "comment_line": str(line_number)})
+        parsed.append(meta)
+    return parsed
+
+
+def _suppression_matches(finding: Finding, suppression: dict[str, str]) -> bool:
+    if finding.code != suppression.get("code"):
+        return False
+    details = finding.details if isinstance(finding.details, dict) else {}
+    source_span = details.get("source_span") if isinstance(details.get("source_span"), dict) else {}
+    if str(source_span.get("path")) != suppression.get("path"):
+        return False
+    span = f"{source_span.get('line')}:{source_span.get('column')}-{source_span.get('end_line')}:{source_span.get('end_column')}"
+    if span != suppression.get("span"):
+        return False
+    if suppression.get("sensitivity") not in {"public", "internal", "responsible-disclosure"}:
+        return False
+    return True
 
 
 def _check_tracer_meter_names(rules: dict[str, Any], observations: list[Observation]) -> list[Finding]:
@@ -539,6 +598,9 @@ def _extract_named_field(line: str, field: str) -> str | None:
 def _redact_line(line: str) -> str:
     line = re.sub(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]+", r"\1<redacted>", line)
     line = re.sub(r"(?i)((?:password|passwd|pwd|token|secret|authorization|cookie)\s*[:=]\s*)['\"]?[^,'\")\s]+", r"\1<redacted>", line)
+    line = EMAIL_VALUE.sub("<redacted-email>", line)
+    line = PHONE_VALUE.sub("<redacted-phone>", line)
+    line = re.sub(r"(?i)((?:tenant|customer|account)[_-]?id\s*[:=]\s*)['\"]?[^,'\")\s]+", r"\1<redacted>", line)
     return line[:240]
 
 

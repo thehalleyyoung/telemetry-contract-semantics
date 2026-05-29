@@ -1652,6 +1652,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "static.pii_logging",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.pii-sensitive-log",
+      "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "static.secret_logging",
       "default_severity": "error",
       "disclosure_sensitivity": "responsible-disclosure",
@@ -1677,6 +1697,26 @@
       "disclosure_sensitivity": "internal",
       "formal_clause": "STATIC.cardinality-risk",
       "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.unsafe_payload_preview",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.payload-preview",
+      "remediation": "Replace raw payload/body previews with allowlisted sanitized previews or omit them.",
       "sarif_level": "warning",
       "service_owner": "contract service owner"
     },
@@ -2395,22 +2435,22 @@
       "input": 7,
       "operability": 3,
       "preservation": 5,
-      "privacy-security": 9,
+      "privacy-security": 11,
       "refinement": 11,
       "scenario": 2,
       "schema": 19,
       "static-coverage": 4
     },
     "default_severities": {
-      "error": 90,
+      "error": 91,
       "info": 3,
-      "warning": 26
+      "warning": 27
     },
-    "rules": 119,
+    "rules": 121,
     "sarif_levels": {
-      "error": 90,
+      "error": 91,
       "note": 3,
-      "warning": 26
+      "warning": 27
     }
   }
 }

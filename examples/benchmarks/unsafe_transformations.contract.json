@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "service": "benchmark-auth-transform",
+  "privacy_classifications": {
+    "credential": {"allowed_transformations": ["redacted", "hashed", "omitted"]},
+    "personal": {"allowed_transformations": ["redacted", "hashed", "tokenized", "omitted"]},
+    "tenant": {"allowed_transformations": ["hashed", "bucketed", "omitted"]},
+    "payload": {"allowed_transformations": ["redacted", "omitted"]}
+  },
+  "logs": [
+    {
+      "name": "auth.audit",
+      "required": true,
+      "severity": "ERROR",
+      "fields": {
+        "auth_token": {"type": "string", "required": true, "sensitivity": "credential", "transformation": "redacted", "forbidden_patterns": ["bearer_token", "jwt"]},
+        "user_email": {"type": "string", "required": true, "sensitivity": "personal", "transformation": "hashed", "forbidden_patterns": ["email"]},
+        "phone": {"type": "string", "required": true, "sensitivity": "personal", "transformation": "redacted", "forbidden_patterns": ["phone"]},
+        "tenant_id": {"type": "string", "required": true, "sensitivity": "tenant", "transformation": "hashed"},
+        "payload_preview": {"type": "string", "required": true, "sensitivity": "payload", "transformation": "redacted"},
+        "error_code": {"type": "string", "required": true}
+      }
+    }
+  ],
+  "static_expectations": {"spans": [], "metrics": [], "logs": ["auth.audit"]},
+  "static_rules": {"require_correlation_on_error_logs": true, "correlation_fields": ["trace_id", "request_id"]}
+}

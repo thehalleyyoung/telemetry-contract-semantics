@@ -125,6 +125,8 @@ TAXONOMY: dict[str, dict[str, Any]] = {
     "static.missing_instrumentation": _entry("static-coverage", "Add source instrumentation with the expected stable telemetry name.", "STATIC.signal-literal"),
     "static.no_sources": _entry("static-coverage", "Pass source files or directories to the static checker.", "STATIC.source-domain"),
     "static.secret_logging": _entry("privacy-security", "Remove the sensitive value from logs or log only a redacted/hash surrogate.", "STATIC.raw-sensitive-log", disclosure_sensitivity="responsible-disclosure"),
+    "static.pii_logging": _entry("privacy-security", "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.", "STATIC.pii-sensitive-log", disclosure_sensitivity="responsible-disclosure"),
+    "static.unsafe_payload_preview": _entry("privacy-security", "Replace raw payload/body previews with allowlisted sanitized previews or omit them.", "STATIC.payload-preview", "warning", disclosure_sensitivity="responsible-disclosure"),
     "static.missing_correlation": _entry("diagnosability", "Include a trace_id, request_id, or configured correlation field in error logs.", "STATIC.correlation-evidence"),
     "static.unbounded_label": _entry("operability", "Avoid user-controlled/high-cardinality metric labels or add bucketing.", "STATIC.cardinality-risk", "warning"),
     "static.missing_exception_recording": _entry("diagnosability", "Record caught exceptions on error spans so incident responders can inspect failure type and stack context.", "STATIC.exception-recording", "warning"),

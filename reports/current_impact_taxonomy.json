@@ -168,6 +168,17 @@
       },
       {
         "category": "privacy-security",
+        "code": "static.pii_logging",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.pii-sensitive-log",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
         "code": "static.secret_logging",
         "contract_path": null,
         "event_index": null,
@@ -354,6 +365,17 @@
         "severity": "error"
       },
       {
+        "category": "privacy-security",
+        "code": "static.pii_logging",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.pii-sensitive-log",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
         "category": "diagnosability",
         "code": "static.missing_correlation",
         "contract_path": null,
@@ -385,20 +407,185 @@
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.forbidden_pattern",
+        "contract_path": "$.logs[0].fields.auth_token",
+        "event_index": 1,
+        "formal_clause": "SAT.forbidden-pattern",
+        "path": "event[1].auth_token",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.privacy_transformation",
+        "contract_path": "$.logs[0].fields.auth_token",
+        "event_index": 1,
+        "formal_clause": "SAT.privacy-preservation",
+        "path": "event[1].auth_token",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.sensitive_value",
+        "contract_path": "$.logs[0].fields.auth_token",
+        "event_index": 1,
+        "formal_clause": "SAT.raw-sensitive-value",
+        "path": "event[1].auth_token",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.privacy_transformation",
+        "contract_path": "$.logs[0].fields.user_email",
+        "event_index": 1,
+        "formal_clause": "SAT.privacy-preservation",
+        "path": "event[1].user_email",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.sensitive_value",
+        "contract_path": "$.logs[0].fields.user_email",
+        "event_index": 1,
+        "formal_clause": "SAT.raw-sensitive-value",
+        "path": "event[1].user_email",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.forbidden_pattern",
+        "contract_path": "$.logs[0].fields.phone",
+        "event_index": 1,
+        "formal_clause": "SAT.forbidden-pattern",
+        "path": "event[1].phone",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.privacy_transformation",
+        "contract_path": "$.logs[0].fields.phone",
+        "event_index": 1,
+        "formal_clause": "SAT.privacy-preservation",
+        "path": "event[1].phone",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.sensitive_value",
+        "contract_path": "$.logs[0].fields.phone",
+        "event_index": 1,
+        "formal_clause": "SAT.raw-sensitive-value",
+        "path": "event[1].phone",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.privacy_transformation",
+        "contract_path": "$.logs[0].fields.tenant_id",
+        "event_index": 1,
+        "formal_clause": "SAT.privacy-preservation",
+        "path": "event[1].tenant_id",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.privacy_transformation",
+        "contract_path": "$.logs[0].fields.payload_preview",
+        "event_index": 1,
+        "formal_clause": "SAT.privacy-preservation",
+        "path": "event[1].payload_preview",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "telemetry.sensitive_value",
+        "contract_path": "$.logs[0].fields.payload_preview",
+        "event_index": 1,
+        "formal_clause": "SAT.raw-sensitive-value",
+        "path": "event[1].payload_preview",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "static.secret_logging",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.raw-sensitive-log",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "static.pii_logging",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.pii-sensitive-log",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "error"
+      },
+      {
+        "category": "privacy-security",
+        "code": "static.unsafe_payload_preview",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.payload-preview",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "sarif_level": "warning",
+        "service_owner": "contract service owner",
+        "severity": "warning"
+      },
+      {
+        "category": "diagnosability",
+        "code": "static.missing_correlation",
+        "contract_path": null,
+        "event_index": null,
+        "formal_clause": "STATIC.correlation-evidence",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "sarif_level": "error",
+        "service_owner": "contract service owner",
+        "severity": "warning"
       }
     ],
     "sources": [
       {
-        "findings": 35,
+        "findings": 52,
         "path": "reports/current_impact.json"
       }
     ],
     "summary": {
       "by_category": {
-        "diagnosability": 14,
+        "diagnosability": 15,
         "input": 5,
         "operability": 2,
-        "privacy-security": 8,
+        "privacy-security": 24,
         "schema": 6
       },
       "by_code": {
@@ -407,16 +594,20 @@
         "otlp.unsupported_metric": 1,
         "otlp.unsupported_top_level": 1,
         "scenario.missing_field": 3,
-        "static.missing_correlation": 1,
-        "static.secret_logging": 3,
+        "static.missing_correlation": 2,
+        "static.pii_logging": 3,
+        "static.secret_logging": 4,
         "static.unbounded_label": 1,
+        "static.unsafe_payload_preview": 1,
         "telemetry.allowed_values": 4,
         "telemetry.cardinality": 1,
         "telemetry.correlation_missing": 2,
+        "telemetry.forbidden_pattern": 2,
         "telemetry.hyper_pii_disclosure": 4,
         "telemetry.missing_field": 3,
         "telemetry.numeric_max": 2,
-        "telemetry.sensitive_value": 1,
+        "telemetry.privacy_transformation": 5,
+        "telemetry.sensitive_value": 5,
         "telemetry.temporal_absence": 1,
         "telemetry.temporal_deadline": 1,
         "telemetry.temporal_order": 1,
@@ -433,8 +624,10 @@
         "SAT.allowed-values": 4,
         "SAT.cardinality-bound": 1,
         "SAT.correlation-presence": 2,
+        "SAT.forbidden-pattern": 2,
         "SAT.numeric-upper-bound": 2,
-        "SAT.raw-sensitive-value": 1,
+        "SAT.privacy-preservation": 5,
+        "SAT.raw-sensitive-value": 5,
         "SAT.required-field": 3,
         "SAT.temporal-absence": 1,
         "SAT.temporal-deadline": 1,
@@ -442,18 +635,20 @@
         "SAT.temporal-response": 1,
         "SAT.temporal-safety": 1,
         "STATIC.cardinality-risk": 1,
-        "STATIC.correlation-evidence": 1,
-        "STATIC.raw-sensitive-log": 3
+        "STATIC.correlation-evidence": 2,
+        "STATIC.payload-preview": 1,
+        "STATIC.pii-sensitive-log": 3,
+        "STATIC.raw-sensitive-log": 4
       },
       "by_sarif_level": {
-        "error": 28,
+        "error": 44,
         "note": 1,
-        "warning": 6
+        "warning": 7
       },
       "by_service_owner": {
-        "contract service owner": 35
+        "contract service owner": 52
       },
-      "findings": 35,
+      "findings": 52,
       "unknown_codes": []
     }
   },
@@ -2110,6 +2305,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "static.pii_logging",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.pii-sensitive-log",
+      "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "static.secret_logging",
       "default_severity": "error",
       "disclosure_sensitivity": "responsible-disclosure",
@@ -2135,6 +2350,26 @@
       "disclosure_sensitivity": "internal",
       "formal_clause": "STATIC.cardinality-risk",
       "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "static.unsafe_payload_preview",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "STATIC.payload-preview",
+      "remediation": "Replace raw payload/body previews with allowlisted sanitized previews or omit them.",
       "sarif_level": "warning",
       "service_owner": "contract service owner"
     },
@@ -2853,22 +3088,22 @@
       "input": 7,
       "operability": 3,
       "preservation": 5,
-      "privacy-security": 9,
+      "privacy-security": 11,
       "refinement": 11,
       "scenario": 2,
       "schema": 19,
       "static-coverage": 4
     },
     "default_severities": {
-      "error": 90,
+      "error": 91,
       "info": 3,
-      "warning": 26
+      "warning": 27
     },
-    "rules": 119,
+    "rules": 121,
     "sarif_levels": {
-      "error": 90,
+      "error": 91,
       "note": 3,
-      "warning": 26
+      "warning": 27
     }
   }
 }

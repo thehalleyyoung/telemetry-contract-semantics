@@ -130,6 +130,37 @@ def test_sensitive_schema_and_forbidden_patterns_are_enforced():
     assert any(item.to_dict()["category"] == "privacy-security" for item in findings)
 
 
+def test_phone_detection_does_not_treat_dates_as_pii():
+    contract = {
+        "version": "1.0",
+        "service": "svc",
+        "logs": [
+            {
+                "name": "job.finished",
+                "fields": {
+                    "completed_on": {"type": "string"},
+                    "phone": {"type": "string", "sensitivity": "pii", "forbidden_patterns": ["phone"]},
+                },
+            }
+        ],
+    }
+    findings = validate_events(
+        contract,
+        [
+            {
+                "kind": "log",
+                "service": "svc",
+                "name": "job.finished",
+                "fields": {"completed_on": "2026-05-29", "phone": "+1 415 555 0199"},
+            }
+        ],
+    )
+
+    assert all(item.path != "event[1].completed_on" for item in findings)
+    assert "telemetry.forbidden_pattern" in codes(findings)
+    assert "telemetry.sensitive_value" in codes(findings)
+
+
 def test_contract_lint_reports_schema_semantic_errors():
     findings = validate_contract_shape(
         {
@@ -504,3 +535,12 @@ def test_gitlab_temporal_property_finds_missing_backup_alert_response():
     contract = load_contract(ROOT / "case_studies/gitlab_2017_database_outage/contract.json")
     findings = validate_events(contract, load_jsonl(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl"))
     assert "telemetry.temporal_response" in codes(findings)
+
+
+def test_runtime_sensitive_checks_cover_credentials_pii_tenant_and_payload_preview():
+    contract = load_contract(ROOT / "examples/benchmarks/unsafe_transformations.contract.json")
+    events = load_jsonl(ROOT / "examples/benchmarks/unsafe_transformations.events.jsonl")
+    findings = validate_events(contract, events)
+    risk_kinds = {item.details.get("risk_kind") for item in findings if item.code == "telemetry.sensitive_value"}
+    assert {"credential_or_token", "email", "phone", "raw_payload_preview"} <= risk_kinds
+    assert any(item.code == "telemetry.privacy_transformation" and item.contract_path.endswith("tenant_id") for item in findings)

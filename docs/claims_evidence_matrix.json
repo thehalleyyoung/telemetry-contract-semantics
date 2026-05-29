@@ -7,7 +7,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
-      "commit": "ebfd3f3",
+      "commit": "6b74599",
       "evidence_exists": {
         "README.md": true,
         "benchmarks/builtin.json": true,
@@ -41,7 +41,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "CI can fail on new high-severity findings while allowing audited, owned, expiring baseline entries.",
-      "commit": "ebfd3f3",
+      "commit": "6b74599",
       "evidence_exists": {
         "examples/ci/baseline.example.json": true,
         "examples/ci/generic-ci.sh": true,
@@ -70,7 +70,7 @@
         "benchmark-missing-correlation"
       ],
       "claim": "Static and runtime findings can be exported as SARIF with taxonomy-backed rule metadata for code scanning consumers.",
-      "commit": "ebfd3f3",
+      "commit": "6b74599",
       "evidence_exists": {
         "docs/finding_taxonomy.json": true,
         "examples/ci/static_findings.example.json": true,
@@ -99,7 +99,7 @@
         "all built-in benchmark rows"
       ],
       "claim": "Current impact reports, benchmark Markdown, taxonomy summaries, paper tables, and this matrix are regenerated from checked-in artifacts.",
-      "commit": "ebfd3f3",
+      "commit": "6b74599",
       "evidence_exists": {
         "benchmarks/builtin.json": true,
         "docs/claims_evidence_matrix.json": true,
@@ -128,6 +128,6 @@
   "schema_version": "1.0",
   "summary": {
     "claims": 4,
-    "commit": "ebfd3f3"
+    "commit": "6b74599"
   }
 }

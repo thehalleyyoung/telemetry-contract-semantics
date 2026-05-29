@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 110
-- Categories: `{"contract": 27, "diagnosability": 27, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 9, "refinement": 11, "scenario": 2, "schema": 17, "static-coverage": 2}`
-- Default severities: `{"error": 90, "info": 3, "warning": 17}`
-- SARIF levels: `{"error": 90, "note": 3, "warning": 17}`
+- Rules: 121
+- Categories: `{"contract": 27, "diagnosability": 32, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 11, "refinement": 11, "scenario": 2, "schema": 19, "static-coverage": 4}`
+- Default severities: `{"error": 91, "info": 3, "warning": 27}`
+- SARIF levels: `{"error": 91, "note": 3, "warning": 27}`
 
 ## Rule catalog
 
@@ -80,11 +80,22 @@
 | semconv.metric_unit | schema | warning | SEMCONV.metric-unit | warning | warning | internal | contract service owner | Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name. |
 | semconv.missing_attribute | schema | warning | SEMCONV.required-attribute | warning | warning | internal | contract service owner | Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception. |
 | semconv.signal_name | schema | warning | SEMCONV.signal-name | warning | warning | internal | contract service owner | Rename the signal to the cited low-cardinality OpenTelemetry semantic-convention shape. |
+| static.inconsistent_retryability | diagnosability | warning | STATIC.retryability-evidence | warning | warning | internal | contract service owner | Attach a bounded retryable value when the contract requires retry guidance. |
+| static.metric_description | diagnosability | warning | STATIC.metric-description | warning | warning | internal | contract service owner | Declare the metric description in the OpenTelemetry metric API call. |
+| static.metric_unit | schema | warning | STATIC.metric-unit | warning | warning | internal | contract service owner | Declare the metric unit in the OpenTelemetry metric API call. |
 | static.missing_correlation | diagnosability | error | STATIC.correlation-evidence | error | error | internal | contract service owner | Include a trace_id, request_id, or configured correlation field in error logs. |
+| static.missing_error_status | diagnosability | warning | STATIC.error-status | warning | warning | internal | contract service owner | Set the OpenTelemetry span status to ERROR on error paths. |
+| static.missing_exception_recording | diagnosability | warning | STATIC.exception-recording | warning | warning | internal | contract service owner | Record caught exceptions on error spans so incident responders can inspect failure type and stack context. |
 | static.missing_instrumentation | static-coverage | error | STATIC.signal-literal | error | error | internal | contract service owner | Add source instrumentation with the expected stable telemetry name. |
+| static.missing_meter_name | static-coverage | warning | STATIC.meter-name | warning | warning | internal | contract service owner | Initialize the OpenTelemetry meter with the expected instrumentation scope name. |
+| static.missing_remediation_field | diagnosability | warning | STATIC.remediation-evidence | warning | warning | internal | contract service owner | Attach a bounded remediation hint on error spans or logs when the contract requires operator guidance. |
+| static.missing_semconv_attribute | schema | warning | STATIC.semconv-attribute | warning | warning | internal | contract service owner | Attach the required semantic-convention attribute in source instrumentation. |
+| static.missing_tracer_name | static-coverage | warning | STATIC.tracer-name | warning | warning | internal | contract service owner | Initialize the OpenTelemetry tracer with the expected instrumentation scope name. |
 | static.no_sources | static-coverage | error | STATIC.source-domain | error | error | internal | contract service owner | Pass source files or directories to the static checker. |
+| static.pii_logging | privacy-security | error | STATIC.pii-sensitive-log | error | error | responsible-disclosure | contract service owner | Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates. |
 | static.secret_logging | privacy-security | error | STATIC.raw-sensitive-log | error | error | responsible-disclosure | contract service owner | Remove the sensitive value from logs or log only a redacted/hash surrogate. |
 | static.unbounded_label | operability | warning | STATIC.cardinality-risk | warning | warning | internal | contract service owner | Avoid user-controlled/high-cardinality metric labels or add bucketing. |
+| static.unsafe_payload_preview | privacy-security | warning | STATIC.payload-preview | warning | warning | responsible-disclosure | contract service owner | Replace raw payload/body previews with allowlisted sanitized previews or omit them. |
 | telemetry.allowed_values | schema | error | SAT.allowed-values | error | error | internal | contract service owner | Normalize the field to one of the declared allowed values. |
 | telemetry.alternative_missing | diagnosability | error | SAT.alternative-disjunction | error | error | internal | contract service owner | Emit at least one of the declared alternative evidence options with its required fields. |
 | telemetry.cardinality | operability | warning | SAT.cardinality-bound | warning | warning | internal | contract service owner | Bucket, hash, drop, or bound labels with excessive cardinality. |

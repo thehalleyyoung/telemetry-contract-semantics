@@ -29,10 +29,10 @@ def test_checked_in_taxonomy_artifact_matches_generator():
 def test_taxonomy_summarizes_benchmark_findings():
     summary = summarize_findings([ROOT / "reports/current_impact.json"])
 
-    assert summary["summary"]["findings"] == 35
+    assert summary["summary"]["findings"] == 52
     assert summary["summary"]["unknown_codes"] == []
     assert summary["summary"]["by_formal_clause"]["SAT.allowed-values"] == 4
-    assert summary["summary"]["by_category"]["privacy-security"] == 8
+    assert summary["summary"]["by_category"]["privacy-security"] == 24
     assert summary["summary"]["by_formal_clause"]["HYP.pii-non-disclosure"] == 4
     assert summary["summary"]["by_formal_clause"]["OTLP.dropped-evidence"] == 2
     assert summary["summary"]["by_formal_clause"]["SAT.temporal-response"] == 1
@@ -55,7 +55,8 @@ def test_cli_taxonomy_json_and_markdown(capsys):
 
     assert code == 0
     assert data["observed_findings"]["summary"]["unknown_codes"] == []
-    assert data["observed_findings"]["summary"]["by_code"]["static.secret_logging"] == 3
+    assert data["observed_findings"]["summary"]["by_code"]["static.secret_logging"] == 4
+    assert data["observed_findings"]["summary"]["by_code"]["static.pii_logging"] == 3
 
     code = main(["taxonomy", "--format", "markdown"])
     output = capsys.readouterr().out

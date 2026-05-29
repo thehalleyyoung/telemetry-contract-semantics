@@ -140,3 +140,30 @@ def test_static_checker_reports_open_telemetry_api_usage_metadata_gaps():
         "static.metric_description",
         "static.missing_semconv_attribute",
     } <= codes
+
+
+def test_static_checker_reports_pii_payload_and_precise_suppression():
+    source = ROOT / "tests/fixtures/static_suppression.py"
+    findings = check_sources({"service": "svc", "static_expectations": {"spans": [], "metrics": [], "logs": []}}, [source])
+    assert [item.code for item in findings] == ["static.pii_logging"]
+    assert findings[0].details["source_span"] == {"path": str(source), "line": 6, "column": 5, "end_line": 6, "end_column": 49}
+
+    benchmark_source = ROOT / "examples/benchmarks/unsafe_transformations_source.py"
+    contract = load_contract(ROOT / "examples/benchmarks/unsafe_transformations.contract.json")
+    codes = [item.code for item in check_sources(contract, [benchmark_source])]
+    assert "static.secret_logging" in codes
+    assert "static.pii_logging" in codes
+    assert "static.unsafe_payload_preview" in codes
+
+
+def test_static_checker_redacts_pii_snippets_and_ignores_plain_dates():
+    source = ROOT / "tests/fixtures/static_pii_literals.py"
+    findings = check_sources({"service": "svc", "static_expectations": {"spans": [], "metrics": [], "logs": []}}, [source])
+    pii_findings = [item for item in findings if item.code == "static.pii_logging"]
+
+    assert len(pii_findings) == 1
+    snippet = pii_findings[0].details["line"]
+    assert "casey@example.com" not in snippet
+    assert "+1 415 555 0199" not in snippet
+    assert "tenant-123" not in snippet
+    assert "2026-05-29" not in snippet
