@@ -200,11 +200,16 @@ CONTRACT_SCHEMA: dict[str, Any] = {
         },
         "scenario": {
             "type": "object",
-            "required": ["id", "requires"],
+            "required": ["id"],
+            "anyOf": [
+                {"required": ["requires"]},
+                {"required": ["minimum_observations"]},
+            ],
             "properties": {
                 "id": {"type": "string"},
                 "question": {"type": "string"},
                 "requires": {"type": "array", "items": {"$ref": "#/$defs/scenarioRequirement"}},
+                "minimum_observations": {"type": "array", "items": {"$ref": "#/$defs/scenarioRequirement"}},
             },
         },
         "scenarioRequirement": {
@@ -213,6 +218,7 @@ CONTRACT_SCHEMA: dict[str, Any] = {
             "properties": {
                 "signal": {"enum": ["span", "log", "metric"]},
                 "name": {"type": "string"},
+                "purpose": {"type": "string"},
                 "fields": {"type": "array", "items": {"type": "string"}},
             },
         },

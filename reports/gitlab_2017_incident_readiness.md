@@ -19,7 +19,14 @@
 
 ## Unanswered incident questions
 
+Adequacy model `diagnosability-adequacy-v1`: A finite trace is adequate for an incident question when every declared minimum observation has at least one matching signal and each required field is present on at least one matching signal instance.
+
 - `restore-readiness`: Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?
+  - Minimum observation `log:database.destructive_command` status `missing-fields` — Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.
+  - Minimum observation `metric:backup.pg_dump.success` status `satisfied` — Show whether a restorable logical backup existed with enough destination and version metadata to select it.
+  - Minimum observation `log:backup.pg_dump.failed` status `missing-fields` — Show whether backup failure alerts were routed and delivered to responders.
+  - Minimum observation `span:disaster_recovery.restore_attempt` status `satisfied` — Explain the recovery source, its freshness, and whether it came from production backup evidence.
+  - Minimum observation `metric:postgres.replication.lag_bytes` status `satisfied` — Bound replica freshness and connect replication state to the incident slice.
   - Missing `scenario.missing_field` at `events[log=database.destructive_command].correlation_id`: scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'
   - Missing `scenario.missing_field` at `events[log=database.destructive_command].command_guard_result`: scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'
   - Missing `scenario.missing_field` at `events[log=backup.pg_dump.failed].alert_delivered`: scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'

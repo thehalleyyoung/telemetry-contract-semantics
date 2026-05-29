@@ -1,4 +1,226 @@
 {
+  "adequacy": {
+    "model": {
+      "name": "diagnosability-adequacy-v1",
+      "relation": "A finite trace is adequate for an incident question when every declared minimum observation has at least one matching signal and each required field is present on at least one matching signal instance."
+    },
+    "questions": [
+      {
+        "answerable": false,
+        "id": "restore-readiness",
+        "minimum_observations": [
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0]",
+            "evidence_path": "events[log=database.destructive_command]",
+            "fields": [
+              "target_host",
+              "intended_host",
+              "target_role",
+              "correlation_id",
+              "command_guard_result"
+            ],
+            "index": 0,
+            "matching_event_indices": [
+              1
+            ],
+            "missing": [
+              {
+                "category": "diagnosability",
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "correlation_id",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].correlation_id",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              },
+              {
+                "category": "diagnosability",
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "command_guard_result",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].command_guard_result",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ],
+            "missing_fields": [
+              "correlation_id",
+              "command_guard_result"
+            ],
+            "name": "database.destructive_command",
+            "observed_fields": [
+              "intended_host",
+              "target_host",
+              "target_role"
+            ],
+            "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+            "signal": "log",
+            "status": "missing-fields"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[1]",
+            "evidence_path": "events[metric=backup.pg_dump.success]",
+            "fields": [
+              "backup_job_id",
+              "destination",
+              "database_version",
+              "tool_version"
+            ],
+            "index": 1,
+            "matching_event_indices": [
+              2
+            ],
+            "missing_fields": [],
+            "name": "backup.pg_dump.success",
+            "observed_fields": [
+              "backup_job_id",
+              "database_version",
+              "destination",
+              "tool_version"
+            ],
+            "purpose": "Show whether a restorable logical backup existed with enough destination and version metadata to select it.",
+            "signal": "metric",
+            "status": "satisfied"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
+            "evidence_path": "events[log=backup.pg_dump.failed]",
+            "fields": [
+              "backup_job_id",
+              "destination",
+              "alert_route",
+              "alert_delivered"
+            ],
+            "index": 2,
+            "matching_event_indices": [
+              3
+            ],
+            "missing": [
+              {
+                "category": "diagnosability",
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    3
+                  ],
+                  "minimum_observation": {
+                    "field": "alert_delivered",
+                    "name": "backup.pg_dump.failed",
+                    "signal": "log"
+                  },
+                  "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",
+                "path": "events[log=backup.pg_dump.failed].alert_delivered",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ],
+            "missing_fields": [
+              "alert_delivered"
+            ],
+            "name": "backup.pg_dump.failed",
+            "observed_fields": [
+              "alert_route",
+              "backup_job_id",
+              "destination"
+            ],
+            "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+            "signal": "log",
+            "status": "missing-fields"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+            "evidence_path": "events[span=disaster_recovery.restore_attempt]",
+            "fields": [
+              "source",
+              "backup_age_hours",
+              "source_environment"
+            ],
+            "index": 3,
+            "matching_event_indices": [
+              4
+            ],
+            "missing_fields": [],
+            "name": "disaster_recovery.restore_attempt",
+            "observed_fields": [
+              "backup_age_hours",
+              "source",
+              "source_environment"
+            ],
+            "purpose": "Explain the recovery source, its freshness, and whether it came from production backup evidence.",
+            "signal": "span",
+            "status": "satisfied"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
+            "evidence_path": "events[metric=postgres.replication.lag_bytes]",
+            "fields": [
+              "primary_host",
+              "replica_host",
+              "incident_id"
+            ],
+            "index": 4,
+            "matching_event_indices": [
+              0
+            ],
+            "missing_fields": [],
+            "name": "postgres.replication.lag_bytes",
+            "observed_fields": [
+              "incident_id",
+              "primary_host",
+              "replica_host"
+            ],
+            "purpose": "Bound replica freshness and connect replication state to the incident slice.",
+            "signal": "metric",
+            "status": "satisfied"
+          }
+        ],
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      }
+    ]
+  },
   "coverage": {
     "correlation": {
       "failed": 0,
@@ -317,7 +539,20 @@
     {
       "category": "diagnosability",
       "code": "scenario.missing_field",
-      "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          1
+        ],
+        "minimum_observation": {
+          "field": "correlation_id",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
       "disclosure_sensitivity": "internal",
       "formal_clause": "ADEQ.required-field",
       "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
@@ -330,7 +565,20 @@
     {
       "category": "diagnosability",
       "code": "scenario.missing_field",
-      "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          1
+        ],
+        "minimum_observation": {
+          "field": "command_guard_result",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
       "disclosure_sensitivity": "internal",
       "formal_clause": "ADEQ.required-field",
       "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
@@ -343,7 +591,20 @@
     {
       "category": "diagnosability",
       "code": "scenario.missing_field",
-      "contract_path": "$.scenarios[restore-readiness].requires[2].fields",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          3
+        ],
+        "minimum_observation": {
+          "field": "alert_delivered",
+          "name": "backup.pg_dump.failed",
+          "signal": "log"
+        },
+        "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
       "disclosure_sensitivity": "internal",
       "formal_clause": "ADEQ.required-field",
       "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",
@@ -413,11 +674,233 @@
     {
       "answerable": false,
       "id": "restore-readiness",
+      "minimum_observations": [
+        {
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[0]",
+          "evidence_path": "events[log=database.destructive_command]",
+          "fields": [
+            "target_host",
+            "intended_host",
+            "target_role",
+            "correlation_id",
+            "command_guard_result"
+          ],
+          "index": 0,
+          "matching_event_indices": [
+            1
+          ],
+          "missing": [
+            {
+              "category": "diagnosability",
+              "code": "scenario.missing_field",
+              "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+              "details": {
+                "adequacy_model": "diagnosability-adequacy-v1",
+                "matching_event_indices": [
+                  1
+                ],
+                "minimum_observation": {
+                  "field": "correlation_id",
+                  "name": "database.destructive_command",
+                  "signal": "log"
+                },
+                "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+              },
+              "disclosure_sensitivity": "internal",
+              "formal_clause": "ADEQ.required-field",
+              "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+              "path": "events[log=database.destructive_command].correlation_id",
+              "remediation": "Emit the field needed to answer the scenario question.",
+              "sarif_level": "error",
+              "service_owner": "contract service owner",
+              "severity": "error"
+            },
+            {
+              "category": "diagnosability",
+              "code": "scenario.missing_field",
+              "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+              "details": {
+                "adequacy_model": "diagnosability-adequacy-v1",
+                "matching_event_indices": [
+                  1
+                ],
+                "minimum_observation": {
+                  "field": "command_guard_result",
+                  "name": "database.destructive_command",
+                  "signal": "log"
+                },
+                "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+              },
+              "disclosure_sensitivity": "internal",
+              "formal_clause": "ADEQ.required-field",
+              "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+              "path": "events[log=database.destructive_command].command_guard_result",
+              "remediation": "Emit the field needed to answer the scenario question.",
+              "sarif_level": "error",
+              "service_owner": "contract service owner",
+              "severity": "error"
+            }
+          ],
+          "missing_fields": [
+            "correlation_id",
+            "command_guard_result"
+          ],
+          "name": "database.destructive_command",
+          "observed_fields": [
+            "intended_host",
+            "target_host",
+            "target_role"
+          ],
+          "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+          "signal": "log",
+          "status": "missing-fields"
+        },
+        {
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[1]",
+          "evidence_path": "events[metric=backup.pg_dump.success]",
+          "fields": [
+            "backup_job_id",
+            "destination",
+            "database_version",
+            "tool_version"
+          ],
+          "index": 1,
+          "matching_event_indices": [
+            2
+          ],
+          "missing_fields": [],
+          "name": "backup.pg_dump.success",
+          "observed_fields": [
+            "backup_job_id",
+            "database_version",
+            "destination",
+            "tool_version"
+          ],
+          "purpose": "Show whether a restorable logical backup existed with enough destination and version metadata to select it.",
+          "signal": "metric",
+          "status": "satisfied"
+        },
+        {
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
+          "evidence_path": "events[log=backup.pg_dump.failed]",
+          "fields": [
+            "backup_job_id",
+            "destination",
+            "alert_route",
+            "alert_delivered"
+          ],
+          "index": 2,
+          "matching_event_indices": [
+            3
+          ],
+          "missing": [
+            {
+              "category": "diagnosability",
+              "code": "scenario.missing_field",
+              "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+              "details": {
+                "adequacy_model": "diagnosability-adequacy-v1",
+                "matching_event_indices": [
+                  3
+                ],
+                "minimum_observation": {
+                  "field": "alert_delivered",
+                  "name": "backup.pg_dump.failed",
+                  "signal": "log"
+                },
+                "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+                "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+              },
+              "disclosure_sensitivity": "internal",
+              "formal_clause": "ADEQ.required-field",
+              "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",
+              "path": "events[log=backup.pg_dump.failed].alert_delivered",
+              "remediation": "Emit the field needed to answer the scenario question.",
+              "sarif_level": "error",
+              "service_owner": "contract service owner",
+              "severity": "error"
+            }
+          ],
+          "missing_fields": [
+            "alert_delivered"
+          ],
+          "name": "backup.pg_dump.failed",
+          "observed_fields": [
+            "alert_route",
+            "backup_job_id",
+            "destination"
+          ],
+          "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+          "signal": "log",
+          "status": "missing-fields"
+        },
+        {
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+          "evidence_path": "events[span=disaster_recovery.restore_attempt]",
+          "fields": [
+            "source",
+            "backup_age_hours",
+            "source_environment"
+          ],
+          "index": 3,
+          "matching_event_indices": [
+            4
+          ],
+          "missing_fields": [],
+          "name": "disaster_recovery.restore_attempt",
+          "observed_fields": [
+            "backup_age_hours",
+            "source",
+            "source_environment"
+          ],
+          "purpose": "Explain the recovery source, its freshness, and whether it came from production backup evidence.",
+          "signal": "span",
+          "status": "satisfied"
+        },
+        {
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
+          "evidence_path": "events[metric=postgres.replication.lag_bytes]",
+          "fields": [
+            "primary_host",
+            "replica_host",
+            "incident_id"
+          ],
+          "index": 4,
+          "matching_event_indices": [
+            0
+          ],
+          "missing_fields": [],
+          "name": "postgres.replication.lag_bytes",
+          "observed_fields": [
+            "incident_id",
+            "primary_host",
+            "replica_host"
+          ],
+          "purpose": "Bound replica freshness and connect replication state to the incident slice.",
+          "signal": "metric",
+          "status": "satisfied"
+        }
+      ],
       "missing_evidence": [
         {
           "category": "diagnosability",
           "code": "scenario.missing_field",
-          "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+          "details": {
+            "adequacy_model": "diagnosability-adequacy-v1",
+            "matching_event_indices": [
+              1
+            ],
+            "minimum_observation": {
+              "field": "correlation_id",
+              "name": "database.destructive_command",
+              "signal": "log"
+            },
+            "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+            "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+          },
           "disclosure_sensitivity": "internal",
           "formal_clause": "ADEQ.required-field",
           "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
@@ -430,7 +913,20 @@
         {
           "category": "diagnosability",
           "code": "scenario.missing_field",
-          "contract_path": "$.scenarios[restore-readiness].requires[0].fields",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+          "details": {
+            "adequacy_model": "diagnosability-adequacy-v1",
+            "matching_event_indices": [
+              1
+            ],
+            "minimum_observation": {
+              "field": "command_guard_result",
+              "name": "database.destructive_command",
+              "signal": "log"
+            },
+            "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+            "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+          },
           "disclosure_sensitivity": "internal",
           "formal_clause": "ADEQ.required-field",
           "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
@@ -443,7 +939,20 @@
         {
           "category": "diagnosability",
           "code": "scenario.missing_field",
-          "contract_path": "$.scenarios[restore-readiness].requires[2].fields",
+          "contract_path": "$.scenarios[restore-readiness].minimum_observations[2].fields",
+          "details": {
+            "adequacy_model": "diagnosability-adequacy-v1",
+            "matching_event_indices": [
+              3
+            ],
+            "minimum_observation": {
+              "field": "alert_delivered",
+              "name": "backup.pg_dump.failed",
+              "signal": "log"
+            },
+            "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+            "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+          },
           "disclosure_sensitivity": "internal",
           "formal_clause": "ADEQ.required-field",
           "message": "scenario 'restore-readiness' cannot answer question without field 'alert_delivered' on log 'backup.pg_dump.failed'",

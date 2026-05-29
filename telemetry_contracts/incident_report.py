@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from typing import Any
 
 from .findings import Finding, has_at_least
-from .scenario import check_scenario
+from .scenario import evaluate_scenario_adequacy
 from .semantics import build_event_structure, format_event_structure_markdown
 from .validator import validate_events
 
@@ -50,12 +50,25 @@ def generate_incident_readiness_report(contract: dict[str, Any], events: list[di
             "incident_windows": event_structure["incident_windows"],
             "diagrams": event_structure["diagrams"],
         },
+        "adequacy": {
+            "model": scenario_sections[0]["model"] if scenario_sections else {},
+            "questions": [
+                {
+                    "id": section["id"],
+                    "question": section["question"],
+                    "answerable": section["answerable"],
+                    "minimum_observations": section["minimum_observations"],
+                }
+                for section in scenario_sections
+            ],
+        },
         "unanswered_questions": [
             {
                 "id": section["id"],
                 "question": section["question"],
                 "answerable": section["answerable"],
                 "missing_evidence": section["missing_evidence"],
+                "minimum_observations": section["minimum_observations"],
             }
             for section in scenario_sections
             if not section["answerable"]
@@ -98,11 +111,21 @@ def format_incident_readiness_markdown(report: dict[str, Any]) -> str:
         notes = item.get("risk_level") or item.get("notes") or ""
         lines.append(f"| {label} | {item['score']} | {item.get('passed', 0)} | {item.get('failed', 0)} | {notes} |")
     lines.extend(["", "## Unanswered incident questions", ""])
+    adequacy_model = report.get("adequacy", {}).get("model", {})
+    if adequacy_model:
+        lines.append(f"Adequacy model `{adequacy_model.get('name')}`: {adequacy_model.get('relation')}")
+        lines.append("")
     if not report["unanswered_questions"]:
         lines.append("All declared incident questions are answerable from the supplied telemetry.")
     else:
         for question in report["unanswered_questions"]:
             lines.append(f"- `{question['id']}`: {question['question']}")
+            for observation in question.get("minimum_observations", []):
+                status = observation.get("status", "unknown")
+                signal = observation.get("signal", "")
+                name = observation.get("name", "")
+                purpose = observation.get("purpose", "")
+                lines.append(f"  - Minimum observation `{signal}:{name}` status `{status}`" + (f" — {purpose}" if purpose else ""))
             for missing in question["missing_evidence"]:
                 lines.append(f"  - Missing `{missing['code']}` at `{missing['path']}`: {missing['message']}")
     lines.extend(["", "## Top remediations", ""])
@@ -127,14 +150,7 @@ def _selected_scenarios(contract: dict[str, Any], scenario_ids: list[str] | None
 
 
 def _scenario_section(contract: dict[str, Any], events: list[dict[str, Any]], scenario: dict[str, Any]) -> dict[str, Any]:
-    findings = check_scenario(contract, events, scenario)
-    return {
-        "id": scenario.get("id", ""),
-        "question": scenario.get("question", ""),
-        "answerable": not has_at_least(findings, "error"),
-        "missing_evidence": [finding.to_dict() for finding in findings],
-        "raw_findings": findings,
-    }
+    return evaluate_scenario_adequacy(contract, events, scenario)
 
 
 def _owner(contract: dict[str, Any]) -> str:

@@ -349,9 +349,27 @@
       "type": "object"
     },
     "scenario": {
+      "anyOf": [
+        {
+          "required": [
+            "requires"
+          ]
+        },
+        {
+          "required": [
+            "minimum_observations"
+          ]
+        }
+      ],
       "properties": {
         "id": {
           "type": "string"
+        },
+        "minimum_observations": {
+          "items": {
+            "$ref": "#/$defs/scenarioRequirement"
+          },
+          "type": "array"
         },
         "question": {
           "type": "string"
@@ -364,8 +382,7 @@
         }
       },
       "required": [
-        "id",
-        "requires"
+        "id"
       ],
       "type": "object"
     },
@@ -378,6 +395,9 @@
           "type": "array"
         },
         "name": {
+          "type": "string"
+        },
+        "purpose": {
           "type": "string"
         },
         "signal": {

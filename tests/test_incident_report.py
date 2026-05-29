@@ -20,11 +20,15 @@ def test_incident_readiness_report_scores_historical_missing_evidence():
     assert report["coverage"]["remediation"]["score"] == 100
     assert report["event_structure"]["model"] == "finite-event-structure"
     assert report["event_structure"]["node_count"] == 5
+    assert report["adequacy"]["model"]["name"] == "diagnosability-adequacy-v1"
+    assert len(report["adequacy"]["questions"][0]["minimum_observations"]) == 5
     assert report["unanswered_questions"][0]["id"] == "restore-readiness"
     assert len(report["unanswered_questions"][0]["missing_evidence"]) == 3
+    assert report["unanswered_questions"][0]["minimum_observations"][0]["status"] == "missing-fields"
     markdown = format_incident_readiness_markdown(report)
     assert "Incident-readiness report: gitlab.com-database" in markdown
     assert "restore-readiness" in markdown
+    assert "Adequacy model `diagnosability-adequacy-v1`" in markdown
     assert "Top remediations" in markdown
     assert "Incident-window event-structure diagrams" in markdown
 

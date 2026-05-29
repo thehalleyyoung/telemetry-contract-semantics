@@ -147,6 +147,7 @@ Supported checks include:
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
+- Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item names the span, log, or metric plus required fields and a `purpose`. The finite trace is adequate for that question iff every minimum observation is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
 
 ## Runtime event format
@@ -175,7 +176,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
-- `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.
+- `telemetry_contracts.scenario` defines diagnosability adequacy for incident questions and verifies minimum observations against emitted telemetry.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `describe-model`, `report incident-readiness`, and `benchmark` commands.

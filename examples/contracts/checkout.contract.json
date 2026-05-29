@@ -177,10 +177,11 @@
     {
       "id": "payment-timeout",
       "question": "Can an on-call engineer diagnose which tenant, cart, provider, and retry count were involved when payment authorization times out?",
-      "requires": [
+      "minimum_observations": [
         {
           "signal": "span",
           "name": "payment.authorize",
+          "purpose": "Identify provider retry behavior and timeout class on the failed authorization path.",
           "fields": [
             "tenant_id",
             "payment_provider",
@@ -191,6 +192,7 @@
         {
           "signal": "log",
           "name": "checkout.payment_failed",
+          "purpose": "Tie the user-visible payment failure to tenant, cart, and stable error code evidence.",
           "fields": [
             "tenant_id",
             "cart_id",
@@ -200,6 +202,7 @@
         {
           "signal": "metric",
           "name": "payment.authorization.latency_ms",
+          "purpose": "Quantify whether the provider-specific authorization path was slow enough to support a timeout diagnosis.",
           "fields": [
             "payment_provider"
           ]
