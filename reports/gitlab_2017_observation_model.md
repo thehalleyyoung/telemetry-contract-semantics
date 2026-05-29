@@ -32,4 +32,25 @@ Satisfaction: `T ⊨ C` — A finite telemetry trace T satisfies contract C when
 - Names by kind: `{'log': ['backup.pg_dump.failed', 'database.destructive_command'], 'metric': ['backup.pg_dump.success', 'postgres.replication.lag_bytes'], 'span': ['disaster_recovery.restore_attempt']}`
 - Fields by kind: `{'log': ['actor_role', 'alert_route', 'backup_job_id', 'destination', 'intended_host', 'notification_status', 'target_host', 'target_role'], 'metric': ['backup_job_id', 'database_version', 'destination', 'incident_id', 'primary_host', 'replica_host', 'tool_version'], 'span': ['backup_age_hours', 'source', 'source_environment']}`
 - Correlation key counts: `{}`
-- Timestamp field counts: `{}`
+- Timestamp field counts: `{'timestamp_ms': 5}`
+
+## Incident-window event-structure diagrams
+
+- Nodes: 5
+- Causal/happens-before edges: 4
+- Concurrent span pairs: 0
+
+### window-0 group all-observations
+
+```mermaid
+flowchart TD
+  e0["metric:postgres.replication.lag_bytes"]
+  e1["log:database.destructive_command"]
+  e2["metric:backup.pg_dump.success"]
+  e3["log:backup.pg_dump.failed"]
+  e4["span:disaster_recovery.restore_attempt"]
+  e0 -->|hb| e1
+  e1 -->|hb| e2
+  e2 -->|hb| e3
+  e3 -->|hb| e4
+```

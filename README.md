@@ -9,6 +9,7 @@ This repository turns that thesis into executable checks:
 - Static telemetry security checks for sensitive values in logs and optional high-cardinality/correlation policies.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
+- Incident-window event-structure diagrams that make parent-child spans, links, log attachments, metric exemplars, happens-before, and concurrency evidence visible in service-owner reports.
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - A benchmark harness for built-in or user-provided contract/event corpora.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
@@ -146,6 +147,7 @@ Supported checks include:
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
+- Event-structure summaries and Mermaid diagrams over incident windows, including parent-child spans, span links, attached logs, metric exemplars, timestamp happens-before edges, and concurrent spans when that evidence is present.
 
 ## Runtime event format
 
@@ -163,14 +165,14 @@ Findings include severity, code, message, event path, contract path, and details
 
 `python3 -m telemetry_contracts.cli describe-model` prints the executable observation domain used by the checker. It maps spans, logs, metrics, resources, scopes, exemplars, timestamps, attributes, and provenance to the repository JSONL fields and the OTLP JSON fields currently normalized by `import-otlp`.
 
-The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary, which is useful for checking what kinds, names, fields, correlation keys, and timestamps are actually present in a historical or current fixture.
+The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary and a finite event-structure view, which is useful for checking what kinds, names, fields, correlation keys, timestamps, parent/child edges, log attachments, metric exemplars, and incident-window happens-before diagrams are actually present in a historical or current fixture.
 
 ## Architecture
 
 - `telemetry_contracts.loader` loads JSON/YAML contracts and JSONL events with explicit errors.
 - `telemetry_contracts.schema` provides the canonical contract JSON Schema used by linting and tests.
 - `telemetry_contracts.validator` checks emitted telemetry against signal, field, and correlation specifications.
-- `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, and artifact summaries used by `describe-model`.
+- `telemetry_contracts.semantics` defines the observation-domain page, satisfaction-relation states, finite event structures, and artifact summaries used by `describe-model` and service-owner reports.
 - `telemetry_contracts.cli lint-contract` validates contract schema semantics before events exist.
 - `telemetry_contracts.static_checker` scans source files for expected instrumentation literals and common telemetry/logging anti-patterns.
 - `telemetry_contracts.scenario` verifies incident-question requirements against emitted telemetry.

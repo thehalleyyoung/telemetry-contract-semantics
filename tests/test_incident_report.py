@@ -18,12 +18,15 @@ def test_incident_readiness_report_scores_historical_missing_evidence():
     assert report["summary"]["findings_by_code"]["scenario.missing_field"] == 3
     assert report["coverage"]["required_evidence"]["failed"] == 3
     assert report["coverage"]["remediation"]["score"] == 100
+    assert report["event_structure"]["model"] == "finite-event-structure"
+    assert report["event_structure"]["node_count"] == 5
     assert report["unanswered_questions"][0]["id"] == "restore-readiness"
     assert len(report["unanswered_questions"][0]["missing_evidence"]) == 3
     markdown = format_incident_readiness_markdown(report)
     assert "Incident-readiness report: gitlab.com-database" in markdown
     assert "restore-readiness" in markdown
     assert "Top remediations" in markdown
+    assert "Incident-window event-structure diagrams" in markdown
 
 
 def test_incident_readiness_cli_outputs_json_and_respects_fail_on(capsys):

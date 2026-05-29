@@ -31,6 +31,27 @@
 - 3× `telemetry.missing_field` (error, diagnosability): Attach the required attribute/tag/field to the signal.
 - 2× `telemetry.numeric_max` (error, schema): Investigate or clamp values above the declared maximum.
 
+## Incident-window event-structure diagrams
+
+- Nodes: 5
+- Causal/happens-before edges: 4
+- Concurrent span pairs: 0
+
+### window-0 group all-observations
+
+```mermaid
+flowchart TD
+  e0["metric:postgres.replication.lag_bytes"]
+  e1["log:database.destructive_command"]
+  e2["metric:backup.pg_dump.success"]
+  e3["log:backup.pg_dump.failed"]
+  e4["span:disaster_recovery.restore_attempt"]
+  e0 -->|hb| e1
+  e1 -->|hb| e2
+  e2 -->|hb| e3
+  e3 -->|hb| e4
+```
+
 ## Limitations
 
 - Scores are computed from the supplied finite telemetry file and contract, not from production exhaustiveness.

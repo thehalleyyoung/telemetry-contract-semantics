@@ -27,7 +27,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 
 - [x] 019. Define the observation domain for spans, logs, metrics, resources, scopes, exemplars, timestamps, attributes, and provenance, then expose a `describe-model` CLI page that maps each object to existing JSONL and OTLP fields.
 - [x] 020. Specify the contract satisfaction relation `trace ⊨ contract` for present, absent, malformed, partial, unknown, and transformed observations, then attach each validator finding code to one violated semantic clause.
-- [ ] 021. Model traces as finite event structures with parent-child spans, links, log attachment, metric exemplars, happens-before, and concurrency, then produce incident-window diagrams in service-owner reports.
+- [x] 021. Model traces as finite event structures with parent-child spans, links, log attachment, metric exemplars, happens-before, and concurrency, then produce incident-window diagrams in service-owner reports.
 - [ ] 022. Define diagnosability adequacy: the minimum observations needed to answer an incident question, then report unanswered questions and the exact missing evidence in CI artifacts.
 - [ ] 023. Define observational equivalence for debugging tasks so sampled, scrubbed, or aggregated streams can be compared by the questions they still answer, not by byte equality.
 - [ ] 024. Formalize semantic preservation for redaction, hashing, tokenization, bucketing, omission, sampling, retention, and aggregation, then fail contracts when an approved transformation destroys required diagnosability or privacy evidence.

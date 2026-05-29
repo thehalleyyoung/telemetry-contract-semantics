@@ -6,6 +6,7 @@ from typing import Any
 
 from .findings import Finding, has_at_least
 from .scenario import check_scenario
+from .semantics import build_event_structure, format_event_structure_markdown
 from .validator import validate_events
 
 
@@ -23,6 +24,7 @@ def generate_incident_readiness_report(contract: dict[str, Any], events: list[di
         "privacy": _privacy_coverage(finding_dicts),
         "remediation": _remediation_coverage(finding_dicts),
     }
+    event_structure = build_event_structure(events)
     score = _overall_score(coverage)
     return {
         "service": contract.get("service", ""),
@@ -37,6 +39,17 @@ def generate_incident_readiness_report(contract: dict[str, Any], events: list[di
             "findings_by_severity": dict(sorted(Counter(item["severity"] for item in finding_dicts).items())),
         },
         "coverage": coverage,
+        "event_structure": {
+            "model": event_structure["model"],
+            "node_count": event_structure["node_count"],
+            "edge_count": event_structure["edge_count"],
+            "concurrency_pair_count": event_structure["concurrency_pair_count"],
+            "nodes": event_structure["nodes"],
+            "edges": event_structure["edges"],
+            "concurrency": event_structure["concurrency"],
+            "incident_windows": event_structure["incident_windows"],
+            "diagrams": event_structure["diagrams"],
+        },
         "unanswered_questions": [
             {
                 "id": section["id"],
@@ -98,6 +111,7 @@ def format_incident_readiness_markdown(report: dict[str, Any]) -> str:
     else:
         for item in report["top_remediations"]:
             lines.append(f"- {item['count']}× `{item['code']}` ({item['severity']}, {item['category']}): {item['remediation']}")
+    lines.extend(["", format_event_structure_markdown(report["event_structure"])])
     lines.extend(["", "## Limitations", ""])
     lines.extend(f"- {item}" for item in report["limitations"])
     lines.append("")
