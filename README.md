@@ -17,6 +17,7 @@ This repository turns that thesis into executable checks:
 - OTLP JSON import for testing real OpenTelemetry collector/exporter captures.
 - A benchmark harness for built-in or user-provided contract/event corpora.
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
+- A deterministic `explain` command that turns a finding code into its formal clause, practical impact, example trace shape, concrete fix, CI baseline key, and optional observed examples from public or benchmark reports.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
@@ -24,7 +25,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: `100_STEPS.md` currently has 28 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: `100_STEPS.md` currently has 29 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -81,6 +82,10 @@ python3 -m telemetry_contracts.cli benchmark \
 
 python3 -m telemetry_contracts.cli taxonomy \
   --findings reports/current_impact.json \
+  --format markdown
+
+python3 -m telemetry_contracts.cli explain telemetry.strict_unexpected_field \
+  --examples reports/gitlab_2017_strict_validation.json \
   --format markdown
 
 python3 -m telemetry_contracts.cli describe-model \
@@ -221,7 +226,8 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, and `taxonomy` commands.
+- `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, `taxonomy`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -293,7 +299,7 @@ python3 -m telemetry_contracts.cli validate \
   --strict --format json --fail-on never
 ```
 
-`reports/gitlab_2017_strict_validation.json` records 14 findings on that bounded derivative, including one undeclared signal, one unmodeled collector service, two unexpected fields, and one undocumented collector transformation. This demonstrates the closed-world utility on a historical public-data reconstruction without claiming access to GitLab private telemetry.
+`reports/gitlab_2017_strict_validation.json` records 14 findings on that bounded derivative, including one undeclared signal, one unmodeled collector service, two unexpected fields, and one undocumented collector transformation. `reports/gitlab_2017_strict_explain.md` explains the `telemetry.strict_unexpected_field` code against those concrete observed examples. This demonstrates the closed-world utility on a historical public-data reconstruction without claiming access to GitLab private telemetry.
 
 Generate the checked-in alternative-obligation witness report:
 

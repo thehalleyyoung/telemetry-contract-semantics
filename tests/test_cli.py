@@ -118,3 +118,30 @@ def test_cli_preservation_reports_historical_sampling_regression(capsys):
     assert code == 1
     assert '"pass": false' in output
     assert "preservation.scenario_signal" in output
+
+
+def test_cli_explain_finding_with_public_strict_examples(capsys):
+    code = main(
+        [
+            "explain",
+            "telemetry.strict_unexpected_field",
+            "--examples",
+            str(ROOT / "reports/gitlab_2017_strict_validation.json"),
+            "--format",
+            "json",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert '"formal_clause": "STRICT.field-closed-world"' in output
+    assert '"observed_examples"' in output
+    assert "reports/gitlab_2017_strict_validation.json" in output
+
+
+def test_cli_explain_unknown_code_fails(capsys):
+    code = main(["explain", "telemetry.not_a_real_code"])
+    output = capsys.readouterr().out
+
+    assert code == 1
+    assert "Unknown finding code" in output

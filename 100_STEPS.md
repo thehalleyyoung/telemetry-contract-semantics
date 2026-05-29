@@ -1,6 +1,6 @@
 # 100 Steps Toward Semantically Grounded, Immediately Useful Telemetry Contracts
 
-This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 28 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
+This roadmap treats telemetry contracts as executable program-semantics artifacts: a contract denotes obligations over finite, partially ordered telemetry traces, and the tool decides whether concrete service, collector, and source-code evidence satisfies those obligations. Every future item must deliver an immediate user-facing artifact as well as a formal-methods contribution. The 29 checked items are preserved as already implemented and tested capabilities; unchecked items are aspirational until backed by code, fixtures, tests, reports, or documentation.
 
 ## Phase 0 — Verified foundation already present
 
@@ -51,7 +51,7 @@ This roadmap treats telemetry contracts as executable program-semantics artifact
 - [ ] 039. Add contract-diff reports for pull requests showing new obligations, removed obligations, changed privacy classifications, and changed diagnosability claims.
 - [ ] 040. Add regression-gated CI examples that fail on new high-severity findings while allowing audited baseline findings with expiration and owner metadata.
 - [x] 041. Add incident-readiness reports that score each service on required evidence, temporal coverage, correlation coverage, privacy risk, and remediation completeness.
-- [ ] 042. Add a CLI `explain` command that turns each finding into its formal meaning, practical impact, example traces, and concrete fix.
+- [x] 042. Add a CLI `explain` command that turns each finding into its formal meaning, practical impact, example traces, and concrete fix.
 
 ## Phase 3 — OTLP collector export semantics and production ingestion
 

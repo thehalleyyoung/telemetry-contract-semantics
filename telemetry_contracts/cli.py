@@ -16,6 +16,7 @@ from .static_checker import check_sources
 from .alternatives import evaluate_alternative_obligations, format_alternative_obligations_markdown
 from .benchmark import BenchmarkLoadError, format_markdown, run_benchmark
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
+from .explain import explain_finding, format_explanation_markdown
 from .validator import validate_contract_shape, validate_events
 from .equivalence import compare_observational_equivalence, format_equivalence_markdown
 
@@ -64,6 +65,12 @@ def main(argv: list[str] | None = None) -> int:
     taxonomy_parser.add_argument("--findings", action="append", default=[], help="JSON report containing findings or benchmark cases with findings")
     taxonomy_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     taxonomy_parser.add_argument("--output")
+
+    explain_parser = subparsers.add_parser("explain", help="explain a finding code with formal meaning, impact, examples, and fixes")
+    explain_parser.add_argument("code", help="finding code such as telemetry.missing_field")
+    explain_parser.add_argument("--examples", action="append", default=[], help="JSON finding report to mine for concrete observed examples")
+    explain_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    explain_parser.add_argument("--output")
 
     equivalence_parser = subparsers.add_parser("equivalence", help="compare two telemetry files by incident-question answerability")
     equivalence_parser.add_argument("--contract", required=True)
@@ -134,6 +141,14 @@ def main(argv: list[str] | None = None) -> int:
                 print(output)
             observed = report.get("observed_findings")
             return 1 if observed and observed["summary"]["unknown_codes"] else 0
+        if args.command == "explain":
+            report = explain_finding(args.code, args.examples)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_explanation_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0 if report.get("known") else 1
         if args.command == "equivalence":
             contract = load_contract(args.contract)
             report = compare_observational_equivalence(contract, load_jsonl(args.left_events), load_jsonl(args.right_events), args.scenario or None)

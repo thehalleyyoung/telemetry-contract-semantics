@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness benchmark taxonomy
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness benchmark taxonomy explain
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario incident-readiness benchmark taxonomy
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness benchmark taxonomy explain
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -28,3 +28,6 @@ benchmark:
 
 taxonomy:
 	python3 -m telemetry_contracts.cli taxonomy --findings reports/current_impact.json --format markdown
+
+explain:
+	python3 -m telemetry_contracts.cli explain telemetry.strict_unexpected_field --examples reports/gitlab_2017_strict_validation.json --format markdown
