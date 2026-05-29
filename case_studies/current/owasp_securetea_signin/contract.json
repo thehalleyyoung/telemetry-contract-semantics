@@ -15,5 +15,25 @@
     "detect_secret_logging": true,
     "detect_unbounded_labels": true,
     "require_correlation_on_error_logs": false
-  }
+  },
+  "hyperproperties": [
+    {
+      "id": "signin-console-no-raw-sensitive-values",
+      "type": "pii_non_disclosure",
+      "description": "Reconstructed console-log events from the public SecureTea Signin.js sample should not expose username/email, password, or cookie values as raw telemetry.",
+      "sensitive_fields": [
+        "username",
+        "password",
+        "cookie"
+      ],
+      "forbidden_patterns": [
+        "email",
+        "password_assignment",
+        "bearer_token"
+      ],
+      "sink_kinds": [
+        "logs"
+      ]
+    }
+  ]
 }

@@ -29,10 +29,11 @@ def test_checked_in_taxonomy_artifact_matches_generator():
 def test_taxonomy_summarizes_benchmark_findings():
     summary = summarize_findings([ROOT / "reports/current_impact.json"])
 
-    assert summary["summary"]["findings"] == 19
+    assert summary["summary"]["findings"] == 22
     assert summary["summary"]["unknown_codes"] == []
     assert summary["summary"]["by_formal_clause"]["SAT.allowed-values"] == 4
-    assert summary["summary"]["by_category"]["privacy-security"] == 2
+    assert summary["summary"]["by_category"]["privacy-security"] == 5
+    assert summary["summary"]["by_formal_clause"]["HYP.pii-non-disclosure"] == 3
     assert summary["summary"]["by_formal_clause"]["SAT.temporal-response"] == 1
 
 

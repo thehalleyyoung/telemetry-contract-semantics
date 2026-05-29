@@ -13,7 +13,7 @@ def test_proof_obligations_discharge_checkout_with_benchmark():
         benchmark_config=str(ROOT / "benchmarks/builtin.json"),
     )
 
-    assert report["summary"]["features_cataloged"] == 25
+    assert report["summary"]["features_cataloged"] == 26
     assert report["summary"]["violated"] == 0
     assert report["summary"]["family_counts"]["well-formedness"] > 0
     assert report["summary"]["family_counts"]["satisfaction"] > 0

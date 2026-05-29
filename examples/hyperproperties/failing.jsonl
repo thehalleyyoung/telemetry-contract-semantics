@@ -1,0 +1,2 @@
+{"kind":"log","service":"checkout","name":"checkout.audit","fields":{"tenant_id":"tenant-a","trace_id":"trace-shared","request_id":"req-a","user_email":"alice@example.com"},"timestamp_ms":0}
+{"kind":"log","service":"checkout","name":"checkout.audit","fields":{"tenant_id":"tenant-b","trace_id":"trace-shared","request_id":"req-b","auth_token":"Bearer abcdefghijklmnop"},"timestamp_ms":1}

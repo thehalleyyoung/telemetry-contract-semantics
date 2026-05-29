@@ -51,6 +51,7 @@ FEATURE_CATALOG = [
     {"feature": "correlation policies", "clauses": ["SAT.correlation-presence", "SAT.correlation-intersection"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
     {"feature": "temporal sequences", "clauses": ["WF.temporal-sequence", "SAT.temporal-presence", "SAT.temporal-window"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
     {"feature": "temporal logic properties", "clauses": ["WF.temporal-property", "SAT.temporal-safety", "SAT.temporal-absence", "SAT.temporal-response", "SAT.temporal-order", "SAT.temporal-deadline"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
+    {"feature": "hyperproperties", "clauses": ["WF.hyperproperty", "HYP.pii-non-disclosure", "HYP.tenant-non-interference"], "families": ["well-formedness", "satisfaction", "monitor-soundness", "refinement"]},
     {"feature": "alternative obligations", "clauses": ["WF.alternative-obligation", "SAT.alternative-disjunction", "ADEQ.alternative-observation"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
     {"feature": "strict closed world", "clauses": ["WF.strict-policy", "STRICT.service-closed-world", "STRICT.signal-closed-world", "STRICT.field-closed-world", "STRICT.transformation-documented"], "families": ["well-formedness", "satisfaction", "preservation", "refinement"]},
     {"feature": "scenario adequacy", "clauses": ["SCENARIO.selection", "SCENARIO.requirement-wf", "ADEQ.required-signal", "ADEQ.required-field"], "families": ["satisfaction", "preservation", "monitor-soundness", "refinement"]},
@@ -349,6 +350,8 @@ def _present_features(contract: dict[str, Any]) -> dict[str, bool]:
         features["temporal sequences"] = True
     if isinstance(contract.get("temporal_properties"), list) and contract["temporal_properties"]:
         features["temporal logic properties"] = True
+    if isinstance(contract.get("hyperproperties"), list) and contract["hyperproperties"]:
+        features["hyperproperties"] = True
     if isinstance(contract.get("alternative_obligations"), list) and contract["alternative_obligations"]:
         features["alternative obligations"] = True
     if _strict_enabled(contract, None):

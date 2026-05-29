@@ -1,0 +1,157 @@
+{
+  "findings": [
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.sensitive_value",
+      "contract_path": "$.logs[0].fields.user_email",
+      "details": {
+        "sensitivity": "pii",
+        "value_preview": "alic\u2026.com"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 1,
+      "formal_clause": "SAT.raw-sensitive-value",
+      "message": "field 'user_email' appears to contain raw pii data",
+      "path": "event[1].user_email",
+      "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.sensitive_value",
+      "contract_path": "$.logs[0].fields.auth_token",
+      "details": {
+        "sensitivity": "token",
+        "value_preview": "Bear\u2026mnop"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 2,
+      "formal_clause": "SAT.raw-sensitive-value",
+      "message": "field 'auth_token' appears to contain raw token data",
+      "path": "event[2].auth_token",
+      "remediation": "Do not emit raw PII, credentials, or bearer tokens in telemetry.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_pii_disclosure",
+      "contract_path": "$.hyperproperties[0].sensitive_fields",
+      "details": {
+        "field": "user_email",
+        "property": "no-raw-user-or-token-telemetry",
+        "request_id": "req-a",
+        "trace_id": "trace-shared",
+        "value_preview": "alic\u2026.com"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 1,
+      "formal_clause": "HYP.pii-non-disclosure",
+      "message": "no-raw-user-or-token-telemetry: log 'checkout.audit' exposes raw sensitive field 'user_email'",
+      "path": "event[1].fields.user_email",
+      "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_pii_disclosure",
+      "contract_path": "$.hyperproperties[0].sensitive_fields",
+      "details": {
+        "field": "auth_token",
+        "property": "no-raw-user-or-token-telemetry",
+        "request_id": "req-b",
+        "trace_id": "trace-shared",
+        "value_preview": "Bear\u2026mnop"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 2,
+      "formal_clause": "HYP.pii-non-disclosure",
+      "message": "no-raw-user-or-token-telemetry: log 'checkout.audit' exposes raw sensitive field 'auth_token'",
+      "path": "event[2].fields.auth_token",
+      "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_tenant_interference",
+      "contract_path": "$.hyperproperties[1].isolation_keys",
+      "details": {
+        "left_event_index": 1,
+        "left_tenant": "tenant-a",
+        "property": "tenant-trace-isolation",
+        "right_event_index": 2,
+        "right_tenant": "tenant-b",
+        "shared_key": "trace_id",
+        "shared_value": "trace-shared",
+        "tenant_field": "tenant_id"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 2,
+      "formal_clause": "HYP.tenant-non-interference",
+      "message": "tenant-trace-isolation: tenants 'tenant-a' and 'tenant-b' share trace_id='trace-shared'",
+      "path": "event[2].trace_id",
+      "remediation": "Do not allow telemetry for different tenants to share an isolation key such as trace_id, request_id, or session_id.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "ok": false
+}

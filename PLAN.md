@@ -35,7 +35,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 - **Hyperproperty satisfaction:** privacy and multi-tenant isolation obligations may quantify over pairs or sets of traces, not just one execution.
 - **Assume-guarantee structure:** service code, libraries, collectors, deployment environment, and on-call workflows each get explicit assumptions and guarantees so failures are assigned to the right layer.
 
-The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, finite-trace temporal-property monitors for safety/response/absence/ordering/deadlines, the `evaluate-semantics` CLI, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, and GitLab 2017 strict-drift/temporal reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into a refinement checker and independent mechanization.
+The near-term formal deliverable now includes a mechanizable executable small-step semantics in `telemetry_contracts.core_semantics`, finite-trace temporal-property monitors for safety/response/absence/ordering/deadlines, finite-trace hyperproperty monitors for PII non-disclosure and tenant non-interference, the `evaluate-semantics` CLI, proof-obligation templates in `telemetry_contracts.proof_obligations`, golden pytest fixtures, GitLab 2017 strict-drift/temporal reports, and OWASP SecureTea reconstructed console-log hyperproperty reports demonstrating denotation alignment plus finite-artifact proof-goal evidence. Future work should deepen this into a refinement checker and independent mechanization.
 
 ## Algorithms
 
@@ -53,7 +53,7 @@ The near-term formal deliverable now includes a mechanizable executable small-st
 
 - **Author:** `telemetry-contracts init` scaffolds a service contract, examples, owner metadata, and CI gate.
 - **Lint:** `lint-contract` rejects syntactically or semantically malformed contracts before events exist.
-- **Validate:** `validate` checks JSONL telemetry against contracts and emits findings suitable for CI artifacts; `validate --strict` additionally rejects unmodeled services, undeclared signals, unexpected fields, and undocumented collector transformations unless bounded escape hatches are declared.
+- **Validate:** `validate` checks JSONL telemetry against contracts, including finite-trace temporal properties and hyperproperties, and emits findings suitable for CI artifacts; `validate --strict` additionally rejects unmodeled services, undeclared signals, unexpected fields, and undocumented collector transformations unless bounded escape hatches are declared.
 - **Import:** `import-otlp` converts collector JSON/JSONL while reporting skipped records, unsupported fields, and preservation risks.
 - **Analyze collector exports:** a dedicated report summarizes OTLP coverage, temporality, dropped evidence, provenance gaps, and collector transformations.
 - **Check source:** `static` finds missing instrumentation, unsafe attributes, PII/secret risks, high-cardinality labels, and source spans linked to contract obligations.

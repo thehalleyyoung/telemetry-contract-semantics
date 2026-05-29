@@ -147,6 +147,7 @@ def validate_contract_shape(contract: dict[str, Any]) -> list[Finding]:
     findings.extend(_validate_correlation_policy_shape(contract.get("correlation")))
     findings.extend(_validate_temporal_sequences_shape(contract.get("temporal_sequences")))
     findings.extend(_validate_temporal_properties_shape(contract.get("temporal_properties")))
+    findings.extend(_validate_hyperproperties_shape(contract.get("hyperproperties")))
     findings.extend(_validate_alternative_obligations_shape(contract.get("alternative_obligations")))
     return findings
 
@@ -394,6 +395,7 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]], *, s
     findings.extend(_validate_correlation_policy(contract, relevant_events))
     findings.extend(_validate_temporal_sequences(contract, relevant_events))
     findings.extend(_validate_temporal_properties(contract, relevant_events))
+    findings.extend(_validate_hyperproperties(contract, relevant_events))
     from .alternatives import alternative_obligation_findings
 
     findings.extend(alternative_obligation_findings(contract, relevant_events))
@@ -804,6 +806,7 @@ def _validate_temporal_sequences_shape(raw_sequences: Any) -> list[Finding]:
 
 
 TEMPORAL_PROPERTY_TYPES = {"safety", "bounded_response", "absence", "ordering", "deadline"}
+HYPERPROPERTY_TYPES = {"pii_non_disclosure", "tenant_non_interference"}
 
 
 def _validate_temporal_properties_shape(raw_properties: Any) -> list[Finding]:
@@ -845,6 +848,44 @@ def _validate_temporal_properties_shape(raw_properties: Any) -> list[Finding]:
             if prop.get("start") is not None:
                 findings.extend(_validate_temporal_selector_shape(prop.get("start"), f"{path}.start"))
             findings.extend(_validate_positive_time_bound(prop, path, "within_ms"))
+    return findings
+
+
+def _validate_hyperproperties_shape(raw_properties: Any) -> list[Finding]:
+    if raw_properties is None:
+        return []
+    if not isinstance(raw_properties, list):
+        return [Finding("error", "contract.hyperproperty", "hyperproperties must be an array", "$.hyperproperties")]
+    findings: list[Finding] = []
+    for index, prop in enumerate(raw_properties):
+        path = f"$.hyperproperties[{index}]"
+        if not isinstance(prop, dict):
+            findings.append(Finding("error", "contract.hyperproperty", "hyperproperty must be an object", path))
+            continue
+        if prop.get("id") is not None and not isinstance(prop.get("id"), str):
+            findings.append(Finding("error", "contract.hyperproperty", "hyperproperty id must be a string", f"{path}.id"))
+        if "required" in prop and not isinstance(prop["required"], bool):
+            findings.append(Finding("error", "contract.required_type", "hyperproperty required flag must be a boolean", f"{path}.required"))
+        prop_type = prop.get("type")
+        if prop_type not in HYPERPROPERTY_TYPES:
+            findings.append(Finding("error", "contract.hyperproperty", f"hyperproperty type must be one of {sorted(HYPERPROPERTY_TYPES)}", f"{path}.type"))
+            continue
+        if prop_type == "pii_non_disclosure":
+            fields = prop.get("sensitive_fields")
+            if not isinstance(fields, list) or not fields or not all(isinstance(field, str) and field for field in fields):
+                findings.append(Finding("error", "contract.hyperproperty", "pii_non_disclosure requires non-empty sensitive_fields", f"{path}.sensitive_fields"))
+            sink_kinds = prop.get("sink_kinds", ["spans", "logs", "metrics"])
+            if not isinstance(sink_kinds, list) or not all(_normalize_signal_kind(kind) in {"span", "log", "metric"} for kind in sink_kinds):
+                findings.append(Finding("error", "contract.hyperproperty", "sink_kinds must contain span, log, or metric", f"{path}.sink_kinds"))
+            patterns = prop.get("forbidden_patterns", [])
+            findings.extend(_validate_forbidden_pattern_specs("hyperproperty", {"forbidden_patterns": patterns}, path))
+        elif prop_type == "tenant_non_interference":
+            tenant_field = prop.get("tenant_field", "tenant_id")
+            if not isinstance(tenant_field, str) or not tenant_field:
+                findings.append(Finding("error", "contract.hyperproperty", "tenant_non_interference tenant_field must be a non-empty string", f"{path}.tenant_field"))
+            keys = prop.get("isolation_keys", ["trace_id", "request_id"])
+            if not isinstance(keys, list) or not keys or not all(isinstance(key, str) and key for key in keys):
+                findings.append(Finding("error", "contract.hyperproperty", "tenant_non_interference isolation_keys must be a non-empty string array", f"{path}.isolation_keys"))
     return findings
 
 
@@ -955,6 +996,165 @@ def _validate_temporal_properties(contract: dict[str, Any], events: list[dict[st
         elif prop_type == "deadline":
             findings.extend(_validate_temporal_property_deadline(prop, events, path))
     return findings
+
+
+def _validate_hyperproperties(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+    raw_properties = contract.get("hyperproperties", []) or []
+    if not isinstance(raw_properties, list):
+        return []
+    findings: list[Finding] = []
+    for index, prop in enumerate(raw_properties):
+        if not isinstance(prop, dict) or prop.get("required", True) is False:
+            continue
+        prop_type = prop.get("type")
+        path = f"$.hyperproperties[{index}]"
+        if prop_type == "pii_non_disclosure":
+            findings.extend(_validate_hyper_pii_non_disclosure(prop, events, path))
+        elif prop_type == "tenant_non_interference":
+            findings.extend(_validate_hyper_tenant_non_interference(prop, events, path))
+    return findings
+
+
+def _validate_hyper_pii_non_disclosure(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    sensitive_fields = [field for field in prop.get("sensitive_fields", []) if isinstance(field, str) and field]
+    if not sensitive_fields:
+        return []
+    sink_kinds = {_normalize_signal_kind(kind) for kind in prop.get("sink_kinds", ["spans", "logs", "metrics"])}
+    sink_kinds = {kind for kind in sink_kinds if kind in {"span", "log", "metric"}}
+    patterns = _compiled_hyper_forbidden_patterns(prop.get("forbidden_patterns", []))
+    findings: list[Finding] = []
+    for event in events:
+        if event.get("kind") not in sink_kinds:
+            continue
+        for field_name in sensitive_fields:
+            value, value_path = _lookup_field(event, field_name)
+            if value is _MISSING or value in (None, ""):
+                continue
+            if not isinstance(value, str):
+                continue
+            if _looks_privacy_preserved_value(value) or _field_or_event_declares_safe_transformation(event, field_name):
+                continue
+            pattern_match = any(pattern.search(value) for pattern in patterns)
+            field_name_sensitive = bool(SENSITIVE_FIELD_NAMES.search(field_name))
+            if not (pattern_match or field_name_sensitive):
+                continue
+            findings.append(
+                Finding(
+                    "error",
+                    "telemetry.hyper_pii_disclosure",
+                    _hyper_message(prop, f"{event.get('kind')} {event.get('name')!r} exposes raw sensitive field '{field_name}'"),
+                    value_path,
+                    f"{path}.sensitive_fields",
+                    _event_index(event),
+                    {
+                        "property": prop.get("id"),
+                        "field": field_name,
+                        "value_preview": _preview(value),
+                        "trace_id": _safe_lookup(event, "trace_id"),
+                        "request_id": _safe_lookup(event, "request_id"),
+                    },
+                )
+            )
+    return findings
+
+
+def _validate_hyper_tenant_non_interference(prop: dict[str, Any], events: list[dict[str, Any]], path: str) -> list[Finding]:
+    tenant_field = prop.get("tenant_field", "tenant_id")
+    keys = [key for key in prop.get("isolation_keys", ["trace_id", "request_id"]) if isinstance(key, str) and key]
+    if not isinstance(tenant_field, str) or not tenant_field or not keys:
+        return []
+    findings: list[Finding] = []
+    observations: list[dict[str, Any]] = []
+    for event in events:
+        tenant, tenant_path = _lookup_field(event, tenant_field)
+        if tenant is _MISSING or tenant in (None, ""):
+            continue
+        isolation_values = {key: value for key in keys for value in [_safe_lookup(event, key)] if value not in (None, "")}
+        if not isolation_values:
+            continue
+        observations.append({"event": event, "tenant": tenant, "tenant_path": tenant_path, "keys": isolation_values})
+    seen_pairs: set[tuple[int | None, int | None, str, Any]] = set()
+    for left_index, left in enumerate(observations):
+        for right in observations[left_index + 1:]:
+            if left["tenant"] == right["tenant"]:
+                continue
+            shared = [(key, value) for key, value in left["keys"].items() if right["keys"].get(key) == value]
+            for key, value in shared:
+                event_a = _event_index(left["event"])
+                event_b = _event_index(right["event"])
+                pair_key = (event_a, event_b, key, value)
+                if pair_key in seen_pairs:
+                    continue
+                seen_pairs.add(pair_key)
+                findings.append(
+                    Finding(
+                        "error",
+                        "telemetry.hyper_tenant_interference",
+                        _hyper_message(prop, f"tenants {left['tenant']!r} and {right['tenant']!r} share {key}={value!r}"),
+                        f"event[{event_b}].{key}",
+                        f"{path}.isolation_keys",
+                        event_b,
+                        {
+                            "property": prop.get("id"),
+                            "tenant_field": tenant_field,
+                            "left_event_index": event_a,
+                            "right_event_index": event_b,
+                            "left_tenant": left["tenant"],
+                            "right_tenant": right["tenant"],
+                            "shared_key": key,
+                            "shared_value": value,
+                        },
+                    )
+                )
+    return findings
+
+
+def _compiled_hyper_forbidden_patterns(raw_patterns: Any) -> list[re.Pattern[str]]:
+    patterns = raw_patterns or []
+    if isinstance(patterns, (str, dict)):
+        patterns = [patterns]
+    compiled: list[re.Pattern[str]] = [RAW_SECRET_VALUE]
+    if not isinstance(patterns, list):
+        return compiled
+    for pattern_spec in patterns:
+        pattern = pattern_spec
+        if isinstance(pattern_spec, dict):
+            pattern = pattern_spec.get("pattern", pattern_spec.get("regex"))
+        elif isinstance(pattern_spec, str) and pattern_spec in BUILTIN_FORBIDDEN_PATTERNS:
+            pattern = BUILTIN_FORBIDDEN_PATTERNS[pattern_spec]
+        if not isinstance(pattern, str):
+            continue
+        try:
+            compiled.append(re.compile(pattern))
+        except re.error:
+            continue
+    return compiled
+
+
+def _looks_privacy_preserved_value(value: str) -> bool:
+    stripped = value.strip().lower()
+    if stripped in {"<redacted>", "[redacted]", "redacted", "***redacted***", "<omitted>", "omitted"}:
+        return True
+    return bool(re.fullmatch(r"(sha256:[a-fA-F0-9]{64}|hash:[A-Za-z0-9._:-]{8,}|tok_[A-Za-z0-9._:-]{4,}|tokenized:[A-Za-z0-9._:-]{4,})", value))
+
+
+def _field_or_event_declares_safe_transformation(event: dict[str, Any], field_name: str) -> bool:
+    safe = {"redacted", "hashed", "tokenized", "bucketed", "omitted"}
+    for key in (f"{field_name}_transformation", f"{field_name}_privacy_transformation"):
+        value, _ = _lookup_field(event, key)
+        if isinstance(value, str) and value in safe:
+            return True
+    return bool(_event_transformations(event).intersection(safe))
+
+
+def _safe_lookup(event: dict[str, Any], field_name: str) -> Any:
+    value, _ = _lookup_field(event, field_name)
+    return None if value is _MISSING else value
+
+
+def _hyper_message(prop: dict[str, Any], problem: str) -> str:
+    label = prop.get("id") if isinstance(prop.get("id"), str) else "hyperproperty"
+    return f"{label}: {problem}"
 
 
 def _temporal_groups(events: list[dict[str, Any]], group_by: Any, steps: list[dict[str, Any]]) -> dict[tuple[Any, ...], list[dict[str, Any]]]:

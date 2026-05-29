@@ -169,9 +169,44 @@ def test_contract_lint_reports_schema_semantic_errors():
     assert "contract.severity_policy" in finding_codes
 
 
+def test_hyperproperty_lint_reports_bad_shapes():
+    findings = validate_contract_shape(
+        {
+            "version": "1.0",
+            "service": "svc",
+            "hyperproperties": [
+                {"type": "pii_non_disclosure", "sensitive_fields": []},
+                {"type": "tenant_non_interference", "isolation_keys": []},
+                {"type": "unknown"},
+            ],
+        }
+    )
+    assert "contract.hyperproperty" in codes(findings)
+
+
 def test_published_contract_schema_matches_runtime_schema():
     published = json.loads((ROOT / "docs/contract.schema.json").read_text(encoding="utf-8"))
     assert published == CONTRACT_SCHEMA
+
+
+def test_hyperproperties_find_pii_disclosure_and_tenant_interference():
+    contract = load_contract(ROOT / "examples/hyperproperties/contract.json")
+    findings = validate_events(contract, load_jsonl(ROOT / "examples/hyperproperties/failing.jsonl"))
+    finding_codes = codes(findings)
+
+    assert "telemetry.hyper_pii_disclosure" in finding_codes
+    assert "telemetry.hyper_tenant_interference" in finding_codes
+    tenant_finding = next(item for item in findings if item.code == "telemetry.hyper_tenant_interference")
+    assert tenant_finding.details["shared_key"] == "trace_id"
+    assert tenant_finding.details["left_tenant"] == "tenant-a"
+    assert tenant_finding.details["right_tenant"] == "tenant-b"
+
+
+def test_hyperproperties_accept_transformed_sensitive_values_and_isolated_tenants():
+    contract = load_contract(ROOT / "examples/hyperproperties/contract.json")
+    findings = validate_events(contract, load_jsonl(ROOT / "examples/hyperproperties/passing.jsonl"))
+
+    assert findings == []
 
 
 def test_contract_schema_validation_rejects_bad_shapes():

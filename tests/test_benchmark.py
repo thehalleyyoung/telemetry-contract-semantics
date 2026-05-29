@@ -23,10 +23,12 @@ def test_builtin_benchmark_reports_labeled_historical_case():
     assert labels["recall"] == 1.0
     assert historical["metrics"]["findings_by_code"]["telemetry.missing_field"] == 3
     assert historical["metrics"]["findings_by_code"]["scenario.missing_field"] == 3
-    current = next(case for case in report["cases"] if case["id"] == "owasp-securetea-signin-current-static")
+    current = next(case for case in report["cases"] if case["id"] == "owasp-securetea-signin-current-static-and-hyperproperty")
     assert current["checks"]["static"] is True
+    assert current["checks"]["runtime"] is True
     assert current["metrics"]["labels"]["precision"] == 1.0
     assert current["metrics"]["findings_by_code"]["static.secret_logging"] == 2
+    assert current["metrics"]["findings_by_code"]["telemetry.hyper_pii_disclosure"] == 3
     temporal = next(case for case in report["cases"] if case["id"] == "temporal-logic-properties-fail")
     assert temporal["metrics"]["labels"]["expected"] == 5
     assert temporal["metrics"]["labels"]["precision"] == 1.0

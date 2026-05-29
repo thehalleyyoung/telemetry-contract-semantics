@@ -1,13 +1,13 @@
 # Proof-obligation report: gitlab.com-database
 
 - Model: `telemetry-contract-proof-obligations-v1`
-- Features cataloged: 25
-- Obligations: 83
-- Discharged: 70
+- Features cataloged: 26
+- Obligations: 84
+- Discharged: 71
 - Violated: 10
 - Pending templates: 3
-- Status counts: `{"discharged": 70, "pending": 3, "violated": 10}`
-- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 24, "preservation": 3, "refinement": 3, "satisfaction": 24, "well-formedness": 28}`
+- Status counts: `{"discharged": 71, "pending": 3, "violated": 10}`
+- Family counts: `{"benchmark-label-validity": 1, "monitor-soundness": 24, "preservation": 3, "refinement": 3, "satisfaction": 24, "well-formedness": 29}`
 - Events: 7
 - Strict mode: `true`
 
@@ -42,6 +42,9 @@ A proof obligation is an executable template tying one telemetry-contract featur
   - Evidence: validate_contract_shape
 - **well-formedness:WF.forbidden-pattern** `discharged` — forbidden patterns and sensitive values / `WF.forbidden-pattern`
   - Template: If contract service `gitlab.com-database` uses forbidden patterns and sensitive values, every syntax premise for WF.forbidden-pattern is decidable before telemetry is read.
+  - Evidence: validate_contract_shape
+- **well-formedness:WF.hyperproperty** `discharged` — hyperproperties / `WF.hyperproperty`
+  - Template: If contract service `gitlab.com-database` uses hyperproperties, every syntax premise for WF.hyperproperty is decidable before telemetry is read.
   - Evidence: validate_contract_shape
 - **well-formedness:WF.numeric-bound** `discharged` — numeric bounds / `WF.numeric-bound`
   - Template: If contract service `gitlab.com-database` uses numeric bounds, every syntax premise for WF.numeric-bound is decidable before telemetry is read.
@@ -314,6 +317,7 @@ A proof obligation is an executable template tying one telemetry-contract featur
 - **correlation policies** — clauses `SAT.correlation-presence, SAT.correlation-intersection`; families `well-formedness, satisfaction, monitor-soundness, refinement`
 - **temporal sequences** — clauses `WF.temporal-sequence, SAT.temporal-presence, SAT.temporal-window`; families `well-formedness, satisfaction, monitor-soundness, refinement`
 - **temporal logic properties** — clauses `WF.temporal-property, SAT.temporal-safety, SAT.temporal-absence, SAT.temporal-response, SAT.temporal-order, SAT.temporal-deadline`; families `well-formedness, satisfaction, monitor-soundness, refinement`
+- **hyperproperties** — clauses `WF.hyperproperty, HYP.pii-non-disclosure, HYP.tenant-non-interference`; families `well-formedness, satisfaction, monitor-soundness, refinement`
 - **alternative obligations** — clauses `WF.alternative-obligation, SAT.alternative-disjunction, ADEQ.alternative-observation`; families `well-formedness, satisfaction, preservation, refinement`
 - **strict closed world** — clauses `WF.strict-policy, STRICT.service-closed-world, STRICT.signal-closed-world, STRICT.field-closed-world, STRICT.transformation-documented`; families `well-formedness, satisfaction, preservation, refinement`
 - **scenario adequacy** — clauses `SCENARIO.selection, SCENARIO.requirement-wf, ADEQ.required-signal, ADEQ.required-field`; families `satisfaction, preservation, monitor-soundness, refinement`

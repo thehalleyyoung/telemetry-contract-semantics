@@ -244,6 +244,20 @@
     },
     {
       "clauses": [
+        "WF.hyperproperty",
+        "HYP.pii-non-disclosure",
+        "HYP.tenant-non-interference"
+      ],
+      "families": [
+        "well-formedness",
+        "satisfaction",
+        "monitor-soundness",
+        "refinement"
+      ],
+      "feature": "hyperproperties"
+    },
+    {
+      "clauses": [
         "WF.alternative-obligation",
         "SAT.alternative-disjunction",
         "ADEQ.alternative-observation"
@@ -432,6 +446,16 @@
       "id": "well-formedness:WF.forbidden-pattern",
       "status": "discharged",
       "template": "If contract service `gitlab.com-database` uses forbidden patterns and sensitive values, every syntax premise for WF.forbidden-pattern is decidable before telemetry is read."
+    },
+    {
+      "evidence": "validate_contract_shape",
+      "family": "well-formedness",
+      "feature": "hyperproperties",
+      "findings": [],
+      "formal_clause": "WF.hyperproperty",
+      "id": "well-formedness:WF.hyperproperty",
+      "status": "discharged",
+      "template": "If contract service `gitlab.com-database` uses hyperproperties, every syntax premise for WF.hyperproperty is decidable before telemetry is read."
     },
     {
       "evidence": "validate_contract_shape",
@@ -1797,7 +1821,7 @@
   ],
   "service": "gitlab.com-database",
   "summary": {
-    "discharged": 70,
+    "discharged": 71,
     "events": 7,
     "family_counts": {
       "benchmark-label-validity": 1,
@@ -1805,13 +1829,13 @@
       "preservation": 3,
       "refinement": 3,
       "satisfaction": 24,
-      "well-formedness": 28
+      "well-formedness": 29
     },
-    "features_cataloged": 25,
-    "obligations": 83,
+    "features_cataloged": 26,
+    "obligations": 84,
     "pending": 3,
     "status_counts": {
-      "discharged": 70,
+      "discharged": 71,
       "pending": 3,
       "violated": 10
     },

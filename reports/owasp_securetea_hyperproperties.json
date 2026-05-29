@@ -1,0 +1,98 @@
+{
+  "findings": [
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_pii_disclosure",
+      "contract_path": "$.hyperproperties[0].sensitive_fields",
+      "details": {
+        "field": "username",
+        "property": "signin-console-no-raw-sensitive-values",
+        "request_id": null,
+        "trace_id": null,
+        "value_preview": "alic\u2026test"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 1,
+      "formal_clause": "HYP.pii-non-disclosure",
+      "message": "signin-console-no-raw-sensitive-values: log 'console.log' exposes raw sensitive field 'username'",
+      "path": "event[1].fields.username",
+      "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_pii_disclosure",
+      "contract_path": "$.hyperproperties[0].sensitive_fields",
+      "details": {
+        "field": "password",
+        "property": "signin-console-no-raw-sensitive-values",
+        "request_id": null,
+        "trace_id": null,
+        "value_preview": "pass\u2026aple"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 2,
+      "formal_clause": "HYP.pii-non-disclosure",
+      "message": "signin-console-no-raw-sensitive-values: log 'console.log' exposes raw sensitive field 'password'",
+      "path": "event[2].fields.password",
+      "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_pii_disclosure",
+      "contract_path": "$.hyperproperties[0].sensitive_fields",
+      "details": {
+        "field": "cookie",
+        "property": "signin-console-no-raw-sensitive-values",
+        "request_id": null,
+        "trace_id": null,
+        "value_preview": "Bear\u2026okie"
+      },
+      "disclosure_sensitivity": "responsible-disclosure",
+      "event_index": 3,
+      "formal_clause": "HYP.pii-non-disclosure",
+      "message": "signin-console-no-raw-sensitive-values: log 'console.log' exposes raw sensitive field 'cookie'",
+      "path": "event[3].fields.cookie",
+      "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "ok": false
+}

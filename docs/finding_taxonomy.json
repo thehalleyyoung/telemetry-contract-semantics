@@ -212,6 +212,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "contract.hyperproperty",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.hyperproperty",
+      "remediation": "Declare hyperproperties with a valid type, witness fields, and pair/set quantification keys.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "contract.invalid_regex",
       "default_severity": "error",
       "disclosure_sensitivity": "internal",
@@ -1021,6 +1041,46 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_pii_disclosure",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "HYP.pii-non-disclosure",
+      "remediation": "Redact, hash, tokenize, bucket, or omit sensitive values before they reach public telemetry sinks.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "privacy-security",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.hyper_tenant_interference",
+      "default_severity": "error",
+      "disclosure_sensitivity": "responsible-disclosure",
+      "formal_clause": "HYP.tenant-non-interference",
+      "remediation": "Do not allow telemetry for different tenants to share an isolation key such as trace_id, request_id, or session_id.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "diagnosability",
       "ci": {
         "baseline_key_fields": [
@@ -1510,23 +1570,23 @@
   },
   "summary": {
     "categories": {
-      "contract": 25,
+      "contract": 26,
       "diagnosability": 20,
       "input": 1,
       "operability": 3,
       "preservation": 4,
-      "privacy-security": 6,
+      "privacy-security": 8,
       "scenario": 2,
       "schema": 12,
       "static-coverage": 2
     },
     "default_severities": {
-      "error": 70,
+      "error": 73,
       "warning": 5
     },
-    "rules": 75,
+    "rules": 78,
     "sarif_levels": {
-      "error": 70,
+      "error": 73,
       "warning": 5
     }
   }

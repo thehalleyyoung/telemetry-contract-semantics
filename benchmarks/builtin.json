@@ -6,7 +6,9 @@
       "description": "Existing checkout fixture with complete telemetry for the payment-timeout scenario.",
       "contract": "../examples/contracts/checkout.contract.json",
       "events": "../examples/telemetry/passing.jsonl",
-      "scenarios": ["payment-timeout"]
+      "scenarios": [
+        "payment-timeout"
+      ]
     },
     {
       "id": "gitlab-2017-database-outage-reconstructed",
@@ -14,14 +16,19 @@
       "metadata": "../case_studies/gitlab_2017_database_outage/metadata.json",
       "contract": "../case_studies/gitlab_2017_database_outage/contract.json",
       "events": "../case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl",
-      "scenarios": ["restore-readiness"]
+      "scenarios": [
+        "restore-readiness"
+      ]
     },
     {
-      "id": "owasp-securetea-signin-current-static",
-      "description": "Defensive static telemetry privacy/security analysis of a public OWASP SecureTea React sign-in source file.",
+      "id": "owasp-securetea-signin-current-static-and-hyperproperty",
+      "description": "Defensive static and finite-trace hyperproperty privacy/security analysis of a public OWASP SecureTea React sign-in source file and a bounded reconstructed console-log fixture.",
       "metadata": "../case_studies/current/owasp_securetea_signin/metadata.json",
       "contract": "../case_studies/current/owasp_securetea_signin/contract.json",
-      "sources": ["../case_studies/current/owasp_securetea_signin/Signin.js"]
+      "sources": [
+        "../case_studies/current/owasp_securetea_signin/Signin.js"
+      ],
+      "events": "../case_studies/current/owasp_securetea_signin/reconstructed_console_events.jsonl"
     },
     {
       "id": "temporal-logic-properties-fail",
@@ -29,11 +36,31 @@
       "contract": "../examples/temporal_logic/contract.json",
       "events": "../examples/temporal_logic/failing.jsonl",
       "expected_findings": [
-        {"code": "telemetry.temporal_safety", "severity": "error", "event_index": 1},
-        {"code": "telemetry.temporal_response", "severity": "error", "event_index": 2},
-        {"code": "telemetry.temporal_absence", "severity": "error", "event_index": 4},
-        {"code": "telemetry.temporal_order", "severity": "error", "event_index": 5},
-        {"code": "telemetry.temporal_deadline", "severity": "error", "event_index": 8}
+        {
+          "code": "telemetry.temporal_safety",
+          "severity": "error",
+          "event_index": 1
+        },
+        {
+          "code": "telemetry.temporal_response",
+          "severity": "error",
+          "event_index": 2
+        },
+        {
+          "code": "telemetry.temporal_absence",
+          "severity": "error",
+          "event_index": 4
+        },
+        {
+          "code": "telemetry.temporal_order",
+          "severity": "error",
+          "event_index": 5
+        },
+        {
+          "code": "telemetry.temporal_deadline",
+          "severity": "error",
+          "event_index": 8
+        }
       ]
     }
   ]

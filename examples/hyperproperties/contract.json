@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "service": "checkout",
+  "metadata": {
+    "purpose": "Finite-trace hyperproperty examples for PII non-disclosure and tenant non-interference."
+  },
+  "logs": [
+    {
+      "name": "checkout.audit",
+      "required": false,
+      "fields": {
+        "tenant_id": {
+          "type": "string",
+          "required": false
+        },
+        "trace_id": {
+          "type": "string",
+          "required": false
+        },
+        "request_id": {
+          "type": "string",
+          "required": false
+        },
+        "user_email": {
+          "type": "string",
+          "required": false,
+          "sensitivity": "pii"
+        },
+        "auth_token": {
+          "type": "string",
+          "required": false,
+          "sensitivity": "token"
+        }
+      }
+    }
+  ],
+  "hyperproperties": [
+    {
+      "id": "no-raw-user-or-token-telemetry",
+      "type": "pii_non_disclosure",
+      "description": "No public telemetry sink may expose raw user email or auth token values across the finite trace set.",
+      "sensitive_fields": [
+        "user_email",
+        "auth_token"
+      ],
+      "forbidden_patterns": [
+        "email",
+        "bearer_token",
+        "jwt"
+      ],
+      "sink_kinds": [
+        "logs",
+        "spans",
+        "metrics"
+      ]
+    },
+    {
+      "id": "tenant-trace-isolation",
+      "type": "tenant_non_interference",
+      "description": "Events for distinct tenants must not share trace_id or request_id witnesses.",
+      "tenant_field": "tenant_id",
+      "isolation_keys": [
+        "trace_id",
+        "request_id"
+      ]
+    }
+  ]
+}

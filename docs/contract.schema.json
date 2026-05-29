@@ -292,6 +292,80 @@
       },
       "type": "object"
     },
+    "hyperproperty": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "forbidden_patterns": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/forbiddenPattern"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/$defs/forbiddenPattern"
+                  }
+                ]
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "isolation_keys": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "sensitive_fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "sink_kinds": {
+          "items": {
+            "enum": [
+              "span",
+              "log",
+              "metric",
+              "spans",
+              "logs",
+              "metrics"
+            ]
+          },
+          "type": "array"
+        },
+        "tenant_field": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "pii_non_disclosure",
+            "tenant_non_interference"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
     "logSignal": {
       "allOf": [
         {
@@ -906,6 +980,12 @@
         "$ref": "#/$defs/fieldSpec"
       },
       "type": "object"
+    },
+    "hyperproperties": {
+      "items": {
+        "$ref": "#/$defs/hyperproperty"
+      },
+      "type": "array"
     },
     "logs": {
       "items": {

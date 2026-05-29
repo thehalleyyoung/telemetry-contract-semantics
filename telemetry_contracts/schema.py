@@ -22,6 +22,7 @@ CONTRACT_SCHEMA: dict[str, Any] = {
         "correlation": {"$ref": "#/$defs/correlationPolicy"},
         "temporal_sequences": {"type": "array", "items": {"$ref": "#/$defs/temporalSequence"}},
         "temporal_properties": {"type": "array", "items": {"$ref": "#/$defs/temporalProperty"}},
+        "hyperproperties": {"type": "array", "items": {"$ref": "#/$defs/hyperproperty"}},
         "static_expectations": {"$ref": "#/$defs/staticExpectations"},
         "static_rules": {"type": "object"},
         "scenarios": {"type": "array", "items": {"$ref": "#/$defs/scenario"}},
@@ -292,6 +293,27 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                 "start": {"$ref": "#/$defs/temporalSelector"},
                 "within_ms": {"type": "number"},
                 "allow_equal_timestamps": {"type": "boolean"},
+            },
+        },
+        "hyperproperty": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "id": {"type": "string"},
+                "type": {"enum": ["pii_non_disclosure", "tenant_non_interference"]},
+                "description": {"type": "string"},
+                "required": {"type": "boolean"},
+                "sensitive_fields": {"type": "array", "items": {"type": "string"}},
+                "forbidden_patterns": {
+                    "anyOf": [
+                        {"type": "string"},
+                        {"$ref": "#/$defs/forbiddenPattern"},
+                        {"type": "array", "items": {"anyOf": [{"type": "string"}, {"$ref": "#/$defs/forbiddenPattern"}]}}
+                    ]
+                },
+                "sink_kinds": {"type": "array", "items": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]}},
+                "tenant_field": {"type": "string"},
+                "isolation_keys": {"type": "array", "items": {"type": "string"}},
             },
         },
         "staticExpectations": {

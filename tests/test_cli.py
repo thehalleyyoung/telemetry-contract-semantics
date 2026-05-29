@@ -168,6 +168,28 @@ def test_cli_proof_obligations_reports_historical_evidence(capsys):
     output = capsys.readouterr().out
 
     assert code == 0
-    assert '"features_cataloged": 25' in output
+    assert '"features_cataloged": 26' in output
     assert '"formal_clause": "STRICT.field-closed-world"' in output
     assert '"formal_clause": "PRES.adequacy-signal"' in output
+
+
+def test_cli_validate_public_hyperproperty_case_study(capsys):
+    case = ROOT / "case_studies/current/owasp_securetea_signin"
+    code = main(
+        [
+            "validate",
+            "--contract",
+            str(case / "contract.json"),
+            "--events",
+            str(case / "reconstructed_console_events.jsonl"),
+            "--format",
+            "json",
+            "--fail-on",
+            "never",
+        ]
+    )
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert "telemetry.hyper_pii_disclosure" in output
+    assert "signin-console-no-raw-sensitive-values" in output

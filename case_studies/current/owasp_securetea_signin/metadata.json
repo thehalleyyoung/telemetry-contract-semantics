@@ -1,5 +1,5 @@
 {
-  "title": "Current public-code telemetry privacy/security static analysis: OWASP SecureTea Signin.js",
+  "title": "Current public-code telemetry privacy/security analysis: OWASP SecureTea Signin.js static and hyperproperty fixture",
   "retrieval_date": "2026-05-29",
   "source_repository": "https://github.com/OWASP/SecureTea-Project",
   "source_file": "react_gui/src/views/Signin.js",
@@ -12,6 +12,21 @@
   "analysis_command": "python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format json --output reports/current_impact.json",
   "expected_findings": [
     {
+      "code": "telemetry.hyper_pii_disclosure",
+      "severity": "error",
+      "event_index": 1
+    },
+    {
+      "code": "telemetry.hyper_pii_disclosure",
+      "severity": "error",
+      "event_index": 2
+    },
+    {
+      "code": "telemetry.hyper_pii_disclosure",
+      "severity": "error",
+      "event_index": 3
+    },
+    {
       "code": "static.secret_logging",
       "severity": "error",
       "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:27"
@@ -21,5 +36,6 @@
       "severity": "error",
       "path_suffix": "case_studies/current/owasp_securetea_signin/Signin.js:48"
     }
-  ]
+  ],
+  "runtime_fixture": "reconstructed_console_events.jsonl is a bounded reconstruction of console.log observations from the cited public Signin.js lines; values are synthetic placeholders, not private SecureTea operational data."
 }

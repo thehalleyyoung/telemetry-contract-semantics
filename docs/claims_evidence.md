@@ -5,7 +5,7 @@
 - Added a benchmark CLI that runs one or more telemetry contracts against JSONL event corpora and optional diagnosability scenarios.
 - Added JSON and Markdown benchmark reports with contract, event, source, finding, finding-by-code, finding-by-severity, label precision/recall, runtime, check-type, and pass/fail metrics.
 - Added a reconstructed public historical case study for the GitLab.com 2017 database outage with source citations, fixture metadata, expected findings, and tests.
-- Added a current public-code case study for OWASP SecureTea Project `Signin.js` at commit `7a2da8756e6addbe379ae9b23905dcdbe68b3814`, with exact source URL, retrieval date, file SHA, license note, copied MIT-licensed source, labeled findings, and generated reports in `reports/current_impact.json` and `reports/current_impact.md`.
+- Added a current public-code case study for OWASP SecureTea Project `Signin.js` at commit `7a2da8756e6addbe379ae9b23905dcdbe68b3814`, with exact source URL, retrieval date, file SHA, license note, copied MIT-licensed source, labeled findings, and generated reports in `reports/current_impact.json` and `reports/current_impact.md`. It also validates `reconstructed_console_events.jsonl`, a bounded synthetic reconstruction of the same public-code console logging paths, with finite-trace `telemetry.hyper_pii_disclosure` witnesses in `reports/owasp_securetea_hyperproperties.json`.
 - Added core schema/static-analysis improvements: finding taxonomy with remediation, sensitivity classification, forbidden-pattern checks, sensitive-value detection, bounded-cardinality policy warnings, source locations, and static rules for sensitive-value logging.
 - Added incident-readiness JSON/Markdown reports for the reconstructed GitLab 2017 fixture in `reports/gitlab_2017_incident_readiness.json` and `reports/gitlab_2017_incident_readiness.md`, scoring required evidence, temporal/correlation coverage, privacy risk, remediation completeness, unanswered questions, and top remediation groups.
 - Added a finite event-structure model for telemetry traces with parent-child spans, span links, log attachments, metric exemplars, timestamp happens-before edges, concurrent span pairs, and Mermaid incident-window diagrams in service-owner reports and `describe-model` output.
@@ -18,16 +18,17 @@
 - Added executable small-step contract semantics in `telemetry_contracts.core_semantics` and `telemetry-contracts evaluate-semantics`. `reports/gitlab_2017_semantic_evaluation.json` and `.md` show the GitLab strict drift derivative evaluated by well-formedness, projection, signal, correlation, temporal, alternative, and strict rules, with denotation alignment against `validate_events`.
 - Added proof-obligation templates in `telemetry_contracts.proof_obligations` and `telemetry-contracts proof-obligations`. `reports/gitlab_2017_proof_obligations.json` and `.md` instantiate well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity obligations against the GitLab 2017 reconstruction, strict drift derivative, sampled/exported derivative, and built-in benchmark labels.
 - Added executable finite-trace temporal properties for safety, bounded response, absence, ordering, and deadlines. `examples/temporal_logic/` contains paired passing/failing fixtures, and `reports/gitlab_2017_temporal_logic_validation.json` shows a bounded `telemetry.temporal_response` finding on the sampled/exported GitLab 2017 derivative when the backup-failure alert witness is removed.
+- Added finite-trace hyperproperties for PII non-disclosure and tenant non-interference. `examples/hyperproperties/` contains paired fixtures, and `reports/owasp_securetea_hyperproperties.json` records three bounded `telemetry.hyper_pii_disclosure` witnesses over reconstructed public-code SecureTea console-log telemetry.
 
 ## Bounded novelty claim
 
-This repository now produces a bounded, reproducible telemetry diagnosability/security analysis artifact over public code and public incident-derived data: one benchmark run emits labeled findings for a reconstructed GitLab outage diagnosability fixture and for a current public OWASP SecureTea source file. The claim is not that "no one else" has found these exact issues or that no comparable private tool exists. The bounded claim is that this repo contains an executable, timestamped, source-cited, deterministic artifact tying telemetry contracts, static anti-pattern checks, labels, and generated reports together for these exact public inputs.
+This repository now produces a bounded, reproducible telemetry diagnosability/security analysis artifact over public code and public incident-derived data: one benchmark run emits labeled findings for a reconstructed GitLab outage diagnosability fixture, a current public OWASP SecureTea source file, and a bounded reconstructed SecureTea console-log telemetry fixture. The claim is not that "no one else" has found these exact issues or that no comparable private tool exists. The bounded claim is that this repo contains an executable, timestamped, source-cited, deterministic artifact tying telemetry contracts, static anti-pattern checks, labels, and generated reports together for these exact public inputs.
 
 ### Prior-art/search protocol for the bounded claim
 
 To make the novelty claim falsifiable, use this protocol on or after the retrieval date:
 
-1. Search GitHub and the web for the exact case id `owasp-securetea-signin-current-static`.
+1. Search GitHub and the web for the exact case id `owasp-securetea-signin-current-static-and-hyperproperty`.
 2. Search for the exact generated code/path pair `static.secret_logging` and `react_gui/src/views/Signin.js`.
 3. Search for the exact phrase `executable telemetry diagnosability contracts` and the GitLab 2017 outage fixture paths.
 4. If an earlier public artifact is found that includes the same executable contract/static benchmark, exact public inputs, labels, and generated reports, this bounded novelty claim should be revised.
@@ -35,11 +36,12 @@ To make the novelty claim falsifiable, use this protocol on or after the retriev
 ## What is not proven
 
 - The GitLab fixture is reconstructed from public facts, not original production telemetry.
-- The OWASP SecureTea case study is public-code static analysis. It is labeled as potential telemetry privacy/security impact in sample code, not a vulnerability disclosure or exploit finding.
+- The OWASP SecureTea case study is public-code static analysis plus a bounded reconstructed runtime fixture. It is labeled as potential telemetry privacy/security impact in sample code, not a vulnerability disclosure or exploit finding, and the reconstructed runtime values are synthetic placeholders derived from public code paths.
 - The contracts and transformation-preservation reports do not prove an incident would have been prevented.
 - The small-step semantic evaluator is mechanizable executable semantics aligned against the repository checker on golden fixtures; it is not an independently verified proof assistant development.
 - Proof-obligation reports are finite-artifact evidence checklists. They do not prove universal monitor soundness, and refinement obligations remain pending templates until a dedicated refinement checker is implemented.
 - Temporal properties are checked over finite supplied artifacts with explicit timestamps and grouping keys; they do not constitute an unbounded temporal-logic model checker.
+- Hyperproperties are checked over finite supplied artifacts and pair/set witnesses; they do not prove universal non-interference or non-disclosure over all executions.
 - Strict-mode drift findings are over the checked-in finite derivative fixture; they do not imply GitLab emitted those private events or used the modeled collector transformations.
 - The benchmark does not establish recall over all possible observability failures.
 - Static checks are heuristic line/source checks, not full semantic instrumentation analysis.
@@ -181,6 +183,16 @@ python3 -m telemetry_contracts.cli validate \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
   --format json \
   --fail-on never > reports/gitlab_2017_temporal_logic_validation.json
+python3 -m telemetry_contracts.cli validate \
+  --contract examples/hyperproperties/contract.json \
+  --events examples/hyperproperties/failing.jsonl \
+  --format json \
+  --fail-on never > reports/hyperproperty_examples_validation.json
+python3 -m telemetry_contracts.cli validate \
+  --contract case_studies/current/owasp_securetea_signin/contract.json \
+  --events case_studies/current/owasp_securetea_signin/reconstructed_console_events.jsonl \
+  --format json \
+  --fail-on never > reports/owasp_securetea_hyperproperties.json
 ```
 
-The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json`, `case_studies/current/owasp_securetea_signin/metadata.json`, and `benchmarks/builtin.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 4 contracts, 18 runtime events, 19 total labeled findings, and 1.0 precision/recall for all labeled cases. The GitLab temporal validation report records a `telemetry.temporal_response` finding on the degraded sampled/exported derivative. The GitLab transformation-preservation report records `pass=false`, 1 event removed, and 6 preservation findings: 2 newly introduced runtime obligation failures including the temporal response, 1 lost scenario signal, and 3 lost scenario fields. The checked-in semantic-evaluation report records `aligned_with_checker=true`, 7 input events, 6 service-relevant events, 12 small steps, 14 finding signatures, and no denotation mismatches against the deterministic checker. The checked-in proof-obligation report records 25 cataloged feature groups and 83 instantiated obligations over the same bounded public reconstruction artifacts: 70 discharged, 10 violated, and 3 pending refinement templates.
+The benchmark passes when all expected labels in `case_studies/gitlab_2017_database_outage/metadata.json`, `case_studies/current/owasp_securetea_signin/metadata.json`, and `benchmarks/builtin.json` match the produced findings and no extra findings appear. The current-impact report generated on 2026-05-29 records 4 contracts, 21 runtime events, 22 total labeled findings, and 1.0 precision/recall for all labeled cases, including 3 `telemetry.hyper_pii_disclosure` findings. The GitLab temporal validation report records a `telemetry.temporal_response` finding on the degraded sampled/exported derivative. The GitLab transformation-preservation report records `pass=false`, 1 event removed, and 6 preservation findings: 2 newly introduced runtime obligation failures including the temporal response, 1 lost scenario signal, and 3 lost scenario fields. The checked-in semantic-evaluation report records `aligned_with_checker=true`, 7 input events, 6 service-relevant events, 12 small steps, 14 finding signatures, and no denotation mismatches against the deterministic checker. The checked-in proof-obligation report records 26 cataloged feature groups and 84 instantiated obligations over the same bounded public reconstruction artifacts: 71 discharged, 10 violated, and 3 pending refinement templates.
