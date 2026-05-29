@@ -32,6 +32,9 @@ from .ci_gate import evaluate_ci_gate, format_ci_gate_markdown
 from .claims import claims_evidence_matrix, write_claims_evidence_matrix
 from .regenerate import format_regeneration_markdown, regenerate_artifacts
 from .sarif import findings_to_sarif, report_to_sarif
+from .doctor import format_doctor_markdown, run_doctor
+from .init_workflow import scaffold_project
+from .service_report import format_service_owner_markdown, generate_service_owner_report
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -65,6 +68,7 @@ def main(argv: list[str] | None = None) -> int:
     otlp_parser.add_argument("--output", required=True)
     otlp_parser.add_argument("--input-format", choices=["json", "jsonl"], default="json")
     otlp_parser.add_argument("--diagnostics-output", help="optional JSON file with normalization/skipped-record diagnostics")
+    otlp_parser.add_argument("--format", choices=["text", "json"], default="text")
 
     export_otlp_parser = subparsers.add_parser("export-otlp", help="convert telemetry-contracts JSONL back to collector-style OTLP JSON for importer differential tests")
     export_otlp_parser.add_argument("--events", required=True)
@@ -155,6 +159,20 @@ def main(argv: list[str] | None = None) -> int:
     explain_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     explain_parser.add_argument("--output")
 
+    init_parser = subparsers.add_parser("init", help="scaffold a starter service contract, events, CI gate, owner metadata, and readiness report")
+    init_parser.add_argument("--service", required=True)
+    init_parser.add_argument("--owner", required=True)
+    init_parser.add_argument("--output-dir", default="telemetry-contracts-starter")
+    init_parser.add_argument("--force", action="store_true")
+    init_parser.add_argument("--format", choices=["json", "text"], default="text")
+    init_parser.add_argument("--output")
+
+    doctor_parser = subparsers.add_parser("doctor", help="check local telemetry-contracts runtime, optional YAML, install, collector, report, and CI assumptions")
+    doctor_parser.add_argument("--collector-export", action="append", default=[])
+    doctor_parser.add_argument("--report-path", action="append", default=[])
+    doctor_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    doctor_parser.add_argument("--output")
+
     equivalence_parser = subparsers.add_parser("equivalence", help="compare two telemetry files by incident-question answerability")
     equivalence_parser.add_argument("--contract", required=True)
     equivalence_parser.add_argument("--left-events", required=True)
@@ -215,6 +233,7 @@ def main(argv: list[str] | None = None) -> int:
     readiness_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     readiness_parser.add_argument("--output")
     readiness_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    _report_filter_args(readiness_parser)
 
     alternative_parser = report_subparsers.add_parser("alternative-obligations", help="explain disjunctive evidence obligations and witnesses")
     alternative_parser.add_argument("--contract", required=True)
@@ -222,6 +241,7 @@ def main(argv: list[str] | None = None) -> int:
     alternative_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     alternative_parser.add_argument("--output")
     alternative_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    _report_filter_args(alternative_parser)
 
     ag_parser = report_subparsers.add_parser("assume-guarantee", help="partition telemetry obligations by service, collector, environment, and on-call layers")
     ag_parser.add_argument("--contract", required=True)
@@ -229,6 +249,7 @@ def main(argv: list[str] | None = None) -> int:
     ag_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     ag_parser.add_argument("--output")
     ag_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    _report_filter_args(ag_parser)
 
     windows_parser = report_subparsers.add_parser("event-windows", help="group events and findings by trace, request, tenant, deployment, scenario, and incident slices")
     windows_parser.add_argument("--contract", required=True)
@@ -239,6 +260,17 @@ def main(argv: list[str] | None = None) -> int:
     windows_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     windows_parser.add_argument("--output")
     windows_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    _report_filter_args(windows_parser)
+
+    service_owner_parser = report_subparsers.add_parser("service-owner", help="summarize owner coverage, failing obligations, privacy risks, collector/export issues, and remediation priority")
+    service_owner_parser.add_argument("--contract", required=True)
+    service_owner_parser.add_argument("--events", required=True)
+    service_owner_parser.add_argument("--source", action="append", default=[])
+    service_owner_parser.add_argument("--scenario", action="append", default=[])
+    service_owner_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    service_owner_parser.add_argument("--output")
+    service_owner_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    _report_filter_args(service_owner_parser)
 
     args = parser.parse_args(argv)
     try:
@@ -248,8 +280,12 @@ def main(argv: list[str] | None = None) -> int:
             if args.diagnostics_output:
                 write_diagnostics(report, args.diagnostics_output)
             invalidating = report["summary"]["invalidating_diagnostics"]
-            suffix = f"; {invalidating} diagnostic(s) may invalidate contract claims" if invalidating else ""
-            print(f"Wrote {len(report['events'])} event(s) to {args.output}{suffix}")
+            summary = {"events": len(report["events"]), "output": args.output, "diagnostics_output": args.diagnostics_output, "invalidating_diagnostics": invalidating}
+            if args.format == "json":
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                suffix = f"; {invalidating} diagnostic(s) may invalidate contract claims" if invalidating else ""
+                print(f"Wrote {len(report['events'])} event(s) to {args.output}{suffix}")
             return 0
         if args.command == "export-otlp":
             events = load_jsonl(args.events)
@@ -391,6 +427,22 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 0 if report.get("known") else 1
+        if args.command == "init":
+            report = scaffold_project(args.service, args.owner, args.output_dir, force=args.force)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else f"Scaffolded {args.service} telemetry contract in {report['output_dir']}"
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0
+        if args.command == "doctor":
+            report = run_doctor(args.collector_export, args.report_path)
+            output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_doctor_markdown(report)
+            if args.output:
+                Path(args.output).write_text(output + "\n", encoding="utf-8")
+            else:
+                print(output)
+            return 0 if report["summary"]["pass"] else 1
         if args.command == "equivalence":
             contract = load_contract(args.contract)
             report = compare_observational_equivalence(contract, load_jsonl(args.left_events), load_jsonl(args.right_events), args.scenario or None)
@@ -472,10 +524,12 @@ def main(argv: list[str] | None = None) -> int:
             events = load_jsonl(args.events)
             if args.report_command == "alternative-obligations":
                 report = evaluate_alternative_obligations(contract, events)
+                _filter_report_findings_in_place(report, args.code, args.severity)
                 serializable_report = {key: value for key, value in report.items() if key != "raw_findings"}
                 output = json.dumps(serializable_report, indent=2, sort_keys=True) if args.format == "json" else format_alternative_obligations_markdown(serializable_report)
             elif args.report_command == "assume-guarantee":
                 report = evaluate_assume_guarantee(contract, events)
+                _filter_report_findings_in_place(report, args.code, args.severity)
                 output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_assume_guarantee_markdown(report)
             elif args.report_command == "event-windows":
                 report = generate_event_window_report(
@@ -485,9 +539,15 @@ def main(argv: list[str] | None = None) -> int:
                     strict=True if args.strict else None,
                     incident_slice_ms=args.incident_slice_ms,
                 )
+                _filter_report_findings_in_place(report, args.code, args.severity)
                 output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_event_window_markdown(report)
+            elif args.report_command == "service-owner":
+                report = generate_service_owner_report(contract, events, args.source or None, args.scenario or None)
+                _filter_report_findings_in_place(report, args.code, args.severity)
+                output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_service_owner_markdown(report)
             else:
                 report = generate_incident_readiness_report(contract, events, args.scenario or None)
+                _filter_report_findings_in_place(report, args.code, args.severity)
                 output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_incident_readiness_markdown(report)
             if args.output:
                 Path(args.output).write_text(output + "\n", encoding="utf-8")
@@ -513,7 +573,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR input.load_error: {exc}", file=sys.stderr)
             return 2
         findings = [Finding("error", "input.load_error", str(exc), "input")]
-    _print_findings(findings, args.format)
+    findings = _filter_findings(findings, getattr(args, "code", []), getattr(args, "severity", []))
+    _emit_text(_format_findings(findings, args.format), getattr(args, "output", None))
     if args.fail_on == "never":
         return 0
     return 1 if has_at_least(findings, args.fail_on) else 0
@@ -522,21 +583,64 @@ def main(argv: list[str] | None = None) -> int:
 def _common_output_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--format", choices=["text", "json", "sarif"], default="text")
     parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    parser.add_argument("--output", help="write command output to this path instead of stdout")
+    parser.add_argument("--code", action="append", default=[], help="only include findings with this code; repeatable")
+    parser.add_argument("--severity", action="append", choices=["info", "warning", "error"], default=[], help="only include findings with this severity; repeatable")
 
 
 def _print_findings(findings: list[Finding], output_format: str) -> None:
+    print(_format_findings(findings, output_format))
+
+
+def _format_findings(findings: list[Finding], output_format: str) -> str:
     if output_format == "sarif":
-        print(json.dumps(findings_to_sarif([finding.to_dict() for finding in findings]), indent=2, sort_keys=True))
-        return
+        return json.dumps(findings_to_sarif([finding.to_dict() for finding in findings]), indent=2, sort_keys=True)
     if output_format == "json":
-        print(json.dumps({"findings": [finding.to_dict() for finding in findings], "ok": not has_at_least(findings, "error")}, indent=2, sort_keys=True))
-        return
+        return json.dumps({"findings": [finding.to_dict() for finding in findings], "ok": not has_at_least(findings, "error")}, indent=2, sort_keys=True)
     if not findings:
-        print("OK: no findings")
-        return
+        return "OK: no findings"
+    lines = []
     for finding in findings:
         location = f" at {finding.path}" if finding.path else ""
-        print(f"{finding.severity.upper()} {finding.code}{location}: {finding.message}")
+        lines.append(f"{finding.severity.upper()} {finding.code}{location}: {finding.message}")
+    return "\n".join(lines)
+
+
+def _emit_text(output: str, path: str | None) -> None:
+    if path:
+        Path(path).write_text(output + "\n", encoding="utf-8")
+    else:
+        print(output)
+
+
+def _filter_findings(findings: list[Finding], codes: list[str] | None, severities: list[str] | None) -> list[Finding]:
+    code_set = set(codes or [])
+    severity_set = set(severities or [])
+    return [finding for finding in findings if (not code_set or finding.code in code_set) and (not severity_set or finding.severity in severity_set)]
+
+
+def _report_filter_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--code", action="append", default=[], help="only include report findings with this code; repeatable")
+    parser.add_argument("--severity", action="append", choices=["info", "warning", "error"], default=[], help="only include report findings with this severity; repeatable")
+
+
+def _filter_report_findings_in_place(report: dict, codes: list[str] | None, severities: list[str] | None) -> None:
+    if not codes and not severities:
+        return
+    findings = report.get("findings")
+    if not isinstance(findings, list):
+        return
+    code_set = set(codes or [])
+    severity_set = set(severities or [])
+    filtered = [item for item in findings if (not code_set or item.get("code") in code_set) and (not severity_set or item.get("severity") in severity_set)]
+    report["findings"] = filtered
+    report["applied_filters"] = {"code": sorted(code_set), "severity": sorted(severity_set)}
+    summary = report.setdefault("summary", {})
+    summary["findings"] = len(filtered)
+    summary["findings_by_code"] = {key: sum(1 for item in filtered if item.get("code") == key) for key in sorted({item.get("code") for item in filtered})}
+    summary["findings_by_severity"] = {key: sum(1 for item in filtered if item.get("severity") == key) for key in sorted({item.get("severity") for item in filtered})}
+    if "pass" in summary:
+        summary["pass"] = not any(item.get("severity") == "error" for item in filtered)
 
 
 def _format_claims_matrix_markdown(report: dict) -> str:

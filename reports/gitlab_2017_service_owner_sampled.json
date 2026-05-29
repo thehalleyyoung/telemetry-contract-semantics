@@ -1,0 +1,1967 @@
+{
+  "collector_export_problems": [
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'postgres.replication.lag_bytes'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should declare semantic attribute 'db.system.name'",
+      "path": "$.metrics[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.metric_unit",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "convention": "OpenTelemetry metric semantic conventions prefer explicit units in instrument metadata over unit-only name suffixes.",
+        "expected_name": "postgres.replication.lag",
+        "expected_unit": "By",
+        "metric": "postgres.replication.lag_bytes",
+        "remediation": "Declare value.unit 'By' and consider renaming the metric to 'postgres.replication.lag'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.metric-unit",
+      "message": "metric 'postgres.replication.lag_bytes' encodes unit suffix '_bytes' without declaring value.unit",
+      "path": "$.metrics[0].value.unit",
+      "remediation": "Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.logs[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'database.destructive_command'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should declare semantic attribute 'db.system.name'",
+      "path": "$.logs[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' must declare local semantic attribute 'db.system.name'",
+      "path": "$.metadata.semantic_conventions.required_attributes[0].attribute",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Emit 'db.system.name' on 'postgres.replication.lag_bytes' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should emit semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Emit 'db.system.name' on 'database.destructive_command' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should emit semantic attribute 'db.system.name'",
+      "path": "event[2].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' missing local semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    }
+  ],
+  "contract_coverage": [
+    {
+      "kind": "span",
+      "missing": [],
+      "observed": 1,
+      "required": 1
+    },
+    {
+      "kind": "metric",
+      "missing": [],
+      "observed": 2,
+      "required": 2
+    },
+    {
+      "kind": "log",
+      "missing": [
+        "backup.pg_dump.failed"
+      ],
+      "observed": 1,
+      "required": 2
+    }
+  ],
+  "failing_obligations": [
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source",
+      "details": {
+        "allowed_values": [
+          "verified_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source' value 'lvm_snapshot' is not allowed",
+      "path": "event[4].source",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.spans[0].fields.backup_age_hours",
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'backup_age_hours' value 6 is above maximum 1",
+      "path": "event[4].backup_age_hours",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source_environment",
+      "details": {
+        "allowed_values": [
+          "production_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source_environment' value 'staging' is not allowed",
+      "path": "event[4].source_environment",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.metrics[0].value",
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'value' value 4294967296 is above maximum 104857600",
+      "path": "event[1].value",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.metrics[1].value",
+      "details": {
+        "allowed_values": [
+          true
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'value' value False is not allowed",
+      "path": "event[3].value",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.logs[0].fields.target_role",
+      "details": {
+        "allowed_values": [
+          "secondary"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'target_role' value 'primary' is not allowed",
+      "path": "event[2].target_role",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.correlation_id",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+      "path": "event[2].correlation_id",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.command_guard_result",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+      "path": "event[2].command_guard_result",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_signal",
+      "contract_path": "$.logs[1]",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.required-signal",
+      "message": "required log 'backup.pg_dump.failed' was not emitted",
+      "path": "events[log=backup.pg_dump.failed]",
+      "remediation": "Emit the required span, metric, or log on the exercised path.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_response",
+      "contract_path": "$.temporal_properties[0].response",
+      "details": {
+        "group": [
+          "pg_dump_daily"
+        ],
+        "property": "backup-failure-alert-within-response-window",
+        "within_ms": 1500
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.temporal-response",
+      "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+      "path": "event[3]",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'postgres.replication.lag_bytes'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should declare semantic attribute 'db.system.name'",
+      "path": "$.metrics[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.metric_unit",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "convention": "OpenTelemetry metric semantic conventions prefer explicit units in instrument metadata over unit-only name suffixes.",
+        "expected_name": "postgres.replication.lag",
+        "expected_unit": "By",
+        "metric": "postgres.replication.lag_bytes",
+        "remediation": "Declare value.unit 'By' and consider renaming the metric to 'postgres.replication.lag'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.metric-unit",
+      "message": "metric 'postgres.replication.lag_bytes' encodes unit suffix '_bytes' without declaring value.unit",
+      "path": "$.metrics[0].value.unit",
+      "remediation": "Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.logs[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'database.destructive_command'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should declare semantic attribute 'db.system.name'",
+      "path": "$.logs[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' must declare local semantic attribute 'db.system.name'",
+      "path": "$.metadata.semantic_conventions.required_attributes[0].attribute",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Emit 'db.system.name' on 'postgres.replication.lag_bytes' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should emit semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Emit 'db.system.name' on 'database.destructive_command' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should emit semantic attribute 'db.system.name'",
+      "path": "event[2].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' missing local semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          1
+        ],
+        "minimum_observation": {
+          "field": "correlation_id",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-field",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].correlation_id",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          1
+        ],
+        "minimum_observation": {
+          "field": "command_guard_result",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-field",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].command_guard_result",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_signal",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "minimum_observation": {
+          "name": "backup.pg_dump.failed",
+          "signal": "log"
+        },
+        "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-signal",
+      "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed]",
+      "remediation": "Emit the signal needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "findings": [
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source",
+      "details": {
+        "allowed_values": [
+          "verified_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source' value 'lvm_snapshot' is not allowed",
+      "path": "event[4].source",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.spans[0].fields.backup_age_hours",
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'backup_age_hours' value 6 is above maximum 1",
+      "path": "event[4].backup_age_hours",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.spans[0].fields.source_environment",
+      "details": {
+        "allowed_values": [
+          "production_backup"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 4,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'source_environment' value 'staging' is not allowed",
+      "path": "event[4].source_environment",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.numeric_max",
+      "contract_path": "$.metrics[0].value",
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SAT.numeric-upper-bound",
+      "message": "field 'value' value 4294967296 is above maximum 104857600",
+      "path": "event[1].value",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.metrics[1].value",
+      "details": {
+        "allowed_values": [
+          true
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'value' value False is not allowed",
+      "path": "event[3].value",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.allowed_values",
+      "contract_path": "$.logs[0].fields.target_role",
+      "details": {
+        "allowed_values": [
+          "secondary"
+        ]
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.allowed-values",
+      "message": "field 'target_role' value 'primary' is not allowed",
+      "path": "event[2].target_role",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.correlation_id",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'correlation_id'",
+      "path": "event[2].correlation_id",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_field",
+      "contract_path": "$.logs[0].fields.command_guard_result",
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SAT.required-field",
+      "message": "log 'database.destructive_command' missing required field 'command_guard_result'",
+      "path": "event[2].command_guard_result",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.missing_signal",
+      "contract_path": "$.logs[1]",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SAT.required-signal",
+      "message": "required log 'backup.pg_dump.failed' was not emitted",
+      "path": "events[log=backup.pg_dump.failed]",
+      "remediation": "Emit the required span, metric, or log on the exercised path.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.temporal_response",
+      "contract_path": "$.temporal_properties[0].response",
+      "details": {
+        "group": [
+          "pg_dump_daily"
+        ],
+        "property": "backup-failure-alert-within-response-window",
+        "within_ms": 1500
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 3,
+      "formal_clause": "SAT.temporal-response",
+      "message": "backup-failure-alert-within-response-window: no response 'backup.pg_dump.failed' within 1500ms after trigger 'backup.pg_dump.success'",
+      "path": "event[3]",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'postgres.replication.lag_bytes'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should declare semantic attribute 'db.system.name'",
+      "path": "$.metrics[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.metric_unit",
+      "contract_path": "$.metrics[0]",
+      "details": {
+        "convention": "OpenTelemetry metric semantic conventions prefer explicit units in instrument metadata over unit-only name suffixes.",
+        "expected_name": "postgres.replication.lag",
+        "expected_unit": "By",
+        "metric": "postgres.replication.lag_bytes",
+        "remediation": "Declare value.unit 'By' and consider renaming the metric to 'postgres.replication.lag'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.metric-unit",
+      "message": "metric 'postgres.replication.lag_bytes' encodes unit suffix '_bytes' without declaring value.unit",
+      "path": "$.metrics[0].value.unit",
+      "remediation": "Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "contract_path": "$.logs[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Add 'db.system.name' to the contract and emit it on 'database.destructive_command'."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should declare semantic attribute 'db.system.name'",
+      "path": "$.logs[0].fields.db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes[0]",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' must declare local semantic attribute 'db.system.name'",
+      "path": "$.metadata.semantic_conventions.required_attributes[0].attribute",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Emit 'db.system.name' on 'postgres.replication.lag_bytes' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "metric 'postgres.replication.lag_bytes' should emit semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.missing_attribute",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name.",
+        "kind": "log",
+        "name": "database.destructive_command",
+        "remediation": "Emit 'db.system.name' on 'database.destructive_command' or document a local policy exception."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 2,
+      "formal_clause": "SEMCONV.required-attribute",
+      "message": "log 'database.destructive_command' should emit semantic attribute 'db.system.name'",
+      "path": "event[2].db.system.name",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "semconv.local_policy",
+      "contract_path": "$.metadata.semantic_conventions.required_attributes",
+      "details": {
+        "attribute": "db.system.name",
+        "convention": "OpenTelemetry database semantic conventions identify database technology with db.system.name; this local reconstruction policy requires postgresql on PostgreSQL replication telemetry.",
+        "expected_value": "postgresql",
+        "kind": "metric",
+        "name": "postgres.replication.lag_bytes",
+        "remediation": "Add db.system.name=\"postgresql\" to the postgres.replication.lag_bytes contract and emitted metric tags."
+      },
+      "disclosure_sensitivity": "internal",
+      "event_index": 1,
+      "formal_clause": "SEMCONV.local-policy",
+      "message": "metric 'postgres.replication.lag_bytes' missing local semantic attribute 'db.system.name'",
+      "path": "event[1].db.system.name",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner",
+      "severity": "warning"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          1
+        ],
+        "minimum_observation": {
+          "field": "correlation_id",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-field",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].correlation_id",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_field",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "matching_event_indices": [
+          1
+        ],
+        "minimum_observation": {
+          "field": "command_guard_result",
+          "name": "database.destructive_command",
+          "signal": "log"
+        },
+        "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-field",
+      "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+      "path": "events[log=database.destructive_command].command_guard_result",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "scenario.missing_signal",
+      "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+      "details": {
+        "adequacy_model": "diagnosability-adequacy-v1",
+        "minimum_observation": {
+          "name": "backup.pg_dump.failed",
+          "signal": "log"
+        },
+        "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      },
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "ADEQ.required-signal",
+      "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+      "path": "events[log=backup.pg_dump.failed]",
+      "remediation": "Emit the signal needed to answer the scenario question.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner",
+      "severity": "error"
+    }
+  ],
+  "limitations": [
+    "Report summarizes supplied finite artifacts only; absence of findings is not a production guarantee.",
+    "Static source links are limited to checked files and lightweight source extraction."
+  ],
+  "owner": "",
+  "privacy_risks": [],
+  "readiness": {
+    "coverage": {
+      "correlation": {
+        "failed": 0,
+        "notes": "no correlation policy declared",
+        "passed": 0,
+        "score": 100
+      },
+      "privacy": {
+        "failed": 0,
+        "passed": 1,
+        "risk_level": "none",
+        "score": 100
+      },
+      "remediation": {
+        "failed": 0,
+        "passed": 13,
+        "score": 100
+      },
+      "required_evidence": {
+        "failed": 7,
+        "missing": [
+          "log:database.destructive_command.correlation_id",
+          "log:database.destructive_command.command_guard_result",
+          "log:backup.pg_dump.failed",
+          "log:backup.pg_dump.failed.backup_job_id",
+          "log:backup.pg_dump.failed.destination",
+          "log:backup.pg_dump.failed.alert_route",
+          "log:backup.pg_dump.failed.alert_delivered"
+        ],
+        "passed": 20,
+        "score": 74
+      },
+      "temporal": {
+        "failed": 1,
+        "notes": "no temporal_sequences declared",
+        "passed": 0,
+        "score": 0
+      }
+    },
+    "unanswered_questions": [
+      {
+        "answerable": false,
+        "id": "restore-readiness",
+        "minimum_observations": [
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0]",
+            "evidence_path": "events[log=database.destructive_command]",
+            "fields": [
+              "target_host",
+              "intended_host",
+              "target_role",
+              "correlation_id",
+              "command_guard_result"
+            ],
+            "index": 0,
+            "matching_event_indices": [
+              1
+            ],
+            "missing": [
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "correlation_id",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].correlation_id",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              },
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_field",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "matching_event_indices": [
+                    1
+                  ],
+                  "minimum_observation": {
+                    "field": "command_guard_result",
+                    "name": "database.destructive_command",
+                    "signal": "log"
+                  },
+                  "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-field",
+                "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+                "path": "events[log=database.destructive_command].command_guard_result",
+                "remediation": "Emit the field needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ],
+            "missing_fields": [
+              "correlation_id",
+              "command_guard_result"
+            ],
+            "name": "database.destructive_command",
+            "observed_fields": [
+              "intended_host",
+              "target_host",
+              "target_role"
+            ],
+            "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+            "signal": "log",
+            "status": "missing-fields"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[1]",
+            "evidence_path": "events[alternative=destructive-command-location-evidence]",
+            "fields": [
+              "target_host",
+              "intended_host",
+              "target_role"
+            ],
+            "index": 1,
+            "matching_event_indices": [
+              1
+            ],
+            "missing_fields": [],
+            "name": "destructive-command-location-evidence",
+            "observed_fields": [
+              "intended_host",
+              "target_host",
+              "target_role"
+            ],
+            "options": [
+              {
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[1].any_of[0]",
+                "evidence_path": "events[log=database.destructive_command]",
+                "fields": [
+                  "target_host",
+                  "intended_host",
+                  "target_role"
+                ],
+                "id": "structured-log",
+                "matching_event_indices": [
+                  1
+                ],
+                "missing_fields": [],
+                "name": "database.destructive_command",
+                "observed_fields": [
+                  "intended_host",
+                  "target_host",
+                  "target_role"
+                ],
+                "satisfied": true,
+                "signal": "log",
+                "status": "satisfied",
+                "witness_event_index": 1
+              },
+              {
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[1].any_of[1]",
+                "evidence_path": "events[span=database.destructive_command]",
+                "fields": [
+                  "target_host",
+                  "intended_host",
+                  "target_role"
+                ],
+                "id": "operation-span",
+                "matching_event_indices": [],
+                "missing_fields": [
+                  "intended_host",
+                  "target_host",
+                  "target_role"
+                ],
+                "name": "database.destructive_command",
+                "observed_fields": [],
+                "satisfied": false,
+                "signal": "span",
+                "status": "missing-signal",
+                "witness_event_index": null
+              }
+            ],
+            "purpose": "Accept either structured log or operation span evidence for host/role location, while other observations still require guard and correlation details.",
+            "satisfied": true,
+            "signal": "alternative",
+            "status": "satisfied",
+            "winning_option": "structured-log"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[2]",
+            "evidence_path": "events[metric=backup.pg_dump.success]",
+            "fields": [
+              "backup_job_id",
+              "destination",
+              "database_version",
+              "tool_version"
+            ],
+            "index": 2,
+            "matching_event_indices": [
+              2
+            ],
+            "missing_fields": [],
+            "name": "backup.pg_dump.success",
+            "observed_fields": [
+              "backup_job_id",
+              "database_version",
+              "destination",
+              "tool_version"
+            ],
+            "purpose": "Show whether a restorable logical backup existed with enough destination and version metadata to select it.",
+            "signal": "metric",
+            "status": "satisfied"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+            "evidence_path": "events[log=backup.pg_dump.failed]",
+            "fields": [
+              "backup_job_id",
+              "destination",
+              "alert_route",
+              "alert_delivered"
+            ],
+            "index": 3,
+            "matching_event_indices": [],
+            "missing": [
+              {
+                "category": "diagnosability",
+                "ci": {
+                  "baseline_key_fields": [
+                    "code",
+                    "path",
+                    "contract_path",
+                    "event_index"
+                  ],
+                  "default_fail_on": "error",
+                  "sarif_level": "error"
+                },
+                "code": "scenario.missing_signal",
+                "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+                "details": {
+                  "adequacy_model": "diagnosability-adequacy-v1",
+                  "minimum_observation": {
+                    "name": "backup.pg_dump.failed",
+                    "signal": "log"
+                  },
+                  "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+                  "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+                },
+                "disclosure_sensitivity": "internal",
+                "formal_clause": "ADEQ.required-signal",
+                "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+                "path": "events[log=backup.pg_dump.failed]",
+                "remediation": "Emit the signal needed to answer the scenario question.",
+                "sarif_level": "error",
+                "service_owner": "contract service owner",
+                "severity": "error"
+              }
+            ],
+            "missing_fields": [],
+            "name": "backup.pg_dump.failed",
+            "observed_fields": [],
+            "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+            "signal": "log",
+            "status": "missing-signal"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[4]",
+            "evidence_path": "events[span=disaster_recovery.restore_attempt]",
+            "fields": [
+              "source",
+              "backup_age_hours",
+              "source_environment"
+            ],
+            "index": 4,
+            "matching_event_indices": [
+              3
+            ],
+            "missing_fields": [],
+            "name": "disaster_recovery.restore_attempt",
+            "observed_fields": [
+              "backup_age_hours",
+              "source",
+              "source_environment"
+            ],
+            "purpose": "Explain the recovery source, its freshness, and whether it came from production backup evidence.",
+            "signal": "span",
+            "status": "satisfied"
+          },
+          {
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[5]",
+            "evidence_path": "events[metric=postgres.replication.lag_bytes]",
+            "fields": [
+              "primary_host",
+              "replica_host",
+              "incident_id"
+            ],
+            "index": 5,
+            "matching_event_indices": [
+              0
+            ],
+            "missing_fields": [],
+            "name": "postgres.replication.lag_bytes",
+            "observed_fields": [
+              "incident_id",
+              "primary_host",
+              "replica_host"
+            ],
+            "purpose": "Bound replica freshness and connect replication state to the incident slice.",
+            "signal": "metric",
+            "status": "satisfied"
+          }
+        ],
+        "missing_evidence": [
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "correlation_id",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "message": "scenario 'restore-readiness' cannot answer question without field 'correlation_id' on log 'database.destructive_command'",
+            "path": "events[log=database.destructive_command].correlation_id",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_field",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[0].fields",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "matching_event_indices": [
+                1
+              ],
+              "minimum_observation": {
+                "field": "command_guard_result",
+                "name": "database.destructive_command",
+                "signal": "log"
+              },
+              "purpose": "Distinguish intended host from actual target and prove whether a destructive-command guard blocked or correlated the action.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-field",
+            "message": "scenario 'restore-readiness' cannot answer question without field 'command_guard_result' on log 'database.destructive_command'",
+            "path": "events[log=database.destructive_command].command_guard_result",
+            "remediation": "Emit the field needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          },
+          {
+            "category": "diagnosability",
+            "ci": {
+              "baseline_key_fields": [
+                "code",
+                "path",
+                "contract_path",
+                "event_index"
+              ],
+              "default_fail_on": "error",
+              "sarif_level": "error"
+            },
+            "code": "scenario.missing_signal",
+            "contract_path": "$.scenarios[restore-readiness].minimum_observations[3]",
+            "details": {
+              "adequacy_model": "diagnosability-adequacy-v1",
+              "minimum_observation": {
+                "name": "backup.pg_dump.failed",
+                "signal": "log"
+              },
+              "purpose": "Show whether backup failure alerts were routed and delivered to responders.",
+              "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+            },
+            "disclosure_sensitivity": "internal",
+            "formal_clause": "ADEQ.required-signal",
+            "message": "scenario 'restore-readiness' requires log 'backup.pg_dump.failed'",
+            "path": "events[log=backup.pg_dump.failed]",
+            "remediation": "Emit the signal needed to answer the scenario question.",
+            "sarif_level": "error",
+            "service_owner": "contract service owner",
+            "severity": "error"
+          }
+        ],
+        "question": "Can responders identify the intended host, actual host role, destructive command correlation id, backup health, alert delivery, and recovery source freshness?"
+      }
+    ]
+  },
+  "remediation_priority": [
+    {
+      "category": "schema",
+      "count": 4,
+      "owner": "contract service owner",
+      "remediation": "Normalize the field to one of the declared allowed values.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "count": 2,
+      "owner": "contract service owner",
+      "remediation": "Attach the required attribute/tag/field to the signal.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "count": 2,
+      "owner": "contract service owner",
+      "remediation": "Emit the field needed to answer the scenario question.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "count": 2,
+      "owner": "contract service owner",
+      "remediation": "Investigate or clamp values above the declared maximum.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "count": 1,
+      "owner": "contract service owner",
+      "remediation": "Emit the required span, metric, or log on the exercised path.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "count": 1,
+      "owner": "contract service owner",
+      "remediation": "Emit the required response event inside the bounded response window after each trigger.",
+      "severity": "error"
+    },
+    {
+      "category": "diagnosability",
+      "count": 1,
+      "owner": "contract service owner",
+      "remediation": "Emit the signal needed to answer the scenario question.",
+      "severity": "error"
+    },
+    {
+      "category": "schema",
+      "count": 4,
+      "owner": "contract service owner",
+      "remediation": "Add the cited OpenTelemetry semantic-convention attribute to the contract and emitted telemetry, or document an artifact-scoped local exception.",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "count": 2,
+      "owner": "contract service owner",
+      "remediation": "Satisfy the contract's metadata.semantic_conventions local policy or update the policy with a bounded justification.",
+      "severity": "warning"
+    },
+    {
+      "category": "schema",
+      "count": 1,
+      "owner": "contract service owner",
+      "remediation": "Declare the metric unit explicitly and consider removing the unit-only suffix from the metric name.",
+      "severity": "warning"
+    }
+  ],
+  "service": "gitlab.com-database",
+  "source_spans": [],
+  "summary": {
+    "events": 4,
+    "findings": 20,
+    "findings_by_code": {
+      "scenario.missing_field": 2,
+      "scenario.missing_signal": 1,
+      "semconv.local_policy": 2,
+      "semconv.metric_unit": 1,
+      "semconv.missing_attribute": 4,
+      "telemetry.allowed_values": 4,
+      "telemetry.missing_field": 2,
+      "telemetry.missing_signal": 1,
+      "telemetry.numeric_max": 2,
+      "telemetry.temporal_response": 1
+    },
+    "findings_by_severity": {
+      "error": 13,
+      "warning": 7
+    },
+    "incident_readiness_score": 76,
+    "pass": false,
+    "sources": 0
+  },
+  "tool": "telemetry-contracts-service-owner-report-v1"
+}

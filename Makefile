@@ -1,9 +1,9 @@
-.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy sarif ci-gate regenerate-artifacts claims-matrix explain semantics monitor semconv otlp-import collector-analysis collector-preservation
+.PHONY: test smoke lint-contract validate-pass validate-fail static scenario incident-readiness service-owner doctor assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy sarif ci-gate regenerate-artifacts claims-matrix explain semantics monitor semconv otlp-import collector-analysis collector-preservation
 
 test:
 	python3 -m pytest
 
-smoke: lint-contract validate-pass validate-fail static scenario incident-readiness assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy sarif ci-gate regenerate-artifacts claims-matrix explain semantics monitor semconv otlp-import collector-analysis collector-preservation
+smoke: lint-contract validate-pass validate-fail static scenario incident-readiness service-owner doctor assume-guarantee event-windows refinement contract-diff composition benchmark taxonomy sarif ci-gate regenerate-artifacts claims-matrix explain semantics monitor semconv otlp-import collector-analysis collector-preservation
 
 lint-contract:
 	python3 -m telemetry_contracts.cli lint-contract --contract examples/contracts/checkout.contract.json
@@ -22,6 +22,12 @@ scenario:
 
 incident-readiness:
 	python3 -m telemetry_contracts.cli report incident-readiness --contract examples/contracts/checkout.contract.json --events examples/telemetry/passing.jsonl --format markdown
+
+service-owner:
+	python3 -m telemetry_contracts.cli report service-owner --contract case_studies/gitlab_2017_database_outage/contract.json --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl --scenario restore-readiness --format markdown --fail-on never
+
+doctor:
+	python3 -m telemetry_contracts.cli doctor --collector-export examples/otlp/collector_coverage_all_signals.otlp.json --report-path reports/current_impact.md --format markdown
 
 assume-guarantee:
 	python3 -m telemetry_contracts.cli report assume-guarantee --contract case_studies/gitlab_2017_database_outage/contract.json --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl --format markdown --fail-on never

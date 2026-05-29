@@ -31,6 +31,7 @@
 - Added CI regression gate examples in `examples/ci/` and `telemetry-contracts ci-gate`, which fail on new findings at a selected severity threshold while honoring exact owned baselines with expiration dates.
 - Added deterministic regeneration in `telemetry_contracts.regenerate` and `telemetry-contracts regenerate-artifacts`, producing current impact reports, taxonomy coverage reports, and `reports/paper_tables.md` from `benchmarks/builtin.json`.
 - Added `telemetry-contracts claims-matrix` and checked-in `docs/claims_evidence_matrix.json`, linking public claims to bounded artifacts, fixtures, tests, benchmark rows, and limitations.
+- Added service-owner utility surfaces: `telemetry-contracts report service-owner` with checked-in GitLab 2017 sampled/exported reports in `reports/gitlab_2017_service_owner_sampled.json` and `.md`, `telemetry-contracts init` for starter local contract/CI/readiness scaffolds, `telemetry-contracts doctor` with checked-in `reports/local_doctor.md`, common finding output/filter flags, and a documented type-check-friendly public Python API.
 
 ## Bounded novelty claim
 
@@ -62,6 +63,7 @@ To make the novelty claim falsifiable, use this protocol on or after the retriev
 - Contract-diff reports are structural comparisons of two checked-in contract artifacts for pull-request review. They do not inspect source-code diffs or prove that added/removed obligations are correct for production.
 - The benchmark does not establish recall over all possible observability failures. Precision/recall/F1 are measured only against checked-in expected labels for the selected finite cases and filters.
 - Static checks use Python AST extraction plus lightweight multi-language source heuristics for checked-in fixtures; they are not full interprocedural compiler analyses and do not prove dynamic instrumentation behavior.
+- Service-owner, doctor, init, and public API surfaces summarize or scaffold finite local artifacts only. They do not inspect private production telemetry backends, prove organizational ownership, or guarantee production deployment correctness.
 
 ## Reproducibility protocol
 
@@ -77,6 +79,19 @@ python3 -m telemetry_contracts.cli sarif --findings examples/ci/static_findings.
 python3 -m telemetry_contracts.cli ci-gate --findings examples/ci/static_findings.example.json --baseline examples/ci/baseline.example.json --format markdown
 python3 -m telemetry_contracts.cli regenerate-artifacts --write --format markdown
 python3 -m telemetry_contracts.cli claims-matrix --output docs/claims_evidence_matrix.json
+python3 -m telemetry_contracts.cli report service-owner \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --scenario restore-readiness \
+  --format markdown \
+  --output reports/gitlab_2017_service_owner_sampled.md \
+  --fail-on never
+python3 -m telemetry_contracts.cli doctor \
+  --collector-export examples/otlp/collector_coverage_all_signals.otlp.json \
+  --report-path reports/current_impact.md \
+  --report-path reports/gitlab_2017_service_owner_sampled.md \
+  --format markdown \
+  --output reports/local_doctor.md
 python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
   --format json \

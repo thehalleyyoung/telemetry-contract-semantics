@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from telemetry_contracts.cli import main
@@ -306,3 +307,87 @@ def test_cli_collector_pipeline_preservation_fixture(capsys):
     assert code == 0
     assert '"pass": true' in output
     assert "collector-preserves-checkout" in output
+
+
+def test_cli_doctor_and_common_output_filters(capsys, tmp_path):
+    output = tmp_path / "validate_filtered.json"
+    code = main([
+        "validate",
+        "--contract",
+        CONTRACT,
+        "--events",
+        str(ROOT / "examples/telemetry/failing.jsonl"),
+        "--format",
+        "json",
+        "--code",
+        "telemetry.allowed_values",
+        "--output",
+        str(output),
+        "--fail-on",
+        "never",
+    ])
+    assert code == 0
+    text = output.read_text()
+    assert "telemetry.allowed_values" in text
+    assert "telemetry.missing_field" not in text
+    assert main(["doctor", "--format", "json", "--report-path", str(ROOT / "reports/current_impact.md")]) == 0
+    doctor_output = capsys.readouterr().out
+    assert '"tool": "telemetry-contracts-doctor-v1"' in doctor_output
+    assert "python_version" in doctor_output
+
+
+def test_cli_init_scaffolds_contract_ci_and_readiness_report(tmp_path):
+    out = tmp_path / "starter"
+    code = main(["init", "--service", "orders", "--owner", "orders-team", "--output-dir", str(out), "--format", "json"])
+    assert code == 0
+    assert (out / "contract.json").exists()
+    assert (out / "events.jsonl").exists()
+    assert (out / "ci-telemetry-contracts.sh").exists()
+    assert "orders-team" in (out / "owner_metadata.json").read_text()
+    assert "Incident-readiness report" in (out / "incident_readiness.md").read_text()
+    assert main(["validate", "--contract", str(out / "contract.json"), "--events", str(out / "events.jsonl")]) == 0
+
+
+def test_cli_service_owner_report_summarizes_gitlab_fixture(capsys):
+    case = ROOT / "case_studies/gitlab_2017_database_outage"
+    code = main([
+        "report",
+        "service-owner",
+        "--contract",
+        str(case / "contract.json"),
+        "--events",
+        str(case / "reconstructed_events_sampled_missing_alert.jsonl"),
+        "--scenario",
+        "restore-readiness",
+        "--format",
+        "json",
+        "--severity",
+        "error",
+        "--fail-on",
+        "never",
+    ])
+    output = capsys.readouterr().out
+    assert code == 0
+    assert '"tool": "telemetry-contracts-service-owner-report-v1"' in output
+    assert "backup.pg_dump.failed" in output
+    report = json.loads(output)
+    assert report["findings"]
+    assert {finding["severity"] for finding in report["findings"]} == {"error"}
+    assert report["summary"]["findings_by_severity"] == {"error": len(report["findings"])}
+
+
+def test_cli_import_otlp_json_summary(capsys, tmp_path):
+    out = tmp_path / "events.jsonl"
+    code = main([
+        "import-otlp",
+        "--input",
+        str(ROOT / "examples/otlp/collector_mixed_signals.otlp.json"),
+        "--output",
+        str(out),
+        "--format",
+        "json",
+    ])
+    output = capsys.readouterr().out
+    assert code == 0
+    assert '"output"' in output
+    assert out.exists()

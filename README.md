@@ -32,6 +32,11 @@ This repository turns that thesis into executable checks:
 - An `event-windows` report that groups events and findings by trace, request, tenant, deployment, scenario, incident id, or bounded incident time slice so failures localize to actionable ownership units.
 - A `proof-obligations` command that instantiates well-formedness, satisfaction, preservation, refinement, monitor-soundness, and benchmark-label validity proof-goal templates against contracts, runtime traces, transformation pairs, and benchmark labels.
 - A `semconv` command that lints declared and observed telemetry against bounded OpenTelemetry semantic-convention rules plus contract-local policies, citing the rule and exact attribute/name remediation.
+- A `report service-owner` command that combines runtime, static, semantic-convention, and incident-readiness evidence into an owner-oriented coverage/remediation report with failing obligations, privacy risks, collector/export issues, source spans, and bounded limitations.
+- A local `init` workflow that scaffolds a starter contract, example events, owner metadata, CI gate script, and incident-readiness report.
+- A `doctor` command that checks Python/package/YAML availability, collector-export paths, report output paths, and CI environment assumptions before wiring the tool into automation.
+- A type-check-friendly public Python API that exposes stable loaders, runtime/static validation, benchmark execution, OTLP import, and report generation entry points from `telemetry_contracts`.
+- Common `--output`, `--code`, and `--severity` filtering on finding-producing validation commands, and report-level finding filters on service-owner/report subcommands.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
 - A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
@@ -39,7 +44,7 @@ This repository turns that thesis into executable checks:
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
 
-Roadmap status: the local planning file `100_STEPS.md` currently has 69 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
+Roadmap status: the local planning file `100_STEPS.md` currently has 75 of 100 items checked and is intentionally gitignored; README summarizes committed roadmap progress. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -145,6 +150,21 @@ python3 -m telemetry_contracts.cli report event-windows \
   --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
   --dimension incident --incident-slice-ms 2000 \
   --format markdown --fail-on never
+
+python3 -m telemetry_contracts.cli report service-owner \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
+  --scenario restore-readiness \
+  --format markdown --fail-on never
+
+python3 -m telemetry_contracts.cli doctor \
+  --collector-export examples/otlp/collector_coverage_all_signals.otlp.json \
+  --report-path reports/current_impact.md \
+  --format markdown
+
+python3 -m telemetry_contracts.cli init \
+  --service checkout --owner payments-team \
+  --output-dir telemetry-contracts-starter
 
 python3 -m telemetry_contracts.cli equivalence \
   --contract case_studies/gitlab_2017_database_outage/contract.json \
@@ -324,6 +344,19 @@ Findings include severity, code, message, event path, contract path, and details
 
 The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. For strict mode, this relation is strengthened with closed-world side conditions over service identity, declared signal names, declared event fields, and documented collector transformations. For alternative obligations, the executable clause is a finite disjunction: a required group is satisfied iff at least one option has a concrete witness event with every declared field; optional groups record acceptable evidence paths without failing absent telemetry. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary and a finite event-structure view, which is useful for checking what kinds, names, fields, correlation keys, timestamps, parent/child edges, log attachments, metric exemplars, and incident-window happens-before diagrams are actually present in a historical or current fixture.
 
+## Public Python API
+
+The package includes `py.typed` and exports stable embedding helpers from `telemetry_contracts`: `load_contract`, `load_jsonl`, `validate_events`, `check_sources`, `run_compiled_monitor`, `generate_incident_readiness_report`, `generate_service_owner_report`, `run_benchmark`, and `import_otlp`. These functions operate on plain dictionaries, lists, paths, and typed finding objects so downstream CI or notebooks can call the deterministic checks without shelling out:
+
+```python
+from telemetry_contracts import load_contract, load_jsonl, validate_events
+
+contract = load_contract("examples/contracts/checkout.contract.json")
+events = load_jsonl("examples/telemetry/passing.jsonl")
+findings = validate_events(contract, events)
+assert not findings
+```
+
 ## Architecture
 
 - `telemetry_contracts.core_semantics` implements the mechanizable small-step contract-evaluation model and reports denotation alignment with `validate_events`.
@@ -346,6 +379,9 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.proof_obligations` instantiates formal proof-goal templates and links them to checker, assume-guarantee, semantics, hyperproperty, preservation, and benchmark evidence.
 - `telemetry_contracts.semconv` checks declared and observed signal names/attributes against bounded OpenTelemetry HTTP, database, messaging, and metric-unit conventions plus contract-local semantic policies.
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
+- `telemetry_contracts.service_report` generates owner-oriented coverage, failing-obligation, privacy-risk, collector/export, source-span, and remediation-priority reports.
+- `telemetry_contracts.init_workflow` scaffolds a starter local contract project with owner metadata, CI gate script, fixtures, and incident-readiness outputs.
+- `telemetry_contracts.doctor` checks local runtime, optional dependency, path, and CI assumptions before automation.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
 - `telemetry_contracts.sarif` converts validation, static, and benchmark finding reports to SARIF 2.1.0 with taxonomy-backed rule metadata.
@@ -353,7 +389,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.regenerate` writes deterministic public report artifacts and a paper-style benchmark table from checked-in benchmark config.
 - `telemetry_contracts.claims` emits a claims-to-evidence matrix linking public claims to artifacts, fixtures, tests, and limitations.
 - `telemetry_contracts.explain` renders finding-code explanations with formal meaning, practical impact, example trace shape, concrete fixes, CI baseline metadata, and optional concrete examples mined from JSON reports.
-- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `import-otlp`, `export-otlp`, `analyze-collector-export`, `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `benchmark-diff`, `taxonomy`, `sarif`, `ci-gate`, `regenerate-artifacts`, `claims-matrix`, and `explain` commands.
+- `telemetry_contracts.cli` exposes `init`, `doctor`, `validate` (including `--strict`), `import-otlp`, `export-otlp`, `analyze-collector-export`, `semconv`, `monitor`, `static`, `scenario`, `equivalence`, `preservation`, `refinement`, `compose-contract`, `proof-obligations`, `describe-model`, `evaluate-semantics`, `report incident-readiness`, `report service-owner`, `report alternative-obligations`, `report assume-guarantee`, `report event-windows`, `benchmark`, `benchmark-diff`, `taxonomy`, `sarif`, `ci-gate`, `regenerate-artifacts`, `claims-matrix`, and `explain` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
