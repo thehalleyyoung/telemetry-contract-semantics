@@ -1,10 +1,10 @@
 # Finding taxonomy
 
 - Schema version: `1.0`
-- Rules: 64
-- Categories: `{"contract": 23, "diagnosability": 15, "input": 1, "operability": 3, "preservation": 3, "privacy-security": 6, "scenario": 2, "schema": 9, "static-coverage": 2}`
-- Default severities: `{"error": 59, "warning": 5}`
-- SARIF levels: `{"error": 59, "warning": 5}`
+- Rules: 69
+- Categories: `{"contract": 24, "diagnosability": 15, "input": 1, "operability": 3, "preservation": 4, "privacy-security": 6, "scenario": 2, "schema": 12, "static-coverage": 2}`
+- Default severities: `{"error": 64, "warning": 5}`
+- SARIF levels: `{"error": 64, "warning": 5}`
 
 ## Rule catalog
 
@@ -33,6 +33,7 @@
 | contract.severity_policy | contract | error | WF.severity-policy | error | error | internal | contract service owner | Use a known log severity threshold such as WARN, ERROR, or FATAL. |
 | contract.signal_name | contract | error | WF.signal-name | error | error | internal | contract service owner | Give each signal a stable telemetry name. |
 | contract.signal_type | contract | error | WF.signal-object | error | error | internal | contract service owner | Describe each signal as an object. |
+| contract.strict_policy | contract | error | WF.strict-policy | error | error | internal | contract service owner | Declare strict-validation escape hatches as bounded service, signal, field, or transformation lists. |
 | contract.temporal_sequence | contract | error | WF.temporal-sequence | error | error | internal | contract service owner | Declare temporal sequences with valid steps, kinds, group_by keys, and positive windows. |
 | contract.unit | schema | error | WF.unit | error | error | internal | contract service owner | Use a supported unit such as ms, bytes, percent, count, timestamp_ms, or usd. |
 | contract.version | contract | error | WF.version | error | error | internal | contract service owner | Declare contract version 1.0. |
@@ -71,6 +72,10 @@
 | telemetry.privacy_transformation | privacy-security | error | SAT.privacy-preservation | error | error | responsible-disclosure | contract service owner | Emit the field using the transformation required by the contract privacy policy. |
 | telemetry.sensitive_unclassified | privacy-security | warning | SAT.sensitive-classification | warning | warning | responsible-disclosure | contract service owner | Classify the field sensitivity and redact or hash the emitted value. |
 | telemetry.sensitive_value | privacy-security | error | SAT.raw-sensitive-value | error | error | responsible-disclosure | contract service owner | Do not emit raw PII, credentials, or bearer tokens in telemetry. |
+| telemetry.strict_undeclared_signal | schema | error | STRICT.signal-closed-world | error | error | internal | contract service owner | Declare the emitted signal in spans, metrics, logs, scenarios, or alternative obligations, or add an explicit strict allow_undeclared_signals escape hatch. |
+| telemetry.strict_undocumented_transformation | preservation | error | STRICT.transformation-documented | error | error | internal | contract service owner | Document the collector transformation under metadata.transformation_preservation.approved_transformations or strict allow_collector_transformations. |
+| telemetry.strict_unexpected_field | schema | error | STRICT.field-closed-world | error | error | internal | contract service owner | Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch. |
+| telemetry.strict_unmodeled_service | schema | error | STRICT.service-closed-world | error | error | internal | contract service owner | Either emit telemetry for the modeled service or add a bounded allow_unmodeled_services escape hatch. |
 | telemetry.temporal_missing_step | diagnosability | error | SAT.temporal-presence | error | error | internal | contract service owner | Emit every event required by the temporal sequence in the grouped incident window. |
 | telemetry.temporal_window | diagnosability | error | SAT.temporal-window | error | error | internal | contract service owner | Emit the temporal sequence within the declared bounded window. |
 | telemetry.unit | schema | error | SAT.unit | error | error | internal | contract service owner | Emit a value that satisfies the field's declared unit constraints. |

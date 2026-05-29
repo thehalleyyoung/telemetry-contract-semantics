@@ -32,6 +32,29 @@ def test_cli_lint_contract_pass(capsys):
     assert "OK" in capsys.readouterr().out
 
 
+def test_cli_validate_strict_reports_unexpected_public_fixture_fields(capsys):
+    code = main(
+        [
+            "validate",
+            "--contract",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/contract.json"),
+            "--events",
+            str(ROOT / "case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl"),
+            "--strict",
+            "--format",
+            "json",
+            "--fail-on",
+            "never",
+        ]
+    )
+    output = capsys.readouterr().out
+    assert code == 0
+    assert "telemetry.strict_unexpected_field" in output
+    assert "telemetry.strict_undeclared_signal" in output
+    assert "telemetry.strict_unmodeled_service" in output
+    assert "telemetry.strict_undocumented_transformation" in output
+
+
 def test_cli_describe_model_summarizes_historical_fixture(capsys):
     code = main(
         [

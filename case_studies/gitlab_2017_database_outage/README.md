@@ -11,6 +11,8 @@ Public facts used include replication lag/failure, a destructive operation inten
 
 `reconstructed_events_sampled_missing_alert.jsonl` is a deliberately degraded derivative of the reconstructed fixture that simulates a sampled/exported stream missing the backup-failure log. It is used to validate observational-equivalence reporting: the comparison is scoped to whether the `restore-readiness` incident question retains the same minimum evidence, not to byte equality with the original fixture.
 
+`reconstructed_events_strict_drift.jsonl` is a bounded strict-mode derivative of the same public reconstruction. It adds modeled collector/export drift examples: an extra exported metric tag, an extra undeclared debug log, an unmodeled collector service metric, and an undocumented `tail_sampling` transformation. It is used to validate closed-world strict findings, not to claim those exact private events existed during the incident.
+
 Run:
 
 ```bash
@@ -20,4 +22,8 @@ python3 -m telemetry_contracts.cli equivalence \
   --left-events case_studies/gitlab_2017_database_outage/reconstructed_events.jsonl \
   --right-events case_studies/gitlab_2017_database_outage/reconstructed_events_sampled_missing_alert.jsonl \
   --scenario restore-readiness --format markdown
+python3 -m telemetry_contracts.cli validate \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict --format json --fail-on never
 ```

@@ -330,6 +330,9 @@
           },
           "type": "object"
         },
+        "strict_validation": {
+          "$ref": "#/$defs/strictValidationPolicy"
+        },
         "transformation_preservation": {
           "properties": {
             "approved_transformations": {
@@ -557,6 +560,132 @@
             "type": "string"
           },
           "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "strictFieldEscape": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "fields": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "enum": [
+                "span",
+                "log",
+                "metric",
+                "spans",
+                "logs",
+                "metrics"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "signal": {
+              "enum": [
+                "span",
+                "log",
+                "metric",
+                "spans",
+                "logs",
+                "metrics"
+              ]
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "strictSignalEscape": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "span",
+                "log",
+                "metric",
+                "spans",
+                "logs",
+                "metrics"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "signal": {
+              "enum": [
+                "span",
+                "log",
+                "metric",
+                "spans",
+                "logs",
+                "metrics"
+              ]
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "strictValidationPolicy": {
+      "properties": {
+        "allow_all_extra_fields": {
+          "type": "boolean"
+        },
+        "allow_collector_transformations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "allow_undeclared_signals": {
+          "items": {
+            "$ref": "#/$defs/strictSignalEscape"
+          },
+          "type": "array"
+        },
+        "allow_unexpected_fields": {
+          "items": {
+            "$ref": "#/$defs/strictFieldEscape"
+          },
+          "type": "array"
+        },
+        "allow_unmodeled_services": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "allowed_extra_fields": {
+          "items": {
+            "$ref": "#/$defs/strictFieldEscape"
+          },
+          "type": "array"
+        },
+        "enabled": {
+          "type": "boolean"
         }
       },
       "type": "object"

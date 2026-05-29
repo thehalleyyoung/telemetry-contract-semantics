@@ -9,7 +9,7 @@ The project should therefore be judged on two axes at once: (1) whether its core
 ## Immediate product and research value
 
 - **Drop-in CI value:** lint contracts, validate JSONL or OTLP exports, run static source checks, and fail pull requests only on new or high-severity semantic regressions.
-- **Collector-export value:** analyze OpenTelemetry Collector file-exporter output for preservation of spans, logs, metrics, resources, scopes, exemplars, links, temporality, provenance, and selected incident-question witnesses before and after approved transformations.
+- **Collector-export value:** analyze OpenTelemetry Collector file-exporter output for preservation of spans, logs, metrics, resources, scopes, exemplars, links, temporality, provenance, selected incident-question witnesses, and strict-mode drift before and after approved transformations.
 - **Incident-readiness value:** produce reports that list which incident questions are answerable, which evidence is missing, which service owner is affected, and which remediation is most direct. Alternative-obligation reports should explain when one equivalent evidence path witnesses an obligation so teams avoid duplicate false positives.
 - **Privacy/security value:** flag likely PII, secrets, tenant identifiers, unsafe payload previews, high-cardinality labels, and non-preserving scrubbing or sampling claims.
 - **Research value:** define an executable trace semantics, contract satisfaction relation, refinement relation, and transformation-preservation obligations for observability data.
@@ -40,7 +40,7 @@ The near-term formal deliverable should be a mechanizable core semantics in repo
 ## Algorithms
 
 1. **Contract loading and well-formedness:** parse JSON/YAML, validate schema, reject malformed predicates, and attach every error to a formal well-formedness rule.
-2. **Runtime verification:** index observations by kind, name, service, owner, correlation key, window, and provenance; evaluate predicates, temporal properties, correlation, and privacy obligations deterministically.
+2. **Runtime verification:** index observations by kind, name, service, owner, correlation key, window, and provenance; evaluate predicates, temporal properties, correlation, privacy obligations, and optional strict closed-world side conditions deterministically.
 3. **Temporal and hyperproperty monitoring:** compile bounded safety, response, absence, ordering, and pairwise privacy checks into finite-trace monitors with explicit memory bounds.
 4. **OTLP normalization:** import collector exports into the observation domain while preserving resources, scopes, links, exemplars, temporality, skipped-record diagnostics, and source JSON paths.
 5. **Transformation checking:** compare pre/post collector or policy outputs for preservation of required diagnosability, privacy, and unit/correlation evidence.
@@ -53,7 +53,7 @@ The near-term formal deliverable should be a mechanizable core semantics in repo
 
 - **Author:** `telemetry-contracts init` scaffolds a service contract, examples, owner metadata, and CI gate.
 - **Lint:** `lint-contract` rejects syntactically or semantically malformed contracts before events exist.
-- **Validate:** `validate` checks JSONL telemetry against contracts and emits findings suitable for CI artifacts.
+- **Validate:** `validate` checks JSONL telemetry against contracts and emits findings suitable for CI artifacts; `validate --strict` additionally rejects unmodeled services, undeclared signals, unexpected fields, and undocumented collector transformations unless bounded escape hatches are declared.
 - **Import:** `import-otlp` converts collector JSON/JSONL while reporting skipped records, unsupported fields, and preservation risks.
 - **Analyze collector exports:** a dedicated report summarizes OTLP coverage, temporality, dropped evidence, provenance gaps, and collector transformations.
 - **Check source:** `static` finds missing instrumentation, unsafe attributes, PII/secret risks, high-cardinality labels, and source spans linked to contract obligations.

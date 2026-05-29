@@ -77,7 +77,50 @@ CONTRACT_SCHEMA: dict[str, Any] = {
                         "claim": {"type": "string"},
                     },
                 },
+                "strict_validation": {"$ref": "#/$defs/strictValidationPolicy"},
             },
+        },
+        "strictValidationPolicy": {
+            "type": "object",
+            "properties": {
+                "enabled": {"type": "boolean"},
+                "allow_all_extra_fields": {"type": "boolean"},
+                "allow_unmodeled_services": {"type": "array", "items": {"type": "string"}},
+                "allow_collector_transformations": {"type": "array", "items": {"type": "string"}},
+                "allow_undeclared_signals": {"type": "array", "items": {"$ref": "#/$defs/strictSignalEscape"}},
+                "allow_unexpected_fields": {"type": "array", "items": {"$ref": "#/$defs/strictFieldEscape"}},
+                "allowed_extra_fields": {"type": "array", "items": {"$ref": "#/$defs/strictFieldEscape"}},
+            },
+        },
+        "strictSignalEscape": {
+            "anyOf": [
+                {"type": "string"},
+                {
+                    "type": "object",
+                    "properties": {
+                        "kind": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                        "signal": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                        "name": {"type": "string"},
+                        "reason": {"type": "string"},
+                    },
+                },
+            ],
+        },
+        "strictFieldEscape": {
+            "anyOf": [
+                {"type": "string"},
+                {
+                    "type": "object",
+                    "properties": {
+                        "kind": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                        "signal": {"enum": ["span", "log", "metric", "spans", "logs", "metrics"]},
+                        "name": {"type": "string"},
+                        "field": {"type": "string"},
+                        "fields": {"type": "array", "items": {"type": "string"}},
+                        "reason": {"type": "string"},
+                    },
+                },
+            ],
         },
         "samplingPolicy": {
             "type": "object",

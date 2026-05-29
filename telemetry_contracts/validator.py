@@ -244,6 +244,47 @@ def _validate_policy_stubs_shape(metadata: Any) -> list[Finding]:
                     findings.append(Finding("error", "contract.policy_stub", f"retention key '{key}' is not recognized", f"$.metadata.retention.{key}"))
                 elif not isinstance(value, int) or isinstance(value, bool) or value <= 0:
                     findings.append(Finding("error", "contract.policy_stub", f"retention {key} must be a positive integer day count", f"$.metadata.retention.{key}"))
+    findings.extend(_validate_strict_policy_shape(metadata.get("strict_validation")))
+    return findings
+
+
+def _validate_strict_policy_shape(policy: Any) -> list[Finding]:
+    if policy is None:
+        return []
+    if not isinstance(policy, dict):
+        return [Finding("error", "contract.strict_policy", "metadata.strict_validation must be an object", "$.metadata.strict_validation")]
+    findings: list[Finding] = []
+    if "enabled" in policy and not isinstance(policy["enabled"], bool):
+        findings.append(Finding("error", "contract.strict_policy", "strict_validation.enabled must be boolean", "$.metadata.strict_validation.enabled"))
+    if "allow_all_extra_fields" in policy and not isinstance(policy["allow_all_extra_fields"], bool):
+        findings.append(Finding("error", "contract.strict_policy", "strict_validation.allow_all_extra_fields must be boolean", "$.metadata.strict_validation.allow_all_extra_fields"))
+    for key in ("allow_unmodeled_services", "allow_collector_transformations"):
+        if key in policy and (not isinstance(policy[key], list) or not all(isinstance(item, str) and item for item in policy[key])):
+            findings.append(Finding("error", "contract.strict_policy", f"strict_validation.{key} must be an array of strings", f"$.metadata.strict_validation.{key}"))
+    for key in ("allow_undeclared_signals", "allow_unexpected_fields", "allowed_extra_fields"):
+        if key not in policy:
+            continue
+        raw = policy[key]
+        if not isinstance(raw, list):
+            findings.append(Finding("error", "contract.strict_policy", f"strict_validation.{key} must be an array", f"$.metadata.strict_validation.{key}"))
+            continue
+        for index, item in enumerate(raw):
+            item_path = f"$.metadata.strict_validation.{key}[{index}]"
+            if isinstance(item, str) and item:
+                continue
+            if not isinstance(item, dict):
+                findings.append(Finding("error", "contract.strict_policy", f"strict_validation.{key} entries must be strings or objects", item_path))
+                continue
+            kind = item.get("kind", item.get("signal"))
+            if kind is not None and _normalize_signal_kind(kind) not in {"span", "log", "metric"}:
+                findings.append(Finding("error", "contract.strict_policy", "strict escape hatch kind must be span, log, or metric", f"{item_path}.kind"))
+            if "name" in item and (not isinstance(item["name"], str) or not item["name"]):
+                findings.append(Finding("error", "contract.strict_policy", "strict escape hatch name must be a non-empty string", f"{item_path}.name"))
+            fields = item.get("fields")
+            if fields is not None and (not isinstance(fields, list) or not all(isinstance(field, str) and field for field in fields)):
+                findings.append(Finding("error", "contract.strict_policy", "strict escape hatch fields must be an array of strings", f"{item_path}.fields"))
+            if "field" in item and (not isinstance(item["field"], str) or not item["field"]):
+                findings.append(Finding("error", "contract.strict_policy", "strict escape hatch field must be a non-empty string", f"{item_path}.field"))
     return findings
 
 
@@ -338,7 +379,7 @@ def _validate_severity_policy_shape(spec: dict[str, Any], signal_path: str) -> l
     return []
 
 
-def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+def validate_events(contract: dict[str, Any], events: list[dict[str, Any]], *, strict: bool | None = None) -> list[Finding]:
     findings = validate_contract_shape(contract)
     service = contract.get("service")
     relevant_events = [event for event in events if service is None or event.get("service") in {service, None}]
@@ -354,7 +395,264 @@ def validate_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> l
     from .alternatives import alternative_obligation_findings
 
     findings.extend(alternative_obligation_findings(contract, relevant_events))
+    if _strict_enabled(contract, strict):
+        findings.extend(_validate_strict_events(contract, events))
     return findings
+
+
+def _strict_enabled(contract: dict[str, Any], strict: bool | None) -> bool:
+    if strict is not None:
+        return strict
+    metadata = contract.get("metadata")
+    policy = metadata.get("strict_validation") if isinstance(metadata, dict) else None
+    return isinstance(policy, dict) and policy.get("enabled") is True
+
+
+def _strict_policy(contract: dict[str, Any]) -> dict[str, Any]:
+    metadata = contract.get("metadata")
+    policy = metadata.get("strict_validation") if isinstance(metadata, dict) else None
+    return policy if isinstance(policy, dict) else {}
+
+
+def _validate_strict_events(contract: dict[str, Any], events: list[dict[str, Any]]) -> list[Finding]:
+    service = contract.get("service")
+    policy = _strict_policy(contract)
+    allowed_services = {service} if isinstance(service, str) and service else set()
+    allowed_services.update(str(item) for item in policy.get("allow_unmodeled_services", []) if isinstance(item, str))
+    declared = _declared_signal_names(contract)
+    findings: list[Finding] = []
+    for event in events:
+        event_service = event.get("service")
+        if allowed_services and event_service not in allowed_services:
+            findings.append(
+                Finding(
+                    "error",
+                    "telemetry.strict_unmodeled_service",
+                    f"event service {event_service!r} is not modeled by contract service {service!r}",
+                    f"event[{_event_index(event)}].service",
+                    "$.service",
+                    _event_index(event),
+                    {"service": event_service, "allowed_services": sorted(allowed_services)},
+                )
+            )
+            continue
+        if isinstance(service, str) and event_service != service:
+            continue
+        kind = _normalize_signal_kind(event.get("kind"))
+        name = event.get("name")
+        if kind not in {"span", "log", "metric"} or not isinstance(name, str):
+            continue
+        if name not in declared.get(kind, set()):
+            if _strict_signal_allowed(policy, kind, name):
+                continue
+            findings.append(
+                Finding(
+                    "error",
+                    "telemetry.strict_undeclared_signal",
+                    f"{kind} '{name}' is not declared by the contract",
+                    f"event[{_event_index(event)}].name",
+                    f"$.{kind}s",
+                    _event_index(event),
+                    {"kind": kind, "name": name},
+                )
+            )
+            continue
+        findings.extend(_validate_strict_event_fields(contract, policy, event, kind, name))
+        findings.extend(_validate_strict_transformations(contract, policy, event))
+    return findings
+
+
+def _declared_signal_names(contract: dict[str, Any]) -> dict[str, set[str]]:
+    declared: dict[str, set[str]] = {"span": set(), "log": set(), "metric": set()}
+    for section, kind in (("spans", "span"), ("logs", "log"), ("metrics", "metric")):
+        for spec in contract.get(section, []) or []:
+            if isinstance(spec, dict) and isinstance(spec.get("name"), str):
+                declared[kind].add(spec["name"])
+    for sequence in contract.get("temporal_sequences", []) or []:
+        if isinstance(sequence, dict):
+            for step in sequence.get("steps", []) or []:
+                if isinstance(step, dict):
+                    kind = _normalize_signal_kind(step.get("kind", step.get("signal")))
+                    if kind in declared and isinstance(step.get("name"), str):
+                        declared[kind].add(step["name"])
+    for group in contract.get("alternative_obligations", []) or []:
+        if isinstance(group, dict):
+            for option in group.get("any_of", []) or []:
+                if isinstance(option, dict):
+                    kind = _normalize_signal_kind(option.get("signal", option.get("kind")))
+                    if kind in declared and isinstance(option.get("name"), str):
+                        declared[kind].add(option["name"])
+    for scenario in contract.get("scenarios", []) or []:
+        if isinstance(scenario, dict):
+            for requirement in scenario.get("minimum_observations", scenario.get("requires", [])) or []:
+                _collect_requirement_signal_names(requirement, declared)
+    return declared
+
+
+def _collect_requirement_signal_names(requirement: Any, declared: dict[str, set[str]]) -> None:
+    if not isinstance(requirement, dict):
+        return
+    kind = _normalize_signal_kind(requirement.get("signal", requirement.get("kind")))
+    if kind in declared and isinstance(requirement.get("name"), str):
+        declared[kind].add(requirement["name"])
+    for option in requirement.get("any_of", []) or []:
+        if isinstance(option, dict):
+            option_kind = _normalize_signal_kind(option.get("signal", option.get("kind")))
+            if option_kind in declared and isinstance(option.get("name"), str):
+                declared[option_kind].add(option["name"])
+
+
+def _validate_strict_event_fields(contract: dict[str, Any], policy: dict[str, Any], event: dict[str, Any], kind: str, name: str) -> list[Finding]:
+    if policy.get("allow_all_extra_fields") is True:
+        return []
+    expected = _expected_fields_for_signal(contract, kind, name)
+    findings: list[Finding] = []
+    for container in ("attributes", "tags", "fields"):
+        values = event.get(container)
+        if not isinstance(values, dict):
+            continue
+        for field_name in values:
+            field_name = str(field_name)
+            if field_name in expected or _strict_field_allowed(policy, kind, name, field_name):
+                continue
+            findings.append(
+                Finding(
+                    "error",
+                    "telemetry.strict_unexpected_field",
+                    f"{kind} '{name}' emitted undeclared field '{field_name}'",
+                    f"event[{_event_index(event)}].{container}.{field_name}",
+                    f"$.{kind}s[name={name}]",
+                    _event_index(event),
+                    {"kind": kind, "name": name, "field": field_name, "container": container},
+                )
+            )
+    return findings
+
+
+def _expected_fields_for_signal(contract: dict[str, Any], kind: str, name: str) -> set[str]:
+    section = {"span": "spans", "log": "logs", "metric": "metrics"}[kind]
+    expected: set[str] = set()
+    for spec in contract.get(section, []) or []:
+        if isinstance(spec, dict) and spec.get("name") == name:
+            expected.update(_field_specs(spec, contract).keys())
+            for requirement in spec.get("conditional_requirements", []) or []:
+                if not isinstance(requirement, dict):
+                    continue
+                condition = requirement.get("if")
+                if isinstance(condition, dict) and isinstance(condition.get("field"), str):
+                    expected.add(condition["field"])
+                then = requirement.get("then")
+                fields = then.get("fields") if isinstance(then, dict) else None
+                if isinstance(fields, list):
+                    expected.update(str(field) for field in fields if isinstance(field, str))
+            if kind == "metric" and isinstance(spec.get("value"), dict):
+                expected.add("value")
+    for group in contract.get("alternative_obligations", []) or []:
+        if not isinstance(group, dict):
+            continue
+        for option in group.get("any_of", []) or []:
+            if isinstance(option, dict) and _normalize_signal_kind(option.get("signal", option.get("kind"))) == kind and option.get("name") == name:
+                expected.update(str(field) for field in option.get("fields", []) if isinstance(field, str))
+    for scenario in contract.get("scenarios", []) or []:
+        if isinstance(scenario, dict):
+            for requirement in scenario.get("minimum_observations", scenario.get("requires", [])) or []:
+                expected.update(_expected_fields_from_requirement(requirement, kind, name))
+    return expected
+
+
+def _expected_fields_from_requirement(requirement: Any, kind: str, name: str) -> set[str]:
+    if not isinstance(requirement, dict):
+        return set()
+    expected: set[str] = set()
+    if _normalize_signal_kind(requirement.get("signal", requirement.get("kind"))) == kind and requirement.get("name") == name:
+        expected.update(str(field) for field in requirement.get("fields", []) if isinstance(field, str))
+    for option in requirement.get("any_of", []) or []:
+        if isinstance(option, dict) and _normalize_signal_kind(option.get("signal", option.get("kind"))) == kind and option.get("name") == name:
+            expected.update(str(field) for field in option.get("fields", []) if isinstance(field, str))
+    return expected
+
+
+def _validate_strict_transformations(contract: dict[str, Any], policy: dict[str, Any], event: dict[str, Any]) -> list[Finding]:
+    approved = set(str(item) for item in policy.get("allow_collector_transformations", []) if isinstance(item, str))
+    metadata = contract.get("metadata")
+    preservation = metadata.get("transformation_preservation") if isinstance(metadata, dict) else None
+    if isinstance(preservation, dict):
+        approved.update(str(item) for item in preservation.get("approved_transformations", []) if isinstance(item, str))
+    findings = []
+    for transformation in _event_transformations(event):
+        if transformation in approved:
+            continue
+        findings.append(
+            Finding(
+                "error",
+                "telemetry.strict_undocumented_transformation",
+                f"collector transformation {transformation!r} is not documented by contract metadata",
+                f"event[{_event_index(event)}].transformations",
+                "$.metadata.transformation_preservation.approved_transformations",
+                _event_index(event),
+                {"transformation": transformation, "approved_transformations": sorted(approved)},
+            )
+        )
+    return findings
+
+
+def _event_transformations(event: dict[str, Any]) -> set[str]:
+    found: set[str] = set()
+    for key in ("transformation", "transformations", "collector_transformation", "collector_transformations"):
+        value = event.get(key)
+        if isinstance(value, str) and value:
+            found.add(value)
+        elif isinstance(value, list):
+            found.update(str(item) for item in value if isinstance(item, str) and item)
+    for container in ("attributes", "tags", "fields"):
+        values = event.get(container)
+        if not isinstance(values, dict):
+            continue
+        for key in ("transformation", "transformations", "collector_transformation", "collector_transformations"):
+            value = values.get(key)
+            if isinstance(value, str) and value:
+                found.add(value)
+            elif isinstance(value, list):
+                found.update(str(item) for item in value if isinstance(item, str) and item)
+    return found
+
+
+def _strict_signal_allowed(policy: dict[str, Any], kind: str, name: str) -> bool:
+    for item in policy.get("allow_undeclared_signals", []) or []:
+        if isinstance(item, str):
+            if item in {name, f"{kind}:{name}", f"{kind}s:{name}"}:
+                return True
+        elif isinstance(item, dict):
+            item_kind = item.get("kind", item.get("signal"))
+            if item_kind is not None and _normalize_signal_kind(item_kind) != kind:
+                continue
+            item_name = item.get("name")
+            if item_name in {None, name}:
+                return True
+    return False
+
+
+def _strict_field_allowed(policy: dict[str, Any], kind: str, name: str, field: str) -> bool:
+    for key in ("allow_unexpected_fields", "allowed_extra_fields"):
+        for item in policy.get(key, []) or []:
+            if isinstance(item, str):
+                if item in {field, f"{kind}:{name}:{field}", f"{kind}s:{name}:{field}"}:
+                    return True
+                continue
+            if not isinstance(item, dict):
+                continue
+            item_kind = item.get("kind", item.get("signal"))
+            if item_kind is not None and _normalize_signal_kind(item_kind) != kind:
+                continue
+            item_name = item.get("name")
+            if item_name is not None and item_name != name:
+                continue
+            fields = item.get("fields")
+            if isinstance(fields, list) and field in fields:
+                return True
+            if item.get("field") == field:
+                return True
+    return False
 
 
 def _validate_alternative_obligations_shape(raw: Any) -> list[Finding]:

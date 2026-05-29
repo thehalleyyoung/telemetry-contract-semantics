@@ -9,6 +9,7 @@ This repository turns that thesis into executable checks:
 - Static telemetry security checks for sensitive values in logs and optional high-cardinality/correlation policies.
 - Diagnosability scenario checks that ask whether a concrete incident question can be answered from emitted telemetry.
 - Alternative-obligation checks that let one of several equivalent logs/spans/metrics satisfy a required evidence path without duplicate false positives.
+- Strict validation that treats a contract as a closed-world model and reports unexpected fields, undeclared signal names, unmodeled services, and undocumented collector transformations, with bounded escape hatches.
 - Observational-equivalence reports that compare two telemetry streams by incident-question answerability instead of byte equality.
 - Transformation-preservation checks that compare source and post-transform streams to catch approved sampling, redaction, omission, retention, or aggregation that destroys contract or incident-question evidence.
 - Incident-readiness reports that score required evidence, temporal/correlation coverage, privacy risk, and remediation completeness.
@@ -18,9 +19,12 @@ This repository turns that thesis into executable checks:
 - A machine-readable finding taxonomy and taxonomy coverage report for JSON benchmark, validation, static, incident-readiness, equivalence, and preservation outputs.
 - A reconstructed public historical case study based on the GitLab.com 2017 database outage postmortem.
 - A current public-code case study that flags potential sensitive-value logging in an OWASP SecureTea sign-in sample.
+- A strict-mode drift fixture and report over the GitLab 2017 reconstruction that demonstrates closed-world checks on public incident-derived data.
 - Passing and failing examples for a checkout/payment service.
 
 The prototype is intentionally non-AI runtime software. LLMs may help humans draft scenarios or contracts, but the validation path is deterministic Python code and test fixtures.
+
+Roadmap status: `100_STEPS.md` currently has 28 of 100 items checked. Checked items are limited to capabilities backed by code, tests, fixtures, reports, or documentation in this repository.
 
 ## Quickstart
 
@@ -65,6 +69,11 @@ python3 -m telemetry_contracts.cli import-otlp \
 python3 -m telemetry_contracts.cli validate \
   --contract examples/real_world/otel_checkout_missing_tenant.contract.json \
   --events checkout.otlp.jsonl
+
+python3 -m telemetry_contracts.cli validate \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict --format json --fail-on never
 
 python3 -m telemetry_contracts.cli benchmark \
   --config benchmarks/builtin.json \
@@ -172,6 +181,7 @@ Supported checks include:
 - Duplicate signal and duplicate field diagnostics during contract linting.
 - Machine-readable sampling and retention policy stubs under `metadata.sampling` and `metadata.retention`; transformation-preservation defaults may be declared under `metadata.transformation_preservation` with `approved_transformations` and `preserve_scenarios`.
 - Alternative obligations under `alternative_obligations`, where a required finite disjunction passes when at least one declared option has a witness event containing all required fields; `minimum_observations` scenario entries may also use `any_of` for equivalent evidence paths.
+- Strict validation via `validate --strict` or `metadata.strict_validation.enabled`. Strict mode adds closed-world obligations: each event service must match the modeled service or `allow_unmodeled_services`; each span/log/metric name must be declared in signal sections, scenarios, temporal sequences, or alternative obligations unless `allow_undeclared_signals` names it; emitted attributes/tags/fields must be declared unless `allowed_extra_fields` or `allow_unexpected_fields` permits them; collector transformations must appear in `metadata.transformation_preservation.approved_transformations` or `allow_collector_transformations`.
 - Incident-readiness scoring over finite telemetry files. The report combines runtime and scenario findings into required-evidence coverage, temporal coverage, correlation coverage, privacy risk, remediation completeness, unanswered incident questions, and top remediation groups.
 - Diagnosability adequacy checks for incident questions. A scenario may declare `minimum_observations`: each item either names the span, log, or metric plus required fields and a `purpose`, or declares an `any_of` set of equivalent options. The finite trace is adequate for that question iff every minimum observation or required alternative is witnessed and all required fields are present; reports include matching event indices and exact missing evidence.
 - Observational equivalence for debugging tasks. `equivalence` compares two finite telemetry files against selected scenario questions and treats them as equivalent only when the same questions are answerable with the same minimum-observation and required-field signature. This allows sampled, reordered, scrubbed, or aggregated streams to be evaluated by retained debugging utility rather than byte equality.
@@ -188,13 +198,13 @@ Runtime validation reads newline-delimited JSON. Events are intentionally simple
 {"kind":"log","service":"checkout","name":"checkout.payment_failed","trace_id":"trace-123","timestamp_ms":1200,"severity":"ERROR","message":"payment authorization failed","fields":{"tenant_id":"tenant-acme"}}
 ```
 
-Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field`), remediation, disclosure sensitivity, service-owner routing, SARIF-compatible level, and CI baseline keys. `python3 -m telemetry_contracts.cli taxonomy` emits the canonical taxonomy from `docs/finding_taxonomy.json`; with `--findings`, it summarizes which semantic clauses and categories appear in a concrete JSON report.
+Findings include severity, code, message, event path, contract path, and details when useful. Use `--format json` for machine-readable output. JSON findings are also annotated with taxonomy metadata: category, formal clause (for example `SAT.required-field` or `STRICT.signal-closed-world`), remediation, disclosure sensitivity, service-owner routing, SARIF-compatible level, and CI baseline keys. `python3 -m telemetry_contracts.cli taxonomy` emits the canonical taxonomy from `docs/finding_taxonomy.json`; with `--findings`, it summarizes which semantic clauses and categories appear in a concrete JSON report.
 
 ## Observation model and satisfaction relation
 
 `python3 -m telemetry_contracts.cli describe-model` prints the executable observation domain used by the checker. It maps spans, logs, metrics, resources, scopes, exemplars, timestamps, attributes, and provenance to the repository JSONL fields and the OTLP JSON fields currently normalized by `import-otlp`.
 
-The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. For alternative obligations, the executable clause is a finite disjunction: a required group is satisfied iff at least one option has a concrete witness event with every declared field; optional groups record acceptable evidence paths without failing absent telemetry. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary and a finite event-structure view, which is useful for checking what kinds, names, fields, correlation keys, timestamps, parent/child edges, log attachments, metric exemplars, and incident-window happens-before diagrams are actually present in a historical or current fixture.
+The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trace `T` satisfies a contract `C` when every well-formed contract obligation evaluates to true over observations relevant to `C.service`. For strict mode, this relation is strengthened with closed-world side conditions over service identity, declared signal names, declared event fields, and documented collector transformations. For alternative obligations, the executable clause is a finite disjunction: a required group is satisfied iff at least one option has a concrete witness event with every declared field; optional groups record acceptable evidence paths without failing absent telemetry. The model page defines how present, absent, malformed, partial, unknown, and transformed evidence is interpreted. Passing `--events` adds an artifact summary and a finite event-structure view, which is useful for checking what kinds, names, fields, correlation keys, timestamps, parent/child edges, log attachments, metric exemplars, and incident-window happens-before diagrams are actually present in a historical or current fixture.
 
 ## Architecture
 
@@ -211,7 +221,7 @@ The core satisfaction relation is reported as `T ⊨ C`: a finite telemetry trac
 - `telemetry_contracts.incident_report` generates service-owner incident-readiness JSON/Markdown from the deterministic validator and scenario checks.
 - `telemetry_contracts.benchmark` runs benchmark suites and computes summary/label metrics.
 - `telemetry_contracts.taxonomy` emits the finding-rule catalog and summarizes observed findings by code, category, formal clause, SARIF level, and service-owner route.
-- `telemetry_contracts.cli` exposes `validate`, `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, and `taxonomy` commands.
+- `telemetry_contracts.cli` exposes `validate` (including `--strict`), `static`, `scenario`, `equivalence`, `preservation`, `describe-model`, `report incident-readiness`, `report alternative-obligations`, `benchmark`, and `taxonomy` commands.
 - `examples/` contains the checkout contract, sample telemetry, source instrumentation, and scenario prompt.
 - `benchmarks/` contains runnable benchmark configs.
 - `case_studies/` contains public historical fixtures and metadata.
@@ -248,7 +258,7 @@ python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --
 python3 -m telemetry_contracts.cli benchmark --config benchmarks/builtin.json --format markdown
 ```
 
-A benchmark config is JSON with a `cases` list. Each case points to a contract plus JSONL events, source paths, or both; optional scenario ids; optional metadata; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario check flags, number of contracts, events, findings, findings by code/severity, label precision/recall when labels are present, runtime, and pass/fail.
+A benchmark config is JSON with a `cases` list. Each case points to a contract plus JSONL events, source paths, or both; optional scenario ids; optional `strict: true`; optional metadata; and optional `expected_findings` labels. Paths are resolved relative to the config file, so external datasets can be benchmarked without changing package code. Reports include runtime/static/scenario/strict check flags, number of contracts, events, findings, findings by code/severity, label precision/recall when labels are present, runtime, and pass/fail.
 
 ## Public historical case study
 
@@ -273,6 +283,17 @@ python3 -m telemetry_contracts.cli report incident-readiness \
 ```
 
 The command reports missing evidence for the declared restore-readiness question and phrases the result as artifact-scoped evidence over reconstructed public facts, not as a claim about GitLab's private telemetry.
+
+Generate the checked-in strict-mode validation report for a bounded drift derivative of the same public reconstruction:
+
+```bash
+python3 -m telemetry_contracts.cli validate \
+  --contract case_studies/gitlab_2017_database_outage/contract.json \
+  --events case_studies/gitlab_2017_database_outage/reconstructed_events_strict_drift.jsonl \
+  --strict --format json --fail-on never
+```
+
+`reports/gitlab_2017_strict_validation.json` records 14 findings on that bounded derivative, including one undeclared signal, one unmodeled collector service, two unexpected fields, and one undocumented collector transformation. This demonstrates the closed-world utility on a historical public-data reconstruction without claiming access to GitLab private telemetry.
 
 Generate the checked-in alternative-obligation witness report:
 
@@ -305,6 +326,7 @@ The idea document suggests LLMs can help generate realistic incident questions, 
 - OTLP support covers common JSON exports for spans, metrics, and logs; protobuf/gRPC collector ingestion is future work.
 - Cardinality is checked over the supplied sample window, not a production time series backend.
 - Sampling and retention stubs are linted for machine-readable contract shape, but not verified against live collector or backend configuration.
+- Strict mode is a closed-world check over the supplied finite event artifact; escape hatches are explicit but do not prove a collector pipeline is correctly configured.
 - Scenario matching is intentionally simple; robust incident-question synthesis is future work.
 - Incident-readiness scores are computed over the supplied finite artifact; they are useful for CI trend and review, not a guarantee of production incident success.
 

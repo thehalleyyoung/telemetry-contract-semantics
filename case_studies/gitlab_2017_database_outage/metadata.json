@@ -46,6 +46,12 @@
     "transformation": "Drops the backup.pg_dump.failed log to simulate a sampled or incomplete exported stream.",
     "expected_result": "Not observationally equivalent for restore-readiness because the backup failure observation and its route/job/destination fields are no longer witnessed."
   },
+  "strict_drift_fixture": {
+    "path": "reconstructed_events_strict_drift.jsonl",
+    "purpose": "A bounded derivative used to validate strict closed-world reporting against a public historical reconstruction.",
+    "transformation": "Adds a modeled collector/export drift example with an extra metric tag, undeclared debug log, unmodeled collector service metric, and undocumented tail_sampling marker.",
+    "expected_result": "Strict validation reports telemetry.strict_unexpected_field, telemetry.strict_undeclared_signal, telemetry.strict_unmodeled_service, and telemetry.strict_undocumented_transformation while preserving the original runtime contract findings."
+  },
   "expected_findings": [
     {"code": "telemetry.allowed_values", "severity": "error", "path": "event[5].source", "contract_path": "$.spans[0].fields.source", "event_index": 5},
     {"code": "telemetry.numeric_max", "severity": "error", "path": "event[5].backup_age_hours", "contract_path": "$.spans[0].fields.backup_age_hours", "event_index": 5},

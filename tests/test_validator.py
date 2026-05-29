@@ -18,6 +18,53 @@ def test_passing_example_has_no_findings():
     assert findings == []
 
 
+def test_strict_validation_reports_closed_world_drift():
+    contract = {
+        "version": "1.0",
+        "service": "checkout",
+        "spans": [{"name": "checkout.request", "attributes": {"tenant_id": {"type": "string"}}}],
+    }
+    events = [
+        {"kind": "span", "service": "checkout", "name": "checkout.request", "attributes": {"tenant_id": "tenant-a", "debug_user": "42"}},
+        {"kind": "log", "service": "checkout", "name": "checkout.debug", "fields": {"tenant_id": "tenant-a"}},
+        {"kind": "span", "service": "payments", "name": "payment.request"},
+        {"kind": "span", "service": "checkout", "name": "checkout.request", "transformations": ["tail_sampling"]},
+    ]
+
+    default_findings = validate_events(contract, events)
+    assert not any(finding.code.startswith("telemetry.strict_") for finding in default_findings)
+
+    strict_findings = validate_events(contract, events, strict=True)
+    assert "telemetry.strict_unexpected_field" in codes(strict_findings)
+    assert "telemetry.strict_undeclared_signal" in codes(strict_findings)
+    assert "telemetry.strict_unmodeled_service" in codes(strict_findings)
+    assert "telemetry.strict_undocumented_transformation" in codes(strict_findings)
+
+
+def test_strict_validation_escape_hatches_are_precise():
+    contract = {
+        "version": "1.0",
+        "service": "checkout",
+        "metadata": {
+            "strict_validation": {
+                "enabled": True,
+                "allow_unmodeled_services": ["collector"],
+                "allow_undeclared_signals": [{"kind": "log", "name": "checkout.debug"}],
+                "allowed_extra_fields": [{"kind": "span", "name": "checkout.request", "fields": ["debug_user"]}],
+                "allow_collector_transformations": ["tail_sampling"],
+            }
+        },
+        "spans": [{"name": "checkout.request", "attributes": {"tenant_id": {"type": "string"}}}],
+    }
+    events = [
+        {"kind": "span", "service": "checkout", "name": "checkout.request", "attributes": {"tenant_id": "tenant-a", "debug_user": "42"}, "transformations": ["tail_sampling"]},
+        {"kind": "log", "service": "checkout", "name": "checkout.debug", "fields": {"tenant_id": "tenant-a"}},
+        {"kind": "span", "service": "collector", "name": "collector.flush"},
+    ]
+
+    assert validate_events(contract, events) == []
+
+
 def test_failing_example_reports_useful_errors():
     findings = validate_events(load_contract(CONTRACT), load_jsonl(ROOT / "examples/telemetry/failing.jsonl"))
     assert "telemetry.pattern" in codes(findings)

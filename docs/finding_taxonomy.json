@@ -472,6 +472,26 @@
         "default_fail_on": "error",
         "sarif_level": "error"
       },
+      "code": "contract.strict_policy",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "WF.strict-policy",
+      "remediation": "Declare strict-validation escape hatches as bounded service, signal, field, or transformation lists.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "contract",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
       "code": "contract.temporal_sequence",
       "default_severity": "error",
       "disclosure_sensitivity": "internal",
@@ -1221,6 +1241,86 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_undeclared_signal",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STRICT.signal-closed-world",
+      "remediation": "Declare the emitted signal in spans, metrics, logs, scenarios, or alternative obligations, or add an explicit strict allow_undeclared_signals escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "preservation",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_undocumented_transformation",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STRICT.transformation-documented",
+      "remediation": "Document the collector transformation under metadata.transformation_preservation.approved_transformations or strict allow_collector_transformations.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_unexpected_field",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STRICT.field-closed-world",
+      "remediation": "Declare the emitted field on the signal contract or add an explicit strict allowed_extra_fields escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
+      "category": "schema",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "error",
+        "sarif_level": "error"
+      },
+      "code": "telemetry.strict_unmodeled_service",
+      "default_severity": "error",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "STRICT.service-closed-world",
+      "remediation": "Either emit telemetry for the modeled service or add a bounded allow_unmodeled_services escape hatch.",
+      "sarif_level": "error",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "diagnosability",
       "ci": {
         "baseline_key_fields": [
@@ -1290,23 +1390,23 @@
   },
   "summary": {
     "categories": {
-      "contract": 23,
+      "contract": 24,
       "diagnosability": 15,
       "input": 1,
       "operability": 3,
-      "preservation": 3,
+      "preservation": 4,
       "privacy-security": 6,
       "scenario": 2,
-      "schema": 9,
+      "schema": 12,
       "static-coverage": 2
     },
     "default_severities": {
-      "error": 59,
+      "error": 64,
       "warning": 5
     },
-    "rules": 64,
+    "rules": 69,
     "sarif_levels": {
-      "error": 59,
+      "error": 64,
       "warning": 5
     }
   }

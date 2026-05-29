@@ -27,6 +27,7 @@ def main(argv: list[str] | None = None) -> int:
     validate_parser = subparsers.add_parser("validate", help="validate JSONL telemetry against a contract")
     validate_parser.add_argument("--contract", required=True)
     validate_parser.add_argument("--events", required=True)
+    validate_parser.add_argument("--strict", action="store_true", help="also reject unmodeled services, undeclared signals, unexpected fields, and undocumented transformations")
     _common_output_args(validate_parser)
 
     lint_parser = subparsers.add_parser("lint-contract", help="lint contract shape and schema semantics without telemetry events")
@@ -180,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "lint-contract":
             findings = validate_contract_shape(contract)
         elif args.command == "validate":
-            findings = validate_events(contract, load_jsonl(args.events))
+            findings = validate_events(contract, load_jsonl(args.events), strict=True if args.strict else None)
         elif args.command == "static":
             findings = check_sources(contract, [Path(item) for item in args.sources])
         elif args.command == "scenario":

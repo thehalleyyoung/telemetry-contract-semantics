@@ -4,7 +4,8 @@
       "checks": {
         "runtime": true,
         "scenario": true,
-        "static": false
+        "static": false,
+        "strict": false
       },
       "contract_paths": [
         "examples/contracts/checkout.contract.json"
@@ -22,7 +23,7 @@
         "findings_by_severity": {},
         "labels": null,
         "pass": true,
-        "runtime_ms": 1.349,
+        "runtime_ms": 1.388,
         "validation_pass": true
       },
       "pass": true,
@@ -32,7 +33,8 @@
       "checks": {
         "runtime": true,
         "scenario": true,
-        "static": false
+        "static": false,
+        "strict": false
       },
       "contract_paths": [
         "case_studies/gitlab_2017_database_outage/contract.json"
@@ -410,7 +412,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.402,
+        "runtime_ms": 1.178,
         "validation_pass": false
       },
       "pass": true,
@@ -420,7 +422,8 @@
       "checks": {
         "runtime": false,
         "scenario": false,
-        "static": true
+        "static": true,
+        "strict": false
       },
       "contract_paths": [
         "case_studies/current/owasp_securetea_signin/contract.json"
@@ -501,7 +504,7 @@
           "unexpected": []
         },
         "pass": true,
-        "runtime_ms": 1.986,
+        "runtime_ms": 2.075,
         "validation_pass": false
       },
       "pass": true,
@@ -527,6 +530,6 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 7.8
+    "runtime_ms": 7.724
   }
 }

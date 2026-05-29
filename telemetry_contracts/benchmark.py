@@ -70,7 +70,7 @@ def _run_case(case: Any, base_dir: Path) -> dict[str, Any]:
     for contract_path in contract_paths:
         contract = load_contract(contract_path)
         if events_path is not None:
-            all_findings.extend(validate_events(contract, events))
+            all_findings.extend(validate_events(contract, events, strict=True if case.get("strict") is True else None))
         for scenario_id in scenario_ids:
             if not isinstance(scenario_id, str):
                 raise BenchmarkLoadError(f"case {case_id}: scenario ids must be strings")
@@ -96,6 +96,7 @@ def _run_case(case: Any, base_dir: Path) -> dict[str, Any]:
             "runtime": events_path is not None,
             "scenario": bool(scenario_ids),
             "static": bool(source_paths),
+            "strict": case.get("strict") is True,
         },
         "events": len(events),
         "findings": finding_dicts,
