@@ -275,6 +275,16 @@ def main(argv: list[str] | None = None) -> int:
     ci_gate_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     ci_gate_parser.add_argument("--output")
 
+    ci_report_parser = subparsers.add_parser("ci-report", help="one-shot CI observability report (score, top gaps, unanswered questions) with a configurable score-floor + severity gate and an optional base-branch diff; ideal for the GitHub Action")
+    ci_report_parser.add_argument("--path", required=True, help="repository/directory to analyze")
+    ci_report_parser.add_argument("--service", help="restrict to a single service")
+    ci_report_parser.add_argument("--format", choices=["json", "markdown"], default="markdown", help="json (machine report) or markdown (PR comment)")
+    ci_report_parser.add_argument("--base", help="a prior ci-report JSON (e.g. from the PR base branch) to diff the score against")
+    ci_report_parser.add_argument("--min-score", type=int, help="fail unless the diagnosability score is at least this value")
+    ci_report_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error", help="fail on findings at or above this severity")
+    ci_report_parser.add_argument("--max-files", type=int, default=300)
+    ci_report_parser.add_argument("--output")
+
     regenerate_parser = subparsers.add_parser("regenerate-artifacts", help="list or write deterministic report regeneration artifacts")
     regenerate_parser.add_argument("--write", action="store_true", help="write reports/current_impact*, reports/paper_tables.md, and docs/claims_evidence_matrix.json")
     regenerate_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
@@ -798,6 +808,27 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(output)
             return 0 if report["summary"]["pass"] else 1
+        if args.command == "ci-report":
+            from .github_action import (
+                analyze_for_ci,
+                build_pr_comment,
+                evaluate_ci_gate_for_report,
+            )
+
+            report = analyze_for_ci(args.path, service=args.service, max_files=args.max_files)
+            gate = evaluate_ci_gate_for_report(
+                report, min_score=args.min_score, fail_on=args.fail_on
+            )
+            report["gate"] = gate
+            base = None
+            if args.base:
+                base = json.loads(Path(args.base).read_text(encoding="utf-8"))
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            else:
+                output = build_pr_comment(report, base)
+            _emit_text(output, args.output)
+            return 0 if gate["pass"] else 1
         if args.command == "regenerate-artifacts":
             report = regenerate_artifacts(Path.cwd(), write=args.write)
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_regeneration_markdown(report)

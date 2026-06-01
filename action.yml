@@ -1,0 +1,123 @@
+name: "Observability Report Card"
+description: "Scan a repository's telemetry for missing-evidence bugs, gate PRs on a diagnosability score + finding severity, upload SARIF, and comment the report on the PR."
+author: "telemetry-contracts"
+branding:
+  icon: "eye"
+  color: "purple"
+
+inputs:
+  path:
+    description: "Directory to scan."
+    required: false
+    default: "."
+  service:
+    description: "Restrict analysis to a single service name."
+    required: false
+    default: ""
+  fail-on:
+    description: "Fail the check on findings at or above this severity (error | warning | never)."
+    required: false
+    default: "error"
+  min-score:
+    description: "Fail unless the diagnosability score is at least this value (0-100). Empty disables the score floor."
+    required: false
+    default: ""
+  comment:
+    description: "Post the observability report as a PR comment (true | false)."
+    required: false
+    default: "true"
+  upload-sarif:
+    description: "Upload findings to the GitHub Security tab as SARIF (true | false)."
+    required: false
+    default: "true"
+  token:
+    description: "GitHub token used to post the PR comment."
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  score:
+    description: "The diagnosability score (0-100), or empty if no telemetry was found."
+    value: ${{ steps.report.outputs.score }}
+  passed:
+    description: "Whether the configurable gate passed (true | false)."
+    value: ${{ steps.report.outputs.passed }}
+  findings:
+    description: "Total number of findings."
+    value: ${{ steps.report.outputs.findings }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install telemetry-contracts
+      shell: bash
+      run: python3 -m pip install --quiet "${{ github.action_path }}"
+
+    - name: Build CI report and PR comment
+      id: report
+      shell: bash
+      run: |
+        set -o pipefail
+        MIN_SCORE_ARG=""
+        if [ -n "${{ inputs.min-score }}" ]; then
+          MIN_SCORE_ARG="--min-score ${{ inputs.min-score }}"
+        fi
+        SERVICE_ARG=""
+        if [ -n "${{ inputs.service }}" ]; then
+          SERVICE_ARG="--service ${{ inputs.service }}"
+        fi
+        # Machine report (carries the gate verdict). Do not abort on a gate failure
+        # here; we still want to comment and upload SARIF before failing the job.
+        set +e
+        python3 -m telemetry_contracts.cli ci-report \
+          --path "${{ inputs.path }}" $SERVICE_ARG $MIN_SCORE_ARG \
+          --fail-on "${{ inputs.fail-on }}" \
+          --format json --output telemetry-ci-report.json
+        GATE_RC=$?
+        set -e
+        # Human PR comment.
+        python3 -m telemetry_contracts.cli ci-report \
+          --path "${{ inputs.path }}" $SERVICE_ARG $MIN_SCORE_ARG \
+          --fail-on "${{ inputs.fail-on }}" \
+          --format markdown --output telemetry-ci-comment.md || true
+
+        SCORE=$(python3 -c "import json;print(json.load(open('telemetry-ci-report.json')).get('diagnosability_score') or '')")
+        FINDINGS=$(python3 -c "import json;print(json.load(open('telemetry-ci-report.json'))['findings_total'])")
+        PASSED=$(python3 -c "import json;print('true' if json.load(open('telemetry-ci-report.json'))['gate']['pass'] else 'false')")
+        echo "score=$SCORE" >> "$GITHUB_OUTPUT"
+        echo "findings=$FINDINGS" >> "$GITHUB_OUTPUT"
+        echo "passed=$PASSED" >> "$GITHUB_OUTPUT"
+        echo "gate_rc=$GATE_RC" >> "$GITHUB_OUTPUT"
+
+    - name: Export SARIF
+      if: ${{ inputs.upload-sarif == 'true' }}
+      shell: bash
+      run: |
+        python3 -m telemetry_contracts.cli scan \
+          --path "${{ inputs.path }}" --format json --output telemetry-findings.json --fail-on never
+        python3 -m telemetry_contracts.cli sarif \
+          --findings telemetry-findings.json --output telemetry-results.sarif
+
+    - name: Upload SARIF to the Security tab
+      if: ${{ inputs.upload-sarif == 'true' }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: telemetry-results.sarif
+      continue-on-error: true
+
+    - name: Comment on the pull request
+      if: ${{ inputs.comment == 'true' && github.event_name == 'pull_request' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        gh pr comment "${{ github.event.pull_request.number }}" \
+          --body-file telemetry-ci-comment.md || true
+
+    - name: Enforce the gate
+      shell: bash
+      run: |
+        if [ "${{ steps.report.outputs.gate_rc }}" != "0" ]; then
+          echo "::error::Observability gate failed (score floor or finding severity). See the PR comment for details."
+          exit 1
+        fi

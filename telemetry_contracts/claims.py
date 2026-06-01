@@ -135,6 +135,18 @@ CLAIMS: list[dict[str, Any]] = [
             "Under isolated python (-S) a site-installed OpenTelemetry SDK is intentionally invisible, so the OTel variant reports needs-optional-dep rather than proving span emission in this environment.",
         ],
     },
+    {
+        "id": "github-action-ci",
+        "claim": "A composite GitHub Action wraps the scan/diagnose engines so any repository can add observability scanning to its PR checks in three lines of YAML. The Action produces a deterministic CI report (diagnosability score, severity counts, top under-instrumentation gaps, unanswered incident questions), evaluates a configurable pass/fail gate (a score floor plus a finding-severity threshold), uploads findings to the Security tab as SARIF via GitHub code scanning, and posts a concise PR comment that can show a score delta versus the base branch. The underlying ci-report command is byte-deterministic: the same inputs always yield the same report JSON, the same PR-comment bytes, and the same SARIF, with no wall-clock or RNG. The repository dogfoods the Action against its own example telemetry on every push.",
+        "public_artifacts": ["telemetry_contracts/github_action.py", "action.yml", "docs/github_action.md", ".github/workflows/observability-self-test.yml"],
+        "tests": ["tests/test_github_action.py", "tests/test_github_action_real.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The base-branch score delta requires the workflow to compute a base report (e.g. via a second checkout); the Action does not check out the base branch on its own.",
+            "SARIF upload and PR commenting depend on the caller granting security-events: write and pull-requests: write permissions respectively; both integrations can be disabled via inputs.",
+        ],
+    },
 ]
 
 

@@ -39,6 +39,12 @@ from .execution import (
     execution_proof,
     render_execution_proof_markdown,
 )
+from .github_action import (
+    analyze_for_ci,
+    build_pr_comment,
+    compare_ci_reports,
+    evaluate_ci_gate_for_report,
+)
 from .evaluation import (
     compare_baselines,
     load_gold_set,
@@ -51,14 +57,18 @@ __all__ = [
     "__version__",
     "analyze_events",
     "aggregate",
+    "analyze_for_ci",
     "baseline",
     "BUG_CLASSES",
+    "build_pr_comment",
     "characterize_repo",
     "check_sources",
+    "compare_ci_reports",
     "compare_baselines",
     "diagnose",
     "differential",
     "discharge_formal_model",
+    "evaluate_ci_gate_for_report",
     "execute_proposal",
     "execution_proof",
     "feature_scorecard",

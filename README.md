@@ -271,6 +271,7 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 - `docs/staged_pipeline.md` — the characterize → diagnose → plan → apply → differential loop, with a worked example on a public repo and every intermediate artifact.
 - `docs/formal_model.md` — the semantic guarantees (refinement order, monotonicity, termination, assume-guarantee, abstract-domain soundness, transformation preservation), each discharged by a deterministic executable witness (`python3 -m telemetry_contracts.cli formal-model`).
 - `docs/execution_proof.md` — safe runtime evidence that the tool's own generated instrumentation compiles, loads, and emits its promised fields, run in a hardened isolated subprocess that never touches the target repo's code (`python3 -m telemetry_contracts.cli execute-proposals`).
+- `docs/github_action.md` — the **Observability Report Card** GitHub Action: add observability scanning to PR checks in three lines of YAML, with a configurable score-floor + severity gate, SARIF upload to the Security tab, and a PR comment.
 - `docs/high_impact_filter.md` — the written rubric (analytic signal ÷ surface area) used to score every proposed change and re-score applied changes after the fact.
 - `docs/tutorials/` — fixing a broken service; mapping SLO debugging questions to contract clauses.
 - `docs/report_schemas.md` + `docs/report_schemas/*.schema.json` — JSON output envelopes.
