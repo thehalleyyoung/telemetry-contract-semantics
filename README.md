@@ -13,9 +13,9 @@
 Get value with zero install — point it at any public repo:
 
 ```bash
-pipx run telemetry-contracts scan-repo --repo <owner>/<name>
-# or
-uvx telemetry-contracts scan-repo --repo <owner>/<name>
+# Install from GitHub (not yet on PyPI)
+pip install "git+https://github.com/thehalleyyoung/telemetry-contract-semantics.git"
+telemetry-contracts scan-repo --repo <owner>/<name>
 ```
 
 Most observability tooling only pays off *later*, after you adopt a prescribed

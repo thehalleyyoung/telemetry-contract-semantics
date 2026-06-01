@@ -41,7 +41,8 @@ definitions and on the corpus methodology.
 ## One-liner for comments
 
 ```
-pipx run telemetry-contracts scan-repo --repo <owner>/<name>
+pip install "git+https://github.com/thehalleyyoung/telemetry-contract-semantics.git"
+telemetry-contracts scan-repo --repo <owner>/<name>
 ```
 
 ## Talking points / likely questions

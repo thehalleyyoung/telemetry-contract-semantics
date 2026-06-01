@@ -76,9 +76,9 @@ Pyodide; nothing you paste is uploaded.
 ## Try it
 
 ```bash
-pipx run telemetry-contracts scan-repo --repo <owner>/<name>
-# or
-uvx telemetry-contracts scan-repo --repo <owner>/<name>
+# Install from GitHub (not yet on PyPI)
+pip install "git+https://github.com/thehalleyyoung/telemetry-contract-semantics.git"
+telemetry-contracts scan-repo --repo <owner>/<name>
 ```
 
 If it finds a real gap in your telemetry, that's a bug you can fix before the
