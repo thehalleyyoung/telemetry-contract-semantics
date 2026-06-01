@@ -3,7 +3,7 @@
     {
       "benchmark_rows": [],
       "claim": "The tool runs against telemetry you already have (arbitrary JSON/JSONL logs, a JSON array, native JSONL, or OTLP) with no contract authored first: `analyze` reports privacy/diagnosability findings and `infer-contract` writes a conservative draft contract.",
-      "commit": "1238fcd",
+      "commit": "5b825fa",
       "evidence_exists": {
         "README.md": true,
         "telemetry_contracts/adapters.py": true,
@@ -38,7 +38,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
-      "commit": "1238fcd",
+      "commit": "5b825fa",
       "evidence_exists": {
         "README.md": true,
         "benchmarks/builtin.json": true,
@@ -72,7 +72,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "CI can fail on new high-severity findings while allowing audited, owned, expiring baseline entries.",
-      "commit": "1238fcd",
+      "commit": "5b825fa",
       "evidence_exists": {
         "examples/ci/baseline.example.json": true,
         "examples/ci/generic-ci.sh": true,
@@ -101,7 +101,7 @@
         "benchmark-missing-correlation"
       ],
       "claim": "Static and runtime findings can be exported as SARIF with taxonomy-backed rule metadata for code scanning consumers.",
-      "commit": "1238fcd",
+      "commit": "5b825fa",
       "evidence_exists": {
         "docs/finding_taxonomy.json": true,
         "examples/ci/static_findings.example.json": true,
@@ -130,7 +130,7 @@
         "all built-in benchmark rows"
       ],
       "claim": "Current impact reports, benchmark Markdown, taxonomy summaries, paper tables, and this matrix are regenerated from checked-in artifacts.",
-      "commit": "1238fcd",
+      "commit": "5b825fa",
       "evidence_exists": {
         "benchmarks/builtin.json": true,
         "docs/claims_evidence_matrix.json": true,
@@ -158,7 +158,7 @@
     {
       "benchmark_rows": [],
       "claim": "A staged loop runs on a repository you did not instrument: it characterizes existing telemetry, diagnoses incident-readiness, plans high-impact additive instrumentation, synthesizes the missing signals offline, and re-analyzes differentially across rounds. Each round is safety-gated (a round that introduces a finding or drops the score is quarantined and rolled back), every stage is persisted as a SHA-keyed, provenance-carrying artifact, and generated code is emitted only as validated standalone proposals (parsed, compiled, and confirmed by the static checker) \u2014 never applied to the repo and never build/test-run.",
-      "commit": "1238fcd",
+      "commit": "5b825fa",
       "evidence_exists": {
         "docs/staged_pipeline.md": true,
         "telemetry_contracts/artifacts.py": true,
@@ -183,11 +183,38 @@
         "tests/test_pipeline.py",
         "tests/test_pipeline_artifacts.py"
       ]
+    },
+    {
+      "benchmark_rows": [],
+      "claim": "Every proposed instrumentation change is scored by a written high-impact rubric (analytic signal gained / added surface area, derived mechanically from unblocked questions and statically-confirmed signal names) and ships with a reviewable companion patch generated against the exact cloned commit and verified with `git apply --check`. Analysis deepens progressively across rounds (correlation -> ordering -> temporal -> privacy) only as the data actually gets richer, and a post-hoc scorecard re-scores the applied changes (predicted vs realized impact per surface area) as tool-maintenance metadata that is never a repository finding. Proven on real GitHub, GitLab, and Bitbucket repositories authored without this tool.",
+      "commit": "5b825fa",
+      "evidence_exists": {
+        "docs/high_impact_filter.md": true,
+        "telemetry_contracts/code_proposals.py": true,
+        "telemetry_contracts/high_impact_filter.py": true,
+        "telemetry_contracts/pipeline.py": true
+      },
+      "fixtures": [],
+      "id": "high-impact-filter-and-reviewable-patches",
+      "limitations": [
+        "The rubric is a deterministic decision aid, not an automatic gate; a tiny change can score high and necessary scaffolding can score low, so the breakdown is always reported.",
+        "Companion patches add a brand-new file (a reviewable proposal); they are not integrated into existing call sites and are never applied. Re-running or replaying the target repo's build/tests remains out of scope without a sandbox."
+      ],
+      "public_artifacts": [
+        "telemetry_contracts/high_impact_filter.py",
+        "telemetry_contracts/code_proposals.py",
+        "telemetry_contracts/pipeline.py",
+        "docs/high_impact_filter.md"
+      ],
+      "tests": [
+        "tests/test_proposals_and_depth.py",
+        "tests/test_real_repos.py"
+      ]
     }
   ],
   "schema_version": "1.0",
   "summary": {
-    "claims": 6,
-    "commit": "1238fcd"
+    "claims": 7,
+    "commit": "5b825fa"
   }
 }

@@ -50,6 +50,7 @@ from .project_semantics import (
 )
 from .repo_scan import ContractLoadError, find_telemetry_files
 from .code_proposals import generate_code_proposals
+from .high_impact_filter import feature_scorecard
 
 PLANNER = "telemetry-contracts/instrumentation-planner@1"
 
@@ -730,6 +731,118 @@ def semantic_differential(before: dict[str, Any], after: dict[str, Any]) -> dict
     }
 
 
+# ---------------------------------------------------------------------------
+# Progressive-depth ladder: deepen the analysis each round AS THE DATA GETS
+# RICHER (correlation -> ordering -> temporal -> privacy/hyperproperties).
+# Deeper tiers are INFORMATIONAL: they never create new instrumentation gaps
+# that feed back into planning, so the loop's termination is unaffected.
+# ---------------------------------------------------------------------------
+
+_DEPTH_TIERS = ["correlation", "ordering", "temporal", "privacy"]
+MAX_DEPTH_TIER = len(_DEPTH_TIERS)
+
+
+def _depth_tier_metric(tier: str, diag: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
+    """Deterministic, read-only metric for one analysis tier (no new findings)."""
+
+    comp = diag.get("components", {})
+    if tier == "correlation":
+        failures = comp.get("failures", 0)
+        uncorrelated = comp.get("failures_without_correlation", 0)
+        correlated = max(0, failures - uncorrelated)
+        coverage = int(round(100 * correlated / failures)) if failures else 100
+        return {"failures": failures, "correlated_failures": correlated, "coverage_pct": coverage}
+    if tier == "ordering":
+        return {
+            "order_inferred": bool(base.get("order_inferred")),
+            "ordering_support_groups": (base.get("inferred_ordering") or {}).get("support_full_groups", 0),
+        }
+    if tier == "temporal":
+        order = base.get("inferred_ordering") or {}
+        return {
+            "enforceable_sequence": bool(order.get("enforceable")),
+            "ordered_steps": len(order.get("steps", [])),
+            "candidate_concurrency_pairs": base.get("concurrency_pairs", 0),
+        }
+    # privacy / hyperproperties
+    sensitive = comp.get("sensitive_values", 0)
+    return {"sensitive_values": sensitive, "privacy_clean": sensitive == 0}
+
+
+def _depth_report(
+    round_index: int,
+    scheduled_tier: int,
+    effective_tier: int,
+    diag: dict[str, Any],
+    base: dict[str, Any],
+) -> dict[str, Any]:
+    """Assemble the per-round depth report with explicit per-tier status.
+
+    A tier is ``ran`` when reached, ``skipped_insufficient_data`` when the round
+    index scheduled it but the data was not yet rich enough to unlock it, and
+    ``not_reached`` when the round index has not scheduled it yet.
+    """
+
+    tiers: list[dict[str, Any]] = []
+    for idx, name in enumerate(_DEPTH_TIERS, start=1):
+        if idx <= effective_tier:
+            status = "ran"
+            metric = _depth_tier_metric(name, diag, base)
+        elif idx <= scheduled_tier:
+            status = "skipped_insufficient_data"
+            metric = None
+        else:
+            status = "not_reached"
+            metric = None
+        tiers.append({"tier": idx, "name": name, "status": status, "metric": metric})
+    return {
+        "schema": "telemetry-contracts/depth-report@1",
+        "round": round_index,
+        "scheduled_tier": scheduled_tier,
+        "effective_tier": effective_tier,
+        "deepest_check": _DEPTH_TIERS[effective_tier - 1] if effective_tier else None,
+        "tiers": tiers,
+    }
+
+
+def _data_got_richer(sem_diff: dict[str, Any]) -> bool:
+    """Whether a round's instrumentation actually enriched the data.
+
+    Used to gate unlocking the next analysis tier so 'progressive depth' tracks
+    real data richness, not merely the round counter.
+    """
+
+    return bool(
+        sem_diff.get("new_signals")
+        or sem_diff.get("order_newly_inferred")
+        or sem_diff.get("newly_enforceable_sequence")
+        or (sem_diff.get("ordering_support_delta", 0) or 0) > 0
+        or (sem_diff.get("obligations_discharged_delta", 0) or 0) > 0
+    )
+
+
+def _depth_summary(round_reports: list[dict[str, Any]], stopped_reason: str) -> dict[str, Any]:
+    """Final accounting of how deep the progressive ladder actually went."""
+
+    reached = max((r["depth"]["effective_tier"] for r in round_reports if r.get("depth")), default=0)
+    not_reached = [
+        {"tier": idx, "name": name}
+        for idx, name in enumerate(_DEPTH_TIERS, start=1)
+        if idx > reached
+    ]
+    return {
+        "schema": "telemetry-contracts/depth-summary@1",
+        "highest_tier_reached": reached,
+        "deepest_check_reached": _DEPTH_TIERS[reached - 1] if reached else None,
+        "tiers_reached": _DEPTH_TIERS[:reached],
+        "tiers_not_reached": not_reached,
+        "not_reached_reason": (
+            "loop converged or stopped before the data was rich enough to unlock "
+            f"deeper tiers ({stopped_reason})"
+        ) if not_reached else None,
+    }
+
+
 def _application_manifest(
     round_index: int,
     commit: str | None,
@@ -828,6 +941,8 @@ def run_pipeline(
             "baseline": None,
             "rounds": [],
             "impact_ledger": [],
+            "depth_summary": _depth_summary([], "no telemetry discovered"),
+            "feature_scorecard": feature_scorecard([], []),
             "stopped_reason": "no telemetry discovered",
             "regressed": False,
             "final": None,
@@ -852,6 +967,7 @@ def run_pipeline(
     any_regression = False
     stopped_reason = "rounds exhausted"
     commit = characterization["manifest"].get("commit")
+    richness_unlocked = 1  # progressive-depth ladder starts at tier 1 (correlation)
 
     for round_index in range(1, rounds + 1):
         plan = instrumentation_plan(
@@ -869,14 +985,25 @@ def run_pipeline(
         # Synthesize onto a CANDIDATE copy; never advance state until the safety
         # gate passes, so a regressing round cannot contaminate later rounds.
         candidate = synthesize_instrumentation(events, plan)
-        proposals = generate_code_proposals(plan, libraries=libraries, commit=commit)
+        proposals = generate_code_proposals(
+            plan, libraries=libraries, commit=commit, repo_root=root_path,
+        )
         verification = verify_instrumentation(candidate["events"], plan)
         candidate_diag = diagnose(candidate["events"], service=target_service)
+        candidate_baseline = baseline(candidate["events"], service=target_service)
         diff = differential(current, candidate_diag)
         sem_diff = semantic_differential(
             initial_baseline if round_index == 1 else baseline(events, service=target_service),
-            baseline(candidate["events"], service=target_service),
+            candidate_baseline,
         )
+
+        # Progressive depth: deepen analysis as the data gets richer. The tier is
+        # scheduled by round index but only *unlocked* when prior rounds actually
+        # enriched the data; deeper tiers are informational and never feed gaps
+        # back into planning, so termination is unaffected.
+        scheduled_tier = min(round_index, MAX_DEPTH_TIER)
+        effective_tier = min(scheduled_tier, richness_unlocked)
+        depth = _depth_report(round_index, scheduled_tier, effective_tier, candidate_diag, candidate_baseline)
 
         quarantined = bool(diff["regressions"])
         safety = {
@@ -897,6 +1024,7 @@ def run_pipeline(
             "verification": verification,
             "differential": diff,
             "semantic_differential": sem_diff,
+            "depth": depth,
             "quarantined": quarantined,
             "score_after": candidate_diag["diagnosability_score"],
         })
@@ -918,6 +1046,10 @@ def run_pipeline(
 
         events = candidate["events"]
         current = candidate_diag
+        # Unlock the next analysis tier only if this round genuinely enriched the
+        # data (monotonic), so depth tracks richness rather than the round count.
+        if _data_got_richer(sem_diff):
+            richness_unlocked = min(richness_unlocked + 1, MAX_DEPTH_TIER)
         if diff["score_delta"] <= 0:
             stopped_reason = "no measurable improvement from last round"
             break
@@ -936,6 +1068,8 @@ def run_pipeline(
         "baseline": initial_baseline,
         "rounds": round_reports,
         "impact_ledger": ledger,
+        "depth_summary": _depth_summary(round_reports, stopped_reason),
+        "feature_scorecard": feature_scorecard(round_reports, ledger),
         "stopped_reason": stopped_reason,
         "regressed": any_regression,
         "final": {

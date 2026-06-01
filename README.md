@@ -134,7 +134,12 @@ python3 -m telemetry_contracts.cli pipeline --repo owner/name
 ```
 
 Every round keeps an impact ledger (predicted vs. realized diagnosability gain)
-so you can see whether each change actually paid off on your real data. Add
+so you can see whether each change actually paid off on your real data. Each
+proposed change is scored by a written [high-impact filter](docs/high_impact_filter.md)
+(analytic signal gained ÷ added surface area) and ships with a reviewable
+companion patch generated against the exact cloned commit and verified with
+`git apply --check`. Analysis deepens progressively across rounds — correlation →
+ordering → temporal → privacy — as the data actually gets richer. Add
 `--out-dir DIR` to persist every stage as a SHA-keyed, provenance-carrying
 artifact; `--format sarif` for a CI-ready differential; and
 `--fail-on-regression` to exit non-zero if any round would regress safety. See
@@ -197,6 +202,7 @@ The package ships `py.typed` and exports stable helpers from
 `normalize_events`, `scan_directory`, `scan_repo`, `characterize_repo`,
 `diagnose`, `baseline`, `instrumentation_plan`, `generate_code_proposals`,
 `differential`, `semantic_differential`, `run_pipeline`,
+`score_addition`, `feature_scorecard`,
 `write_pipeline_artifacts`, `load_contract`, `load_jsonl`,
 `validate_events`, `check_sources`, `run_compiled_monitor`,
 `generate_incident_readiness_report`, `generate_service_owner_report`,
@@ -242,6 +248,7 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 
 - `docs/operational_scorecards.md` — workload scorecards, privacy-safe examples, anti-patterns, CI/SARIF integration, OTLP limits.
 - `docs/staged_pipeline.md` — the characterize → diagnose → plan → apply → differential loop, with a worked example on a public repo and every intermediate artifact.
+- `docs/high_impact_filter.md` — the written rubric (analytic signal ÷ surface area) used to score every proposed change and re-score applied changes after the fact.
 - `docs/tutorials/` — fixing a broken service; mapping SLO debugging questions to contract clauses.
 - `docs/report_schemas.md` + `docs/report_schemas/*.schema.json` — JSON output envelopes.
 - `docs/replication_guide.md` — exact commands to reproduce benchmark metrics and reports.

@@ -57,6 +57,15 @@ def _assert_proposals_honest_and_valid(report):
             # never silently applied to the user's repository
             assert p["applied_to_repo"] is False
             assert p["target_repo_build_not_run"] is True
+            # item 053: a reviewable companion patch generated against the cloned
+            # SHA must apply cleanly via `git apply --check`
+            patch = p["patch"]
+            assert patch["is_reviewable_companion_patch"] is True
+            assert patch["rewrites_business_logic"] is False
+            assert patch["applies_clean"] is True, patch["apply_reason"]
+            # item 002: every proposal carries a mechanical high-impact score
+            assert "impact_milli" in p["impact_score"]
+            assert p["impact_score"]["surface_area"] > 0
 
 
 @pytest.mark.parametrize("host,target,expects_data", REAL_REPOS, ids=[r[1] for r in REAL_REPOS])
@@ -79,6 +88,13 @@ def test_pipeline_correct_on_real_repo(tmp_path, host, target, expects_data):
     h2 = {a["path"]: a["content_sha256"] for a in r2["artifacts"]["artifacts"]}
     assert h1 == h2, "artifact content hashes must be deterministic across runs"
 
+    # progressive-depth and post-hoc scorecard are always present and well-formed
+    depth = r1["depth_summary"]
+    assert depth["highest_tier_reached"] >= 0
+    assert depth["highest_tier_reached"] <= 4
+    scorecard = r1["feature_scorecard"]
+    assert scorecard["is_repository_finding"] is False
+
     has_telemetry = r1["characterization"]["has_telemetry"]
     if has_telemetry:
         base = r1["baseline"]["diagnosability_score"]
@@ -87,6 +103,10 @@ def test_pipeline_correct_on_real_repo(tmp_path, host, target, expects_data):
         # quarantine/rollback guarantees a non-regressing realized outcome
         assert r1["regressed"] is False or final >= base
         _assert_proposals_honest_and_valid(r1)
+        # depth tier 1 (correlation) must have actually run once data exists
+        if r1["rounds"]:
+            tier1 = r1["rounds"][0]["depth"]["tiers"][0]
+            assert tier1["name"] == "correlation" and tier1["status"] == "ran"
     else:
         assert r1["baseline"] is None
         assert r1["final"] is None

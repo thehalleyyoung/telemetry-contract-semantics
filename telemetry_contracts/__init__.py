@@ -21,6 +21,7 @@ from .pipeline import (
 )
 from .artifacts import write_pipeline_artifacts
 from .code_proposals import generate_code_proposals
+from .high_impact_filter import feature_scorecard, score_addition
 from .project_semantics import infer_execution_semantics
 from .repo_scan import scan_directory, scan_repo
 from .service_report import generate_service_owner_report
@@ -35,6 +36,7 @@ __all__ = [
     "check_sources",
     "diagnose",
     "differential",
+    "feature_scorecard",
     "generate_code_proposals",
     "generate_incident_readiness_report",
     "generate_service_owner_report",
@@ -52,6 +54,7 @@ __all__ = [
     "run_pipeline",
     "scan_directory",
     "scan_repo",
+    "score_addition",
     "semantic_differential",
     "validate_events",
     "write_pipeline_artifacts",

@@ -63,6 +63,18 @@ CLAIMS: list[dict[str, Any]] = [
             "The loop runs on the dominant service for a single narrative; per-service breakdowns come from `scan --deep`.",
         ],
     },
+    {
+        "id": "high-impact-filter-and-reviewable-patches",
+        "claim": "Every proposed instrumentation change is scored by a written high-impact rubric (analytic signal gained / added surface area, derived mechanically from unblocked questions and statically-confirmed signal names) and ships with a reviewable companion patch generated against the exact cloned commit and verified with `git apply --check`. Analysis deepens progressively across rounds (correlation -> ordering -> temporal -> privacy) only as the data actually gets richer, and a post-hoc scorecard re-scores the applied changes (predicted vs realized impact per surface area) as tool-maintenance metadata that is never a repository finding. Proven on real GitHub, GitLab, and Bitbucket repositories authored without this tool.",
+        "public_artifacts": ["telemetry_contracts/high_impact_filter.py", "telemetry_contracts/code_proposals.py", "telemetry_contracts/pipeline.py", "docs/high_impact_filter.md"],
+        "tests": ["tests/test_proposals_and_depth.py", "tests/test_real_repos.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The rubric is a deterministic decision aid, not an automatic gate; a tiny change can score high and necessary scaffolding can score low, so the breakdown is always reported.",
+            "Companion patches add a brand-new file (a reviewable proposal); they are not integrated into existing call sites and are never applied. Re-running or replaying the target repo's build/tests remains out of scope without a sandbox.",
+        ],
+    },
 ]
 
 
