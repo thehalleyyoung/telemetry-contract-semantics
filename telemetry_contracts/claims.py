@@ -111,6 +111,18 @@ CLAIMS: list[dict[str, Any]] = [
             "The LLM-baseline row replays a transparent deterministic surrogate, not a commercial model; it demonstrates the offline harness and a different error profile and makes no claim about real LLM accuracy.",
         ],
     },
+    {
+        "id": "formal-model",
+        "claim": "The core semantic guarantees are stated precisely, tied mechanically to the code that implements them and the test that witnesses them, and discharged by deterministic executable checks rather than asserted in prose. Thirteen obligations across six families are checked: contract-refinement order axioms (reflexivity, transitivity, antisymmetry, and order-soundness in the under-instrumentation direction), monotonicity of the staged improvement loop (non-decreasing diagnosability with no applied regressions, and quarantine of regressing rounds), termination (bounded rounds and monotonic gap exclusion so no gap is re-planned), assume-guarantee discharge (a satisfying trace passes, a violating trace flags), attribute-presence abstract-domain soundness (a field present in an event is never reported absent), and transformation preservation (a benign transform preserves obligations while a destructive one that drops a required correlation field is detected). The tool emits a machine-checkable verdict per obligation, so the paper cites a checked count.",
+        "public_artifacts": ["telemetry_contracts/formal_model.py", "docs/formal_model.md"],
+        "tests": ["tests/test_formal_model.py", "tests/test_formal_model_real.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The witnesses discharge the guarantees over built-in finite fixtures (plus real harvested events for the data-dependent abstract-domain and refinement witnesses); they are executable conformance checks, not mechanized proofs in a theorem prover.",
+            "The approximation direction of each guarantee (exact, over-, or under-approximation) is documented and tested, but the soundness argument for the approximation itself is given in prose in docs/formal_model.md.",
+        ],
+    },
 ]
 
 

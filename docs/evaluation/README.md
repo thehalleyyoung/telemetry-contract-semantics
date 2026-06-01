@@ -41,6 +41,11 @@ fail?".
   capability baselines (rule-light, OTel-convention conformance, and an offline
   LLM-baseline harness), with covered-class metrics, a symmetric win/loss
   analysis, and an exact paired significance test.
+- [`../formal_model.md`](../formal_model.md) — the formal model: the semantic
+  guarantees (refinement order, monotonicity, termination, assume-guarantee,
+  abstract-domain soundness, transformation preservation) stated precisely, tied
+  to code and tests, and discharged by deterministic executable witnesses
+  (`python3 -m telemetry_contracts.cli formal-model`).
 
 ## Reproducing the study
 

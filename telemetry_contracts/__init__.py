@@ -29,6 +29,11 @@ from .static_checker import check_sources
 from .validator import validate_events
 from .bug_classes import BUG_CLASSES, HEADLINE_QUESTION, soundness_rows
 from .mining import aggregate, mine_corpus, render_study_markdown, subject_record
+from .formal_model import (
+    discharge_formal_model,
+    render_formal_model_markdown,
+    render_traceability_markdown,
+)
 from .evaluation import (
     compare_baselines,
     load_gold_set,
@@ -48,6 +53,7 @@ __all__ = [
     "compare_baselines",
     "diagnose",
     "differential",
+    "discharge_formal_model",
     "feature_scorecard",
     "generate_code_proposals",
     "generate_incident_readiness_report",
@@ -66,7 +72,9 @@ __all__ = [
     "normalize_events",
     "render_baselines_markdown",
     "render_evaluation_markdown",
+    "render_formal_model_markdown",
     "render_study_markdown",
+    "render_traceability_markdown",
     "run_compiled_monitor",
     "run_benchmark",
     "run_pipeline",

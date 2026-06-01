@@ -122,6 +122,12 @@ def main(argv: list[str] | None = None) -> int:
     baselines_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     baselines_parser.add_argument("--output", help="write the comparison/report to this path instead of stdout")
 
+    formal_parser = subparsers.add_parser("formal-model", help="discharge the formal guarantees (refinement, monotonicity, termination, assume-guarantee, abstract domains, preservation) as machine-checkable verdicts")
+    formal_parser.add_argument("--format", choices=["json", "markdown", "traceability"], default="markdown")
+    formal_parser.add_argument("--events", help="optional JSON/JSONL telemetry to drive the data-dependent witnesses")
+    formal_parser.add_argument("--output", help="write the report to this path instead of stdout")
+    formal_parser.add_argument("--require-all", action="store_true", help="exit non-zero unless every obligation is discharged")
+
     infer_semantics_parser = subparsers.add_parser("infer-semantics", help="infer execution semantics (a draft contract + small-step derivation + observed order) from telemetry you already have")
     infer_semantics_parser.add_argument("--events", required=True, help="JSON/JSONL log lines, a JSON array, native JSONL, or an OTLP export")
     infer_semantics_parser.add_argument("--service", help="only reason about events from this service (defaults to the most common observed service)")
@@ -617,6 +623,31 @@ def main(argv: list[str] | None = None) -> int:
                 else render_baselines_markdown(comparison)
             )
             _emit_text(output, args.output)
+            return 0
+        if args.command == "formal-model":
+            from .formal_model import (
+                discharge_formal_model,
+                render_formal_model_markdown,
+                render_traceability_markdown,
+            )
+
+            events = None
+            if args.events:
+                events = load_events_auto(args.events, tolerant=True)["events"]
+            report = discharge_formal_model(events=events)
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            elif args.format == "traceability":
+                output = render_traceability_markdown(report)
+            else:
+                output = render_formal_model_markdown(report)
+            _emit_text(output, args.output)
+            if args.require_all and not report["summary"]["all_discharged"]:
+                print(
+                    f"ERROR formal-model: {report['summary']['failed']} obligation(s) not discharged",
+                    file=sys.stderr,
+                )
+                return 1
             return 0
         if args.command in {"scan", "scan-repo"}:
             try:
