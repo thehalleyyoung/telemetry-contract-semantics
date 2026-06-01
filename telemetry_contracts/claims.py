@@ -147,6 +147,18 @@ CLAIMS: list[dict[str, Any]] = [
             "SARIF upload and PR commenting depend on the caller granting security-events: write and pull-requests: write permissions respectively; both integrations can be disabled via inputs.",
         ],
     },
+    {
+        "id": "scorecard-badge",
+        "claim": "The tool renders a shareable observability score badge and scorecard directly from a scan, so a repository can display its diagnosability score the same way it displays build status or coverage. From any directory (or a prior CI report) it emits a shields-style flat badge SVG, a live shields.io endpoint JSON, or a richer scorecard card listing the score, verdict, and top under-instrumentation gaps. All three renderings are byte-deterministic: the same inputs always produce identical bytes, the SVG is well-formed XML, XML special characters are escaped, and the color band is a pure function of the score (grey when no telemetry is discovered). The repository dogfoods its own badge in the README.",
+        "public_artifacts": ["telemetry_contracts/scorecard.py", "docs/scorecard_badge.md"],
+        "tests": ["tests/test_scorecard.py", "tests/test_scorecard_real.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The badge reports the diagnosability score only; the scorecard summarizes the top gaps but is not a substitute for the full findings report.",
+            "Publishing a live shields.io endpoint requires the caller to host the endpoint JSON (e.g. as a raw repository file); the tool only renders it.",
+        ],
+    },
 ]
 
 

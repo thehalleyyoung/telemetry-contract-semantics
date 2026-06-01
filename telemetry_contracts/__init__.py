@@ -45,6 +45,12 @@ from .github_action import (
     compare_ci_reports,
     evaluate_ci_gate_for_report,
 )
+from .scorecard import (
+    render_badge_svg,
+    render_scorecard_svg,
+    score_color,
+    shields_endpoint_json,
+)
 from .evaluation import (
     compare_baselines,
     load_gold_set,
@@ -89,6 +95,8 @@ __all__ = [
     "normalize_events",
     "render_baselines_markdown",
     "render_evaluation_markdown",
+    "render_badge_svg",
+    "render_scorecard_svg",
     "render_execution_proof_markdown",
     "render_formal_model_markdown",
     "render_study_markdown",
@@ -99,6 +107,8 @@ __all__ = [
     "scan_directory",
     "scan_repo",
     "score_addition",
+    "score_color",
+    "shields_endpoint_json",
     "score_gold_set",
     "semantic_differential",
     "soundness_rows",

@@ -285,6 +285,16 @@ def main(argv: list[str] | None = None) -> int:
     ci_report_parser.add_argument("--max-files", type=int, default=300)
     ci_report_parser.add_argument("--output")
 
+    badge_parser = subparsers.add_parser("scorecard-badge", help="emit a deterministic observability badge/scorecard SVG or a shields.io JSON endpoint from a scan")
+    badge_group = badge_parser.add_mutually_exclusive_group(required=True)
+    badge_group.add_argument("--path", help="repository/directory to analyze")
+    badge_group.add_argument("--report", help="a prior ci-report JSON to render from")
+    badge_parser.add_argument("--format", choices=["svg", "scorecard", "shields-json"], default="svg")
+    badge_parser.add_argument("--label", default="observability")
+    badge_parser.add_argument("--service", help="restrict to a single service")
+    badge_parser.add_argument("--max-files", type=int, default=300)
+    badge_parser.add_argument("--output")
+
     regenerate_parser = subparsers.add_parser("regenerate-artifacts", help="list or write deterministic report regeneration artifacts")
     regenerate_parser.add_argument("--write", action="store_true", help="write reports/current_impact*, reports/paper_tables.md, and docs/claims_evidence_matrix.json")
     regenerate_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
@@ -829,6 +839,27 @@ def main(argv: list[str] | None = None) -> int:
                 output = build_pr_comment(report, base)
             _emit_text(output, args.output)
             return 0 if gate["pass"] else 1
+        if args.command == "scorecard-badge":
+            from .github_action import analyze_for_ci
+            from .scorecard import (
+                render_badge_svg,
+                render_scorecard_svg,
+                shields_endpoint_json,
+            )
+
+            if args.report:
+                report = json.loads(Path(args.report).read_text(encoding="utf-8"))
+            else:
+                report = analyze_for_ci(args.path, service=args.service, max_files=args.max_files)
+            score = report.get("diagnosability_score")
+            if args.format == "shields-json":
+                output = json.dumps(shields_endpoint_json(score, label=args.label), indent=2, sort_keys=True)
+            elif args.format == "scorecard":
+                output = render_scorecard_svg(report)
+            else:
+                output = render_badge_svg(score, label=args.label)
+            _emit_text(output, args.output)
+            return 0
         if args.command == "regenerate-artifacts":
             report = regenerate_artifacts(Path.cwd(), write=args.write)
             output = json.dumps(report, indent=2, sort_keys=True) if args.format == "json" else format_regeneration_markdown(report)
