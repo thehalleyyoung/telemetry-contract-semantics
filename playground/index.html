@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telemetry Contracts — observability playground</title>
+    <meta
+      name="description"
+      content="Paste your logs, traces, or metrics and instantly see your diagnosability score and the under-instrumentation gaps that would stop you answering 'why did this fail?'. Runs entirely in your browser."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
+  </head>
+  <body>
+    <header class="hero">
+      <h1>🔭 Telemetry Contracts</h1>
+      <p class="tagline">
+        Paste the telemetry you <em>already</em> have. See your observability
+        score and the gaps that would stop you answering
+        <strong>“why did this fail?”</strong> — instantly, entirely in your
+        browser. No upload, no backend, no install.
+      </p>
+    </header>
+
+    <main>
+      <section class="examples" aria-label="Example datasets">
+        <span class="examples-label">Try an example:</span>
+        <div id="examples" class="example-buttons"></div>
+      </section>
+
+      <section class="editor">
+        <label for="input">Your telemetry (JSON lines, a JSON array, logfmt, or an OTLP JSON export)</label>
+        <textarea
+          id="input"
+          spellcheck="false"
+          placeholder='{"kind":"log","name":"checkout.error","severity":"ERROR","fields":{"tenant_id":"a"}}'
+        ></textarea>
+        <div class="controls">
+          <label for="service">Service (optional)</label>
+          <input id="service" type="text" placeholder="all services" />
+          <button id="analyze" disabled>Loading engine…</button>
+          <button id="share" class="secondary" disabled>Copy share link</button>
+        </div>
+        <p id="status" class="status"></p>
+      </section>
+
+      <section id="results" class="results" hidden></section>
+    </main>
+
+    <footer>
+      <p>
+        Runs the <strong>pure-stdlib</strong> engine in your browser via
+        <a href="https://pyodide.org">Pyodide</a>. Nothing you paste leaves your
+        machine. &middot;
+        <a href="https://github.com/thehalleyyoung/telemetry-contract-semantics">Source &amp; docs</a>
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -10,6 +10,7 @@ from .infer import infer_contract, infer_temporal_order
 from .loader import load_contract, load_jsonl
 from .monitor import run_compiled_monitor
 from .otlp import load_otlp_json_detailed as import_otlp
+from .playground import analyze_text
 from .pipeline import (
     baseline,
     characterize_repo,
@@ -62,6 +63,7 @@ from .evaluation import (
 __all__ = [
     "__version__",
     "analyze_events",
+    "analyze_text",
     "aggregate",
     "analyze_for_ci",
     "baseline",

@@ -1,0 +1,30 @@
+[
+  {
+    "description": "Spans and logs from a checkout flow; some carry correlation, some do not.",
+    "file": "examples/checkout-spans.jsonl",
+    "id": "checkout-spans",
+    "service": null,
+    "title": "Checkout spans (mixed quality)"
+  },
+  {
+    "description": "A fuller trace across services \u2014 see how a high diagnosability score looks.",
+    "file": "examples/microservices.jsonl",
+    "id": "microservices",
+    "service": null,
+    "title": "Well-instrumented microservices"
+  },
+  {
+    "description": "An error log that cannot be correlated to its request \u2014 the canonical 'why did this fail?' gap.",
+    "file": "examples/missing-correlation.jsonl",
+    "id": "missing-correlation",
+    "service": null,
+    "title": "Failure with no trace id"
+  },
+  {
+    "description": "An auth failure log carrying a raw email address \u2014 a privacy bug class.",
+    "file": "examples/secret-in-log.jsonl",
+    "id": "secret-in-log",
+    "service": null,
+    "title": "Secret leaked into a log"
+  }
+]

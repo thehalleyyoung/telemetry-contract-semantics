@@ -159,6 +159,18 @@ CLAIMS: list[dict[str, Any]] = [
             "Publishing a live shields.io endpoint requires the caller to host the endpoint JSON (e.g. as a raw repository file); the tool only renders it.",
         ],
     },
+    {
+        "id": "browser-playground",
+        "claim": "A static, dependency-free browser playground runs the pure-stdlib engine entirely client-side under Pyodide (no backend, nothing uploaded), so a newcomer can paste the telemetry they already have and instantly see their diagnosability score and under-instrumentation gaps. It auto-detects JSON lines, a JSON array, logfmt, or an OTLP JSON export; ships one-click example datasets drawn from existing repository fixtures; and encodes the input into the URL so results are shareable without a server. The browser calls a single shared, tested entrypoint (analyze_text) that is byte-deterministic and matches the CLI. A CI smoke test loads the engine under Pyodide and asserts it imports and analyzes a known sample deterministically, and the committed bundle is byte-reproducible from a build script.",
+        "public_artifacts": ["telemetry_contracts/playground.py", "playground/build.py", "playground/index.html", "playground/app.js", "playground/smoke_test.mjs", "docs/playground.md", ".github/workflows/playground-smoke.yml"],
+        "tests": ["tests/test_playground.py", "tests/test_playground_real.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The playground analyzes pasted/loaded telemetry text only; the deeper repository scan, semantics inference, and staged pipeline run via the CLI, not in the browser.",
+            "The Pyodide runtime and the engine bundle are loaded at page open, so the first analysis incurs a one-time load cost; subsequent analyses are instant.",
+        ],
+    },
 ]
 
 

@@ -3,7 +3,7 @@
     {
       "benchmark_rows": [],
       "claim": "The tool runs against telemetry you already have (arbitrary JSON/JSONL logs, a JSON array, native JSONL, or OTLP) with no contract authored first: `analyze` reports privacy/diagnosability findings and `infer-contract` writes a conservative draft contract.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "README.md": true,
         "telemetry_contracts/adapters.py": true,
@@ -38,7 +38,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "README.md": true,
         "benchmarks/builtin.json": true,
@@ -72,7 +72,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "CI can fail on new high-severity findings while allowing audited, owned, expiring baseline entries.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "examples/ci/baseline.example.json": true,
         "examples/ci/generic-ci.sh": true,
@@ -101,7 +101,7 @@
         "benchmark-missing-correlation"
       ],
       "claim": "Static and runtime findings can be exported as SARIF with taxonomy-backed rule metadata for code scanning consumers.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "docs/finding_taxonomy.json": true,
         "examples/ci/static_findings.example.json": true,
@@ -130,7 +130,7 @@
         "all built-in benchmark rows"
       ],
       "claim": "Current impact reports, benchmark Markdown, taxonomy summaries, paper tables, and this matrix are regenerated from checked-in artifacts.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "benchmarks/builtin.json": true,
         "docs/claims_evidence_matrix.json": true,
@@ -158,7 +158,7 @@
     {
       "benchmark_rows": [],
       "claim": "A staged loop runs on a repository you did not instrument: it characterizes existing telemetry, diagnoses incident-readiness, plans high-impact additive instrumentation, synthesizes the missing signals offline, and re-analyzes differentially across rounds. Each round is safety-gated (a round that introduces a finding or drops the score is quarantined and rolled back), every stage is persisted as a SHA-keyed, provenance-carrying artifact, and generated code is emitted only as validated standalone proposals (parsed, compiled, and confirmed by the static checker) \u2014 never applied to the repo and never build/test-run.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "docs/staged_pipeline.md": true,
         "telemetry_contracts/artifacts.py": true,
@@ -187,7 +187,7 @@
     {
       "benchmark_rows": [],
       "claim": "Every proposed instrumentation change is scored by a written high-impact rubric (analytic signal gained / added surface area, derived mechanically from unblocked questions and statically-confirmed signal names) and ships with a reviewable companion patch generated against the exact cloned commit and verified with `git apply --check`. Analysis deepens progressively across rounds (correlation -> ordering -> temporal -> privacy) only as the data actually gets richer, and a post-hoc scorecard re-scores the applied changes (predicted vs realized impact per surface area) as tool-maintenance metadata that is never a repository finding. Proven on real GitHub, GitLab, and Bitbucket repositories authored without this tool.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "docs/high_impact_filter.md": true,
         "telemetry_contracts/code_proposals.py": true,
@@ -214,7 +214,7 @@
     {
       "benchmark_rows": [],
       "claim": "A frozen, pinned-commit corpus of pre-existing repositories (addressed by exact 40-character commit SHA across GitHub, GitLab, and Bitbucket) is scanned and reduced to a single byte-deterministic dataset: a headline statistic (the share of telemetry-bearing repositories that cannot answer 'why did this request fail?'), per-bug-class prevalence with per-host breakdowns, and the diagnosability-score distribution. Each bug class has a precise, testable definition and an explicit soundness/incompleteness statement, and the headline uses the conservative finding-based correlation check so it never over-reports relative to the per-class prevalence.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "benchmarks/corpus/tier1.json": true,
         "docs/evaluation/corpus_study.md": true,
@@ -246,7 +246,7 @@
     {
       "benchmark_rows": [],
       "claim": "A hand-labeled curated conformance set (one objectively-checkable (sample, bug-class) pair per line, balanced positive/negative and covering every bug class) is scored against the shipped detectors to produce byte-deterministic per-class and overall precision, recall, and F1, a confusion matrix, a representative error analysis, and a Cohen's-kappa inter-rater slot. Labels are semantic ground truth (distinct from the operational detector's field set); every residual error on the curated set is a documented incompleteness or false-positive source. The metrics describe this curated set rather than a prevalence-representative sample, and the predictor's wiring is separately validated to agree exactly with an independent field oracle on telemetry harvested from real repositories.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "benchmarks/ground_truth/curated.jsonl": true,
         "docs/evaluation/ground_truth.md": true,
@@ -276,7 +276,7 @@
     {
       "benchmark_rows": [],
       "claim": "The shipped detectors are compared head-to-head, through the identical gold-set pipeline, against deterministic capability baselines: a deliberately naive field-name keyword detector (rule-light), an OpenTelemetry semantic-convention conformance checker (coverage-limited, with out-of-scope classes reported as coverage gaps rather than accuracy failures), and an offline LLM-baseline harness (prompt + parser + replay cache) whose shipped cache is a transparent hand-written surrogate policy that is explicitly NOT an LLM result. The comparison reports all-class and covered-class micro/macro precision/recall/F1, a symmetric per-item win/loss analysis, and an exact two-sided paired McNemar test; on the curated set the tool significantly outperforms every baseline. Baseline definitions are frozen before snapshotting, no threshold is tuned on the gold set, and every method sees only (events, bug_class).",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "benchmarks/baselines/llm_recorded.json": true,
         "benchmarks/ground_truth/curated.jsonl": true,
@@ -304,7 +304,7 @@
     {
       "benchmark_rows": [],
       "claim": "The core semantic guarantees are stated precisely, tied mechanically to the code that implements them and the test that witnesses them, and discharged by deterministic executable checks rather than asserted in prose. Thirteen obligations across six families are checked: contract-refinement order axioms (reflexivity, transitivity, antisymmetry, and order-soundness in the under-instrumentation direction), monotonicity of the staged improvement loop (non-decreasing diagnosability with no applied regressions, and quarantine of regressing rounds), termination (bounded rounds and monotonic gap exclusion so no gap is re-planned), assume-guarantee discharge (a satisfying trace passes, a violating trace flags), attribute-presence abstract-domain soundness (a field present in an event is never reported absent), and transformation preservation (a benign transform preserves obligations while a destructive one that drops a required correlation field is detected). The tool emits a machine-checkable verdict per obligation, so the paper cites a checked count.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "docs/formal_model.md": true,
         "telemetry_contracts/formal_model.py": true
@@ -327,7 +327,7 @@
     {
       "benchmark_rows": [],
       "claim": "The tool produces runtime evidence that its own deterministically generated instrumentation proposals work: it regenerates each snippet from trusted (gap, library_kind) fields (never the proposal's stored text), validates intended field names, checks the snippet against a strict exact-shape AST allowlist, and runs the validated snippet in a hardened, isolated subprocess (python -I -S -B -E, stripped environment, fresh empty cwd, stdin to /dev/null, close_fds, timeout, and POSIX CPU/file-size rlimits). For the stdlib logging variant it captures the emitted records via a private non-propagating logger and proves the promised field names are emitted (status emission-clean); the OpenTelemetry variant degrades honestly to needs-optional-dep when the SDK is absent. The tool never executes the target repository's code and never runs its build/test; executed events are labeled evidence only and are never folded into scoring or the differential, so the deterministic scores are unaffected.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "docs/execution_proof.md": true,
         "telemetry_contracts/execution.py": true
@@ -350,7 +350,7 @@
     {
       "benchmark_rows": [],
       "claim": "A composite GitHub Action wraps the scan/diagnose engines so any repository can add observability scanning to its PR checks in three lines of YAML. The Action produces a deterministic CI report (diagnosability score, severity counts, top under-instrumentation gaps, unanswered incident questions), evaluates a configurable pass/fail gate (a score floor plus a finding-severity threshold), uploads findings to the Security tab as SARIF via GitHub code scanning, and posts a concise PR comment that can show a score delta versus the base branch. The underlying ci-report command is byte-deterministic: the same inputs always yield the same report JSON, the same PR-comment bytes, and the same SARIF, with no wall-clock or RNG. The repository dogfoods the Action against its own example telemetry on every push.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         ".github/workflows/observability-self-test.yml": true,
         "action.yml": true,
@@ -377,7 +377,7 @@
     {
       "benchmark_rows": [],
       "claim": "The tool renders a shareable observability score badge and scorecard directly from a scan, so a repository can display its diagnosability score the same way it displays build status or coverage. From any directory (or a prior CI report) it emits a shields-style flat badge SVG, a live shields.io endpoint JSON, or a richer scorecard card listing the score, verdict, and top under-instrumentation gaps. All three renderings are byte-deterministic: the same inputs always produce identical bytes, the SVG is well-formed XML, XML special characters are escaped, and the color band is a pure function of the score (grey when no telemetry is discovered). The repository dogfoods its own badge in the README.",
-      "commit": "709713a",
+      "commit": "ba9c457",
       "evidence_exists": {
         "docs/scorecard_badge.md": true,
         "telemetry_contracts/scorecard.py": true
@@ -396,11 +396,44 @@
         "tests/test_scorecard.py",
         "tests/test_scorecard_real.py"
       ]
+    },
+    {
+      "benchmark_rows": [],
+      "claim": "A static, dependency-free browser playground runs the pure-stdlib engine entirely client-side under Pyodide (no backend, nothing uploaded), so a newcomer can paste the telemetry they already have and instantly see their diagnosability score and under-instrumentation gaps. It auto-detects JSON lines, a JSON array, logfmt, or an OTLP JSON export; ships one-click example datasets drawn from existing repository fixtures; and encodes the input into the URL so results are shareable without a server. The browser calls a single shared, tested entrypoint (analyze_text) that is byte-deterministic and matches the CLI. A CI smoke test loads the engine under Pyodide and asserts it imports and analyzes a known sample deterministically, and the committed bundle is byte-reproducible from a build script.",
+      "commit": "ba9c457",
+      "evidence_exists": {
+        ".github/workflows/playground-smoke.yml": true,
+        "docs/playground.md": true,
+        "playground/app.js": true,
+        "playground/build.py": true,
+        "playground/index.html": true,
+        "playground/smoke_test.mjs": true,
+        "telemetry_contracts/playground.py": true
+      },
+      "fixtures": [],
+      "id": "browser-playground",
+      "limitations": [
+        "The playground analyzes pasted/loaded telemetry text only; the deeper repository scan, semantics inference, and staged pipeline run via the CLI, not in the browser.",
+        "The Pyodide runtime and the engine bundle are loaded at page open, so the first analysis incurs a one-time load cost; subsequent analyses are instant."
+      ],
+      "public_artifacts": [
+        "telemetry_contracts/playground.py",
+        "playground/build.py",
+        "playground/index.html",
+        "playground/app.js",
+        "playground/smoke_test.mjs",
+        "docs/playground.md",
+        ".github/workflows/playground-smoke.yml"
+      ],
+      "tests": [
+        "tests/test_playground.py",
+        "tests/test_playground_real.py"
+      ]
     }
   ],
   "schema_version": "1.0",
   "summary": {
-    "claims": 14,
-    "commit": "709713a"
+    "claims": 15,
+    "commit": "ba9c457"
   }
 }

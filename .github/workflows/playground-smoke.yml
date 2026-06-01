@@ -1,0 +1,51 @@
+name: playground-smoke
+
+# Keeps the zero-install browser playground from rotting: rebuilds the engine
+# bundle and verifies the pure-stdlib engine still imports and runs under Pyodide
+# (the same runtime the browser uses), then checks the committed bundle is in sync.
+
+on:
+  push:
+    paths:
+      - "telemetry_contracts/**"
+      - "playground/**"
+      - ".github/workflows/playground-smoke.yml"
+  pull_request:
+    paths:
+      - "telemetry_contracts/**"
+      - "playground/**"
+      - ".github/workflows/playground-smoke.yml"
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild the playground bundle
+        run: python3 playground/build.py
+
+      - name: Fail if the committed bundle is stale
+        run: |
+          if ! git diff --quiet -- playground/assets; then
+            echo "::error::playground/assets is out of date; run 'python3 playground/build.py' and commit the result."
+            git --no-pager diff --stat -- playground/assets
+            exit 1
+          fi
+
+      - name: Install Pyodide
+        working-directory: playground
+        run: npm install --no-save pyodide@0.29.4
+
+      - name: Smoke-test the engine under Pyodide
+        working-directory: playground
+        run: node smoke_test.mjs

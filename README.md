@@ -4,6 +4,10 @@
 
 **Point it at the telemetry you already have and get value in one command — no contract to write first, no relabeling, no semantic-convention adoption required.**
 
+> 🔭 **Try it in your browser — zero install.** Paste the logs/traces you already
+> have and see your observability score instantly (runs entirely client-side via
+> Pyodide; nothing is uploaded). See [`docs/playground.md`](docs/playground.md).
+
 Most observability tooling only pays off *later*, after you adopt a prescribed
 instrumentation discipline. Telemetry Contracts is useful *right now* with the
 logs, traces, and metrics you already emit — whatever their shape.
@@ -275,6 +279,7 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 - `docs/execution_proof.md` — safe runtime evidence that the tool's own generated instrumentation compiles, loads, and emits its promised fields, run in a hardened isolated subprocess that never touches the target repo's code (`python3 -m telemetry_contracts.cli execute-proposals`).
 - `docs/github_action.md` — the **Observability Report Card** GitHub Action: add observability scanning to PR checks in three lines of YAML, with a configurable score-floor + severity gate, SARIF upload to the Security tab, and a PR comment.
 - `docs/scorecard_badge.md` — render a byte-deterministic **observability score badge** (shields-style SVG or a live shields.io endpoint JSON) and a richer **scorecard** card from any scan (`python3 -m telemetry_contracts.cli scorecard-badge`).
+- `docs/playground.md` — a zero-install **browser playground** that runs the pure-stdlib engine entirely client-side under Pyodide: paste the telemetry you already have and instantly see your diagnosability score and gaps, with shareable URLs and one-click examples.
 - `docs/high_impact_filter.md` — the written rubric (analytic signal ÷ surface area) used to score every proposed change and re-score applied changes after the fact.
 - `docs/tutorials/` — fixing a broken service; mapping SLO debugging questions to contract clauses.
 - `docs/report_schemas.md` + `docs/report_schemas/*.schema.json` — JSON output envelopes.

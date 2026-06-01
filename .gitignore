@@ -10,3 +10,6 @@ build/
 .DS_Store
 
 100_STEPS.md
+
+# Playground (Pyodide smoke-test deps)
+playground/node_modules/

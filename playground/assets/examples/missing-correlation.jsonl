@@ -1,0 +1,3 @@
+{"kind":"span","name":"checkout.request","timestamp":"2026-05-29T12:00:00Z","trace_id":"trace-bench-1","fields":{"tenant_id":"tenant-a"}}
+{"kind":"log","name":"checkout.error","timestamp":"2026-05-29T12:00:01Z","severity":"ERROR","fields":{"tenant_id":"tenant-a","error_code":"PAYMENT_TIMEOUT"}}
+{"kind":"metric","name":"checkout.requests","timestamp":"2026-05-29T12:00:02Z","trace_id":"trace-bench-1","value":1,"tags":{"tenant_id":"tenant-a"}}

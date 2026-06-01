@@ -1,0 +1,4 @@
+{"kind":"span","service":"checkout","name":"checkout.request","attributes":{"tenant_id":"acme","cart_id":"123","result":"maybe","duration_ms":-1},"timestamp_ms":1000}
+{"kind":"span","service":"checkout","name":"payment.authorize","attributes":{"tenant_id":"tenant-acme","payment_provider":"unknown","retry_count":9},"timestamp_ms":1300}
+{"kind":"metric","service":"checkout","name":"checkout.requests.total","value":1,"tags":{"tenant_id":"tenant-acme","result":"ok"},"timestamp_ms":1500}
+{"kind":"log","service":"checkout","name":"checkout.payment_failed","severity":"WARN","message":"card failed","fields":{"tenant_id":"tenant-acme","cart_id":"cart-123","error_code":"timeout"},"timestamp_ms":1200}

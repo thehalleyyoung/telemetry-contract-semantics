@@ -1,0 +1,15 @@
+{
+  "name": "telemetry-contracts-playground",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-install browser playground that runs the pure-stdlib telemetry-contracts engine under Pyodide.",
+  "type": "module",
+  "scripts": {
+    "build": "python3 build.py",
+    "smoke": "node smoke_test.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "pyodide": "^0.29.4"
+  }
+}
