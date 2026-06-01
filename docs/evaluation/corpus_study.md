@@ -31,7 +31,10 @@ pinned by full SHA and fetched with a depth-1 fetch of that exact object, so the
 study never depends on a moving default branch.
 
 A small, multi-host tier-1 corpus is bundled at
-[`benchmarks/corpus/tier1.json`](../../benchmarks/corpus/tier1.json). Larger
+[`benchmarks/corpus/tier1.json`](../../benchmarks/corpus/tier1.json), and the
+full curated corpus — 50+ verified subjects across multiple hosts, tiered so the
+tier-1 subset stays fast — lives at
+[`benchmarks/corpus/corpus.json`](../../benchmarks/corpus/corpus.json). Larger
 tiers can be appended without changing the schema; mine a fast subset with
 `--tier N`.
 
@@ -175,6 +178,32 @@ telemetry and then pinned to an exact SHA (via `corpus-verify`) before it earns 
 place in a manifest. Subjects are added only when they genuinely clone and verify;
 the manifest is the single source of truth and never contains an unverified
 commit.
+
+### Curating a new tier end to end
+
+`corpus-curate` automates that honest path: it clones each candidate into a
+gitignored directory, reads the **real** commit SHA at `HEAD` (never a fabricated
+one), scans the checkout, and writes a manifest containing only the subjects that
+genuinely clone and ship parseable telemetry. The bundled
+[`scripts/curate_corpus.sh`](../../scripts/curate_corpus.sh) chains discovery and
+curation into one reproducible command:
+
+```bash
+# Discover telemetry-bearing candidates and curate a verified tier into a manifest:
+scripts/curate_corpus.sh --output benchmarks/corpus/tier2.json --limit 50
+
+# Or curate from a candidate list you already reviewed:
+python3 -m telemetry_contracts.cli corpus-curate \
+  --candidates corpus_candidates.json \
+  --work-dir benchmarks/corpus/_curate \
+  --output benchmarks/corpus/tier2.json --tier 2 --limit 50
+```
+
+The cloned repositories stay under a gitignored work directory and are never
+committed — only the small JSON manifest is. Because each SHA is read from an
+actual checkout, the resulting corpus is replayable byte-for-byte and contains no
+invented commits. Re-running the curation tooling against more candidates is how
+the corpus grows toward larger tiers.
 
 
 

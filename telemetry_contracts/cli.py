@@ -138,6 +138,15 @@ def main(argv: list[str] | None = None) -> int:
     verify_parser.add_argument("--tier", type=int, default=None, help="only verify subjects at or below this tier")
     verify_parser.add_argument("--output", help="write the JSON verification report to this path instead of stdout")
 
+    curate_parser = subparsers.add_parser("corpus-curate", help="clone candidate repos, pin each to its real HEAD SHA, keep only those that ship telemetry, and write a verified manifest")
+    curate_parser.add_argument("--candidates", required=True, help="JSON file: a list of targets, or {\"candidates\": [{\"target\": ...}]}")
+    curate_parser.add_argument("--work-dir", default="benchmarks/corpus/_curate", help="gitignored directory to clone candidates into")
+    curate_parser.add_argument("--output", required=True, help="write the verified corpus manifest to this path")
+    curate_parser.add_argument("--tier", type=int, default=2, help="tier to assign to verified subjects")
+    curate_parser.add_argument("--limit", type=int, default=None, help="stop after keeping this many subjects")
+    curate_parser.add_argument("--allow-no-telemetry", action="store_true", help="also keep verified repos that ship no telemetry (graceful-path samples)")
+    curate_parser.add_argument("--description", default="A frozen, pinned-commit corpus of public repositories curated from live code search, each cloned and verified to ship parseable telemetry and pinned to an exact HEAD commit SHA. Authored without this tool in mind.", help="selection-protocol description written into the manifest")
+
     eval_gold_parser = subparsers.add_parser("evaluate-gold", help="score the detectors against a hand-labeled ground-truth set (precision/recall/F1)")
     eval_gold_parser.add_argument("--gold", required=True, action="append", help="path to a gold JSONL file (telemetry-contracts/gold@1); repeatable")
     eval_gold_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
@@ -702,6 +711,50 @@ def main(argv: list[str] | None = None) -> int:
                 return 2
             _emit_text(json.dumps(seed, indent=2, sort_keys=True), args.output)
             return 0
+
+        if args.command == "corpus-curate":
+            from .mining.curate import build_manifest, curate_corpus
+
+            try:
+                raw = json.loads(Path(args.candidates).read_text(encoding="utf-8"))
+            except (OSError, ValueError) as exc:
+                print(f"ERROR corpus-curate: cannot read candidates: {exc}", file=sys.stderr)
+                return 2
+            if isinstance(raw, dict):
+                candidates = raw.get("candidates", [])
+            else:
+                candidates = raw
+            kept_count = [0]
+
+            def _on_candidate(target: str, subject: dict | None) -> None:
+                status = "kept" if subject is not None else "skip"
+                if subject is not None:
+                    kept_count[0] += 1
+                print(f"  {status:4s} {target}", file=sys.stderr)
+
+            try:
+                kept = curate_corpus(
+                    candidates, work_dir=args.work_dir,
+                    require_telemetry=not args.allow_no_telemetry,
+                    tier=args.tier, limit=args.limit, on_candidate=_on_candidate,
+                )
+            except Exception as exc:  # noqa: BLE001 - live network surface
+                print(f"ERROR corpus-curate: {exc}", file=sys.stderr)
+                return 2
+            manifest = build_manifest(
+                kept, description=args.description,
+                tier_note=f"Curated tier-{args.tier} subjects, each cloned and verified to ship telemetry.",
+            )
+            Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.output).write_text(
+                json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+            )
+            print(
+                f"corpus-curate: kept {len(manifest['subjects'])} verified subjects -> {args.output}",
+                file=sys.stderr,
+            )
+            return 0
+
             from .evaluation import (
                 GroundTruthError,
                 load_gold_set,

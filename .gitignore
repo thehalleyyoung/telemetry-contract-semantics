@@ -20,4 +20,6 @@ playground/node_modules/
 benchmarks/corpus/_repos/
 benchmarks/corpus/.cache/
 benchmarks/corpus/_reports/
+benchmarks/corpus/_curate/
 corpus_seed*.json
+corpus_candidates*.json

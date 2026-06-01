@@ -98,6 +98,48 @@ def search_gitlab(
     return candidates
 
 
+_GITHUB_CODE_SEARCH = "https://api.github.com/search/code"
+
+
+def search_github_code(
+    *,
+    query: str,
+    limit: int = 50,
+    token: str | None = None,
+) -> list[dict[str, Any]]:
+    """Propose repositories that *commit* telemetry-shaped files matching ``query``.
+
+    GitHub code search surfaces the file hits; we reduce them to unique,
+    non-fork repositories. This is how telemetry-bearing repositories (which the
+    repository-metadata search cannot find) enter the candidate stream. The
+    output is still a proposal — every hit must be cloned, verified, and pinned
+    before it can join a manifest.
+    """
+
+    params = urllib.parse.urlencode({"q": query, "per_page": str(max(1, min(limit, 100)))})
+    try:
+        payload = _http_get_json(f"{_GITHUB_CODE_SEARCH}?{params}", token=token)
+    except (urllib.error.URLError, ValueError):
+        return []
+    seen: set[str] = set()
+    candidates: list[dict[str, Any]] = []
+    for item in payload.get("items", []):
+        repo = item.get("repository", {})
+        full_name = repo.get("full_name")
+        if not full_name or repo.get("fork") or full_name in seen:
+            continue
+        seen.add(full_name)
+        candidates.append({
+            "target": full_name,
+            "host": "github",
+            "default_branch": repo.get("default_branch"),
+            "license": "UNKNOWN",
+            "example_path": item.get("path"),
+            "note": f"committed telemetry file matched code search (verify + pin SHA): {query}",
+        })
+    return candidates
+
+
 def discover_candidates(
     *,
     languages: list[str],

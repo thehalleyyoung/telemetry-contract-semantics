@@ -42,8 +42,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.851,
-        "runtime_per_k_events_ms": 170.2,
+        "runtime_ms": 0.895,
+        "runtime_per_k_events_ms": 179.0,
         "validation_pass": true
       },
       "pass": true,
@@ -457,8 +457,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.916,
-        "runtime_per_k_events_ms": 183.2,
+        "runtime_ms": 0.948,
+        "runtime_per_k_events_ms": 189.6,
         "validation_pass": false
       },
       "pass": true,
@@ -724,8 +724,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 2.16,
-        "runtime_per_k_events_ms": 720.0,
+        "runtime_ms": 2.288,
+        "runtime_per_k_events_ms": 762.666667,
         "validation_pass": false
       },
       "pass": true,
@@ -778,8 +778,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.28,
-        "runtime_per_k_events_ms": 93.333333,
+        "runtime_ms": 0.325,
+        "runtime_per_k_events_ms": 108.333333,
         "validation_pass": true
       },
       "pass": true,
@@ -1008,7 +1008,7 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.033,
+        "runtime_ms": 0.034,
         "runtime_per_k_events_ms": 0.0,
         "validation_pass": true
       },
@@ -1232,8 +1232,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.272,
-        "runtime_per_k_events_ms": 34.0,
+        "runtime_ms": 0.312,
+        "runtime_per_k_events_ms": 39.0,
         "validation_pass": false
       },
       "pass": true,
@@ -1369,8 +1369,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.268,
-        "runtime_per_k_events_ms": 89.333333,
+        "runtime_ms": 0.32,
+        "runtime_per_k_events_ms": 106.666667,
         "validation_pass": false
       },
       "pass": true,
@@ -1492,8 +1492,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.149,
-        "runtime_per_k_events_ms": 74.5,
+        "runtime_ms": 0.188,
+        "runtime_per_k_events_ms": 94.0,
         "validation_pass": true
       },
       "pass": true,
@@ -1792,8 +1792,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 0.562,
-        "runtime_per_k_events_ms": 562.0,
+        "runtime_ms": 0.643,
+        "runtime_per_k_events_ms": 643.0,
         "validation_pass": false
       },
       "pass": true,
@@ -2492,8 +2492,8 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 0.612,
-        "runtime_per_k_events_ms": 612.0,
+        "runtime_ms": 0.924,
+        "runtime_per_k_events_ms": 924.0,
         "validation_pass": false
       },
       "pass": true,
@@ -2558,8 +2558,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.376,
-        "runtime_per_k_events_ms": 94.0,
+        "runtime_ms": 0.533,
+        "runtime_per_k_events_ms": 133.25,
         "validation_pass": true
       },
       "pass": true,
@@ -2911,7 +2911,7 @@
           "source_files": 1
         },
         "pass": true,
-        "runtime_ms": 0.928,
+        "runtime_ms": 1.14,
         "runtime_per_k_events_ms": 0.0,
         "validation_pass": false
       },
@@ -2983,8 +2983,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 3.671,
-        "runtime_per_k_events_ms": 122.366667,
+        "runtime_ms": 4.486,
+        "runtime_per_k_events_ms": 149.533333,
         "validation_pass": true
       },
       "pass": true,
@@ -3428,8 +3428,8 @@
           "source_files": 0
         },
         "pass": true,
-        "runtime_ms": 0.95,
-        "runtime_per_k_events_ms": 135.714286,
+        "runtime_ms": 1.103,
+        "runtime_per_k_events_ms": 157.571429,
         "validation_pass": false
       },
       "pass": true,
@@ -3521,8 +3521,8 @@
     },
     "name": "built-in telemetry contracts benchmark",
     "pass": true,
-    "runtime_ms": 14.679,
-    "runtime_per_k_events_ms": 203.875,
+    "runtime_ms": 17.785,
+    "runtime_per_k_events_ms": 247.013889,
     "top_remediations": [
       {
         "affected_owner": "contract service owner",

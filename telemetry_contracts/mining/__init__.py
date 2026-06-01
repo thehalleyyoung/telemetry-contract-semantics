@@ -29,6 +29,7 @@ from .corpus import (
 from .cache import ResultCache, engine_fingerprint, options_fingerprint
 from .characteristics import detect_characteristics
 from .correlate import correlate, render_correlation_markdown
+from .curate import build_manifest, candidate_subject, curate_corpus, infer_host
 from .plots import render_plots
 from .runner import (
     StatusTable,
@@ -58,6 +59,10 @@ __all__ = [
     "detect_characteristics",
     "correlate",
     "render_correlation_markdown",
+    "build_manifest",
+    "candidate_subject",
+    "curate_corpus",
+    "infer_host",
     "render_plots",
     "StatusTable",
     "download_corpus",

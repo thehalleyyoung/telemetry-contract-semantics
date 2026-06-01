@@ -1,0 +1,491 @@
+{
+  "schema": "telemetry-contracts/corpus@1",
+  "selection_protocol": {
+    "description": "A frozen, pinned-commit corpus of public repositories that ship parseable telemetry/log data and were authored without this tool in mind. Tier 1 is a tiny multi-host fast subset; tier 2 is a larger set curated from live code search, each subject cloned and verified to ship telemetry and pinned to an exact HEAD commit SHA. Each subject is replayable byte-for-byte.",
+    "criteria": [
+      "public repository reachable without authentication",
+      "ships at least one parseable telemetry/log file in a recognised format",
+      "authored independently of this project (no contract or convention adoption)"
+    ],
+    "exclusions": [
+      "forks",
+      "archived repositories",
+      "auth-required repositories"
+    ],
+    "notes": "Single source of truth for the corpus study. Filter with --tier N to run a fast subset (tier 1 spans github/gitlab/bitbucket)."
+  },
+  "subjects": [
+    {
+      "target": "bb:atlassian_tutorial/helloworld",
+      "sha": "65d938f39f364da3f90767e008022ffe45c562af",
+      "host": "bitbucket",
+      "license": "UNKNOWN",
+      "rationale": "independent Bitbucket sample project (no-telemetry graceful path)",
+      "tier": 1
+    },
+    {
+      "target": "Keyhole-Koro/InsightifyCore",
+      "sha": "3a85106504fdd2634dca78a4e883cdf70fd12e14",
+      "host": "github",
+      "license": "UNKNOWN",
+      "rationale": "ships structured event/log data",
+      "tier": 1
+    },
+    {
+      "target": "Vannut97/web-refinery",
+      "sha": "c542937d21d4eaef3d6a9d21bb0a9e2e334d0356",
+      "host": "github",
+      "license": "UNKNOWN",
+      "rationale": "ships JSONL application logs under logs/",
+      "tier": 1
+    },
+    {
+      "target": "almbayedahmad/medflux",
+      "sha": "d928bdbb43fcc072d7fea0636796c687fb5d563b",
+      "host": "github",
+      "license": "UNKNOWN",
+      "rationale": "emits structured pipeline log records",
+      "tier": 1
+    },
+    {
+      "target": "gl:gitlab-examples/python-getting-started",
+      "sha": "4104c678f2a724f301952911f2b103218e30c1e7",
+      "host": "gitlab",
+      "license": "UNKNOWN",
+      "rationale": "independent GitLab sample project (no-telemetry graceful path)",
+      "tier": 1
+    },
+    {
+      "target": "5GR5/MCProtector",
+      "sha": "9d494a22efee6e2c32b0d58648a67e9999e024ca",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (26 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "AGENT17-tech/JARVIS-MKIII",
+      "sha": "626047b451a92bd97e1130d472a61ec5cc794961",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (100 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "Alvoradozerouno/STEURER-Framework",
+      "sha": "a4bc7828418418aab20d765b6b7b10888d6156fb",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (195331 events, formats: json, json-array, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "AmitabhainArunachala/mech-interp-latent-lab-phase1",
+      "sha": "02de8207b1a72e91842bef5faea5d617c915c671",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (56190 events, formats: json, json-array, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "Andert51/dt-QualityCtrl_ANN-FIS-GA",
+      "sha": "4dfc42761eaf87e0eb9c9359d06b1a57743b8556",
+      "host": "github",
+      "license": "GPL-3.0",
+      "rationale": "ships parseable telemetry (54 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "Architit/LAM_Test_Agent",
+      "sha": "1d17163f50ac8d5b92925449058132aaf1e21ec8",
+      "host": "github",
+      "license": "GPL-3.0",
+      "rationale": "ships parseable telemetry (61 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "ArdurAI/mara",
+      "sha": "68fbfcb1261a8cb6b67d91e2efa431c31621365e",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (69 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "BYU-PRISM/GEKKO",
+      "sha": "62206a086d91b465fcc2c045265a4ae818977c42",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (606 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "Bbar0n234/learnflow-ai",
+      "sha": "5624307448581dab73cf8658592d815451d2ae44",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (105 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "BhuvanChaithanya/Log_Triaging_Application",
+      "sha": "6aa7a7c2e2821e5c449d8c57a3fdd34418eee02b",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (318 events, formats: json-array, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "BstWPY/WildGraphBench",
+      "sha": "c334bc806511e029285d208c24c2a8901ed5cf2c",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (7615 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "CidLucas/platform",
+      "sha": "b431435575c48c862e5fb813a6ca327c47367807",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (13 events, formats: json)",
+      "tier": 2
+    },
+    {
+      "target": "Contingencyplana/high_command_ai_0",
+      "sha": "99d5753a581f7ba273eb4d851d3e0d4849473e50",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (456 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "DNYoussef/context-cascade",
+      "sha": "12bc124ee69b524b17cd78ea7186204c5fd935b8",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (230 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "DavidAdolfoGomezUribe/chatbot_WS",
+      "sha": "582d637f09d9901a2173f4f32fa5b11493e33915",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (46 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "Dicklesworthstone/franken_node",
+      "sha": "22abb3b17d5f441e7c2291480f958351d8512f93",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (6863 events, formats: json, json-array, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "adamiao/data-pipeline",
+      "sha": "2c4facf171b15314c5c186d570df1ad681de1217",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (8 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "adinath-codes/ThreatZero",
+      "sha": "dd18d489a056053dcf444959251deea8a1b4f099",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (41 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "agentverus/agentverus-scanner",
+      "sha": "da63b5ccb5efe85e7ef6f82c88c86e98f6c82194",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (177 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "alexeyshockov/fingerscrossed",
+      "sha": "8ec726343d2fbffac8c0587e294c8fdb19f25c6e",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (11 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "alexleighton/knowledge-bases",
+      "sha": "b7049b0d48a6f265049870eb4fae7d54c1b49350",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (356 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "alextanhongpin/go-telemetry",
+      "sha": "ce3ec97e73051ff3105569fe14245fbf97bd7614",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (5 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "allenai/noncompliance",
+      "sha": "25bf77cc668814360405cdb8197c4368205806c7",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (13784 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "amirbahador-hub/Repository_Example",
+      "sha": "a2861892bf784e6dbbc20981ef5ed2c914f3158c",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (2 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "amsfwd/rootly-mcp-server",
+      "sha": "641391280d3f248d15bdf213d5e5fbb3b53ba3e7",
+      "host": "github",
+      "license": "GPL-2.0",
+      "rationale": "ships parseable telemetry (13 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "aniketpoojari/OmniDoc-QA-LLM-RAG",
+      "sha": "a9cc8e36376973bfcc4aeac63388d207478d8611",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (24 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "api-evangelist/helicone",
+      "sha": "78cafe506c0bcc1ca237e3c555858c23908e5d60",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (1 events, formats: json)",
+      "tier": 2
+    },
+    {
+      "target": "arefiva/mARCH-cli",
+      "sha": "0e46d181965d89e451c5e05494dd9b0d3a130c2c",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (130 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "arolang/aro",
+      "sha": "b55585bdb844f85f4316641397330f4d4a605676",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (522 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "aws-samples/sample-Agentic-Ai-Data-Operations",
+      "sha": "a07214f3ce2587dd30e9eb6320f9964c13b9b129",
+      "host": "github",
+      "license": "MIT-0",
+      "rationale": "ships parseable telemetry (55 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "aws-samples/sample-bedrock-migration-and-modernization-tools",
+      "sha": "64e54ba5d759f4483ca77dd82cd69b059a82343e",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (33 events, formats: json, jsonl, otlp)",
+      "tier": 2
+    },
+    {
+      "target": "backrat13/Brave_New_Commune3",
+      "sha": "5a8f381ea49c04419eaf72111ec5c0d189348d79",
+      "host": "github",
+      "license": "GPL-3.0",
+      "rationale": "ships parseable telemetry (367 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "barneyson55/incident-triage-toolkit",
+      "sha": "3cfbf69d04628a1295fe491cc95e74356de15e0a",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (23 events, formats: json, jsonl, logfmt, mixed)",
+      "tier": 2
+    },
+    {
+      "target": "baz-scm/awesome-reviewers",
+      "sha": "eba0425fa059c2f11c8586ca4bc612104709de20",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (1143 events, formats: json-array)",
+      "tier": 2
+    },
+    {
+      "target": "beenlanced/python_project_uv_flask_webapp_demo",
+      "sha": "60645405fded8657ef337371c3b994013d144363",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (31 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "benmoggee/sre-agent",
+      "sha": "80a561e50a609a8fa8170fc97e7b8eebb79c71b8",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (108 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "bmdhodl/agent47",
+      "sha": "c3c3de7b7e8405392e2d8fc511d2fa4aabb1ce72",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (586 events, formats: json, jsonl, logfmt)",
+      "tier": 2
+    },
+    {
+      "target": "bmislol/decision-intelligence-assistant",
+      "sha": "1e16231e97c85fc6cdea11add001a07fa819b7a1",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (7 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "bob-takuya/archi-site",
+      "sha": "e20a13a054ca084e3ff4e402b8a8f0f9124814a5",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (389 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "bob-takuya/genshi-studio",
+      "sha": "024012008cd375f9e26a4a79e34c65bd52733d75",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (125 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "brant-ruan/vpss",
+      "sha": "796d7937de18c0ef31450e37414b68421478a859",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (300 events, formats: json)",
+      "tier": 2
+    },
+    {
+      "target": "brevity1swos/agx",
+      "sha": "e25d76f0e24d87030e4a1bf7764ecbf303b5bb90",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (30 events, formats: json, jsonl, otlp)",
+      "tier": 2
+    },
+    {
+      "target": "brian14708/duron",
+      "sha": "a576b63dd2b70f84a3f682877a72183530a0364a",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (59 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "c4r-dev/c4r-monorepo",
+      "sha": "0b3819c202d615cb50c0bcbea8d5b5b0a0655eb9",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (18607 events, formats: json, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "cameronsjo/bosun",
+      "sha": "a18395dd7eadc0d0367109e73f16004e6e72767c",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (184 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "cdxgen/cdxgen",
+      "sha": "d67370778d660527b55d2ca11a94f704a778f4e8",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (4217 events, formats: json, json-array, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "cerc-io/stack-orchestrator",
+      "sha": "fe7754001a144ebba9241724e287da967460b456",
+      "host": "github",
+      "license": "AGPL-3.0",
+      "rationale": "ships parseable telemetry (65 events, formats: json, json-array, jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "comradesurendra/Argus",
+      "sha": "2923fca4b55c5a80cbcb331291231bfd07ca68fd",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (1 events, formats: json)",
+      "tier": 2
+    },
+    {
+      "target": "connachermurphy/llm-forecasting-aid-public",
+      "sha": "6ec3dc241beb91491a1ce8c2a8cbe575d2a519ba",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (4 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "cyrille-leclerc/my-shopping-cart",
+      "sha": "1e4440b1d7f2ee6cd2339f2cc62cc46cc7ec8ce6",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (53 events, formats: json, jsonl, logfmt, otlp)",
+      "tier": 2
+    },
+    {
+      "target": "darshan-sc/agentreplay",
+      "sha": "c900eb8646a369c4bdbcc4da99a9168837174a66",
+      "host": "github",
+      "license": "NOASSERTION",
+      "rationale": "ships parseable telemetry (4 events, formats: jsonl)",
+      "tier": 2
+    },
+    {
+      "target": "dash0hq/dash0-cli",
+      "sha": "4fac994838b6f34ed0b6da7b06d7d2c3acdf8ccc",
+      "host": "github",
+      "license": "Apache-2.0",
+      "rationale": "ships parseable telemetry (127 events, formats: json, json-array, otlp)",
+      "tier": 2
+    },
+    {
+      "target": "dloss/kelora",
+      "sha": "333e27eda6180827877f8cbb7d5ba66138790d24",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (1934 events, formats: jsonl, logfmt, mixed)",
+      "tier": 2
+    },
+    {
+      "target": "ecostratus/personal-operating-system-60d",
+      "sha": "97b1ec3fa0f314839ad196651d69c2704c02817b",
+      "host": "github",
+      "license": "MIT",
+      "rationale": "ships parseable telemetry (34 events, formats: json, json-array, jsonl)",
+      "tier": 2
+    }
+  ]
+}
