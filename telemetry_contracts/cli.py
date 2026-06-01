@@ -128,6 +128,13 @@ def main(argv: list[str] | None = None) -> int:
     formal_parser.add_argument("--output", help="write the report to this path instead of stdout")
     formal_parser.add_argument("--require-all", action="store_true", help="exit non-zero unless every obligation is discharged")
 
+    execp_parser = subparsers.add_parser("execute-proposals", help="produce a safe execution proof: regenerate, AST-validate, and run the tool's own generated instrumentation in a hardened isolated subprocess (never the target repo's code) to prove compile/load/emission")
+    execp_parser.add_argument("--path", required=True, help="local repository/directory to analyze")
+    execp_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    execp_parser.add_argument("--service", help="restrict the pipeline to a single service")
+    execp_parser.add_argument("--timeout", type=int, default=10, help="per-proposal subprocess timeout (seconds)")
+    execp_parser.add_argument("--output", help="write the proof to this path instead of stdout")
+
     infer_semantics_parser = subparsers.add_parser("infer-semantics", help="infer execution semantics (a draft contract + small-step derivation + observed order) from telemetry you already have")
     infer_semantics_parser.add_argument("--events", required=True, help="JSON/JSONL log lines, a JSON array, native JSONL, or an OTLP export")
     infer_semantics_parser.add_argument("--service", help="only reason about events from this service (defaults to the most common observed service)")
@@ -648,6 +655,22 @@ def main(argv: list[str] | None = None) -> int:
                     file=sys.stderr,
                 )
                 return 1
+            return 0
+        if args.command == "execute-proposals":
+            from .execution import render_execution_proof_markdown
+
+            report = run_pipeline(args.path, service=args.service, prove_execution=True)
+            proof = report.get("execution_proof") or {
+                "schema": "telemetry-contracts/execution-proof@1",
+                "proofs": [],
+                "summary": {"proposals": 0, "status_counts": {}, "all_logging_emit_clean": True},
+                "honesty": "no proposals were generated (no telemetry gaps to instrument)",
+            }
+            if args.format == "json":
+                output = json.dumps(proof, indent=2, sort_keys=True)
+            else:
+                output = render_execution_proof_markdown(proof)
+            _emit_text(output, args.output)
             return 0
         if args.command in {"scan", "scan-repo"}:
             try:

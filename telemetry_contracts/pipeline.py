@@ -909,6 +909,7 @@ def run_pipeline(
     min_marginal_impact: int = 1,
     service: str | None = None,
     out_dir: str | Path | None = None,
+    prove_execution: bool = False,
 ) -> dict[str, Any]:
     """Run the full acquire→diagnose→plan→apply→differential loop offline.
 
@@ -1015,7 +1016,7 @@ def run_pipeline(
             len(events), len(candidate["events"]), quarantined, safety,
         )
 
-        round_reports.append({
+        round_report = {
             "round": round_index,
             "plan": plan,
             "code_proposals": proposals,
@@ -1027,7 +1028,12 @@ def run_pipeline(
             "depth": depth,
             "quarantined": quarantined,
             "score_after": candidate_diag["diagnosability_score"],
-        })
+        }
+        if prove_execution:
+            from .execution import execution_proof
+
+            round_report["execution_proof"] = execution_proof(proposals.get("proposals", []))
+        round_reports.append(round_report)
         ledger.append({
             "round": round_index,
             "predicted_score_points": predicted,
@@ -1082,6 +1088,13 @@ def run_pipeline(
     }
     if out_dir is not None:
         report["artifacts"] = _persist(report, out_dir, options)
+    if prove_execution:
+        from .execution import execution_proof
+
+        all_proposals: list[dict[str, Any]] = []
+        for rr in round_reports:
+            all_proposals.extend(rr.get("code_proposals", {}).get("proposals", []))
+        report["execution_proof"] = execution_proof(all_proposals)
     return report
 
 

@@ -123,6 +123,18 @@ CLAIMS: list[dict[str, Any]] = [
             "The approximation direction of each guarantee (exact, over-, or under-approximation) is documented and tested, but the soundness argument for the approximation itself is given in prose in docs/formal_model.md.",
         ],
     },
+    {
+        "id": "execution-proof",
+        "claim": "The tool produces runtime evidence that its own deterministically generated instrumentation proposals work: it regenerates each snippet from trusted (gap, library_kind) fields (never the proposal's stored text), validates intended field names, checks the snippet against a strict exact-shape AST allowlist, and runs the validated snippet in a hardened, isolated subprocess (python -I -S -B -E, stripped environment, fresh empty cwd, stdin to /dev/null, close_fds, timeout, and POSIX CPU/file-size rlimits). For the stdlib logging variant it captures the emitted records via a private non-propagating logger and proves the promised field names are emitted (status emission-clean); the OpenTelemetry variant degrades honestly to needs-optional-dep when the SDK is absent. The tool never executes the target repository's code and never runs its build/test; executed events are labeled evidence only and are never folded into scoring or the differential, so the deterministic scores are unaffected.",
+        "public_artifacts": ["telemetry_contracts/execution.py", "docs/execution_proof.md"],
+        "tests": ["tests/test_execution.py", "tests/test_execution_real.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "This is an isolated generated-instrumentation compile/load/emission proof, not the target repository's build or test suite, which is intentionally never run in a shared environment.",
+            "Under isolated python (-S) a site-installed OpenTelemetry SDK is intentionally invisible, so the OTel variant reports needs-optional-dep rather than proving span emission in this environment.",
+        ],
+    },
 ]
 
 

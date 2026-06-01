@@ -34,6 +34,11 @@ from .formal_model import (
     render_formal_model_markdown,
     render_traceability_markdown,
 )
+from .execution import (
+    execute_proposal,
+    execution_proof,
+    render_execution_proof_markdown,
+)
 from .evaluation import (
     compare_baselines,
     load_gold_set,
@@ -54,6 +59,8 @@ __all__ = [
     "diagnose",
     "differential",
     "discharge_formal_model",
+    "execute_proposal",
+    "execution_proof",
     "feature_scorecard",
     "generate_code_proposals",
     "generate_incident_readiness_report",
@@ -72,6 +79,7 @@ __all__ = [
     "normalize_events",
     "render_baselines_markdown",
     "render_evaluation_markdown",
+    "render_execution_proof_markdown",
     "render_formal_model_markdown",
     "render_study_markdown",
     "render_traceability_markdown",
