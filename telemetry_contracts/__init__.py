@@ -6,10 +6,11 @@ from .adapters import load_events_auto, normalize_events
 from .benchmark import run_benchmark
 from .discover import analyze_events
 from .incident_report import generate_incident_readiness_report
-from .infer import infer_contract
+from .infer import infer_contract, infer_temporal_order
 from .loader import load_contract, load_jsonl
 from .monitor import run_compiled_monitor
 from .otlp import load_otlp_json_detailed as import_otlp
+from .project_semantics import infer_execution_semantics
 from .repo_scan import scan_directory, scan_repo
 from .service_report import generate_service_owner_report
 from .static_checker import check_sources
@@ -23,6 +24,8 @@ __all__ = [
     "generate_service_owner_report",
     "import_otlp",
     "infer_contract",
+    "infer_execution_semantics",
+    "infer_temporal_order",
     "load_contract",
     "load_events_auto",
     "load_jsonl",

@@ -45,8 +45,11 @@ Run the same contract-free checks across every telemetry/log file a project
 ships — in whatever format — with no setup:
 
 ```bash
-# A local project directory: discovers and analyzes telemetry files, skipping
-# configs, lockfiles, and vendored/build dirs.
+# A local project: scan the current directory (default) — discovers and
+# analyzes telemetry files, skipping configs, lockfiles, and vendored dirs.
+python3 -m telemetry_contracts.cli scan --format markdown
+
+# Or point it at a specific folder.
 python3 -m telemetry_contracts.cli scan --path ./my-service --format markdown
 
 # An arbitrary GitHub project: shallow-clones it and scans whatever it ships.
@@ -55,9 +58,10 @@ python3 -m telemetry_contracts.cli scan-repo --repo owner/name --format markdown
 
 `--repo` accepts `owner/name` shorthand or a full https/git URL, and `--ref`
 selects a branch or tag. Both commands accept `--service`, `--fail-on
-error|warning|never`, `--output`, and `--format text|json|markdown`. Each
-finding is tagged with the file it came from. Cloning uses `git clone --depth 1`;
-discovery is heuristic.
+error|warning|never`, `--output`, `--format text|json|markdown`, and `--deep`
+(see below). Output leads with a per-type rollup (most severe first) and
+copy-pasteable next steps, and each finding is tagged with the file it came
+from. Cloning uses `git clone --depth 1`; discovery is a pruned, bounded walk.
 
 Try the zero-config and scan commands against bundled fixtures:
 
@@ -65,6 +69,31 @@ Try the zero-config and scan commands against bundled fixtures:
 cd telemetry-contracts-repo
 python3 -m telemetry_contracts.cli analyze --events tests/fixtures/byod/app_logs.jsonl --format markdown
 python3 -m telemetry_contracts.cli scan --path examples/otlp --format markdown
+```
+
+## Infer execution semantics from existing data
+
+You don't have to write a contract to get the formal layer. `infer-semantics`
+takes raw telemetry, infers a draft contract, and runs the small-step semantics
+evaluator over it — producing a formal derivation, an observed event-structure
+(happens-before) model, and an inferred execution order discovered from your
+correlation IDs:
+
+```bash
+python3 -m telemetry_contracts.cli infer-semantics --events your-logs.jsonl --format markdown
+```
+
+The execution order is inferred conservatively: an `a → b` edge is kept only
+when, in every correlation group containing both signals (and in at least two
+such groups), `a` strictly precedes `b`. The result is emitted as a reviewable
+`temporal_sequences` entry marked `required: false` — a candidate to promote
+once you trust it, never an auto-enforced check. Add `--deep` to `scan` /
+`scan-repo` to run this per service across a whole project, plus an
+informational runtime-name vs source-literal alignment:
+
+```bash
+python3 -m telemetry_contracts.cli scan --deep --format markdown
+python3 -m telemetry_contracts.cli scan-repo --repo owner/name --deep --format markdown
 ```
 
 ## Optional: observability as a correctness property
@@ -119,7 +148,8 @@ the flexible shapes above.
 ## Public Python API
 
 The package ships `py.typed` and exports stable helpers from
-`telemetry_contracts`: `analyze_events`, `infer_contract`, `load_events_auto`,
+`telemetry_contracts`: `analyze_events`, `infer_contract`,
+`infer_execution_semantics`, `infer_temporal_order`, `load_events_auto`,
 `normalize_events`, `scan_directory`, `scan_repo`, `load_contract`, `load_jsonl`,
 `validate_events`, `check_sources`, `run_compiled_monitor`,
 `generate_incident_readiness_report`, `generate_service_owner_report`,

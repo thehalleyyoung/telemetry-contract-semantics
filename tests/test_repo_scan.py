@@ -65,6 +65,28 @@ def test_scan_directory_missing_path():
         scan_directory(PROJECT / "does-not-exist")
 
 
+def test_scan_text_is_prioritized_and_actionable():
+    from telemetry_contracts.repo_scan import format_scan_text
+
+    report = scan_directory(PROJECT)
+    text = format_scan_text(report)
+    assert "Top issue types:" in text
+    assert "Next steps:" in text
+    # errors are listed before warnings
+    err_pos = text.index("ERROR telemetry.sensitive_value")
+    warn_pos = text.index("WARNING")
+    assert err_pos < warn_pos
+
+
+def test_cli_scan_default_path(monkeypatch, capsys):
+    monkeypatch.chdir(PROJECT)
+    code = cli.main(["scan", "--format", "json", "--fail-on", "never"])
+    payload = json.loads(capsys.readouterr().out)
+    assert code == 0
+    assert payload["root"] == "."
+    assert payload["summary"]["telemetry_files"] == 2
+
+
 def test_cli_scan_json(capsys):
     code = cli.main(["scan", "--path", str(PROJECT), "--format", "json", "--fail-on", "never"])
     assert code == 0

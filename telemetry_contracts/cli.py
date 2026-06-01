@@ -22,6 +22,11 @@ from .abstract_domains import format_abstract_domains_markdown, summarize_abstra
 from .assume_guarantee import evaluate_assume_guarantee, format_assume_guarantee_markdown
 from .benchmark import BenchmarkLoadError, compare_benchmark_reports, format_diff_markdown, format_markdown, run_benchmark
 from .core_semantics import evaluate_contract_semantics, format_core_semantics_markdown
+from .project_semantics import (
+    format_semantics_markdown,
+    format_semantics_text,
+    infer_execution_semantics,
+)
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .explain import explain_finding, format_explanation_markdown
 from .validator import validate_contract_shape, validate_events
@@ -67,11 +72,12 @@ def main(argv: list[str] | None = None) -> int:
     infer_parser.add_argument("--output", help="write the inferred contract here instead of stdout")
 
     scan_parser = subparsers.add_parser("scan", help="discover and analyze telemetry files in a local project directory, no contract required")
-    scan_parser.add_argument("--path", required=True, help="project directory to scan for telemetry/log files")
+    scan_parser.add_argument("--path", default=".", help="project directory to scan for telemetry/log files (default: current directory)")
     scan_parser.add_argument("--service", help="only analyze events from this service")
     scan_parser.add_argument("--max-files", type=int, default=300, help="maximum candidate files to scan")
     scan_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
     scan_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    scan_parser.add_argument("--deep", action="store_true", help="also infer per-service execution semantics, observed order, and runtime/source alignment")
     scan_parser.add_argument("--output", help="write command output to this path instead of stdout")
 
     scan_repo_parser = subparsers.add_parser("scan-repo", help="download a GitHub repository and analyze whatever telemetry it ships, in any format")
@@ -81,7 +87,17 @@ def main(argv: list[str] | None = None) -> int:
     scan_repo_parser.add_argument("--max-files", type=int, default=300, help="maximum candidate files to scan")
     scan_repo_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
     scan_repo_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    scan_repo_parser.add_argument("--deep", action="store_true", help="also infer per-service execution semantics, observed order, and runtime/source alignment")
     scan_repo_parser.add_argument("--output", help="write command output to this path instead of stdout")
+
+    infer_semantics_parser = subparsers.add_parser("infer-semantics", help="infer execution semantics (a draft contract + small-step derivation + observed order) from telemetry you already have")
+    infer_semantics_parser.add_argument("--events", required=True, help="JSON/JSONL log lines, a JSON array, native JSONL, or an OTLP export")
+    infer_semantics_parser.add_argument("--service", help="only reason about events from this service (defaults to the most common observed service)")
+    infer_semantics_parser.add_argument("--no-sequences", action="store_true", help="skip inferring the observed execution order")
+    infer_semantics_parser.add_argument("--strict", action="store_true", help="also apply closed-world strict obligations during evaluation")
+    infer_semantics_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
+    infer_semantics_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="never")
+    infer_semantics_parser.add_argument("--output", help="write command output to this path instead of stdout")
 
     lint_parser = subparsers.add_parser("lint-contract", help="lint contract shape and schema semantics without telemetry events")
     lint_parser.add_argument("--contract", required=True)
@@ -324,9 +340,9 @@ def main(argv: list[str] | None = None) -> int:
             if args.format == "json":
                 output = json.dumps(report, indent=2, sort_keys=True)
             elif args.format == "markdown":
-                output = format_discovery_markdown(report)
+                output = format_discovery_markdown(report) + "\n" + _format_discovery_markdown_footer(report, args.events)
             else:
-                output = _format_discovery_text(report)
+                output = _format_discovery_text(report, args.events)
             _emit_text(output, args.output)
             if args.fail_on == "never":
                 return 0
@@ -338,12 +354,31 @@ def main(argv: list[str] | None = None) -> int:
             output = json.dumps(contract, indent=2, sort_keys=True)
             _emit_text(output, args.output)
             return 0
+        if args.command == "infer-semantics":
+            loaded = load_events_auto(args.events)
+            report = infer_execution_semantics(
+                loaded["events"],
+                service=args.service,
+                infer_sequences=not args.no_sequences,
+                strict=args.strict,
+            )
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            elif args.format == "markdown":
+                output = format_semantics_markdown(report)
+            else:
+                output = format_semantics_text(report)
+            _emit_text(output, args.output)
+            if args.fail_on == "never":
+                return 0
+            threshold = {"error": ["error"], "warning": ["error", "warning"]}[args.fail_on]
+            return 1 if any(item["severity"] in threshold for item in report["findings"]) else 0
         if args.command in {"scan", "scan-repo"}:
             try:
                 if args.command == "scan":
-                    report = scan_directory(args.path, service=args.service, max_files=args.max_files)
+                    report = scan_directory(args.path, service=args.service, max_files=args.max_files, deep=args.deep)
                 else:
-                    report = scan_repo(args.repo, ref=args.ref, service=args.service, max_files=args.max_files)
+                    report = scan_repo(args.repo, ref=args.ref, service=args.service, max_files=args.max_files, deep=args.deep)
             except RepoScanError as exc:
                 print(f"ERROR repo-scan: {exc}", file=sys.stderr)
                 return 2
@@ -676,17 +711,83 @@ def main(argv: list[str] | None = None) -> int:
     return 1 if has_at_least(findings, args.fail_on) else 0
 
 
-def _format_discovery_text(report: dict) -> str:
+def _discovery_sev_map(findings: list[dict]) -> dict[str, str]:
+    rank = {"error": 0, "warning": 1, "info": 2}
+    mapping: dict[str, str] = {}
+    for finding in findings:
+        code = finding.get("code", "")
+        sev = finding.get("severity", "info")
+        if code not in mapping or rank.get(sev, 3) < rank.get(mapping[code], 3):
+            mapping[code] = sev
+    return mapping
+
+
+def _discovery_ranked_codes(report: dict) -> list[tuple[str, str, int]]:
+    rank = {"error": 0, "warning": 1, "info": 2}
+    by_code = report["summary"].get("by_code", {})
+    sev_map = _discovery_sev_map(report["findings"])
+    ranked = sorted(
+        by_code.items(),
+        key=lambda kv: (rank.get(sev_map.get(kv[0], "info"), 3), -kv[1], kv[0]),
+    )
+    return [(code, sev_map.get(code, "info"), count) for code, count in ranked]
+
+
+def _format_discovery_text(report: dict, events_path: str | None = None) -> str:
     summary = report["summary"]
+    rank = {"error": 0, "warning": 1, "info": 2}
     lines = [f"Analyzed {summary['events']} event(s) with no contract; {summary['findings']} finding(s)."]
     if not report["findings"]:
         lines.append("OK: no privacy or diagnosability issues detected.")
+        if events_path:
+            lines.append("")
+            lines.append("Next steps:")
+            lines.append("  - Lock this in with a starter contract:")
+            lines.append(f"      python3 -m telemetry_contracts.cli infer-contract --events {events_path} > telemetry-contract.json")
         return "\n".join(lines)
-    for finding in report["findings"]:
+    ranked = _discovery_ranked_codes(report)
+    if ranked:
+        width = max(len(code) for code, _, _ in ranked)
+        lines.append("")
+        lines.append("Top issue types:")
+        for code, sev, count in ranked:
+            lines.append(f"  {sev:<7} {code:<{width}}  {count}")
+    lines.append("")
+    lines.append("Findings (most severe first):")
+    shown = sorted(
+        enumerate(report["findings"]),
+        key=lambda pair: (rank.get(pair[1].get("severity", ""), 3), pair[1].get("code", ""), pair[1].get("path", ""), pair[0]),
+    )
+    for _, finding in shown:
         location = f" at {finding.get('path')}" if finding.get("path") else ""
-        lines.append(f"{finding['severity'].upper()} {finding['code']}{location}: {finding['message']}")
+        lines.append(f"  {finding['severity'].upper()} {finding['code']}{location}: {finding['message']}")
     if summary["findings"] > summary["shown_findings"]:
-        lines.append(f"... {summary['findings'] - summary['shown_findings']} more (capped per code)")
+        lines.append(f"  ... {summary['findings'] - summary['shown_findings']} more (capped per code)")
+    lines.append("")
+    lines.append("Next steps:")
+    top = ranked[0][0] if ranked else "<code>"
+    lines.append(f"  - Understand a finding:        python3 -m telemetry_contracts.cli explain {top}")
+    if events_path:
+        lines.append(f"  - Bootstrap a draft contract:  python3 -m telemetry_contracts.cli infer-contract --events {events_path} > telemetry-contract.json")
+    return "\n".join(lines)
+
+
+def _format_discovery_markdown_footer(report: dict, events_path: str | None = None) -> str:
+    ranked = _discovery_ranked_codes(report)
+    lines: list[str] = []
+    if ranked:
+        lines.extend(["", "## Top issue types", "", "| Severity | Code | Count |", "| --- | --- | ---: |"])
+        for code, sev, count in ranked:
+            lines.append(f"| {sev} | `{code}` | {count} |")
+    lines.extend(["", "## Next steps", ""])
+    if report["findings"]:
+        top = ranked[0][0] if ranked else "<code>"
+        lines.append(f"- Understand a finding: `explain {top}`")
+        if events_path:
+            lines.append(f"- Bootstrap a draft contract: `infer-contract --events {events_path}`")
+    else:
+        if events_path:
+            lines.append(f"- Looks clean. Lock it in: `infer-contract --events {events_path}`")
     return "\n".join(lines)
 
 

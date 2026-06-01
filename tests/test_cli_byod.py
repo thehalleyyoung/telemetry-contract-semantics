@@ -13,6 +13,10 @@ def test_analyze_command_text(capsys):
     assert code == 0
     assert "no contract" in out
     assert "telemetry.sensitive_value" in out
+    # prioritized, actionable output
+    assert "Top issue types:" in out
+    assert "Next steps:" in out
+    assert "infer-contract" in out
 
 
 def test_analyze_command_json_and_fail_on(capsys):

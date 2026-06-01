@@ -19,13 +19,22 @@ of telemetry too:
 
 from __future__ import annotations
 
-from collections import defaultdict
+import math
+from collections import defaultdict, deque
 from typing import Any
 
-from .validator import SENSITIVE_FIELD_NAMES, TENANT_IDENTIFIER_FIELD_NAMES
+from .validator import SENSITIVE_FIELD_NAMES, TENANT_IDENTIFIER_FIELD_NAMES, _event_timestamp_ms
 
 _MAX_ALLOWED_VALUES = 8
 _CORRELATION_CANDIDATES = ("trace_id", "request_id", "span_id", "correlation_id")
+# Temporal ordering is inferred only over workflow-level correlation keys
+# (never span_id, which usually identifies a single span, not a workflow).
+_SEQUENCE_CORRELATION_KEYS = ("trace_id", "request_id", "correlation_id")
+_MAX_SEQUENCE_SIGNALS = 40
+_MAX_SEQUENCE_GROUPS = 2000
+# Only these kinds are representable as temporal-sequence steps (schema enum);
+# never build ordering steps for any other normalized kind (e.g. "event").
+_SEQUENCE_KINDS = frozenset({"span", "log", "metric"})
 
 
 def infer_contract(
@@ -34,8 +43,15 @@ def infer_contract(
     service: str | None = None,
     infer_ranges: bool = False,
     require_ubiquitous: bool = True,
+    infer_sequences: bool = False,
 ) -> dict[str, Any]:
-    """Infer a conservative draft contract from observed telemetry events."""
+    """Infer a conservative draft contract from observed telemetry events.
+
+    When ``infer_sequences`` is true, an observed execution order is inferred
+    from correlation groups and emitted as a single ``temporal_sequences`` entry
+    marked ``required: false`` (a reviewable hypothesis, not an enforced check —
+    promote it to ``required: true`` once you trust it).
+    """
 
     chosen_service = service or _dominant_service(events) or "service"
     relevant = [event for event in events if event.get("service") in {chosen_service, None}]
@@ -86,6 +102,19 @@ def infer_contract(
     }
     if static_expectations:
         contract["static_expectations"] = static_expectations
+
+    if infer_sequences:
+        order = infer_temporal_order(relevant)
+        if order and len(order["steps"]) >= 2:
+            sequence: dict[str, Any] = {
+                "id": "observed-flow",
+                "required": False,
+                "group_by": [order["correlation_key"]],
+                "steps": order["steps"],
+            }
+            if order.get("window_ms"):
+                sequence["window_ms"] = order["window_ms"]
+            contract["temporal_sequences"] = [sequence]
 
     return contract
 
@@ -208,3 +237,165 @@ def _json_type(value: Any) -> str:
     if isinstance(value, list):
         return "array"
     return "null"
+
+
+def _signal_of(event: dict[str, Any]) -> tuple[str, str] | None:
+    kind = event.get("kind")
+    name = event.get("name")
+    if kind in _SEQUENCE_KINDS and isinstance(name, str) and name:
+        return (kind, name)
+    return None
+
+
+def infer_temporal_order(events: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Infer an observed execution order (a partial order over signals).
+
+    Returns ``None`` unless there is confident, recurring evidence. The result
+    contains the chosen workflow correlation key, the confident pairwise
+    ``before`` edges, a single linear ``steps`` chain (the longest consistent
+    path), and support metadata. Ordering edges are only kept when, in *every*
+    group containing both signals (and in at least two such groups), the first
+    occurrence of ``a`` strictly precedes the first occurrence of ``b`` — equal
+    timestamps are treated as ambiguous, never ordered.
+    """
+
+    # Choose the workflow correlation key with the most eligible groups.
+    best_key: str | None = None
+    best_groups: dict[Any, list[dict[str, Any]]] | None = None
+    best_eligible = 1  # require >= 2 eligible groups
+    for key in _SEQUENCE_CORRELATION_KEYS:
+        groups: dict[Any, list[dict[str, Any]]] = defaultdict(list)
+        for event in events:
+            value = event.get(key)
+            if value in (None, ""):
+                continue
+            groups[value].append(event)
+        eligible = 0
+        for group in groups.values():
+            signals = {
+                _signal_of(event)
+                for event in group
+                if _event_timestamp_ms(event) is not None and _signal_of(event) is not None
+            }
+            if len(signals) >= 2:
+                eligible += 1
+        if eligible > best_eligible:
+            best_eligible = eligible
+            best_key = key
+            best_groups = groups
+    if not best_key or best_groups is None:
+        return None
+
+    # Per group, record the first observed timestamp of each signal.
+    group_first_ts: list[dict[tuple[str, str], float]] = []
+    all_signals: set[tuple[str, str]] = set()
+    for group in list(best_groups.values())[:_MAX_SEQUENCE_GROUPS]:
+        first: dict[tuple[str, str], float] = {}
+        for event in group:
+            ts = _event_timestamp_ms(event)
+            signal = _signal_of(event)
+            if ts is None or signal is None:
+                continue
+            if signal not in first or ts < first[signal]:
+                first[signal] = ts
+        if first:
+            group_first_ts.append(first)
+            all_signals.update(first)
+    if not (2 <= len(all_signals) <= _MAX_SEQUENCE_SIGNALS):
+        return None
+
+    signals = sorted(all_signals)
+    edges: dict[tuple[tuple[str, str], tuple[str, str]], int] = {}
+    for a in signals:
+        for b in signals:
+            if a == b:
+                continue
+            both = [first for first in group_first_ts if a in first and b in first]
+            if len(both) >= 2 and all(first[a] < first[b] for first in both):
+                edges[(a, b)] = len(both)
+    if not edges:
+        return None
+
+    path = _longest_path(signals, set(edges))
+    if path is None or len(path) < 2:
+        return None
+
+    # Support: groups where the whole path is present and strictly ordered.
+    support_full = 0
+    partial = 0
+    max_elapsed = 0.0
+    path_set = set(path)
+    for first in group_first_ts:
+        present = [signal for signal in path if signal in first]
+        if not (set(present) & path_set):
+            continue
+        if len(present) == len(path):
+            ordered = all(first[path[i]] < first[path[i + 1]] for i in range(len(path) - 1))
+            if ordered:
+                support_full += 1
+                max_elapsed = max(max_elapsed, first[path[-1]] - first[path[0]])
+            else:
+                partial += 1
+        else:
+            partial += 1
+
+    ordering_edges = [
+        {
+            "before": {"kind": a[0], "name": a[1]},
+            "after": {"kind": b[0], "name": b[1]},
+            "groups": count,
+        }
+        for (a, b), count in sorted(edges.items())
+    ]
+    return {
+        "correlation_key": best_key,
+        "eligible_groups": best_eligible,
+        "steps": [{"kind": kind, "name": name} for kind, name in path],
+        "ordering_edges": ordering_edges,
+        "support_full_groups": support_full,
+        "partial_groups": partial,
+        "enforceable": partial == 0 and support_full >= 2,
+        "window_ms": int(math.ceil(max_elapsed)) if max_elapsed > 0 else None,
+    }
+
+
+def _longest_path(nodes: list[tuple[str, str]], edges: set[tuple[Any, Any]]) -> list[tuple[str, str]] | None:
+    """Deterministic longest path over a DAG; returns ``None`` if cyclic."""
+
+    used_nodes = sorted({node for edge in edges for node in edge})
+    adjacency: dict[Any, list[Any]] = defaultdict(list)
+    indegree: dict[Any, int] = {node: 0 for node in used_nodes}
+    for a, b in edges:
+        adjacency[a].append(b)
+        indegree[b] += 1
+
+    queue = deque(sorted(node for node in used_nodes if indegree[node] == 0))
+    remaining = dict(indegree)
+    topo: list[Any] = []
+    while queue:
+        node = queue.popleft()
+        topo.append(node)
+        for nxt in sorted(adjacency[node]):
+            remaining[nxt] -= 1
+            if remaining[nxt] == 0:
+                queue.append(nxt)
+    if len(topo) != len(used_nodes):
+        return None  # cycle: refuse to invent an order
+
+    best_len: dict[Any, int] = {node: 1 for node in used_nodes}
+    prev: dict[Any, Any] = {node: None for node in used_nodes}
+    for node in topo:
+        for nxt in sorted(adjacency[node]):
+            candidate = best_len[node] + 1
+            if candidate > best_len[nxt]:
+                best_len[nxt] = candidate
+                prev[nxt] = node
+    # End node: longest, tie-broken by smallest node tuple for determinism.
+    end = min(used_nodes, key=lambda node: (-best_len[node], node))
+    chain: list[Any] = []
+    cursor: Any = end
+    while cursor is not None:
+        chain.append(cursor)
+        cursor = prev[cursor]
+    chain.reverse()
+    return chain
