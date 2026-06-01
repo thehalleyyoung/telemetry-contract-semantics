@@ -1,0 +1,16 @@
+$ telemetry-contracts scan-repo --repo almbayedahmad/medflux
+Scanned https://github.com/almbayedahmad/medflux.git: 5 telemetry file(s), 61 event(s), 4 finding(s) (0 error, 4 warning).
+
+Top issue types:
+  warning telemetry.correlation_missing     2
+  warning telemetry.sensitive_unclassified  2
+
+Findings (most severe first):
+  WARNING telemetry.correlation_missing in logs/current.jsonl at event[1]:
+          log 'medflux.uncaught' reports a failure but carries no correlation id
+  WARNING telemetry.sensitive_unclassified at event[1].tenantID:
+          field 'tenantID' is emitted without redaction/hashing or a classification
+
+Next steps:
+  - Understand a finding:  telemetry-contracts explain telemetry.correlation_missing
+  - Lock it in:            telemetry-contracts infer-contract --events logs/current.jsonl

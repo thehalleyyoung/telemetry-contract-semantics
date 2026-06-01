@@ -171,6 +171,18 @@ CLAIMS: list[dict[str, Any]] = [
             "The Pyodide runtime and the engine bundle are loaded at page open, so the first analysis incurs a one-time load cost; subsequent analyses are instant.",
         ],
     },
+    {
+        "id": "launch-assets",
+        "claim": "The repository ships byte-deterministic launch and demo assets generated from real data: a self-contained terminal SVG and an asciicast of a real scan-repo run against a public repository authored without this tool, and a 1200x630 social/OpenGraph card built from the frozen corpus headline statistic. A launch blog post and Show-HN narrative present the corpus result with an exact, reproducible command, and a CONTRIBUTING guide frames good-first-issues around adding corpus subjects and gold labels. The rendering helpers are pure functions (fixed geometry, fixed asciicast timing, XML-escaped, no wall-clock or RNG); the committed assets are reproducible from docs/launch/build.py and a test fails if they drift.",
+        "public_artifacts": ["telemetry_contracts/launch.py", "docs/launch/build.py", "docs/launch/blog_post.md", "docs/launch/show_hn.md", "docs/launch/demo.svg", "docs/launch/social_card.svg", "CONTRIBUTING.md"],
+        "tests": ["tests/test_launch.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The demo transcript is real captured output committed as text; reproducing it live requires network access to clone the subject repository.",
+            "The social card and blog headline summarize a small, demonstrative frozen corpus; the numbers are honest for that corpus and scale with additional corpus subjects.",
+        ],
+    },
 ]
 
 
