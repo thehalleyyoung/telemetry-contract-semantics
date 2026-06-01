@@ -6,6 +6,12 @@ Most observability tooling only pays off *later*, after you adopt a prescribed
 instrumentation discipline. Telemetry Contracts is useful *right now* with the
 logs, traces, and metrics you already emit — whatever their shape.
 
+Its premise is that **observability is a correctness property**:
+under-instrumentation (a failure you can't trace, an error with no cause, a span
+with no duration, a secret in a log) is a *detectable bug class*, not a matter of
+taste. Each bug class has a precise, testable definition and an explicit
+statement of what a finding does and does not guarantee.
+
 ## Quickstart: use the data you already have
 
 ```bash
@@ -65,6 +71,21 @@ error|warning|never`, `--output`, `--format text|json|markdown`, and `--deep`
 (see below). Output leads with a per-type rollup (most severe first) and
 copy-pasteable next steps, and each finding is tagged with the file it came
 from. Cloning uses `git clone --depth 1`; discovery is a pruned, bounded walk.
+
+### Study many repositories at once
+
+To measure observability across a whole set of pre-existing repositories, point
+`mine-corpus` at a pinned-commit corpus manifest. It clones each subject at its
+exact commit SHA, scans it, and reduces the results to one deterministic dataset
+and report — including the headline statistic *"what share of repositories
+cannot answer 'why did this request fail?'"*:
+
+```bash
+python3 -m telemetry_contracts.cli mine-corpus --manifest benchmarks/corpus/tier1.json --format markdown
+```
+
+See [`docs/evaluation/`](docs/evaluation/) for the study design, the dataset
+schema, and the soundness/incompleteness of each bug class.
 
 Try the zero-config and scan commands against bundled fixtures:
 

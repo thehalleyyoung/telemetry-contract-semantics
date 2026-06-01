@@ -1,0 +1,455 @@
+{
+  "policy": "Transparent hand-written surrogate (high-recall over-flagging reviewer). NOT an LLM and not evidence of LLM accuracy; provided to exercise the offline harness with a different error profile.",
+  "prompt_schema": "telemetry-contracts/llm-baseline-prompt@1",
+  "responses": {
+    "026363d89fe4dd0ac66df57be7e74d2f20193eeb245764b3856ad3706a60625a": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "08cbbdee13f2e25b6fc0dce80ffbef18bd786205a0c7775d9668ef71263d435c": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "0c7f75c71c5a5bf92789906f27e4d6882e1fd7a3e0433417a559c7f7cd42fd0e": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "0d108ca77f179391bbd2a66ebf495b7f8fc2fb1c5908350dd067cc4debbc3145": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "0d98683acd77ec14cc12e152c6e6b27ec4247de009ceb1bcbc652f632b430057": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "0d988556be30357ddbe402cfc5841657a6290713f15630faf08b4706d9a9ede0": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "0f81dcf4d5013fda0e076ce7811f751599a1f85bf62e897d32c58481e1cf4dce": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "1157c8f28dd927ae44db9e64a8f3c4931ece88b6d6f5dd18956c06afe497ebd6": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "1765bf91c348b562cf3a98ba185a07469e3c192cbdde667dbc4f28ceebb3ed00": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "17fe44671722c1e0bfcabbba19ba0af2beb7e341dd8513a5e7bda190648fa81b": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "198939b0f77ab557f273711f0fbbb5f18383a0b75109b8f90f99c53a4e7af539": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "1bc2808a83826f1df460d06fa0f4f865dccda5948b8d84eea62ea5a9f4b003fc": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "1d61b1512d4e02abb3049a4c512534dba4a9c824caf92d9bb307d07eab05c434": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "2165bfe92910996b0459e211ddf03f7b3be3ed41683c9cf08c1a57adc87deb38": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "238c7cc07979910c45befe482ee4c10a2a7ef88e13e015ce2c53cff5b3084be6": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "239b33f52e4afb3153a5c94bbc6c8edab1634190801e35d911842443b9a7622c": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "257695af41a13fb6979a8a6e5d3370abad0b1b65b5286d585353ed7d1e57ce4b": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "25b79c3ada6d5d368a177f19864a54f58608c035002a2044571ab175cdcb3d01": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "265951d3544a12799dee13fc559d6d8c1da7d5ecabf94dcf8083788712b1d4de": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "2865575c9ee1194e9b01d87f5975276c662d1c27ee548d18ca7f4a76db6add75": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "286cd3b20816afc1e5ff236ff074511f1ec4d942463830a8d79defab2341bc89": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "2cb39def642564e1e6fbed28aa3b4a7f9203250e81e0e2f3e94fbb5fd7dffa56": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "31dbb772ed4bd6fd53bd08d18ebcfb80bb770ad830926f5fafe53bbb0834e685": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "32f511939e8582fb11c115c04eb7664fc2f36be098fb16b63543071fd23c45cb": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "34661d63986f970efe78052fb5f9bbeed3aec022484ea90779c440743d2ba3f0": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "352aab7d70db2a984e6d7c92619c2154459890d5c71f2bf8f23bd31cafa47676": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "37f84feb52320e4ee26d0cd4044055b4b527e233a78f505249a8fee5af3bc634": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "38d660c1445ac56a2535779c6d25e57f7aa473609bc2d9a8ab827d865d8d368e": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "40c4ea258f0103d2475426727667eb710f0b8cfa9de3850e1b3ecd152dfb0ecc": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "4198f3e88e6f28036c9f893dbb6423cb8c13bd7717aa524671bf0194913b872f": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "41fb7893f27142e4a78cf878ed63d7d4043e07f1cd5ae9aee52655a5b0eaf097": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "4310651c2aa8c774fda3045b00e7bcf4ae1c3ab91274b4e06d6d0b6bf613a903": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "44f2df3433ecbbb576594a94d2e09c227a62e04483d6fa78523745367087cf5f": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "454469433467969abcf1745fc4d4d30165f9d2ed5423f8f7f34f2092249aa0fc": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "49395412c8d09134bc0651f0ce557392dee72a5f08eb5faa729fe241d2784afa": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "4fa2b6444023bc18f5cef8a3baade6097ec69209ca5e84aaf25ed99821da3b2e": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "5316ff4a13b874016a642fa9ad8da810129e468a3cf6f5e4e200ff6eeb21315a": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "567c3656e11b26e4486092ed55579d13835902d8f5b6fff663c1d662a14c7567": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "56a1cc2e97fe10b87bcd29cb7bdbf75c4af2c6293ce4575e721d281ebcb4ec10": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "5a1951180196840318bf35e816178d94a47d35fe496eb7c923b40960ba3d52ca": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "5b41d7523eb9dbf1d7aff7a599cd615b89ac8e5d3f720a95820b3586f1ba2d16": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "5de6202253eb18479980500d44125e17a19034f8c569b5aeed98e22d26053b0e": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "5fbf63274b3ddd5d03c2054d227c3fb589ba3fda2b4793451e746d203d042784": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "629590319cc54c7995a8fea4d1043985e495e45d02b2ec5750117a9cf2f2ecbd": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "63589d05a9f007061d6efb2b99267011063f342829b66ff5025e3fe0f8de637a": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "63debae640fc679fcb7b8cafe2e2a6d9581d308c8cad6709ccd43076a2be9ed4": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "64e3488c082bf6152650729f21b0324776739a73fe8fa7ce9f62f1fc34170533": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "65ffa5c95b6f082b2c9c2251f73814eb9adc104a143950cdc54ca22aa9a2ccfc": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "66c03c2b4d124299ee4e35db6d897b8676ff44dc753374dc116628b755b0d889": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "66e02fc75768299837e1a38c7062dc8bcb01e7a1115f175d75c56de67cd1b70c": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "68fa5ede83f530e1c1e17897a6b9f3dc6b2cb3fa0ada600ef626b9ba4900de2a": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "6d9fd4273d5c877a8cf031d777c5061fb547d67c5485e31e4b31f6781698db78": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "70048e0ae7ad6f8834eb80e923cd45a97107dc46615c7d7719f25ae053e71530": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "70550fd4299cd62f843132bb51f3d9a6c35c54a9c0e92b5f525d83efd5e2ed5f": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "71797205b3b1346b0408465e7033e03a59d68a17160c2b99a8c8eb11824a211c": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "72a7d687e16615e5ba9469e35d353c9eff4ea8003fe1aae919787f7a3168ad97": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "72b2258bc6dea324ba669c951de7f75c1faaa41aad9eb410ab7962343e411f5d": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "74d7695a20fbd3e4a2036e65ec0ce334850c20e171a5990bd8c448774bf2f960": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "7735cb33dfba3ecd199283834998a98b352b202d28135daa1741d82f2bf46243": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "794d6c154bb0f78818786f833574efb4e0ae02c05c3313dfb3b335200bda882b": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "7a16d4287f5293c2480c3753f77aa67ddef5d1cd7910bb2cbffa644cfa0050c1": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "7ec31b2a78bc218eeaf0664b50ce7ea46166474f32ff81ce433c60f9418b6526": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "87e93bb6521f8c8ed6e27a2d1fad868b06bff62f71d3b0007d69a2d6b98ea1ce": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "892d8413a0b08dcc3b4cd29e40d0e8018583576258d179ddf270d967697b3848": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "8b88e2bd2b762c034eb6d47554a85cd1409ee50dc0e8b44f120e765bdff9c717": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "916914bfe2a51586593fd5fda6a1e06f3e0a4330cff482ae152500c4227b4278": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "9a7d437f232ffb9ca471980c0be662eb5b60b7664407b9e94c9508d9105cb7b1": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "9b16228757e53b53f5cec786c1a9002043c35527cdf4301994a9462074b35d2f": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "9bf66fc0a71efcdd9e79c22fe26fe21f0631a7bdcb933fb2c3b19dfa3a4ff8c6": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "a04fc44183bcd4eadefe6aed1b5f3dc6b7a63876c8219e98843466e984b10ac2": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "a1d1f9ae0c98d370ecff29e9fcb46c709080f6662ea209500d41a3c8a07c4277": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "a21342be0ff4b9151b538a929c97330f441554a679777420aa3f016da0c50d3a": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "a6751d2daa04a47205fc0a6f64db65e02437178b150cb17e651aa96d106e5ef6": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "a73718727d46ba242ea611a74ad81e04513395cb826715b49dc3acdeda858b75": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "a9bfc482dc59d9948fcd98d85b99625f34916abfa95aad17565d58ce9a44d9c7": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "ab933f3bbc6f53dc6c5056c0ab427070e14df1b5646503a2e7f63b5b9b7167ab": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "ab9d6cc2b584306e3389a047c2e325927f9fcdc655a5747ca2dfd9b365814852": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "abe46b686858b6de71a08cde768250436dcd54ee06315a36525a8068962e7093": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "ae9b295ccafa38c4bc825f18457a30838213788f397b6c84bf414bab00383339": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "af4a660dad858d46f540914fd52c95f89023e8b03a836141f2e1df6622985ed5": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "b14df6ae92f2fea9b413aab7dcea0af919d73fc438ef1e20238a6033fbb6215e": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "b29778afaf9029839c49d923ef58bda3609a293216b25ba78ac747afdcf40844": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "b44590d8539bb98c9c97a89a795796dbd852bc3ff8a1821631bdb8ec6edaffea": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "b5241095bf8b79abafdbeb472751cb4007b59927b4d17164b8a99b70783470da": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "b617f3b56c580167c5e5ba570cf16cc2b3db20030dbbadd2916f12e3a57f3f84": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "b6cc2b5256afe491dc661dea0ad1bcaaeda9c05a4c934f30fc6ffa5ff8cf974f": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "b9d900668a181ed569b2c49237aa7fb76bff1cb34ac98caa872d981aa62c8ff9": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "bce93a29d0d115f31f00fd7f87033841b6275466e635ec3cbfb5def0639e7bbd": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "beed874681a3c3df3add0ab3120bda70055e8827f4c8695634d8ee847b0a1437": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "c291cabc36bd6992105eee41a6ef2f1f324e31560a2ec35e59bd79fefd05f3f3": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "c5d576c03c331ba5a84f99f21548c4580b8d139cf446b67d81263faa3de4aeff": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "c80fa827b76dc404aca1eec246600c3f5727d7c047e9b1a6e8585eec3acf4376": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "c8378b1113f7e91dbd42bfeab7a229c68588af69474e23c101d5deb2e35a851c": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "cd8ec32b0612e4df14c218017f2085dd389a7d3f8d378b190df4f3ec87f6fbc5": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "d514ab3acdeefc1dc2e3c4fb0b85f9c83843d2126fe9fc0c154709763d9f973d": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "ddb9a4cddba93cd7cd7607b789e345ca2b68df4183a3e013889614f9f1e83a8e": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "decf46fbde5d975b0ac97bc3edca145c69894cfc8cf7366fe9c12f0cdb6662ee": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    },
+    "e4b396d87c944cdfdbacc7f18e00f1204f433b1676b227f2b10e280d065de7e3": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "e55a01405832b184203358e8f7efefbb346e17622429f44539033f8b30c54b63": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "e8c78f7cbab08e2ea10b50a06373843217e2d4f4710192f009a1b6a02dbf2364": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "e902f17036e003e4aaa4e190611e692b257189aeb3631d0a14008b601f6927dd": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "ee90558cba9888ce27fd2648bbfd8b1e1c22e44de244f1daadcd7b4acfccf1a0": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "f2918e87356619a15a197d1a4413da8beb68263d1051f573c6a4c58f18497bb1": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "f3777e7f67fd7c7af1c1fa17b5739c3bcc7517ca2e0f01a430a90c1c5515f1ec": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "f4097711051b53f7e58f55d74015bc279a38558db38d22639514b5ace3296a8b": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "f41532301b2eab97fb99720fbbe59fa394d8f5589f6db119fb37dacc5c33fa50": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "f4b5eae2f57f01ad91f3550091080628626323536b500b795f153ae3f267c292": {
+      "rationale": "targeted field family appears absent; events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "f4fa374399769c9c3c995d4acd622c41aecc0ffff4ede2d5a8e0f14b5e805f21": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "f7edbf4b7defba0b35d4050504cd9c562b1750ae9126a1df055eb362ab6810c7": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "fb0728ea92ecf714c030ff07ea84b85ea461c2c85a9ee20d4c09bbf5dc2b990e": {
+      "rationale": "targeted field family appears absent",
+      "verdict": "YES"
+    },
+    "fc12dc5359a90d233493d2cf0b05a793be9aeadb4a2ce6243d9932381005bfea": {
+      "rationale": "events carry a failure/anomaly cue",
+      "verdict": "YES"
+    },
+    "ff333dbe733bc4e9503d7d969196c1c1a443aba0fede6b9f0b4314dd9aabb714": {
+      "rationale": "no cue observed",
+      "verdict": "NO"
+    }
+  },
+  "schema": "telemetry-contracts/llm-recorded@1"
+}

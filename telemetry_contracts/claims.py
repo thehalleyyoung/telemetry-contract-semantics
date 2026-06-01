@@ -75,6 +75,42 @@ CLAIMS: list[dict[str, Any]] = [
             "Companion patches add a brand-new file (a reviewable proposal); they are not integrated into existing call sites and are never applied. Re-running or replaying the target repo's build/tests remains out of scope without a sandbox.",
         ],
     },
+    {
+        "id": "corpus-mining-study",
+        "claim": "A frozen, pinned-commit corpus of pre-existing repositories (addressed by exact 40-character commit SHA across GitHub, GitLab, and Bitbucket) is scanned and reduced to a single byte-deterministic dataset: a headline statistic (the share of telemetry-bearing repositories that cannot answer 'why did this request fail?'), per-bug-class prevalence with per-host breakdowns, and the diagnosability-score distribution. Each bug class has a precise, testable definition and an explicit soundness/incompleteness statement, and the headline uses the conservative finding-based correlation check so it never over-reports relative to the per-class prevalence.",
+        "public_artifacts": ["telemetry_contracts/bug_classes.py", "telemetry_contracts/mining/__init__.py", "telemetry_contracts/mining/corpus.py", "telemetry_contracts/mining/study.py", "docs/evaluation/corpus_study.md"],
+        "tests": ["tests/test_mining_study.py", "tests/test_corpus_mining_real.py"],
+        "fixtures": ["benchmarks/corpus/tier1.json"],
+        "benchmark_rows": [],
+        "limitations": [
+            "The corpus is a curated sample; prevalence figures describe the sampled repositories, not all software, and detection inherits each bug class's stated incompleteness.",
+            "Only derived metrics and findings are retained (never copied source); per-subject licenses are recorded in the manifest.",
+        ],
+    },
+    {
+        "id": "ground-truth-precision-recall",
+        "claim": "A hand-labeled curated conformance set (one objectively-checkable (sample, bug-class) pair per line, balanced positive/negative and covering every bug class) is scored against the shipped detectors to produce byte-deterministic per-class and overall precision, recall, and F1, a confusion matrix, a representative error analysis, and a Cohen's-kappa inter-rater slot. Labels are semantic ground truth (distinct from the operational detector's field set); every residual error on the curated set is a documented incompleteness or false-positive source. The metrics describe this curated set rather than a prevalence-representative sample, and the predictor's wiring is separately validated to agree exactly with an independent field oracle on telemetry harvested from real repositories.",
+        "public_artifacts": ["telemetry_contracts/evaluation/__init__.py", "telemetry_contracts/evaluation/ground_truth.py", "telemetry_contracts/evaluation/scorer.py", "docs/evaluation/ground_truth.md"],
+        "tests": ["tests/test_ground_truth_eval.py", "tests/test_ground_truth_real.py"],
+        "fixtures": ["benchmarks/ground_truth/curated.jsonl"],
+        "benchmark_rows": [],
+        "limitations": [
+            "Accuracy is measured on a curated gold set whose labels are objective but whose distribution is not a random sample of all telemetry; the headline F1 describes this set.",
+            "The field-decidable classes are validated against an independent oracle on real events; the pattern-based classes (sensitive values, cardinality) inherit their stated precision-over-recall tuning.",
+        ],
+    },
+    {
+        "id": "baseline-comparison",
+        "claim": "The shipped detectors are compared head-to-head, through the identical gold-set pipeline, against deterministic capability baselines: a deliberately naive field-name keyword detector (rule-light), an OpenTelemetry semantic-convention conformance checker (coverage-limited, with out-of-scope classes reported as coverage gaps rather than accuracy failures), and an offline LLM-baseline harness (prompt + parser + replay cache) whose shipped cache is a transparent hand-written surrogate policy that is explicitly NOT an LLM result. The comparison reports all-class and covered-class micro/macro precision/recall/F1, a symmetric per-item win/loss analysis, and an exact two-sided paired McNemar test; on the curated set the tool significantly outperforms every baseline. Baseline definitions are frozen before snapshotting, no threshold is tuned on the gold set, and every method sees only (events, bug_class).",
+        "public_artifacts": ["telemetry_contracts/evaluation/baselines.py", "docs/evaluation/baselines.md"],
+        "tests": ["tests/test_baselines.py", "tests/test_baselines_real.py"],
+        "fixtures": ["benchmarks/ground_truth/curated.jsonl", "benchmarks/baselines/llm_recorded.json"],
+        "benchmark_rows": [],
+        "limitations": [
+            "The baselines are deliberately scoped capability comparators, not state-of-the-art detectors; the head-to-head numbers describe the curated conformance set, not a prevalence-representative sample.",
+            "The LLM-baseline row replays a transparent deterministic surrogate, not a commercial model; it demonstrates the offline harness and a different error profile and makes no claim about real LLM accuracy.",
+        ],
+    },
 ]
 
 

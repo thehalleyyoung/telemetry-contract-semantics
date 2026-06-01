@@ -1,0 +1,59 @@
+{
+  "schema": "telemetry-contracts/corpus@1",
+  "selection_protocol": {
+    "description": "A small, frozen multi-host corpus of public repositories that ship telemetry/log data and were authored without this tool in mind. Each subject is pinned to an exact commit SHA so the study is replayable byte-for-byte.",
+    "criteria": [
+      "public repository on github.com, gitlab.com, or bitbucket.org",
+      "ships at least one parseable telemetry/log file in a recognised format",
+      "authored independently of this project (no contract or convention adoption)"
+    ],
+    "exclusions": [
+      "forks",
+      "archived repositories",
+      "repositories requiring authentication to clone"
+    ],
+    "notes": "This tier-1 set is intentionally tiny so it runs quickly in network-gated CI. Larger tiers can be appended without changing the schema."
+  },
+  "subjects": [
+    {
+      "target": "Vannut97/web-refinery",
+      "sha": "c542937d21d4eaef3d6a9d21bb0a9e2e334d0356",
+      "host": "github",
+      "license": "UNKNOWN",
+      "rationale": "ships JSONL application logs under logs/",
+      "tier": 1
+    },
+    {
+      "target": "almbayedahmad/medflux",
+      "sha": "d928bdbb43fcc072d7fea0636796c687fb5d563b",
+      "host": "github",
+      "license": "UNKNOWN",
+      "rationale": "emits structured pipeline log records",
+      "tier": 1
+    },
+    {
+      "target": "Keyhole-Koro/InsightifyCore",
+      "sha": "3a85106504fdd2634dca78a4e883cdf70fd12e14",
+      "host": "github",
+      "license": "UNKNOWN",
+      "rationale": "ships structured event/log data",
+      "tier": 1
+    },
+    {
+      "target": "gl:gitlab-examples/python-getting-started",
+      "sha": "4104c678f2a724f301952911f2b103218e30c1e7",
+      "host": "gitlab",
+      "license": "UNKNOWN",
+      "rationale": "independent GitLab sample project (no-telemetry graceful path)",
+      "tier": 1
+    },
+    {
+      "target": "bb:atlassian_tutorial/helloworld",
+      "sha": "65d938f39f364da3f90767e008022ffe45c562af",
+      "host": "bitbucket",
+      "license": "UNKNOWN",
+      "rationale": "independent Bitbucket sample project (no-telemetry graceful path)",
+      "tier": 1
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "$id": "https://example.invalid/telemetry-contracts/finding_taxonomy.schema.json",
   "title": "Telemetry Contracts Finding Taxonomy",
   "type": "object",
-  "required": ["schema", "schema_version", "semantics", "summary", "rules"],
+  "required": ["schema", "schema_version", "semantics", "summary", "bug_classes", "rules"],
   "additionalProperties": false,
   "properties": {
     "schema": {"type": "string"},
@@ -15,7 +15,8 @@
       "properties": {
         "finding": {"type": "string"},
         "formal_clause": {"type": "string"},
-        "ci_mapping": {"type": "string"}
+        "ci_mapping": {"type": "string"},
+        "bug_class": {"type": "string"}
       }
     },
     "summary": {
@@ -26,8 +27,13 @@
         "rules": {"type": "integer", "minimum": 0},
         "categories": {"$ref": "#/$defs/stringIntegerMap"},
         "default_severities": {"$ref": "#/$defs/stringIntegerMap"},
-        "sarif_levels": {"$ref": "#/$defs/stringIntegerMap"}
+        "sarif_levels": {"$ref": "#/$defs/stringIntegerMap"},
+        "bug_classes": {"$ref": "#/$defs/stringIntegerMap"}
       }
+    },
+    "bug_classes": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/bugClass"}
     },
     "rules": {
       "type": "array",
@@ -95,6 +101,32 @@
       "type": "object",
       "additionalProperties": {"type": "integer", "minimum": 0}
     },
+    "bugClass": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "definition",
+        "blocks_question",
+        "finding_codes",
+        "detector",
+        "guarantee",
+        "incompleteness",
+        "false_positive_sources"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "definition": {"type": "string"},
+        "blocks_question": {"type": "string"},
+        "finding_codes": {"type": "array", "items": {"type": "string"}},
+        "detector": {"type": "string"},
+        "guarantee": {"type": "string"},
+        "incompleteness": {"type": "string"},
+        "false_positive_sources": {"type": "string"}
+      }
+    },
     "rule": {
       "type": "object",
       "required": [
@@ -106,6 +138,7 @@
         "disclosure_sensitivity",
         "service_owner",
         "sarif_level",
+        "bug_class",
         "ci"
       ],
       "additionalProperties": false,
@@ -118,6 +151,7 @@
         "disclosure_sensitivity": {"type": "string"},
         "service_owner": {"type": "string"},
         "sarif_level": {"enum": ["note", "warning", "error"]},
+        "bug_class": {"type": ["string", "null"]},
         "ci": {
           "type": "object",
           "required": ["default_fail_on", "sarif_level", "baseline_key_fields"],

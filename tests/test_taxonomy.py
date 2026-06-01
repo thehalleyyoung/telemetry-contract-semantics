@@ -19,7 +19,30 @@ def test_taxonomy_document_is_machine_readable_and_ci_mapped():
         assert "code" in rule["ci"]["baseline_key_fields"]
 
 
-def test_checked_in_taxonomy_artifact_matches_generator():
+def test_taxonomy_carries_bug_class_guarantee_metadata():
+    from telemetry_contracts.bug_classes import (
+        BUG_CLASS_IDS,
+        CODE_TO_BUG_CLASS,
+        soundness_rows,
+    )
+
+    document = taxonomy_document()
+
+    # The bug-class guarantee statements are embedded verbatim from the single
+    # source of truth so docs/paper/tool can never drift.
+    assert document["bug_classes"] == soundness_rows()
+
+    # Every rule carries a bug_class field that agrees with the SoT mapping.
+    for rule in document["rules"]:
+        assert "bug_class" in rule
+        assert rule["bug_class"] == CODE_TO_BUG_CLASS.get(rule["code"])
+
+    # Every bug class is witnessed by at least one taxonomy rule.
+    witnessed = {r["bug_class"] for r in document["rules"] if r["bug_class"]}
+    assert witnessed == set(BUG_CLASS_IDS)
+
+
+
     generated = taxonomy_document()
     checked_in = json.loads((ROOT / "docs/finding_taxonomy.json").read_text(encoding="utf-8"))
 

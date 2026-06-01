@@ -3,7 +3,7 @@
     {
       "benchmark_rows": [],
       "claim": "The tool runs against telemetry you already have (arbitrary JSON/JSONL logs, a JSON array, native JSONL, or OTLP) with no contract authored first: `analyze` reports privacy/diagnosability findings and `infer-contract` writes a conservative draft contract.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "README.md": true,
         "telemetry_contracts/adapters.py": true,
@@ -38,7 +38,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "README.md": true,
         "benchmarks/builtin.json": true,
@@ -72,7 +72,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "CI can fail on new high-severity findings while allowing audited, owned, expiring baseline entries.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "examples/ci/baseline.example.json": true,
         "examples/ci/generic-ci.sh": true,
@@ -101,7 +101,7 @@
         "benchmark-missing-correlation"
       ],
       "claim": "Static and runtime findings can be exported as SARIF with taxonomy-backed rule metadata for code scanning consumers.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "docs/finding_taxonomy.json": true,
         "examples/ci/static_findings.example.json": true,
@@ -130,7 +130,7 @@
         "all built-in benchmark rows"
       ],
       "claim": "Current impact reports, benchmark Markdown, taxonomy summaries, paper tables, and this matrix are regenerated from checked-in artifacts.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "benchmarks/builtin.json": true,
         "docs/claims_evidence_matrix.json": true,
@@ -158,7 +158,7 @@
     {
       "benchmark_rows": [],
       "claim": "A staged loop runs on a repository you did not instrument: it characterizes existing telemetry, diagnoses incident-readiness, plans high-impact additive instrumentation, synthesizes the missing signals offline, and re-analyzes differentially across rounds. Each round is safety-gated (a round that introduces a finding or drops the score is quarantined and rolled back), every stage is persisted as a SHA-keyed, provenance-carrying artifact, and generated code is emitted only as validated standalone proposals (parsed, compiled, and confirmed by the static checker) \u2014 never applied to the repo and never build/test-run.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "docs/staged_pipeline.md": true,
         "telemetry_contracts/artifacts.py": true,
@@ -187,7 +187,7 @@
     {
       "benchmark_rows": [],
       "claim": "Every proposed instrumentation change is scored by a written high-impact rubric (analytic signal gained / added surface area, derived mechanically from unblocked questions and statically-confirmed signal names) and ships with a reviewable companion patch generated against the exact cloned commit and verified with `git apply --check`. Analysis deepens progressively across rounds (correlation -> ordering -> temporal -> privacy) only as the data actually gets richer, and a post-hoc scorecard re-scores the applied changes (predicted vs realized impact per surface area) as tool-maintenance metadata that is never a repository finding. Proven on real GitHub, GitLab, and Bitbucket repositories authored without this tool.",
-      "commit": "5b825fa",
+      "commit": "a9c7811",
       "evidence_exists": {
         "docs/high_impact_filter.md": true,
         "telemetry_contracts/code_proposals.py": true,
@@ -210,11 +210,101 @@
         "tests/test_proposals_and_depth.py",
         "tests/test_real_repos.py"
       ]
+    },
+    {
+      "benchmark_rows": [],
+      "claim": "A frozen, pinned-commit corpus of pre-existing repositories (addressed by exact 40-character commit SHA across GitHub, GitLab, and Bitbucket) is scanned and reduced to a single byte-deterministic dataset: a headline statistic (the share of telemetry-bearing repositories that cannot answer 'why did this request fail?'), per-bug-class prevalence with per-host breakdowns, and the diagnosability-score distribution. Each bug class has a precise, testable definition and an explicit soundness/incompleteness statement, and the headline uses the conservative finding-based correlation check so it never over-reports relative to the per-class prevalence.",
+      "commit": "a9c7811",
+      "evidence_exists": {
+        "benchmarks/corpus/tier1.json": true,
+        "docs/evaluation/corpus_study.md": true,
+        "telemetry_contracts/bug_classes.py": true,
+        "telemetry_contracts/mining/__init__.py": true,
+        "telemetry_contracts/mining/corpus.py": true,
+        "telemetry_contracts/mining/study.py": true
+      },
+      "fixtures": [
+        "benchmarks/corpus/tier1.json"
+      ],
+      "id": "corpus-mining-study",
+      "limitations": [
+        "The corpus is a curated sample; prevalence figures describe the sampled repositories, not all software, and detection inherits each bug class's stated incompleteness.",
+        "Only derived metrics and findings are retained (never copied source); per-subject licenses are recorded in the manifest."
+      ],
+      "public_artifacts": [
+        "telemetry_contracts/bug_classes.py",
+        "telemetry_contracts/mining/__init__.py",
+        "telemetry_contracts/mining/corpus.py",
+        "telemetry_contracts/mining/study.py",
+        "docs/evaluation/corpus_study.md"
+      ],
+      "tests": [
+        "tests/test_mining_study.py",
+        "tests/test_corpus_mining_real.py"
+      ]
+    },
+    {
+      "benchmark_rows": [],
+      "claim": "A hand-labeled curated conformance set (one objectively-checkable (sample, bug-class) pair per line, balanced positive/negative and covering every bug class) is scored against the shipped detectors to produce byte-deterministic per-class and overall precision, recall, and F1, a confusion matrix, a representative error analysis, and a Cohen's-kappa inter-rater slot. Labels are semantic ground truth (distinct from the operational detector's field set); every residual error on the curated set is a documented incompleteness or false-positive source. The metrics describe this curated set rather than a prevalence-representative sample, and the predictor's wiring is separately validated to agree exactly with an independent field oracle on telemetry harvested from real repositories.",
+      "commit": "a9c7811",
+      "evidence_exists": {
+        "benchmarks/ground_truth/curated.jsonl": true,
+        "docs/evaluation/ground_truth.md": true,
+        "telemetry_contracts/evaluation/__init__.py": true,
+        "telemetry_contracts/evaluation/ground_truth.py": true,
+        "telemetry_contracts/evaluation/scorer.py": true
+      },
+      "fixtures": [
+        "benchmarks/ground_truth/curated.jsonl"
+      ],
+      "id": "ground-truth-precision-recall",
+      "limitations": [
+        "Accuracy is measured on a curated gold set whose labels are objective but whose distribution is not a random sample of all telemetry; the headline F1 describes this set.",
+        "The field-decidable classes are validated against an independent oracle on real events; the pattern-based classes (sensitive values, cardinality) inherit their stated precision-over-recall tuning."
+      ],
+      "public_artifacts": [
+        "telemetry_contracts/evaluation/__init__.py",
+        "telemetry_contracts/evaluation/ground_truth.py",
+        "telemetry_contracts/evaluation/scorer.py",
+        "docs/evaluation/ground_truth.md"
+      ],
+      "tests": [
+        "tests/test_ground_truth_eval.py",
+        "tests/test_ground_truth_real.py"
+      ]
+    },
+    {
+      "benchmark_rows": [],
+      "claim": "The shipped detectors are compared head-to-head, through the identical gold-set pipeline, against deterministic capability baselines: a deliberately naive field-name keyword detector (rule-light), an OpenTelemetry semantic-convention conformance checker (coverage-limited, with out-of-scope classes reported as coverage gaps rather than accuracy failures), and an offline LLM-baseline harness (prompt + parser + replay cache) whose shipped cache is a transparent hand-written surrogate policy that is explicitly NOT an LLM result. The comparison reports all-class and covered-class micro/macro precision/recall/F1, a symmetric per-item win/loss analysis, and an exact two-sided paired McNemar test; on the curated set the tool significantly outperforms every baseline. Baseline definitions are frozen before snapshotting, no threshold is tuned on the gold set, and every method sees only (events, bug_class).",
+      "commit": "a9c7811",
+      "evidence_exists": {
+        "benchmarks/baselines/llm_recorded.json": true,
+        "benchmarks/ground_truth/curated.jsonl": true,
+        "docs/evaluation/baselines.md": true,
+        "telemetry_contracts/evaluation/baselines.py": true
+      },
+      "fixtures": [
+        "benchmarks/ground_truth/curated.jsonl",
+        "benchmarks/baselines/llm_recorded.json"
+      ],
+      "id": "baseline-comparison",
+      "limitations": [
+        "The baselines are deliberately scoped capability comparators, not state-of-the-art detectors; the head-to-head numbers describe the curated conformance set, not a prevalence-representative sample.",
+        "The LLM-baseline row replays a transparent deterministic surrogate, not a commercial model; it demonstrates the offline harness and a different error profile and makes no claim about real LLM accuracy."
+      ],
+      "public_artifacts": [
+        "telemetry_contracts/evaluation/baselines.py",
+        "docs/evaluation/baselines.md"
+      ],
+      "tests": [
+        "tests/test_baselines.py",
+        "tests/test_baselines_real.py"
+      ]
     }
   ],
   "schema_version": "1.0",
   "summary": {
-    "claims": 7,
-    "commit": "5b825fa"
+    "claims": 10,
+    "commit": "a9c7811"
   }
 }

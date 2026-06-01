@@ -6,8 +6,9 @@ from pathlib import Path
 from typing import Any
 
 from .findings import TAXONOMY
+from .bug_classes import CODE_TO_BUG_CLASS, soundness_rows
 
-TAXONOMY_SCHEMA_VERSION = "1.0"
+TAXONOMY_SCHEMA_VERSION = "1.1"
 
 
 def taxonomy_document() -> dict[str, Any]:
@@ -25,6 +26,7 @@ def taxonomy_document() -> dict[str, Any]:
                 "service_owner": entry["service_owner"],
                 "sarif_level": entry["sarif_level"],
                 "ci": entry["ci"],
+                "bug_class": CODE_TO_BUG_CLASS.get(code),
             }
         )
     return {
@@ -34,13 +36,18 @@ def taxonomy_document() -> dict[str, Any]:
             "finding": "A finite witness that one telemetry-contract obligation failed or needs operator attention.",
             "formal_clause": "Stable identifier for the well-formedness, satisfaction, adequacy, preservation, static, or input rule that justifies the finding.",
             "ci_mapping": "default_fail_on is the minimum severity a CI gate may use for this rule; sarif_level maps directly to SARIF result.level.",
+            "bug_class": "The observability bug class this finding witnesses (see bug_classes); null when the rule is not part of the headline bug-class taxonomy.",
         },
         "summary": {
             "rules": len(rules),
             "categories": dict(sorted(Counter(rule["category"] for rule in rules).items())),
             "default_severities": dict(sorted(Counter(rule["default_severity"] for rule in rules).items())),
             "sarif_levels": dict(sorted(Counter(rule["sarif_level"] for rule in rules).items())),
+            "bug_classes": dict(
+                sorted(Counter(rule["bug_class"] for rule in rules if rule["bug_class"]).items())
+            ),
         },
+        "bug_classes": soundness_rows(),
         "rules": rules,
     }
 

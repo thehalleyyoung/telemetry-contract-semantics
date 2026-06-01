@@ -101,6 +101,27 @@ def main(argv: list[str] | None = None) -> int:
     scan_repo_parser.add_argument("--deep", action="store_true", help="also infer per-service execution semantics, observed order, and runtime/source alignment")
     scan_repo_parser.add_argument("--output", help="write command output to this path instead of stdout")
 
+    mine_parser = subparsers.add_parser("mine-corpus", help="run the observability study over a pinned-commit corpus of pre-existing repositories")
+    mine_parser.add_argument("--manifest", required=True, help="path to a corpus manifest (telemetry-contracts/corpus@1)")
+    mine_parser.add_argument("--tier", type=int, default=None, help="only mine subjects at or below this tier (smaller = faster subset)")
+    mine_parser.add_argument("--service", help="only analyze events from this service")
+    mine_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    mine_parser.add_argument("--output", help="write the dataset/report to this path instead of stdout")
+    mine_parser.add_argument("--dataset-output", help="also write the full JSON dataset to this path")
+
+    eval_gold_parser = subparsers.add_parser("evaluate-gold", help="score the detectors against a hand-labeled ground-truth set (precision/recall/F1)")
+    eval_gold_parser.add_argument("--gold", required=True, action="append", help="path to a gold JSONL file (telemetry-contracts/gold@1); repeatable")
+    eval_gold_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    eval_gold_parser.add_argument("--output", help="write the evaluation dataset/report to this path instead of stdout")
+    eval_gold_parser.add_argument("--min-f1", type=int, default=None, help="exit non-zero if the overall micro F1 (per-mille, 0-1000) is below this floor")
+    eval_gold_parser.add_argument("--min-class-f1", type=int, default=None, help="exit non-zero if any per-class F1 (per-mille, 0-1000) is below this floor")
+
+    baselines_parser = subparsers.add_parser("compare-baselines", help="score the tool against deterministic comparison baselines on a gold set (head-to-head)")
+    baselines_parser.add_argument("--gold", required=True, action="append", help="path to a gold JSONL file (telemetry-contracts/gold@1); repeatable")
+    baselines_parser.add_argument("--cache", default="benchmarks/baselines/llm_recorded.json", help="recorded-surrogate response cache (JSON) for the LLM-baseline harness")
+    baselines_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    baselines_parser.add_argument("--output", help="write the comparison/report to this path instead of stdout")
+
     infer_semantics_parser = subparsers.add_parser("infer-semantics", help="infer execution semantics (a draft contract + small-step derivation + observed order) from telemetry you already have")
     infer_semantics_parser.add_argument("--events", required=True, help="JSON/JSONL log lines, a JSON array, native JSONL, or an OTLP export")
     infer_semantics_parser.add_argument("--service", help="only reason about events from this service (defaults to the most common observed service)")
@@ -492,6 +513,110 @@ def main(argv: list[str] | None = None) -> int:
             _emit_text(output, args.output)
             if args.fail_on_regression and report.get("regressed"):
                 return 1
+            return 0
+        if args.command == "mine-corpus":
+            from .mining import (
+                CorpusManifestError,
+                load_corpus_manifest,
+                mine_corpus,
+                render_study_markdown,
+            )
+
+            try:
+                _protocol, subjects = load_corpus_manifest(args.manifest)
+            except CorpusManifestError as exc:
+                print(f"ERROR corpus-manifest: {exc}", file=sys.stderr)
+                return 2
+            if args.tier is not None:
+                subjects = [s for s in subjects if s.tier <= args.tier]
+            if not subjects:
+                print("ERROR corpus-manifest: no subjects selected", file=sys.stderr)
+                return 2
+            try:
+                dataset = mine_corpus(subjects, service=args.service)
+            except RepoScanError as exc:
+                print(f"ERROR mine-corpus: {exc}", file=sys.stderr)
+                return 2
+            if args.dataset_output:
+                Path(args.dataset_output).write_text(
+                    json.dumps(dataset, indent=2, sort_keys=True), encoding="utf-8"
+                )
+            output = (
+                json.dumps(dataset, indent=2, sort_keys=True)
+                if args.format == "json"
+                else render_study_markdown(dataset)
+            )
+            _emit_text(output, args.output)
+            return 0
+        if args.command == "evaluate-gold":
+            from .evaluation import (
+                GroundTruthError,
+                load_gold_set,
+                render_evaluation_markdown,
+                score_gold_set,
+            )
+
+            try:
+                items = load_gold_set(*args.gold)
+            except GroundTruthError as exc:
+                print(f"ERROR gold-set: {exc}", file=sys.stderr)
+                return 2
+            dataset = score_gold_set(items)
+            output = (
+                json.dumps(dataset, indent=2, sort_keys=True)
+                if args.format == "json"
+                else render_evaluation_markdown(dataset)
+            )
+            _emit_text(output, args.output)
+            failed = False
+            if args.min_f1 is not None:
+                overall_f1 = dataset["overall"]["f1_permille"]
+                if overall_f1 is None or overall_f1 < args.min_f1:
+                    print(
+                        f"ERROR evaluate-gold: overall F1 {overall_f1} below floor {args.min_f1}",
+                        file=sys.stderr,
+                    )
+                    failed = True
+            if args.min_class_f1 is not None:
+                for gap in sorted(dataset["per_class"]):
+                    f1 = dataset["per_class"][gap]["f1_permille"]
+                    if f1 is None or f1 < args.min_class_f1:
+                        print(
+                            f"ERROR evaluate-gold: {gap} F1 {f1} below floor {args.min_class_f1}",
+                            file=sys.stderr,
+                        )
+                        failed = True
+            return 1 if failed else 0
+        if args.command == "compare-baselines":
+            from .evaluation import (
+                GroundTruthError,
+                compare_baselines,
+                load_gold_set,
+                render_baselines_markdown,
+            )
+
+            try:
+                items = load_gold_set(*args.gold)
+            except GroundTruthError as exc:
+                print(f"ERROR gold-set: {exc}", file=sys.stderr)
+                return 2
+            try:
+                with open(args.cache, encoding="utf-8") as handle:
+                    cache = json.load(handle)
+            except (OSError, ValueError) as exc:
+                print(f"ERROR compare-baselines: cannot read cache {args.cache}: {exc}", file=sys.stderr)
+                return 2
+            try:
+                comparison = compare_baselines(items, cache)
+            except KeyError as exc:
+                print(f"ERROR compare-baselines: {exc}", file=sys.stderr)
+                return 2
+            output = (
+                json.dumps(comparison, indent=2, sort_keys=True)
+                if args.format == "json"
+                else render_baselines_markdown(comparison)
+            )
+            _emit_text(output, args.output)
             return 0
         if args.command in {"scan", "scan-repo"}:
             try:
