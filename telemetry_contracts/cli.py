@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -26,6 +28,15 @@ from .project_semantics import (
     format_semantics_markdown,
     format_semantics_text,
     infer_execution_semantics,
+)
+from .pipeline import (
+    characterize_repo,
+    collect_events,
+    diagnose,
+    format_characterization_text,
+    format_diagnosis_text,
+    format_pipeline_text,
+    run_pipeline,
 )
 from .taxonomy import format_taxonomy_markdown, taxonomy_report
 from .explain import explain_finding, format_explanation_markdown
@@ -98,6 +109,30 @@ def main(argv: list[str] | None = None) -> int:
     infer_semantics_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
     infer_semantics_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="never")
     infer_semantics_parser.add_argument("--output", help="write command output to this path instead of stdout")
+
+    characterize_parser = subparsers.add_parser("characterize", help="inventory a project's existing telemetry, instrumentation libraries, and archetype, no config required")
+    characterize_parser.add_argument("--path", default=".", help="project directory to characterize (default: current directory)")
+    characterize_parser.add_argument("--max-files", type=int, default=300, help="maximum candidate files to scan")
+    characterize_parser.add_argument("--format", choices=["text", "json"], default="text")
+    characterize_parser.add_argument("--output", help="write command output to this path instead of stdout")
+
+    diagnose_parser = subparsers.add_parser("diagnose", help="score how diagnosable existing telemetry is, list unanswerable incident questions, and rank fixes by leverage")
+    diagnose_parser.add_argument("--events", help="a telemetry file in any supported format")
+    diagnose_parser.add_argument("--path", help="a project directory; diagnose all discovered telemetry")
+    diagnose_parser.add_argument("--service", help="only diagnose events from this service")
+    diagnose_parser.add_argument("--format", choices=["text", "json"], default="text")
+    diagnose_parser.add_argument("--fail-under", type=int, help="exit non-zero if the diagnosability score is below this value")
+    diagnose_parser.add_argument("--output", help="write command output to this path instead of stdout")
+
+    pipeline_parser = subparsers.add_parser("pipeline", help="run the staged improvement loop on a project: characterize -> diagnose -> plan -> apply (offline) -> differential, in rounds")
+    pipeline_parser.add_argument("--path", default=".", help="project directory to improve (default: current directory)")
+    pipeline_parser.add_argument("--repo", help="instead of --path, clone this GitHub 'owner/repo' or URL and run the pipeline on it")
+    pipeline_parser.add_argument("--ref", help="branch or tag to clone when --repo is used")
+    pipeline_parser.add_argument("--service", help="only run the loop on this service")
+    pipeline_parser.add_argument("--rounds", type=int, default=3, help="maximum improvement rounds (default: 3)")
+    pipeline_parser.add_argument("--max-changes", type=int, default=5, help="maximum instrumentation changes proposed per round")
+    pipeline_parser.add_argument("--format", choices=["text", "json"], default="text")
+    pipeline_parser.add_argument("--output", help="write command output to this path instead of stdout")
 
     lint_parser = subparsers.add_parser("lint-contract", help="lint contract shape and schema semantics without telemetry events")
     lint_parser.add_argument("--contract", required=True)
@@ -373,6 +408,70 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             threshold = {"error": ["error"], "warning": ["error", "warning"]}[args.fail_on]
             return 1 if any(item["severity"] in threshold for item in report["findings"]) else 0
+        if args.command == "characterize":
+            report = characterize_repo(args.path, max_files=args.max_files)
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            else:
+                output = format_characterization_text(report)
+            _emit_text(output, args.output)
+            return 0
+        if args.command == "diagnose":
+            if not args.events and not args.path:
+                print("ERROR diagnose: provide --events <file> or --path <dir>", file=sys.stderr)
+                return 2
+            if args.events:
+                events = load_events_auto(args.events)["events"]
+            else:
+                events = collect_events(args.path)["events"]
+            report = diagnose(events, service=args.service)
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            else:
+                output = format_diagnosis_text(report)
+            _emit_text(output, args.output)
+            if args.fail_under is not None and report["diagnosability_score"] < args.fail_under:
+                return 1
+            return 0
+        if args.command == "pipeline":
+            if args.repo:
+                try:
+                    clone = scan_repo(args.repo, ref=args.ref, service=args.service, max_files=1, deep=False)
+                except RepoScanError as exc:
+                    print(f"ERROR pipeline: {exc}", file=sys.stderr)
+                    return 2
+                # scan_repo clones to a temp dir that is removed on return, so
+                # re-clone into a persistent temp dir we control for the loop.
+                import tempfile
+
+                from .repo_scan import clone_repo
+
+                tmp = tempfile.mkdtemp(prefix="telemetry-contracts-pipeline-")
+                try:
+                    dest = os.path.join(tmp, "repo")
+                    clone_repo(args.repo, dest, ref=args.ref)
+                    report = run_pipeline(
+                        dest,
+                        rounds=args.rounds,
+                        max_changes_per_round=args.max_changes,
+                        service=args.service,
+                    )
+                    report["characterization"]["manifest"]["root"] = args.repo
+                finally:
+                    shutil.rmtree(tmp, ignore_errors=True)
+            else:
+                report = run_pipeline(
+                    args.path,
+                    rounds=args.rounds,
+                    max_changes_per_round=args.max_changes,
+                    service=args.service,
+                )
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            else:
+                output = format_pipeline_text(report)
+            _emit_text(output, args.output)
+            return 0
         if args.command in {"scan", "scan-repo"}:
             try:
                 if args.command == "scan":

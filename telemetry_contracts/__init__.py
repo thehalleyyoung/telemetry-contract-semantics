@@ -10,6 +10,7 @@ from .infer import infer_contract, infer_temporal_order
 from .loader import load_contract, load_jsonl
 from .monitor import run_compiled_monitor
 from .otlp import load_otlp_json_detailed as import_otlp
+from .pipeline import characterize_repo, diagnose, run_pipeline
 from .project_semantics import infer_execution_semantics
 from .repo_scan import scan_directory, scan_repo
 from .service_report import generate_service_owner_report
@@ -19,7 +20,9 @@ from .validator import validate_events
 __all__ = [
     "__version__",
     "analyze_events",
+    "characterize_repo",
     "check_sources",
+    "diagnose",
     "generate_incident_readiness_report",
     "generate_service_owner_report",
     "import_otlp",
@@ -32,6 +35,7 @@ __all__ = [
     "normalize_events",
     "run_compiled_monitor",
     "run_benchmark",
+    "run_pipeline",
     "scan_directory",
     "scan_repo",
     "validate_events",

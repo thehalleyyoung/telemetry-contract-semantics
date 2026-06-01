@@ -96,6 +96,43 @@ python3 -m telemetry_contracts.cli scan --deep --format markdown
 python3 -m telemetry_contracts.cli scan-repo --repo owner/name --deep --format markdown
 ```
 
+## Characterize, diagnose, and improve an existing repo
+
+Three commands turn the analysis into an iterative workflow on a repo you did
+not instrument yourself — no contract and no prescribed labeling required.
+
+`characterize` inventories what telemetry a project already ships and which
+instrumentation libraries it uses (detected from its source), straight from a
+local checkout or a GitHub clone:
+
+```bash
+python3 -m telemetry_contracts.cli characterize --path .
+```
+
+`diagnose` scores how answerable common incident questions are with the data you
+already emit ("which request failed?", "what was the error?", "how long did it
+take?", "are we leaking sensitive values?"), and names the concrete gaps:
+
+```bash
+python3 -m telemetry_contracts.cli diagnose --path .
+python3 -m telemetry_contracts.cli diagnose --events your-logs.jsonl --fail-under 80
+```
+
+`pipeline` runs the full staged loop end to end: characterize the repo →
+first-pass analysis → diagnose incident-readiness → produce a high-impact,
+LLM-fillable instrumentation plan (privacy-sensitive changes are held back for
+review, never auto-applied) → apply the missing fields → re-analyze
+differentially → repeat until the marginal impact converges. It works on a local
+path or clones a GitHub repo directly:
+
+```bash
+python3 -m telemetry_contracts.cli pipeline --path .
+python3 -m telemetry_contracts.cli pipeline --repo owner/name
+```
+
+Every round keeps an impact ledger (predicted vs. realized diagnosability gain)
+so you can see whether each change actually paid off on your real data.
+
 ## Optional: observability as a correctness property
 
 A service is not merely correct when it returns the right response; for
@@ -150,7 +187,8 @@ the flexible shapes above.
 The package ships `py.typed` and exports stable helpers from
 `telemetry_contracts`: `analyze_events`, `infer_contract`,
 `infer_execution_semantics`, `infer_temporal_order`, `load_events_auto`,
-`normalize_events`, `scan_directory`, `scan_repo`, `load_contract`, `load_jsonl`,
+`normalize_events`, `scan_directory`, `scan_repo`, `characterize_repo`,
+`diagnose`, `run_pipeline`, `load_contract`, `load_jsonl`,
 `validate_events`, `check_sources`, `run_compiled_monitor`,
 `generate_incident_readiness_report`, `generate_service_owner_report`,
 `run_benchmark`, and `import_otlp`.
