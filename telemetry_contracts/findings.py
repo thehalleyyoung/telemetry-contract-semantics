@@ -153,6 +153,7 @@ TAXONOMY: dict[str, dict[str, Any]] = {
     "otlp.unsupported_top_level": _entry("input", "Document unsupported top-level OTLP fields as validity threats or add bounded importer support.", "OTLP.unsupported-top-level", "info"),
     "otlp.normalized_alias": _entry("input", "Prefer canonical OTLP JSON field names, or keep alias normalization diagnostics with the import artifact.", "OTLP.alias-normalization", "info"),
     "input.load_error": _entry("input", "Fix the referenced input path or file format.", "INPUT.parse"),
+    "discovery.missing_error_evidence": _entry("diagnosability", "Attach an error code, exception type/stack, or status to failure events so incidents are diagnosable from the data you already emit.", "DISCOVERY.error-evidence", "warning"),
 }
 
 

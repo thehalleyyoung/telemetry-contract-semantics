@@ -1,0 +1,2 @@
+{"kind":"log","service":"api","name":"login","severity":"ERROR","attributes":{"email":"jane@example.com"}}
+{"kind":"span","service":"api","name":"op","trace_id":"t2","attributes":{"result":"ok"}}

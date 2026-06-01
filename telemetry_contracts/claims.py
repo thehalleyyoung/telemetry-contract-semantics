@@ -7,6 +7,15 @@ from typing import Any
 
 CLAIMS: list[dict[str, Any]] = [
     {
+        "id": "zero-config-existing-data",
+        "claim": "The tool runs against telemetry you already have (arbitrary JSON/JSONL logs, a JSON array, native JSONL, or OTLP) with no contract authored first: `analyze` reports privacy/diagnosability findings and `infer-contract` writes a conservative draft contract.",
+        "public_artifacts": ["README.md", "telemetry_contracts/adapters.py", "telemetry_contracts/discover.py", "telemetry_contracts/infer.py"],
+        "tests": ["tests/test_adapters.py", "tests/test_discover.py", "tests/test_infer.py", "tests/test_cli_byod.py"],
+        "fixtures": ["tests/fixtures/byod/app_logs.jsonl"],
+        "benchmark_rows": [],
+        "limitations": ["Kind inference and alias mapping are heuristic; low-confidence rows skip kind-specific checks and inferred contracts are drafts for review."],
+    },
+    {
         "id": "benchmark-public-fixtures",
         "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
         "public_artifacts": ["README.md", "benchmarks/builtin.json", "reports/current_impact.json", "reports/current_impact.md"],

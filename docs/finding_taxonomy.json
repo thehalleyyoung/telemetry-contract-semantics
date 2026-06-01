@@ -821,6 +821,26 @@
       "service_owner": "contract service owner"
     },
     {
+      "category": "diagnosability",
+      "ci": {
+        "baseline_key_fields": [
+          "code",
+          "path",
+          "contract_path",
+          "event_index"
+        ],
+        "default_fail_on": "warning",
+        "sarif_level": "warning"
+      },
+      "code": "discovery.missing_error_evidence",
+      "default_severity": "warning",
+      "disclosure_sensitivity": "internal",
+      "formal_clause": "DISCOVERY.error-evidence",
+      "remediation": "Attach an error code, exception type/stack, or status to failure events so incidents are diagnosable from the data you already emit.",
+      "sarif_level": "warning",
+      "service_owner": "contract service owner"
+    },
+    {
       "category": "input",
       "ci": {
         "baseline_key_fields": [
@@ -2431,7 +2451,7 @@
   "summary": {
     "categories": {
       "contract": 27,
-      "diagnosability": 32,
+      "diagnosability": 33,
       "input": 7,
       "operability": 3,
       "preservation": 5,
@@ -2444,13 +2464,13 @@
     "default_severities": {
       "error": 91,
       "info": 3,
-      "warning": 27
+      "warning": 28
     },
-    "rules": 121,
+    "rules": 122,
     "sarif_levels": {
       "error": 91,
       "note": 3,
-      "warning": 27
+      "warning": 28
     }
   }
 }

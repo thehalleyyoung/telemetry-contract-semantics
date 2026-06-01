@@ -1,0 +1,4 @@
+{"@timestamp":"2024-05-01T10:00:00.500Z","level":"info","logger":"checkout","msg":"checkout.request","service.name":"checkout","traceId":"abc123","dd.span_id":"s1","tenant_id":"tenant-acme","result":"ok","duration_ms":120}
+{"@timestamp":"2024-05-01T10:00:01.000Z","level":"error","logger":"checkout","msg":"payment failed","service.name":"checkout","traceId":"def456","tenant_id":"tenant-acme","result":"error"}
+{"@timestamp":"2024-05-01T10:00:02.000Z","level":"error","logger":"checkout","msg":"contacting user","service.name":"checkout","email":"jane.doe@example.com","authorization":"Bearer abcdef1234567890"}
+{"timestamp":1714557603,"level":"warn","logger":"checkout","msg":"slow auth","service.name":"checkout","request_id":"req-9","duration":2200}

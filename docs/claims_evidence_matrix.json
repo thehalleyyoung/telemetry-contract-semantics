@@ -1,13 +1,44 @@
 {
   "claims": [
     {
+      "benchmark_rows": [],
+      "claim": "The tool runs against telemetry you already have (arbitrary JSON/JSONL logs, a JSON array, native JSONL, or OTLP) with no contract authored first: `analyze` reports privacy/diagnosability findings and `infer-contract` writes a conservative draft contract.",
+      "commit": "4f0ba2b",
+      "evidence_exists": {
+        "README.md": true,
+        "telemetry_contracts/adapters.py": true,
+        "telemetry_contracts/discover.py": true,
+        "telemetry_contracts/infer.py": true,
+        "tests/fixtures/byod/app_logs.jsonl": true
+      },
+      "fixtures": [
+        "tests/fixtures/byod/app_logs.jsonl"
+      ],
+      "id": "zero-config-existing-data",
+      "limitations": [
+        "Kind inference and alias mapping are heuristic; low-confidence rows skip kind-specific checks and inferred contracts are drafts for review."
+      ],
+      "public_artifacts": [
+        "README.md",
+        "telemetry_contracts/adapters.py",
+        "telemetry_contracts/discover.py",
+        "telemetry_contracts/infer.py"
+      ],
+      "tests": [
+        "tests/test_adapters.py",
+        "tests/test_discover.py",
+        "tests/test_infer.py",
+        "tests/test_cli_byod.py"
+      ]
+    },
+    {
       "benchmark_rows": [
         "gitlab-2017-database-outage-reconstructed",
         "owasp-securetea-signin-current-static-and-hyperproperty",
         "benchmark-privacy-static-source"
       ],
       "claim": "The built-in benchmark ties public/reconstructed fixtures to expected semantic labels and precision/recall/F1 metrics.",
-      "commit": "d6ece2c",
+      "commit": "4f0ba2b",
       "evidence_exists": {
         "README.md": true,
         "benchmarks/builtin.json": true,
@@ -41,7 +72,7 @@
         "benchmark-privacy-static-source"
       ],
       "claim": "CI can fail on new high-severity findings while allowing audited, owned, expiring baseline entries.",
-      "commit": "d6ece2c",
+      "commit": "4f0ba2b",
       "evidence_exists": {
         "examples/ci/baseline.example.json": true,
         "examples/ci/generic-ci.sh": true,
@@ -70,7 +101,7 @@
         "benchmark-missing-correlation"
       ],
       "claim": "Static and runtime findings can be exported as SARIF with taxonomy-backed rule metadata for code scanning consumers.",
-      "commit": "d6ece2c",
+      "commit": "4f0ba2b",
       "evidence_exists": {
         "docs/finding_taxonomy.json": true,
         "examples/ci/static_findings.example.json": true,
@@ -99,7 +130,7 @@
         "all built-in benchmark rows"
       ],
       "claim": "Current impact reports, benchmark Markdown, taxonomy summaries, paper tables, and this matrix are regenerated from checked-in artifacts.",
-      "commit": "d6ece2c",
+      "commit": "4f0ba2b",
       "evidence_exists": {
         "benchmarks/builtin.json": true,
         "docs/claims_evidence_matrix.json": true,
@@ -127,7 +158,7 @@
   ],
   "schema_version": "1.0",
   "summary": {
-    "claims": 4,
-    "commit": "d6ece2c"
+    "claims": 5,
+    "commit": "4f0ba2b"
   }
 }

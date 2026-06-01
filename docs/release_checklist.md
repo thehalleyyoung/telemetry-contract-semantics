@@ -23,4 +23,4 @@ python3 -m telemetry_contracts.cli claims-matrix --format markdown
 python3 -m telemetry_contracts.cli doctor --collector-export examples/otlp/collector_coverage_all_signals.otlp.json --report-path reports/current_impact.md --format markdown
 ```
 
-The release is ready only when generated claims are backed by checked-in fixtures, schemas/docs are updated, and `100_STEPS.md` remains ignored and untracked.
+The release is ready only when generated claims are backed by checked-in fixtures and schemas/docs are updated.

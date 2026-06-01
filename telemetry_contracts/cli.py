@@ -5,9 +5,13 @@ import json
 import sys
 from pathlib import Path
 
+from .adapters import load_events_auto
+from .discover import analyze_events, format_discovery_markdown
 from .findings import Finding, has_at_least
 from .incident_report import format_incident_readiness_markdown, generate_incident_readiness_report
+from .infer import infer_contract
 from .loader import ContractLoadError, load_contract, load_jsonl
+from .repo_scan import RepoScanError, format_scan_markdown, format_scan_text, scan_directory, scan_repo
 from .otlp import analyze_otlp_report, convert_events_to_otlp_payload, format_collector_analysis_markdown, load_otlp_json_detailed, load_otlp_jsonl_detailed, write_diagnostics, write_jsonl
 from .scenario import check_scenario, choose_scenario
 from .semantics import describe_model, format_model_markdown
@@ -39,14 +43,45 @@ from .service_report import format_service_owner_markdown, generate_service_owne
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="telemetry-contracts", description="Validate telemetry contracts against events and source code.")
+    parser = argparse.ArgumentParser(prog="telemetry-contracts", description="Find observability gaps in the telemetry you already have, then optionally enforce them with contracts.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     validate_parser = subparsers.add_parser("validate", help="validate JSONL telemetry against a contract")
     validate_parser.add_argument("--contract", required=True)
     validate_parser.add_argument("--events", required=True)
+    validate_parser.add_argument("--events-format", choices=["native", "auto"], default="native", help="'auto' adapts arbitrary JSON/JSONL/OTLP telemetry you already have")
     validate_parser.add_argument("--strict", action="store_true", help="also reject unmodeled services, undeclared signals, unexpected fields, and undocumented transformations")
     _common_output_args(validate_parser)
+
+    analyze_parser = subparsers.add_parser("analyze", help="zero-config: find privacy and diagnosability issues in telemetry you already have, no contract required")
+    analyze_parser.add_argument("--events", required=True, help="JSON/JSONL log lines, a JSON array, native JSONL, or an OTLP export")
+    analyze_parser.add_argument("--service", help="only analyze events from this service")
+    analyze_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
+    analyze_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    analyze_parser.add_argument("--output", help="write command output to this path instead of stdout")
+
+    infer_parser = subparsers.add_parser("infer-contract", help="generate a draft contract from telemetry you already have")
+    infer_parser.add_argument("--events", required=True, help="JSON/JSONL log lines, a JSON array, native JSONL, or an OTLP export")
+    infer_parser.add_argument("--service", help="service name for the inferred contract (defaults to the most common observed service)")
+    infer_parser.add_argument("--infer-ranges", action="store_true", help="also infer numeric min/max bounds from observed values (more brittle)")
+    infer_parser.add_argument("--output", help="write the inferred contract here instead of stdout")
+
+    scan_parser = subparsers.add_parser("scan", help="discover and analyze telemetry files in a local project directory, no contract required")
+    scan_parser.add_argument("--path", required=True, help="project directory to scan for telemetry/log files")
+    scan_parser.add_argument("--service", help="only analyze events from this service")
+    scan_parser.add_argument("--max-files", type=int, default=300, help="maximum candidate files to scan")
+    scan_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
+    scan_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    scan_parser.add_argument("--output", help="write command output to this path instead of stdout")
+
+    scan_repo_parser = subparsers.add_parser("scan-repo", help="download a GitHub repository and analyze whatever telemetry it ships, in any format")
+    scan_repo_parser.add_argument("--repo", required=True, help="GitHub 'owner/repo' or a full https/git clone URL")
+    scan_repo_parser.add_argument("--ref", help="branch or tag to clone (defaults to the repository's default branch)")
+    scan_repo_parser.add_argument("--service", help="only analyze events from this service")
+    scan_repo_parser.add_argument("--max-files", type=int, default=300, help="maximum candidate files to scan")
+    scan_repo_parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
+    scan_repo_parser.add_argument("--fail-on", choices=["error", "warning", "never"], default="error")
+    scan_repo_parser.add_argument("--output", help="write command output to this path instead of stdout")
 
     lint_parser = subparsers.add_parser("lint-contract", help="lint contract shape and schema semantics without telemetry events")
     lint_parser.add_argument("--contract", required=True)
@@ -282,6 +317,47 @@ def main(argv: list[str] | None = None) -> int:
 
     args = parser.parse_args(argv)
     try:
+        if args.command == "analyze":
+            loaded = load_events_auto(args.events)
+            report = analyze_events(loaded["events"], service=args.service)
+            report["input"] = {"format": loaded.get("format"), "summary": loaded.get("summary"), "diagnostics": loaded.get("diagnostics", [])}
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            elif args.format == "markdown":
+                output = format_discovery_markdown(report)
+            else:
+                output = _format_discovery_text(report)
+            _emit_text(output, args.output)
+            if args.fail_on == "never":
+                return 0
+            threshold = {"error": ["error"], "warning": ["error", "warning"]}[args.fail_on]
+            return 1 if any(item["severity"] in threshold for item in report["findings"]) else 0
+        if args.command == "infer-contract":
+            loaded = load_events_auto(args.events)
+            contract = infer_contract(loaded["events"], service=args.service, infer_ranges=args.infer_ranges)
+            output = json.dumps(contract, indent=2, sort_keys=True)
+            _emit_text(output, args.output)
+            return 0
+        if args.command in {"scan", "scan-repo"}:
+            try:
+                if args.command == "scan":
+                    report = scan_directory(args.path, service=args.service, max_files=args.max_files)
+                else:
+                    report = scan_repo(args.repo, ref=args.ref, service=args.service, max_files=args.max_files)
+            except RepoScanError as exc:
+                print(f"ERROR repo-scan: {exc}", file=sys.stderr)
+                return 2
+            if args.format == "json":
+                output = json.dumps(report, indent=2, sort_keys=True)
+            elif args.format == "markdown":
+                output = format_scan_markdown(report)
+            else:
+                output = format_scan_text(report)
+            _emit_text(output, args.output)
+            if args.fail_on == "never":
+                return 0
+            threshold = {"error": ["error"], "warning": ["error", "warning"]}[args.fail_on]
+            return 1 if any(item["severity"] in threshold for item in report["findings"]) else 0
         if args.command == "import-otlp":
             report = load_otlp_jsonl_detailed(args.input) if args.input_format == "jsonl" else load_otlp_json_detailed(args.input)
             write_jsonl(report["events"], args.output)
@@ -576,7 +652,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "lint-contract":
             findings = validate_contract_shape(contract)
         elif args.command == "validate":
-            findings = validate_events(contract, load_jsonl(args.events), strict=True if args.strict else None)
+            if getattr(args, "events_format", "native") == "auto":
+                events = load_events_auto(args.events)["events"]
+            else:
+                events = load_jsonl(args.events)
+            findings = validate_events(contract, events, strict=True if args.strict else None)
         elif args.command == "static":
             findings = check_sources(contract, [Path(item) for item in args.sources])
         elif args.command == "scenario":
@@ -594,6 +674,20 @@ def main(argv: list[str] | None = None) -> int:
     if args.fail_on == "never":
         return 0
     return 1 if has_at_least(findings, args.fail_on) else 0
+
+
+def _format_discovery_text(report: dict) -> str:
+    summary = report["summary"]
+    lines = [f"Analyzed {summary['events']} event(s) with no contract; {summary['findings']} finding(s)."]
+    if not report["findings"]:
+        lines.append("OK: no privacy or diagnosability issues detected.")
+        return "\n".join(lines)
+    for finding in report["findings"]:
+        location = f" at {finding.get('path')}" if finding.get("path") else ""
+        lines.append(f"{finding['severity'].upper()} {finding['code']}{location}: {finding['message']}")
+    if summary["findings"] > summary["shown_findings"]:
+        lines.append(f"... {summary['findings'] - summary['shown_findings']} more (capped per code)")
+    return "\n".join(lines)
 
 
 def _common_output_args(parser: argparse.ArgumentParser) -> None:

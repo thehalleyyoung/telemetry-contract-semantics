@@ -1,0 +1,3 @@
+ts=2024-05-01T10:00:00Z level=info service=checkout msg="checkout.request" trace_id=t1 tenant_id=tenant-acme
+level=error service=checkout msg="payment failed" authorization="Bearer abcdef1234567890"
+level=warn service=checkout msg=slow request_id=r9 duration=2200
