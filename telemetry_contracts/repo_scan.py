@@ -61,20 +61,44 @@ _EXCLUDE_JSON_PATTERNS = (
 _REPO_SHORTHAND = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 _GIT_URL = re.compile(r"^(https?://|git@|ssh://|git://)[\w./:@%+~-]+$")
 
+# Host shorthands: ``<host-prefix>owner/repo`` -> ``https://<host>/owner/repo.git``.
+# Order matters only in that the longest/most-specific prefixes are distinct.
+_HOST_PREFIXES = {
+    "github.com/": "github.com",
+    "gitlab.com/": "gitlab.com",
+    "bitbucket.org/": "bitbucket.org",
+    "codeberg.org/": "codeberg.org",
+    "gh:": "github.com",
+    "gl:": "gitlab.com",
+    "bb:": "bitbucket.org",
+}
+
 
 def parse_repo_target(target: str) -> str:
-    """Return a safe clone URL for ``owner/repo`` shorthand or a full git URL."""
+    """Return a safe clone URL for ``owner/repo`` shorthand or a full git URL.
+
+    Recognized forms:
+      * a full ``https://``/``git@``/``ssh://``/``git://`` URL (any host) -> used as-is;
+      * ``owner/repo`` -> defaults to GitHub;
+      * ``<host>/owner/repo`` for github.com, gitlab.com, bitbucket.org, codeberg.org;
+      * ``gh:``/``gl:``/``bb:`` prefixes for github/gitlab/bitbucket.
+    """
 
     target = target.strip()
     if _GIT_URL.match(target):
         return target
-    if target.startswith("github.com/"):
-        target = target[len("github.com/"):]
+    host = "github.com"
+    for prefix, prefix_host in _HOST_PREFIXES.items():
+        if target.startswith(prefix):
+            target = target[len(prefix):]
+            host = prefix_host
+            break
     if _REPO_SHORTHAND.match(target):
         owner_repo = target[:-4] if target.endswith(".git") else target
-        return f"https://github.com/{owner_repo}.git"
+        return f"https://{host}/{owner_repo}.git"
     raise RepoScanError(
-        f"unrecognized repository target '{target}'; use 'owner/repo' or a full https/git URL"
+        f"unrecognized repository target '{target}'; use 'owner/repo', "
+        "'<host>/owner/repo', or a full https/git URL"
     )
 
 

@@ -51,6 +51,18 @@ CLAIMS: list[dict[str, Any]] = [
         "benchmark_rows": ["all built-in benchmark rows"],
         "limitations": ["Runtime duration fields vary by machine; labels and finding codes are deterministic."],
     },
+    {
+        "id": "staged-pipeline-existing-repos",
+        "claim": "A staged loop runs on a repository you did not instrument: it characterizes existing telemetry, diagnoses incident-readiness, plans high-impact additive instrumentation, synthesizes the missing signals offline, and re-analyzes differentially across rounds. Each round is safety-gated (a round that introduces a finding or drops the score is quarantined and rolled back), every stage is persisted as a SHA-keyed, provenance-carrying artifact, and generated code is emitted only as validated standalone proposals (parsed, compiled, and confirmed by the static checker) — never applied to the repo and never build/test-run.",
+        "public_artifacts": ["telemetry_contracts/pipeline.py", "telemetry_contracts/artifacts.py", "telemetry_contracts/code_proposals.py", "telemetry_contracts/sarif.py", "docs/staged_pipeline.md"],
+        "tests": ["tests/test_pipeline.py", "tests/test_pipeline_artifacts.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The applied instrumentation is an offline, deterministic synthesis stand-in; code proposals are standalone helper sketches that are not applied to the repository and whose target build/tests are not run.",
+            "The loop runs on the dominant service for a single narrative; per-service breakdowns come from `scan --deep`.",
+        ],
+    },
 ]
 
 

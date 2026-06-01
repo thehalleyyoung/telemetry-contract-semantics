@@ -52,7 +52,7 @@ from .semconv import format_semconv_markdown, lint_semantic_conventions
 from .ci_gate import evaluate_ci_gate, format_ci_gate_markdown
 from .claims import claims_evidence_matrix, write_claims_evidence_matrix
 from .regenerate import format_regeneration_markdown, regenerate_artifacts
-from .sarif import findings_to_sarif, report_to_sarif
+from .sarif import findings_to_sarif, pipeline_differential_to_sarif, report_to_sarif
 from .doctor import format_doctor_markdown, run_doctor
 from .init_workflow import scaffold_project
 from .service_report import format_service_owner_markdown, generate_service_owner_report
@@ -131,7 +131,10 @@ def main(argv: list[str] | None = None) -> int:
     pipeline_parser.add_argument("--service", help="only run the loop on this service")
     pipeline_parser.add_argument("--rounds", type=int, default=3, help="maximum improvement rounds (default: 3)")
     pipeline_parser.add_argument("--max-changes", type=int, default=5, help="maximum instrumentation changes proposed per round")
-    pipeline_parser.add_argument("--format", choices=["text", "json"], default="text")
+    pipeline_parser.add_argument("--out-dir", help="persist every stage as SHA-keyed, content-addressable JSON artifacts under this directory")
+    pipeline_parser.add_argument("--cache-dir", help="with --repo, cache the clone under a content-addressed key here so re-runs on the same ref skip re-downloading")
+    pipeline_parser.add_argument("--fail-on-regression", action="store_true", help="exit non-zero if any round regressed safety/diagnosability")
+    pipeline_parser.add_argument("--format", choices=["text", "json", "sarif"], default="text")
     pipeline_parser.add_argument("--output", help="write command output to this path instead of stdout")
 
     lint_parser = subparsers.add_parser("lint-contract", help="lint contract shape and schema semantics without telemetry events")
@@ -440,37 +443,55 @@ def main(argv: list[str] | None = None) -> int:
                 except RepoScanError as exc:
                     print(f"ERROR pipeline: {exc}", file=sys.stderr)
                     return 2
-                # scan_repo clones to a temp dir that is removed on return, so
-                # re-clone into a persistent temp dir we control for the loop.
                 import tempfile
 
+                from .artifacts import clone_cache_key
                 from .repo_scan import clone_repo
 
-                tmp = tempfile.mkdtemp(prefix="telemetry-contracts-pipeline-")
-                try:
+                if args.cache_dir:
+                    # Content-addressed clone cache: reuse an existing checkout
+                    # for the same (repo, ref) so re-runs skip re-downloading.
+                    dest = os.path.join(args.cache_dir, clone_cache_key(args.repo, args.ref))
+                    tmp = None
+                    if not os.path.isdir(os.path.join(dest, ".git")):
+                        os.makedirs(args.cache_dir, exist_ok=True)
+                        shutil.rmtree(dest, ignore_errors=True)
+                        clone_repo(args.repo, dest, ref=args.ref)
+                else:
+                    # scan_repo clones to a temp dir that is removed on return, so
+                    # re-clone into a persistent temp dir we control for the loop.
+                    tmp = tempfile.mkdtemp(prefix="telemetry-contracts-pipeline-")
                     dest = os.path.join(tmp, "repo")
                     clone_repo(args.repo, dest, ref=args.ref)
+                try:
                     report = run_pipeline(
                         dest,
                         rounds=args.rounds,
                         max_changes_per_round=args.max_changes,
                         service=args.service,
+                        out_dir=args.out_dir,
                     )
                     report["characterization"]["manifest"]["root"] = args.repo
                 finally:
-                    shutil.rmtree(tmp, ignore_errors=True)
+                    if tmp is not None:
+                        shutil.rmtree(tmp, ignore_errors=True)
             else:
                 report = run_pipeline(
                     args.path,
                     rounds=args.rounds,
                     max_changes_per_round=args.max_changes,
                     service=args.service,
+                    out_dir=args.out_dir,
                 )
             if args.format == "json":
                 output = json.dumps(report, indent=2, sort_keys=True)
+            elif args.format == "sarif":
+                output = json.dumps(pipeline_differential_to_sarif(report), indent=2, sort_keys=True)
             else:
                 output = format_pipeline_text(report)
             _emit_text(output, args.output)
+            if args.fail_on_regression and report.get("regressed"):
+                return 1
             return 0
         if args.command in {"scan", "scan-repo"}:
             try:

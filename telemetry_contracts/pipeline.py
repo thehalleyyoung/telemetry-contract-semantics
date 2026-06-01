@@ -49,6 +49,7 @@ from .project_semantics import (
     infer_execution_semantics,
 )
 from .repo_scan import ContractLoadError, find_telemetry_files
+from .code_proposals import generate_code_proposals
 
 PLANNER = "telemetry-contracts/instrumentation-planner@1"
 
@@ -388,6 +389,64 @@ def diagnose(events: list[dict[str, Any]], *, service: str | None = None) -> dic
 # ---------------------------------------------------------------------------
 
 
+def _proof_obligations(diagnosis: dict[str, Any]) -> list[dict[str, Any]]:
+    """Express each incident question as a proof obligation the data discharges or not.
+
+    This connects the data-only first pass to the formal layer: an obligation is
+    ``discharged`` only when no relevant event is missing the required evidence.
+    """
+
+    obligations: list[dict[str, Any]] = []
+    for record in diagnosis["answerable_questions"]:
+        obligations.append({
+            "obligation": record["id"],
+            "claim": record["question"],
+            "required_evidence": record["missing_evidence"],
+            "status": "discharged",
+            "blocking_events": 0,
+        })
+    for record in diagnosis["unanswered_questions"]:
+        obligations.append({
+            "obligation": record["id"],
+            "claim": record["question"],
+            "required_evidence": record["missing_evidence"],
+            "status": "not_discharged",
+            "blocking_events": record["blocked_events"],
+        })
+    return sorted(obligations, key=lambda o: (o["status"] != "not_discharged", o["obligation"]))
+
+
+def _ordering_evidence(order: dict[str, Any] | None) -> dict[str, Any]:
+    """Surface auditable per-chain ordering support, or what would unlock it.
+
+    The inferred order is a *candidate* discovered from correlated groups, not a
+    proven execution order; the support metadata makes its strength auditable.
+    """
+
+    if not order:
+        return {
+            "order_inferred": False,
+            "reason": "no confident order could be inferred from the observed data",
+            "evidence_needed": [
+                "a shared correlation key (trace_id/request_id) linking related signals",
+                "at least two correlation groups containing the same pair of signals",
+                "a consistent strict precedence of one signal before another across those groups",
+            ],
+        }
+    return {
+        "order_inferred": True,
+        "candidate_only": True,
+        "correlation_key": order.get("correlation_key"),
+        "steps": [f"{s['kind']}:{s['name']}" for s in order.get("steps", [])],
+        "enforceable": order.get("enforceable"),
+        "support": {
+            "supporting_groups": order.get("support_full_groups"),
+            "partial_groups": order.get("partial_groups"),
+            "window_ms": order.get("window_ms"),
+        },
+    }
+
+
 def baseline(events: list[dict[str, Any]], *, service: str | None = None) -> dict[str, Any]:
     """Stage 3: inferred execution semantics + diagnosis as a snapshot anchor."""
 
@@ -395,6 +454,8 @@ def baseline(events: list[dict[str, Any]], *, service: str | None = None) -> dic
     diagnosis = diagnose(events, service=service)
     structure = semantics["event_structure"]
     order = semantics.get("inferred_ordering")
+    concurrency_pairs = structure["concurrency_pair_count"]
+    obligations = _proof_obligations(diagnosis)
     return {
         "schema": "telemetry-contracts/baseline@1",
         "service": semantics.get("service"),
@@ -403,7 +464,19 @@ def baseline(events: list[dict[str, Any]], *, service: str | None = None) -> dic
         "semantics": semantics["semantics"],
         "inferred_ordering": order,
         "order_inferred": order is not None,
-        "concurrency_pairs": structure["concurrency_pair_count"],
+        "ordering_evidence": _ordering_evidence(order),
+        "concurrency_pairs": concurrency_pairs,
+        "concurrency_risk": {
+            "candidate_concurrent_pairs": concurrency_pairs,
+            "note": (
+                "signal pairs observed with no consistent order across correlation "
+                "groups — candidate concurrency the source may assume is sequential; "
+                "review as a possible correctness risk, not a proven race"
+            ) if concurrency_pairs else "no candidate concurrency risks observed",
+        },
+        "proof_obligations": obligations,
+        "obligations_discharged": sum(1 for o in obligations if o["status"] == "discharged"),
+        "obligations_outstanding": sum(1 for o in obligations if o["status"] == "not_discharged"),
         "unanswered_questions": [q["id"] for q in diagnosis["unanswered_questions"]],
     }
 
@@ -425,19 +498,25 @@ def instrumentation_plan(
     *,
     libraries: list[str] | None = None,
     max_changes: int = 5,
+    exclude_gaps: set[str] | None = None,
 ) -> dict[str, Any]:
     """Stage 4: rank additive instrumentation changes by predicted impact.
 
     Each change carries provenance and an LLM-fillable prompt pack. Privacy
     gaps are emitted as *review-required* changes rather than auto-applied code.
+    ``exclude_gaps`` drops gaps already deferred or quarantined in earlier
+    rounds, which guarantees the loop terminates rather than retrying them.
     """
 
     libraries = libraries or []
+    exclude_gaps = exclude_gaps or set()
     primary_lib = libraries[0] if libraries else "your logging/telemetry library"
     planned: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
     for rank, item in enumerate(diagnosis.get("leverage_ranking", [])):
         gap = item["gap"]
+        if gap in exclude_gaps:
+            continue
         change = {
             "id": f"chg-{rank + 1:02d}-{gap}",
             "gap": gap,
@@ -610,6 +689,100 @@ def differential(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any
     }
 
 
+def semantic_differential(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:
+    """Diff two ``baseline`` snapshots: new signals, fields, ordering, coverage.
+
+    Surfaces temporal sequences that became enforceable only after the added
+    instrumentation, plus changes in ordering support and discharged obligations.
+    """
+
+    def _signals(b: dict[str, Any]) -> set[str]:
+        order = b.get("inferred_ordering") or {}
+        return {f"{s['kind']}:{s['name']}" for s in order.get("steps", [])}
+
+    before_signals = _signals(before)
+    after_signals = _signals(after)
+    before_order = before.get("inferred_ordering") or {}
+    after_order = after.get("inferred_ordering") or {}
+
+    before_enforceable = bool(before_order.get("enforceable"))
+    after_enforceable = bool(after_order.get("enforceable"))
+    newly_enforceable_sequence = (not before_enforceable) and after_enforceable
+
+    before_support = (before_order or {}).get("support_full_groups") or 0
+    after_support = (after_order or {}).get("support_full_groups") or 0
+
+    obligations_before = before.get("obligations_discharged", 0)
+    obligations_after = after.get("obligations_discharged", 0)
+
+    return {
+        "schema": "telemetry-contracts/semantic-differential@1",
+        "new_signals": sorted(after_signals - before_signals),
+        "lost_signals": sorted(before_signals - after_signals),
+        "order_inferred_before": before.get("order_inferred", False),
+        "order_inferred_after": after.get("order_inferred", False),
+        "order_newly_inferred": (not before.get("order_inferred", False)) and after.get("order_inferred", False),
+        "newly_enforceable_sequence": newly_enforceable_sequence,
+        "ordering_support_delta": after_support - before_support,
+        "obligations_discharged_delta": obligations_after - obligations_before,
+        "concurrency_pairs_before": before.get("concurrency_pairs", 0),
+        "concurrency_pairs_after": after.get("concurrency_pairs", 0),
+    }
+
+
+def _application_manifest(
+    round_index: int,
+    commit: str | None,
+    plan: dict[str, Any],
+    applied_by_gap: dict[str, int],
+    events_before: int,
+    events_after: int,
+    quarantined: bool,
+    safety: dict[str, Any],
+) -> dict[str, Any]:
+    """Record exactly what was (synthetically) applied, deferred, or quarantined.
+
+    The application is an offline, deterministic stand-in for generated code:
+    it is never written to the user's repository and no target build/test is run.
+    Privacy/review changes are deferred; a round that regresses safety is
+    quarantined and rolled back (its effect is excluded from realized impact).
+    """
+
+    changes: list[dict[str, Any]] = []
+    for change in plan.get("planned_changes", []):
+        gap = change["gap"]
+        changes.append({
+            "id": change["id"],
+            "gap": gap,
+            "status": "quarantined" if quarantined else "accepted",
+            "would_affect_events": change["predicted_impact"]["events_affected"],
+            "synthetic_events_added": applied_by_gap.get(gap, 0),
+        })
+    for change in plan.get("review_required_changes", []):
+        changes.append({
+            "id": change["id"],
+            "gap": change["gap"],
+            "status": "deferred_privacy",
+            "would_affect_events": change["predicted_impact"]["events_affected"],
+            "synthetic_events_added": 0,
+        })
+    return {
+        "schema": "telemetry-contracts/application-manifest@1",
+        "round": round_index,
+        "source_commit": commit,
+        "state_id": f"{commit or 'unknown-sha'}+synthetic-r{round_index}",
+        "synthetic": True,
+        "applied_to_repo": False,
+        "target_repo_build_not_run": True,
+        "quarantined": quarantined,
+        "safety_gate": safety,
+        "events_before": events_before,
+        "events_after_if_kept": events_after,
+        "applied_by_gap": dict(sorted(applied_by_gap.items())),
+        "changes": sorted(changes, key=lambda c: c["id"]),
+    }
+
+
 # ---------------------------------------------------------------------------
 # Stage 7: orchestrate the staged loop to convergence
 # ---------------------------------------------------------------------------
@@ -622,11 +795,18 @@ def run_pipeline(
     max_changes_per_round: int = 5,
     min_marginal_impact: int = 1,
     service: str | None = None,
+    out_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     """Run the full acquire→diagnose→plan→apply→differential loop offline.
 
     Stops early when a round has no planned changes or the predicted marginal
-    impact (expected score points) falls below ``min_marginal_impact``.
+    impact (expected score points) falls below ``min_marginal_impact``. Each
+    round is gated for safety: a round whose differential introduces a new
+    finding, drops the score, or makes a question newly unanswerable is
+    quarantined and rolled back, so improvement never silently regresses safety.
+
+    When ``out_dir`` is given, every stage is persisted as a content-addressable,
+    SHA-keyed artifact carrying provenance.
     """
 
     root_path = Path(root)
@@ -634,15 +814,27 @@ def run_pipeline(
     collected = collect_events(root_path)
     libraries = characterization["instrumentation_libraries"]
 
+    options = {
+        "rounds": rounds,
+        "max_changes_per_round": max_changes_per_round,
+        "min_marginal_impact": min_marginal_impact,
+        "service": service,
+    }
+
     if not collected["events"]:
-        return {
+        empty = {
             "schema": "telemetry-contracts/pipeline@1",
             "characterization": characterization,
+            "baseline": None,
             "rounds": [],
             "impact_ledger": [],
             "stopped_reason": "no telemetry discovered",
+            "regressed": False,
             "final": None,
         }
+        if out_dir is not None:
+            empty["artifacts"] = _persist(empty, out_dir, options)
+        return empty
 
     services = sorted(group_events_by_service(collected["events"])) if service is None else [service]
     # Run the loop on the dominant service for a single coherent narrative;
@@ -656,43 +848,77 @@ def run_pipeline(
     current = diagnose(events, service=target_service)
     round_reports: list[dict[str, Any]] = []
     ledger: list[dict[str, Any]] = []
+    excluded_gaps: set[str] = set()
+    any_regression = False
     stopped_reason = "rounds exhausted"
+    commit = characterization["manifest"].get("commit")
 
     for round_index in range(1, rounds + 1):
-        plan = instrumentation_plan(current, libraries=libraries, max_changes=max_changes_per_round)
+        plan = instrumentation_plan(
+            current, libraries=libraries, max_changes=max_changes_per_round, exclude_gaps=excluded_gaps,
+        )
         planned = plan["planned_changes"]
         if not planned:
-            stopped_reason = "no further high-impact changes"
+            stopped_reason = "no further safety-approved high-impact changes"
             break
         predicted = sum(c["predicted_impact"]["score_points_expected"] for c in planned)
         if predicted < min_marginal_impact:
             stopped_reason = f"predicted marginal impact {predicted} < threshold {min_marginal_impact}"
             break
 
-        applied = synthesize_instrumentation(events, plan)
-        verification = verify_instrumentation(applied["events"], plan)
-        after = diagnose(applied["events"], service=target_service)
-        diff = differential(current, after)
+        # Synthesize onto a CANDIDATE copy; never advance state until the safety
+        # gate passes, so a regressing round cannot contaminate later rounds.
+        candidate = synthesize_instrumentation(events, plan)
+        proposals = generate_code_proposals(plan, libraries=libraries, commit=commit)
+        verification = verify_instrumentation(candidate["events"], plan)
+        candidate_diag = diagnose(candidate["events"], service=target_service)
+        diff = differential(current, candidate_diag)
+        sem_diff = semantic_differential(
+            initial_baseline if round_index == 1 else baseline(events, service=target_service),
+            baseline(candidate["events"], service=target_service),
+        )
+
+        quarantined = bool(diff["regressions"])
+        safety = {
+            "passed": not quarantined,
+            "reasons": diff["regressions"],
+        }
+        manifest = _application_manifest(
+            round_index, commit, plan, candidate["applied_by_gap"],
+            len(events), len(candidate["events"]), quarantined, safety,
+        )
 
         round_reports.append({
             "round": round_index,
             "plan": plan,
-            "applied_by_gap": applied["applied_by_gap"],
+            "code_proposals": proposals,
+            "application_manifest": manifest,
+            "applied_by_gap": candidate["applied_by_gap"],
             "verification": verification,
             "differential": diff,
-            "score_after": after["diagnosability_score"],
+            "semantic_differential": sem_diff,
+            "quarantined": quarantined,
+            "score_after": candidate_diag["diagnosability_score"],
         })
         ledger.append({
             "round": round_index,
             "predicted_score_points": predicted,
-            "realized_score_delta": diff["score_delta"],
-            "changes_applied": len(planned),
+            "realized_score_delta": 0 if quarantined else diff["score_delta"],
+            "changes_applied": 0 if quarantined else len(planned),
+            "quarantined": quarantined,
             "regressions": len(diff["regressions"]),
         })
 
-        events = applied["events"]
-        current = after
-        if not diff["regressions"] and diff["score_delta"] <= 0:
+        if quarantined:
+            # Roll back: discard the candidate, exclude these gaps so we do not
+            # retry them, and keep looking for other safe, high-impact changes.
+            any_regression = True
+            excluded_gaps.update(c["gap"] for c in planned)
+            continue
+
+        events = candidate["events"]
+        current = candidate_diag
+        if diff["score_delta"] <= 0:
             stopped_reason = "no measurable improvement from last round"
             break
 
@@ -702,7 +928,8 @@ def run_pipeline(
          "unanswered_questions": [{"id": q} for q in initial_baseline["unanswered_questions"]]},
         current,
     )
-    return {
+    final_sem_diff = semantic_differential(initial_baseline, baseline(events, service=target_service))
+    report = {
         "schema": "telemetry-contracts/pipeline@1",
         "characterization": characterization,
         "service": target_service,
@@ -710,13 +937,29 @@ def run_pipeline(
         "rounds": round_reports,
         "impact_ledger": ledger,
         "stopped_reason": stopped_reason,
+        "regressed": any_regression,
         "final": {
             "diagnosability_score": current["diagnosability_score"],
             "verdict": current["verdict"],
             "remaining_unanswered": [q["id"] for q in current["unanswered_questions"]],
             "overall_differential": final_diff,
+            "overall_semantic_differential": final_sem_diff,
         },
     }
+    if out_dir is not None:
+        report["artifacts"] = _persist(report, out_dir, options)
+    return report
+
+
+def _persist(report: dict[str, Any], out_dir: str | Path, options: dict[str, Any]) -> dict[str, Any]:
+    """Write artifacts and return the (path-free) index for embedding in the report."""
+
+    from .artifacts import write_pipeline_artifacts
+
+    index = write_pipeline_artifacts(report, out_dir, options=options)
+    # Embed only relative paths + content hashes (no absolute out_dir) so the
+    # report stays byte-deterministic across machines.
+    return index
 
 
 # ---------------------------------------------------------------------------

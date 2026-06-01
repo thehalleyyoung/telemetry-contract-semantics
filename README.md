@@ -52,11 +52,14 @@ python3 -m telemetry_contracts.cli scan --format markdown
 # Or point it at a specific folder.
 python3 -m telemetry_contracts.cli scan --path ./my-service --format markdown
 
-# An arbitrary GitHub project: shallow-clones it and scans whatever it ships.
+# An arbitrary project on any host: shallow-clones it and scans whatever it ships.
 python3 -m telemetry_contracts.cli scan-repo --repo owner/name --format markdown
+python3 -m telemetry_contracts.cli scan-repo --repo gl:group/project --format markdown
 ```
 
-`--repo` accepts `owner/name` shorthand or a full https/git URL, and `--ref`
+`--repo` accepts `owner/name` shorthand (defaults to GitHub),
+`<host>/owner/name` for `gitlab.com`/`bitbucket.org`/`codeberg.org`, the
+`gh:`/`gl:`/`bb:` host prefixes, or a full https/git URL; `--ref`
 selects a branch or tag. Both commands accept `--service`, `--fail-on
 error|warning|never`, `--output`, `--format text|json|markdown`, and `--deep`
 (see below). Output leads with a per-type rollup (most severe first) and
@@ -131,7 +134,11 @@ python3 -m telemetry_contracts.cli pipeline --repo owner/name
 ```
 
 Every round keeps an impact ledger (predicted vs. realized diagnosability gain)
-so you can see whether each change actually paid off on your real data.
+so you can see whether each change actually paid off on your real data. Add
+`--out-dir DIR` to persist every stage as a SHA-keyed, provenance-carrying
+artifact; `--format sarif` for a CI-ready differential; and
+`--fail-on-regression` to exit non-zero if any round would regress safety. See
+[`docs/staged_pipeline.md`](docs/staged_pipeline.md) for a worked example.
 
 ## Optional: observability as a correctness property
 
@@ -188,7 +195,9 @@ The package ships `py.typed` and exports stable helpers from
 `telemetry_contracts`: `analyze_events`, `infer_contract`,
 `infer_execution_semantics`, `infer_temporal_order`, `load_events_auto`,
 `normalize_events`, `scan_directory`, `scan_repo`, `characterize_repo`,
-`diagnose`, `run_pipeline`, `load_contract`, `load_jsonl`,
+`diagnose`, `baseline`, `instrumentation_plan`, `generate_code_proposals`,
+`differential`, `semantic_differential`, `run_pipeline`,
+`write_pipeline_artifacts`, `load_contract`, `load_jsonl`,
 `validate_events`, `check_sources`, `run_compiled_monitor`,
 `generate_incident_readiness_report`, `generate_service_owner_report`,
 `run_benchmark`, and `import_otlp`.
@@ -232,6 +241,7 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 ## Docs
 
 - `docs/operational_scorecards.md` — workload scorecards, privacy-safe examples, anti-patterns, CI/SARIF integration, OTLP limits.
+- `docs/staged_pipeline.md` — the characterize → diagnose → plan → apply → differential loop, with a worked example on a public repo and every intermediate artifact.
 - `docs/tutorials/` — fixing a broken service; mapping SLO debugging questions to contract clauses.
 - `docs/report_schemas.md` + `docs/report_schemas/*.schema.json` — JSON output envelopes.
 - `docs/replication_guide.md` — exact commands to reproduce benchmark metrics and reports.

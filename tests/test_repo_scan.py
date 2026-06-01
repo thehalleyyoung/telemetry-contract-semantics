@@ -20,6 +20,18 @@ def test_parse_repo_target_shorthand():
     assert parse_repo_target("github.com/octocat/hello") == "https://github.com/octocat/hello.git"
 
 
+def test_parse_repo_target_other_hosts():
+    assert parse_repo_target("gitlab.com/grp/proj") == "https://gitlab.com/grp/proj.git"
+    assert parse_repo_target("bitbucket.org/team/repo") == "https://bitbucket.org/team/repo.git"
+    assert parse_repo_target("codeberg.org/u/r") == "https://codeberg.org/u/r.git"
+    assert parse_repo_target("gl:grp/proj") == "https://gitlab.com/grp/proj.git"
+    assert parse_repo_target("bb:team/repo") == "https://bitbucket.org/team/repo.git"
+    assert parse_repo_target("gh:octocat/hello") == "https://github.com/octocat/hello.git"
+    # full URLs on any host pass through untouched
+    gl = "https://gitlab.com/grp/proj.git"
+    assert parse_repo_target(gl) == gl
+
+
 def test_parse_repo_target_url_passthrough():
     url = "https://github.com/octocat/hello.git"
     assert parse_repo_target(url) == url
