@@ -686,7 +686,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/owasp_securetea_signin/Signin.js"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
                 },
                 "region": {
                   "startColumn": 5,
@@ -720,12 +720,12 @@
                 "end_column": 66,
                 "end_line": 26,
                 "line": 26,
-                "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.pii-sensitive-log",
-            "path": "case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66",
             "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -739,7 +739,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/owasp_securetea_signin/Signin.js"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
                 },
                 "region": {
                   "startColumn": 5,
@@ -773,12 +773,12 @@
                 "end_column": 69,
                 "end_line": 27,
                 "line": 27,
-                "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.raw-sensitive-log",
-            "path": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
             "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -792,7 +792,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/owasp_securetea_signin/Signin.js"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
                 },
                 "region": {
                   "startColumn": 13,
@@ -826,12 +826,12 @@
                 "end_column": 41,
                 "end_line": 48,
                 "line": 48,
-                "path": "case_studies/current/owasp_securetea_signin/Signin.js"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.raw-sensitive-log",
-            "path": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
             "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -1453,7 +1453,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/privacy_static_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -1487,12 +1487,12 @@
                 "end_column": 91,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/privacy_static_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.raw-sensitive-log",
-            "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
             "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -1506,7 +1506,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/privacy_static_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -1540,12 +1540,12 @@
                 "end_column": 91,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/privacy_static_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.pii-sensitive-log",
-            "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
             "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -1559,7 +1559,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/privacy_static_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -1596,12 +1596,12 @@
                 "end_column": 91,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/privacy_static_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.correlation-evidence",
-            "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
             "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -1615,7 +1615,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/privacy_static_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -1648,12 +1648,12 @@
                 "end_column": 91,
                 "end_line": 3,
                 "line": 3,
-                "path": "examples/benchmarks/privacy_static_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.cardinality-risk",
-            "path": "examples/benchmarks/privacy_static_source.py:3:5-3:91",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91",
             "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",
@@ -2197,7 +2197,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/unsafe_transformations_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -2231,12 +2231,12 @@
                 "end_column": 155,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/unsafe_transformations_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.raw-sensitive-log",
-            "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
             "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -2250,7 +2250,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/unsafe_transformations_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -2284,12 +2284,12 @@
                 "end_column": 155,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/unsafe_transformations_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.pii-sensitive-log",
-            "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
             "remediation": "Remove PII or tenant/customer identifiers from logs, or emit redacted/hash/bucketed surrogates.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -2303,7 +2303,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/unsafe_transformations_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -2337,12 +2337,12 @@
                 "end_column": 155,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/unsafe_transformations_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.payload-preview",
-            "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
             "remediation": "Replace raw payload/body previews with allowlisted sanitized previews or omit them.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",
@@ -2356,7 +2356,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/benchmarks/unsafe_transformations_source.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
                 },
                 "region": {
                   "startColumn": 5,
@@ -2393,12 +2393,12 @@
                 "end_column": 155,
                 "end_line": 2,
                 "line": 2,
-                "path": "examples/benchmarks/unsafe_transformations_source.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.correlation-evidence",
-            "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
             "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -2412,7 +2412,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 9,
@@ -2446,12 +2446,12 @@
                 "end_column": 104,
                 "end_line": 13,
                 "line": 13,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.raw-sensitive-log",
-            "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:13:9-13:104",
             "remediation": "Remove the sensitive value from logs or log only a redacted/hash surrogate.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -2465,7 +2465,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 9,
@@ -2499,12 +2499,12 @@
                 "end_column": 104,
                 "end_line": 13,
                 "line": 13,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "responsible-disclosure",
             "formal_clause": "STATIC.payload-preview",
-            "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:13:9-13:104",
             "remediation": "Replace raw payload/body previews with allowlisted sanitized previews or omit them.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",
@@ -2518,7 +2518,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 9,
@@ -2558,12 +2558,12 @@
                 "end_column": 104,
                 "end_line": 13,
                 "line": 13,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.correlation-evidence",
-            "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:13:9-13:104",
             "remediation": "Include a trace_id, request_id, or configured correlation field in error logs.",
             "sarif_level": "error",
             "service_owner": "contract service owner",
@@ -2577,7 +2577,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 9,
@@ -2610,12 +2610,12 @@
                 "end_column": 93,
                 "end_line": 14,
                 "line": 14,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.cardinality-risk",
-            "path": "case_studies/current/public_static_patterns/app.py:14:9-14:93",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:14:9-14:93",
             "remediation": "Avoid user-controlled/high-cardinality metric labels or add bucketing.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",
@@ -2629,7 +2629,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 10,
@@ -2671,12 +2671,12 @@
                 "end_column": 58,
                 "end_line": 11,
                 "line": 11,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.exception-recording",
-            "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:11:10-11:58",
             "remediation": "Record caught exceptions on error spans so incident responders can inspect failure type and stack context.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",
@@ -2690,7 +2690,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 10,
@@ -2732,12 +2732,12 @@
                 "end_column": 58,
                 "end_line": 11,
                 "line": 11,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.error-status",
-            "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:11:10-11:58",
             "remediation": "Set the OpenTelemetry span status to ERROR on error paths.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",
@@ -2751,7 +2751,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "case_studies/current/public_static_patterns/app.py"
+                  "uri": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
                 },
                 "region": {
                   "startColumn": 10,
@@ -2791,12 +2791,12 @@
                 "end_column": 58,
                 "end_line": 11,
                 "line": 11,
-                "path": "case_studies/current/public_static_patterns/app.py"
+                "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py"
               }
             },
             "disclosure_sensitivity": "internal",
             "formal_clause": "STATIC.remediation-evidence",
-            "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+            "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:11:10-11:58",
             "remediation": "Attach a bounded remediation hint on error spans or logs when the contract requires operator guidance.",
             "sarif_level": "warning",
             "service_owner": "contract service owner",

@@ -252,7 +252,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.pii-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -263,7 +263,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -274,7 +274,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -439,7 +439,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -450,7 +450,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.pii-sensitive-log",
-        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -461,7 +461,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.correlation-evidence",
-        "path": "examples/benchmarks/privacy_static_source.py:2:5-2:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -472,7 +472,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.cardinality-risk",
-        "path": "examples/benchmarks/privacy_static_source.py:3:5-3:91",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -615,7 +615,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -626,7 +626,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.pii-sensitive-log",
-        "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -637,7 +637,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.payload-preview",
-        "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -648,7 +648,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.correlation-evidence",
-        "path": "examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -659,7 +659,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.raw-sensitive-log",
-        "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:13:9-13:104",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "error"
@@ -670,7 +670,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.payload-preview",
-        "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:13:9-13:104",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -681,7 +681,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.correlation-evidence",
-        "path": "case_studies/current/public_static_patterns/app.py:13:9-13:104",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:13:9-13:104",
         "sarif_level": "error",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -692,7 +692,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.cardinality-risk",
-        "path": "case_studies/current/public_static_patterns/app.py:14:9-14:93",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:14:9-14:93",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -703,7 +703,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.exception-recording",
-        "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:11:10-11:58",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -714,7 +714,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.error-status",
-        "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:11:10-11:58",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"
@@ -725,7 +725,7 @@
         "contract_path": null,
         "event_index": null,
         "formal_clause": "STATIC.remediation-evidence",
-        "path": "case_studies/current/public_static_patterns/app.py:11:10-11:58",
+        "path": "/Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/public_static_patterns/app.py:11:10-11:58",
         "sarif_level": "warning",
         "service_owner": "contract service owner",
         "severity": "warning"

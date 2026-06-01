@@ -26,9 +26,23 @@ from .corpus import (
     load_corpus_manifest,
     parse_corpus_manifest,
 )
+from .cache import ResultCache, engine_fingerprint, options_fingerprint
+from .characteristics import detect_characteristics
+from .correlate import correlate, render_correlation_markdown
+from .plots import render_plots
+from .runner import (
+    StatusTable,
+    download_corpus,
+    download_subject,
+    run_corpus,
+    subject_checkout_dir,
+)
 from .study import (
     aggregate,
+    analyze_checkout,
     mine_corpus,
+    record_facts,
+    record_from_facts,
     render_study_markdown,
     subject_record,
 )
@@ -38,8 +52,23 @@ __all__ = [
     "CorpusSubject",
     "load_corpus_manifest",
     "parse_corpus_manifest",
+    "ResultCache",
+    "engine_fingerprint",
+    "options_fingerprint",
+    "detect_characteristics",
+    "correlate",
+    "render_correlation_markdown",
+    "render_plots",
+    "StatusTable",
+    "download_corpus",
+    "download_subject",
+    "run_corpus",
+    "subject_checkout_dir",
     "aggregate",
+    "analyze_checkout",
     "mine_corpus",
+    "record_facts",
+    "record_from_facts",
     "render_study_markdown",
     "subject_record",
 ]

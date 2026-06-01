@@ -75,7 +75,108 @@ The analytic core is byte-reproducible: every collection is sorted and every
 number is an integer or fixed-point value, so the same corpus yields an
 identical dataset on any machine.
 
-## Determinism and honesty
+## Scaling up: persistent checkouts, caching, and a resumable runner
+
+`mine-corpus` clones each subject into a disposable temporary directory — ideal
+for a small, one-shot run. For larger corpora that you re-run as the engine
+evolves, a second toolchain keeps work persistent, content-addressed, and
+crash-safe.
+
+### Download the corpus once (gitignored)
+
+The checkouts themselves are never committed. A user-facing helper clones every
+pinned subject into a gitignored directory and verifies that each working tree is
+parked at exactly the manifest SHA:
+
+```bash
+# Clones into benchmarks/corpus/_repos/ (gitignored) and verifies HEAD == sha:
+scripts/download_corpus.sh --manifest benchmarks/corpus/tier1.json
+
+# Or via the CLI directly, with an explicit destination and tier filter:
+python3 -m telemetry_contracts.cli corpus-download \
+  --manifest benchmarks/corpus/tier1.json --tier 1 \
+  --repos-dir benchmarks/corpus/_repos
+```
+
+Downloading is idempotent: a subject whose checkout already sits at the pinned
+SHA is skipped, so re-running only fetches what is missing. `corpus-verify`
+re-checks every subject without modifying anything:
+
+```bash
+python3 -m telemetry_contracts.cli corpus-verify --manifest benchmarks/corpus/tier1.json
+```
+
+### Run with a content-addressed cache
+
+`corpus-run` reuses the persistent checkouts and caches **analysis-derived facts**
+keyed by `(subject SHA, engine fingerprint, scan options, cache schema)`. A run
+recomputes a subject only when its commit, the engine source, or the scan options
+change; otherwise it replays the cached facts. Manifest metadata (license, tier,
+rationale) is merged at aggregation time, so a cache entry is reusable across any
+manifest that pins the same commit.
+
+```bash
+python3 -m telemetry_contracts.cli corpus-run \
+  --manifest benchmarks/corpus/tier1.json \
+  --repos-dir benchmarks/corpus/_repos \
+  --cache-dir benchmarks/corpus/.cache \
+  --format markdown
+```
+
+The cache directory also holds a `status.json` progress table written atomically
+after each subject, so an interrupted run resumes from where it stopped: cached
+subjects are skipped instantly and only unfinished work is recomputed. Both the
+cache and status directories are gitignored.
+
+The engine fingerprint is fail-closed — it hashes every Python source file in the
+package, so any change to analysis code invalidates the cache rather than risking
+a stale result. Fresh and cached datasets are byte-identical because both paths
+run the *same* analysis function.
+
+## Correlation breakdowns and plots
+
+`corpus-run` can slice the dataset and emit deterministic, dependency-free SVG
+charts:
+
+```bash
+# Bug-class prevalence and headline broken down by language, instrumentation
+# library, and event-volume bucket:
+python3 -m telemetry_contracts.cli corpus-run \
+  --manifest benchmarks/corpus/tier1.json --format correlation
+
+# Standalone-stdlib SVG plots (score histogram + bug-class prevalence):
+python3 -m telemetry_contracts.cli corpus-run \
+  --manifest benchmarks/corpus/tier1.json --format plots \
+  --plots-dir reports/corpus_plots
+```
+
+Each subject row is annotated with detected **characteristics** — primary
+language (from file-extension counts) and whether a known instrumentation library
+(OpenTelemetry, structured-logging frameworks, etc.) appears in a dependency
+manifest. The correlation view groups the headline and per-class prevalence by
+those characteristics so you can see, e.g., whether repositories that already
+depend on a tracing library are less likely to ship uncorrelated failures. The
+SVGs use integer geometry and XML-escaped text only, so they are byte-identical
+across machines.
+
+## Growing the corpus honestly
+
+`corpus-discover` proposes candidate repositories (popular projects by language,
+optionally including GitLab) as a **review seed only** — it is never run inside
+the test suite and never auto-adds subjects:
+
+```bash
+python3 -m telemetry_contracts.cli corpus-discover \
+  --language Python --language Go --min-stars 200 --output corpus_seed.json
+```
+
+Every proposed candidate must be manually verified to actually ship parseable
+telemetry and then pinned to an exact SHA (via `corpus-verify`) before it earns a
+place in a manifest. Subjects are added only when they genuinely clone and verify;
+the manifest is the single source of truth and never contains an unverified
+commit.
+
+
 
 - The headline statistic uses the conservative, finding-based correlation check,
   so its count can never exceed the per-class prevalence it is drawn from, and

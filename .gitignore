@@ -13,3 +13,11 @@ build/
 
 # Playground (Pyodide smoke-test deps)
 playground/node_modules/
+
+# Corpus mining: downloaded subject checkouts and the content-addressed result
+# cache are large, disposable, derived artifacts. The manifests under
+# benchmarks/corpus/*.json remain the single source of truth and ARE tracked.
+benchmarks/corpus/_repos/
+benchmarks/corpus/.cache/
+benchmarks/corpus/_reports/
+corpus_seed*.json

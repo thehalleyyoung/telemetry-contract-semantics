@@ -77,14 +77,15 @@ CLAIMS: list[dict[str, Any]] = [
     },
     {
         "id": "corpus-mining-study",
-        "claim": "A frozen, pinned-commit corpus of pre-existing repositories (addressed by exact 40-character commit SHA across GitHub, GitLab, and Bitbucket) is scanned and reduced to a single byte-deterministic dataset: a headline statistic (the share of telemetry-bearing repositories that cannot answer 'why did this request fail?'), per-bug-class prevalence with per-host breakdowns, and the diagnosability-score distribution. Each bug class has a precise, testable definition and an explicit soundness/incompleteness statement, and the headline uses the conservative finding-based correlation check so it never over-reports relative to the per-class prevalence.",
-        "public_artifacts": ["telemetry_contracts/bug_classes.py", "telemetry_contracts/mining/__init__.py", "telemetry_contracts/mining/corpus.py", "telemetry_contracts/mining/study.py", "docs/evaluation/corpus_study.md"],
-        "tests": ["tests/test_mining_study.py", "tests/test_corpus_mining_real.py"],
+        "claim": "A frozen, pinned-commit corpus of pre-existing repositories (addressed by exact 40-character commit SHA across GitHub, GitLab, and Bitbucket) is scanned and reduced to a single byte-deterministic dataset: a headline statistic (the share of telemetry-bearing repositories that cannot answer 'why did this request fail?'), per-bug-class prevalence with per-host breakdowns, and the diagnosability-score distribution. Each bug class has a precise, testable definition and an explicit soundness/incompleteness statement, and the headline uses the conservative finding-based correlation check so it never over-reports relative to the per-class prevalence. The corpus scales through a user-runnable, gitignored download script and a resumable runner backed by a content-addressed cache (keyed by subject SHA, a fail-closed engine-source fingerprint, and the scan options) whose cached and freshly-computed datasets are byte-identical; correlation breakdowns by detected language and instrumentation library, dependency-free deterministic SVG plots, and a review-only discovery seed (never run in tests) support honest curation where every subject is verified to ship parseable telemetry and pinned before inclusion.",
+        "public_artifacts": ["telemetry_contracts/bug_classes.py", "telemetry_contracts/mining/__init__.py", "telemetry_contracts/mining/corpus.py", "telemetry_contracts/mining/study.py", "telemetry_contracts/mining/cache.py", "telemetry_contracts/mining/runner.py", "telemetry_contracts/mining/characteristics.py", "telemetry_contracts/mining/correlate.py", "telemetry_contracts/mining/plots.py", "telemetry_contracts/mining/discover.py", "scripts/download_corpus.sh", "docs/evaluation/corpus_study.md"],
+        "tests": ["tests/test_mining_study.py", "tests/test_corpus_mining_real.py", "tests/test_corpus_cache.py", "tests/test_corpus_characteristics.py", "tests/test_corpus_runner.py", "tests/test_corpus_discover.py"],
         "fixtures": ["benchmarks/corpus/tier1.json"],
         "benchmark_rows": [],
         "limitations": [
             "The corpus is a curated sample; prevalence figures describe the sampled repositories, not all software, and detection inherits each bug class's stated incompleteness.",
             "Only derived metrics and findings are retained (never copied source); per-subject licenses are recorded in the manifest.",
+            "Corpus checkouts are downloaded on demand into a gitignored directory and never committed; growing the corpus beyond the bundled tier requires running the download/verify tooling against network-reachable repositories.",
         ],
     },
     {

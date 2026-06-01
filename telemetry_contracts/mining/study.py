@@ -25,6 +25,7 @@ from ..repo_scan import (
     scan_directory,
 )
 from .corpus import CorpusSubject
+from .characteristics import detect_characteristics
 
 DATASET_SCHEMA = "telemetry-contracts/corpus-dataset@1"
 
@@ -34,15 +35,17 @@ DATASET_SCHEMA = "telemetry-contracts/corpus-dataset@1"
 # ---------------------------------------------------------------------------
 
 
-def subject_record(
-    subject: CorpusSubject,
+def record_facts(
     scan_report: dict[str, Any],
     diagnosis: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    """Reduce one subject's scan + diagnosis to a single flat, sorted study row.
+    """Reduce a subject's scan + diagnosis to the *analysis-derived* facts only.
 
-    The row is deterministic given a fixed checkout: every collection is sorted
-    and every number is an integer, so the aggregate dataset is byte-stable.
+    The returned dict contains exactly the fields that are a deterministic
+    function of the checked-out source at a pinned SHA and the engine version —
+    and *no* manifest metadata (target/host/license/tier). This is the unit the
+    content-addressed cache stores, so a cache entry is valid for any manifest
+    that pins the same SHA, independent of mutable metadata like license or tier.
     """
 
     summary = scan_report.get("summary", {})
@@ -73,11 +76,6 @@ def subject_record(
     headline_blocked = has_telemetry and bug_class_present.get(HEADLINE_GAP, False)
 
     return {
-        "target": subject.target,
-        "sha": subject.sha,
-        "host": subject.host,
-        "license": subject.license,
-        "tier": subject.tier,
         "has_telemetry": has_telemetry,
         "event_count": int(summary.get("events", 0)),
         "telemetry_files": int(summary.get("telemetry_files", 0)),
@@ -93,6 +91,33 @@ def subject_record(
         "bug_class_present": bug_class_present,
         "headline_blocked": headline_blocked,
     }
+
+
+def record_from_facts(subject: CorpusSubject, facts: dict[str, Any]) -> dict[str, Any]:
+    """Compose a full study row from manifest metadata + cached analysis facts."""
+
+    return {
+        "target": subject.target,
+        "sha": subject.sha,
+        "host": subject.host,
+        "license": subject.license,
+        "tier": subject.tier,
+        **facts,
+    }
+
+
+def subject_record(
+    subject: CorpusSubject,
+    scan_report: dict[str, Any],
+    diagnosis: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Reduce one subject's scan + diagnosis to a single flat, sorted study row.
+
+    The row is deterministic given a fixed checkout: every collection is sorted
+    and every number is an integer, so the aggregate dataset is byte-stable.
+    """
+
+    return record_from_facts(subject, record_facts(scan_report, diagnosis))
 
 
 # ---------------------------------------------------------------------------
@@ -388,6 +413,52 @@ def _repo_diagnosis(
     return diagnose(union, service=service)
 
 
+def analyze_checkout(
+    root: Path,
+    *,
+    service: str | None = None,
+    max_files: int = 300,
+    max_events_per_file: int = 50_000,
+    max_total_events: int = 200_000,
+) -> dict[str, Any]:
+    """Scan + diagnose a checked-out repository and return its analysis facts.
+
+    This is the single analysis code path shared by the one-shot ``mine_corpus``
+    and the resumable, cached runner, so a cached subject and a freshly analysed
+    one are byte-identical.
+    """
+
+    scan_report = scan_directory(
+        root, service=service,
+        max_files=max_files, max_events_per_file=max_events_per_file,
+    )
+    diagnosis = _repo_diagnosis(
+        root, max_total_events=max_total_events,
+        max_events_per_file=max_events_per_file, service=service,
+        max_files=max_files,
+    )
+    facts = record_facts(scan_report, diagnosis)
+    facts.update(detect_characteristics(root))
+    return facts
+
+
+def scan_options(
+    *,
+    service: str | None,
+    max_files: int,
+    max_events_per_file: int,
+    max_total_events: int,
+) -> dict[str, Any]:
+    """The options that affect a subject's analysis facts (the cache options key)."""
+
+    return {
+        "service": service,
+        "max_files": max_files,
+        "max_events_per_file": max_events_per_file,
+        "max_total_events": max_total_events,
+    }
+
+
 def mine_corpus(
     subjects: list[CorpusSubject],
     *,
@@ -412,16 +483,11 @@ def mine_corpus(
         try:
             clone_dir = Path(tmp) / "repo"
             _clone_at_sha(parse_repo_target(subject.target), subject.sha, clone_dir)
-            scan_report = scan_directory(
-                clone_dir, service=service,
-                max_files=max_files, max_events_per_file=max_events_per_file,
+            facts = analyze_checkout(
+                clone_dir, service=service, max_files=max_files,
+                max_events_per_file=max_events_per_file, max_total_events=max_total_events,
             )
-            diagnosis = _repo_diagnosis(
-                clone_dir, max_total_events=max_total_events,
-                max_events_per_file=max_events_per_file, service=service,
-                max_files=max_files,
-            )
-            record = subject_record(subject, scan_report, diagnosis)
+            record = record_from_facts(subject, facts)
             records.append(record)
             if on_subject is not None:
                 on_subject(subject, record, None)

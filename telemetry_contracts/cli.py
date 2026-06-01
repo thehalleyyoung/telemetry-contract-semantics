@@ -109,6 +109,35 @@ def main(argv: list[str] | None = None) -> int:
     mine_parser.add_argument("--output", help="write the dataset/report to this path instead of stdout")
     mine_parser.add_argument("--dataset-output", help="also write the full JSON dataset to this path")
 
+    download_parser = subparsers.add_parser("corpus-download", help="clone every corpus subject at its pinned SHA into a (gitignored) local directory for reuse")
+    download_parser.add_argument("--manifest", required=True, help="path to a corpus manifest (telemetry-contracts/corpus@1)")
+    download_parser.add_argument("--tier", type=int, default=None, help="only download subjects at or below this tier")
+    download_parser.add_argument("--repos-dir", default="benchmarks/corpus/_repos", help="directory to clone subjects into (gitignored)")
+    download_parser.add_argument("--output", help="write the JSON download report to this path instead of stdout")
+
+    run_parser = subparsers.add_parser("corpus-run", help="run the study incrementally with a content-addressed cache and a resumable, crash-safe status table")
+    run_parser.add_argument("--manifest", required=True, help="path to a corpus manifest (telemetry-contracts/corpus@1)")
+    run_parser.add_argument("--tier", type=int, default=None, help="only run subjects at or below this tier")
+    run_parser.add_argument("--service", help="only analyze events from this service")
+    run_parser.add_argument("--cache-dir", default="benchmarks/corpus/.cache", help="content-addressed cache + status directory (gitignored)")
+    run_parser.add_argument("--repos-dir", default=None, help="persist checkouts here for reuse (gitignored); omit to use disposable temp clones")
+    run_parser.add_argument("--format", choices=["json", "markdown", "correlation", "plots"], default="markdown")
+    run_parser.add_argument("--output", help="write the report to this path instead of stdout")
+    run_parser.add_argument("--dataset-output", help="also write the full JSON dataset to this path")
+    run_parser.add_argument("--plots-dir", help="when --format=plots, write the SVG plots into this directory")
+
+    discover_parser = subparsers.add_parser("corpus-discover", help="PROPOSE candidate repositories from live search (never consumed by the study; pin + verify before use)")
+    discover_parser.add_argument("--language", action="append", default=[], help="language to search for (repeatable)")
+    discover_parser.add_argument("--min-stars", type=int, default=50, help="minimum star count")
+    discover_parser.add_argument("--per-language", type=int, default=20, help="candidates per language")
+    discover_parser.add_argument("--include-gitlab", action="store_true", help="also propose popular GitLab projects")
+    discover_parser.add_argument("--output", help="write the JSON seed proposal to this path instead of stdout")
+
+    verify_parser = subparsers.add_parser("corpus-verify", help="verify every manifest subject resolves to its pinned commit (network)")
+    verify_parser.add_argument("--manifest", required=True, help="path to a corpus manifest (telemetry-contracts/corpus@1)")
+    verify_parser.add_argument("--tier", type=int, default=None, help="only verify subjects at or below this tier")
+    verify_parser.add_argument("--output", help="write the JSON verification report to this path instead of stdout")
+
     eval_gold_parser = subparsers.add_parser("evaluate-gold", help="score the detectors against a hand-labeled ground-truth set (precision/recall/F1)")
     eval_gold_parser.add_argument("--gold", required=True, action="append", help="path to a gold JSONL file (telemetry-contracts/gold@1); repeatable")
     eval_gold_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
@@ -587,7 +616,92 @@ def main(argv: list[str] | None = None) -> int:
             )
             _emit_text(output, args.output)
             return 0
-        if args.command == "evaluate-gold":
+        if args.command in {"corpus-download", "corpus-run", "corpus-verify"}:
+            from .mining import (
+                CorpusManifestError,
+                correlate,
+                download_corpus,
+                load_corpus_manifest,
+                render_correlation_markdown,
+                render_plots,
+                render_study_markdown,
+                run_corpus,
+            )
+            from .mining.runner import verify_corpus
+
+            try:
+                _protocol, subjects = load_corpus_manifest(args.manifest)
+            except CorpusManifestError as exc:
+                print(f"ERROR corpus-manifest: {exc}", file=sys.stderr)
+                return 2
+            if args.tier is not None:
+                subjects = [s for s in subjects if s.tier <= args.tier]
+            if not subjects:
+                print("ERROR corpus-manifest: no subjects selected", file=sys.stderr)
+                return 2
+
+            try:
+                if args.command == "corpus-download":
+                    report = download_corpus(subjects, args.repos_dir)
+                    _emit_text(json.dumps(report, indent=2, sort_keys=True), args.output)
+                    return 0 if not report["errors"] else 1
+                if args.command == "corpus-verify":
+                    report = verify_corpus(subjects)
+                    _emit_text(json.dumps(report, indent=2, sort_keys=True), args.output)
+                    return 0 if not report["errors"] else 1
+                # corpus-run
+                dataset = run_corpus(
+                    subjects, cache_dir=args.cache_dir,
+                    repos_dir=args.repos_dir, service=args.service,
+                )
+            except RepoScanError as exc:
+                print(f"ERROR {args.command}: {exc}", file=sys.stderr)
+                return 2
+
+            if args.dataset_output:
+                Path(args.dataset_output).write_text(
+                    json.dumps(dataset, indent=2, sort_keys=True), encoding="utf-8"
+                )
+            if args.format == "json":
+                output = json.dumps(dataset, indent=2, sort_keys=True)
+            elif args.format == "correlation":
+                output = render_correlation_markdown(correlate(dataset))
+            elif args.format == "plots":
+                plots = render_plots(dataset)
+                if args.plots_dir:
+                    plots_dir = Path(args.plots_dir)
+                    plots_dir.mkdir(parents=True, exist_ok=True)
+                    for name, svg in sorted(plots.items()):
+                        (plots_dir / name).write_text(svg, encoding="utf-8")
+                    output = json.dumps(
+                        {"plots_dir": str(plots_dir), "files": sorted(plots)},
+                        indent=2, sort_keys=True,
+                    )
+                else:
+                    output = json.dumps(
+                        {name: svg for name, svg in sorted(plots.items())},
+                        indent=2, sort_keys=True,
+                    )
+            else:
+                output = render_study_markdown(dataset)
+            _emit_text(output, args.output)
+            return 0
+        if args.command == "corpus-discover":
+            from .mining.discover import discover_candidates
+
+            languages = args.language or ["Python", "JavaScript", "Go"]
+            token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+            try:
+                seed = discover_candidates(
+                    languages=languages, min_stars=args.min_stars,
+                    per_language=args.per_language,
+                    include_gitlab=args.include_gitlab, token=token,
+                )
+            except Exception as exc:  # noqa: BLE001 - live network surface
+                print(f"ERROR corpus-discover: {exc}", file=sys.stderr)
+                return 2
+            _emit_text(json.dumps(seed, indent=2, sort_keys=True), args.output)
+            return 0
             from .evaluation import (
                 GroundTruthError,
                 load_gold_set,
