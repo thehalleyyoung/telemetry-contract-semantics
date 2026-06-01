@@ -1,0 +1,428 @@
+{
+  "frozen_note": "Baseline definitions are fixed before snapshotting; no threshold is tuned on the gold set; every method sees only (events, bug_class), never the gold label or rationale. Out-of-scope classes are reported as coverage gaps, not accuracy failures.",
+  "gold_samples": 112,
+  "methods": [
+    {
+      "covered": {
+        "f1_permille": 953,
+        "fn": 3,
+        "fp": 2,
+        "precision_permille": 962,
+        "predicted_positive": 53,
+        "recall_permille": 944,
+        "support_negative": 58,
+        "support_positive": 54,
+        "tn": 56,
+        "tp": 51
+      },
+      "covered_classes": [
+        "missing-correlation",
+        "missing-duration",
+        "missing-error-evidence",
+        "sensitive-values",
+        "unbounded-cardinality",
+        "unclassified-sensitive"
+      ],
+      "description": "The shipped zero-config detectors (value-aware, failure-gated, statistical cardinality).",
+      "feasibility": {
+        "conventions_assumed": "none",
+        "deterministic": true,
+        "offline": true,
+        "setup_required": "none (point at telemetry you already have)",
+        "statistical": true,
+        "value_aware": true
+      },
+      "id": "tool",
+      "kind": "tool",
+      "macro": {
+        "f1_permille": 952,
+        "precision_permille": 967,
+        "recall_permille": 943
+      },
+      "name": "telemetry-contracts (this tool)",
+      "out_of_scope_classes": [],
+      "overall": {
+        "f1_permille": 953,
+        "fn": 3,
+        "fp": 2,
+        "precision_permille": 962,
+        "predicted_positive": 53,
+        "recall_permille": 944,
+        "support_negative": 58,
+        "support_positive": 54,
+        "tn": 56,
+        "tp": 51
+      },
+      "per_class_f1_permille": {
+        "missing-correlation": 947,
+        "missing-duration": 1000,
+        "missing-error-evidence": 947,
+        "sensitive-values": 947,
+        "unbounded-cardinality": 923,
+        "unclassified-sensitive": 947
+      },
+      "vs_tool": null
+    },
+    {
+      "covered": {
+        "f1_permille": 809,
+        "fn": 11,
+        "fp": 6,
+        "precision_permille": 857,
+        "predicted_positive": 42,
+        "recall_permille": 766,
+        "support_negative": 52,
+        "support_positive": 47,
+        "tn": 46,
+        "tp": 36
+      },
+      "covered_classes": [
+        "missing-correlation",
+        "missing-duration",
+        "missing-error-evidence",
+        "sensitive-values",
+        "unclassified-sensitive"
+      ],
+      "description": "Deliberately naive field-NAME keyword presence only; no thresholds, statistics, failure gating, or value inspection.",
+      "feasibility": {
+        "conventions_assumed": "none",
+        "deterministic": true,
+        "offline": true,
+        "setup_required": "none",
+        "statistical": false,
+        "value_aware": false
+      },
+      "id": "rule-light",
+      "kind": "baseline",
+      "macro": {
+        "f1_permille": 653,
+        "precision_permille": 894,
+        "recall_permille": 650
+      },
+      "name": "rule-light keyword detector",
+      "out_of_scope_classes": [
+        "unbounded-cardinality"
+      ],
+      "overall": {
+        "f1_permille": 750,
+        "fn": 18,
+        "fp": 6,
+        "precision_permille": 857,
+        "predicted_positive": 42,
+        "recall_permille": 667,
+        "support_negative": 58,
+        "support_positive": 54,
+        "tn": 52,
+        "tp": 36
+      },
+      "per_class_f1_permille": {
+        "missing-correlation": 857,
+        "missing-duration": 900,
+        "missing-error-evidence": 947,
+        "sensitive-values": 462,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 750
+      },
+      "vs_tool": {
+        "baseline_only_correct": [
+          "us-hard-altname"
+        ],
+        "mcnemar": {
+          "discordant_baseline_only": 1,
+          "discordant_tool_only": 20,
+          "discordant_total": 21,
+          "significant_at_0p05": true,
+          "two_sided_exact_p_ten_thousandths": 0
+        },
+        "shared_false_negative": [
+          "sv-hard-b64",
+          "uc-hard-smallsample"
+        ],
+        "shared_false_positive": [
+          "mc-hard-altkey",
+          "me-hard-msgonly"
+        ],
+        "tool_only_correct": [
+          "mc-neg-ok-00",
+          "mc-neg-ok-01",
+          "md-neg-evt-00",
+          "md-neg-evt-01",
+          "sv-pos-00",
+          "sv-pos-01",
+          "sv-pos-02",
+          "sv-pos-05",
+          "sv-pos-07",
+          "sv-pos-08",
+          "uc-pos-00",
+          "uc-pos-01",
+          "uc-pos-02",
+          "uc-pos-03",
+          "uc-pos-04",
+          "uc-pos-05",
+          "us-pos-03",
+          "us-pos-06",
+          "us-pos-07",
+          "us-pos-08"
+        ]
+      }
+    },
+    {
+      "covered": {
+        "f1_permille": 771,
+        "fn": 0,
+        "fp": 16,
+        "precision_permille": 628,
+        "predicted_positive": 43,
+        "recall_permille": 1000,
+        "support_negative": 34,
+        "support_positive": 27,
+        "tn": 18,
+        "tp": 27
+      },
+      "covered_classes": [
+        "missing-correlation",
+        "missing-duration",
+        "missing-error-evidence"
+      ],
+      "description": "Flags solely missing OpenTelemetry-convention fields; classes with no convention field are out of scope (coverage result).",
+      "feasibility": {
+        "conventions_assumed": "OpenTelemetry",
+        "deterministic": true,
+        "offline": true,
+        "setup_required": "adopt OTel semantic conventions",
+        "statistical": false,
+        "value_aware": false
+      },
+      "id": "semantic-convention-only",
+      "kind": "baseline",
+      "macro": {
+        "f1_permille": 396,
+        "precision_permille": 673,
+        "recall_permille": 500
+      },
+      "name": "OTel semantic-convention conformance",
+      "out_of_scope_classes": [
+        "sensitive-values",
+        "unbounded-cardinality",
+        "unclassified-sensitive"
+      ],
+      "overall": {
+        "f1_permille": 557,
+        "fn": 27,
+        "fp": 16,
+        "precision_permille": 628,
+        "predicted_positive": 43,
+        "recall_permille": 500,
+        "support_negative": 58,
+        "support_positive": 54,
+        "tn": 42,
+        "tp": 27
+      },
+      "per_class_f1_permille": {
+        "missing-correlation": 857,
+        "missing-duration": 900,
+        "missing-error-evidence": 621,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "vs_tool": {
+        "baseline_only_correct": [],
+        "mcnemar": {
+          "discordant_baseline_only": 0,
+          "discordant_tool_only": 38,
+          "discordant_total": 38,
+          "significant_at_0p05": true,
+          "two_sided_exact_p_ten_thousandths": 0
+        },
+        "shared_false_negative": [
+          "sv-hard-b64",
+          "uc-hard-smallsample",
+          "us-hard-altname"
+        ],
+        "shared_false_positive": [
+          "mc-hard-altkey",
+          "me-hard-msgonly"
+        ],
+        "tool_only_correct": [
+          "mc-neg-ok-00",
+          "mc-neg-ok-01",
+          "md-neg-evt-00",
+          "md-neg-evt-01",
+          "me-neg-00",
+          "me-neg-01",
+          "me-neg-02",
+          "me-neg-03",
+          "me-neg-04",
+          "me-neg-05",
+          "me-neg-06",
+          "me-neg-07",
+          "me-neg-08",
+          "me-neg-exc-00",
+          "sv-pos-00",
+          "sv-pos-01",
+          "sv-pos-02",
+          "sv-pos-03",
+          "sv-pos-04",
+          "sv-pos-05",
+          "sv-pos-06",
+          "sv-pos-07",
+          "sv-pos-08",
+          "uc-pos-00",
+          "uc-pos-01",
+          "uc-pos-02",
+          "uc-pos-03",
+          "uc-pos-04",
+          "uc-pos-05",
+          "us-pos-00",
+          "us-pos-01",
+          "us-pos-02",
+          "us-pos-03",
+          "us-pos-04",
+          "us-pos-05",
+          "us-pos-06",
+          "us-pos-07",
+          "us-pos-08"
+        ]
+      }
+    },
+    {
+      "covered": {
+        "f1_permille": 563,
+        "fn": 16,
+        "fp": 43,
+        "precision_permille": 469,
+        "predicted_positive": 81,
+        "recall_permille": 704,
+        "support_negative": 58,
+        "support_positive": 54,
+        "tn": 15,
+        "tp": 38
+      },
+      "covered_classes": [
+        "missing-correlation",
+        "missing-duration",
+        "missing-error-evidence",
+        "sensitive-values",
+        "unbounded-cardinality",
+        "unclassified-sensitive"
+      ],
+      "description": "Deterministic prompt+parser+cache harness replaying a transparent hand-written surrogate policy. NOT an LLM result.",
+      "feasibility": {
+        "conventions_assumed": "none",
+        "deterministic": true,
+        "offline": true,
+        "setup_required": "model access (real LLM) \u2014 surrogate shipped offline",
+        "statistical": false,
+        "value_aware": false
+      },
+      "id": "recorded-surrogate",
+      "kind": "surrogate",
+      "macro": {
+        "f1_permille": 501,
+        "precision_permille": 489,
+        "recall_permille": 683
+      },
+      "name": "recorded-surrogate (LLM harness check)",
+      "out_of_scope_classes": [],
+      "overall": {
+        "f1_permille": 563,
+        "fn": 16,
+        "fp": 43,
+        "precision_permille": 469,
+        "predicted_positive": 81,
+        "recall_permille": 704,
+        "support_negative": 58,
+        "support_positive": 54,
+        "tn": 15,
+        "tp": 38
+      },
+      "per_class_f1_permille": {
+        "missing-correlation": 600,
+        "missing-duration": 900,
+        "missing-error-evidence": 621,
+        "sensitive-values": 538,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 348
+      },
+      "vs_tool": {
+        "baseline_only_correct": [
+          "sv-hard-b64"
+        ],
+        "mcnemar": {
+          "discordant_baseline_only": 1,
+          "discordant_tool_only": 55,
+          "discordant_total": 56,
+          "significant_at_0p05": true,
+          "two_sided_exact_p_ten_thousandths": 0
+        },
+        "shared_false_negative": [
+          "uc-hard-smallsample",
+          "us-hard-altname"
+        ],
+        "shared_false_positive": [
+          "mc-hard-altkey",
+          "me-hard-msgonly"
+        ],
+        "tool_only_correct": [
+          "mc-neg-00",
+          "mc-neg-01",
+          "mc-neg-02",
+          "mc-neg-03",
+          "mc-neg-04",
+          "mc-neg-05",
+          "mc-neg-06",
+          "mc-neg-07",
+          "mc-neg-08",
+          "mc-neg-ok-00",
+          "mc-neg-ok-01",
+          "md-neg-evt-00",
+          "md-neg-evt-01",
+          "me-neg-00",
+          "me-neg-01",
+          "me-neg-02",
+          "me-neg-03",
+          "me-neg-04",
+          "me-neg-05",
+          "me-neg-06",
+          "me-neg-07",
+          "me-neg-08",
+          "me-neg-exc-00",
+          "sv-neg-00",
+          "sv-neg-01",
+          "sv-neg-02",
+          "sv-neg-03",
+          "sv-neg-04",
+          "sv-neg-05",
+          "sv-neg-06",
+          "sv-neg-07",
+          "sv-neg-08",
+          "sv-pos-03",
+          "sv-pos-04",
+          "sv-pos-06",
+          "uc-pos-00",
+          "uc-pos-01",
+          "uc-pos-02",
+          "uc-pos-03",
+          "uc-pos-04",
+          "uc-pos-05",
+          "us-neg-00",
+          "us-neg-01",
+          "us-neg-02",
+          "us-neg-03",
+          "us-neg-04",
+          "us-neg-05",
+          "us-neg-06",
+          "us-neg-07",
+          "us-neg-08",
+          "us-pos-00",
+          "us-pos-01",
+          "us-pos-02",
+          "us-pos-04",
+          "us-pos-05"
+        ]
+      }
+    }
+  ],
+  "schema": "telemetry-contracts/baselines@1"
+}

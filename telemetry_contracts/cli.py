@@ -304,6 +304,12 @@ def main(argv: list[str] | None = None) -> int:
     claims_parser.add_argument("--format", choices=["json", "markdown"], default="json")
     claims_parser.add_argument("--output")
 
+    reproduce_parser = subparsers.add_parser("reproduce", help="regenerate every offline artifact deterministically and verify a SHA-256 manifest")
+    reproduce_group = reproduce_parser.add_mutually_exclusive_group()
+    reproduce_group.add_argument("--write", action="store_true", help="regenerate all artifacts in place and write reports/reproduce_manifest.json (default)")
+    reproduce_group.add_argument("--check", action="store_true", help="regenerate and verify every artifact matches the committed manifest; exit 1 on any drift")
+    reproduce_parser.add_argument("--output", help="write the manifest/check report to this path instead of stdout")
+
     explain_parser = subparsers.add_parser("explain", help="explain a finding code with formal meaning, impact, examples, and fixes")
     explain_parser.add_argument("code", help="finding code such as telemetry.missing_field")
     explain_parser.add_argument("--examples", action="append", default=[], help="JSON finding report to mine for concrete observed examples")
@@ -882,6 +888,16 @@ def main(argv: list[str] | None = None) -> int:
                     Path(args.output).write_text(output + "\n", encoding="utf-8")
             if not args.output:
                 print(output)
+            return 0
+        if args.command == "reproduce":
+            from .reproduce import check_reproduction, run_reproduction
+
+            if args.check:
+                report = check_reproduction(".")
+                _emit_text(json.dumps(report, indent=2, sort_keys=True), args.output)
+                return 0 if report.get("ok") else 1
+            report = run_reproduction(".", write=True)
+            _emit_text(json.dumps(report, indent=2, sort_keys=True), args.output)
             return 0
         if args.command == "evaluate-semantics":
             contract = load_contract(args.contract)

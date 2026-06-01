@@ -1,0 +1,25 @@
+name: determinism
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Offline test suite (pure stdlib, no network)
+        run: python -m pytest -q -o addopts="" -p no:benchmark
+      - name: Regenerate artifacts and verify against the committed manifest
+        run: python -m telemetry_contracts.cli reproduce --check
+      - name: Verify the regeneration is itself idempotent
+        run: |
+          python -m telemetry_contracts.cli reproduce --check
+          git diff --exit-code -- reports/reproduce_manifest.json

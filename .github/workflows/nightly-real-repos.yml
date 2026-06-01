@@ -1,0 +1,31 @@
+name: nightly-real-repos
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  real-repos:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    env:
+      TELEMETRY_CONTRACTS_NETWORK_TESTS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Real-repository test suite (clones pinned public repos)
+        run: python -m pytest tests/ -k real -q -o addopts="" -p no:benchmark
+      - name: Corpus mining study (markdown headline)
+        run: |
+          python -m telemetry_contracts.cli mine-corpus \
+            --manifest benchmarks/corpus/tier1.json \
+            --format markdown

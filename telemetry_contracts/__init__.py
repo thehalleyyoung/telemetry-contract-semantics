@@ -25,6 +25,7 @@ from .code_proposals import generate_code_proposals
 from .high_impact_filter import feature_scorecard, score_addition
 from .project_semantics import infer_execution_semantics
 from .repo_scan import scan_directory, scan_repo
+from .reproduce import check_reproduction, run_reproduction
 from .service_report import generate_service_owner_report
 from .static_checker import check_sources
 from .validator import validate_events
@@ -106,6 +107,8 @@ __all__ = [
     "run_compiled_monitor",
     "run_benchmark",
     "run_pipeline",
+    "run_reproduction",
+    "check_reproduction",
     "scan_directory",
     "scan_repo",
     "score_addition",

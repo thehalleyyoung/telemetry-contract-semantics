@@ -1,0 +1,182 @@
+{
+  "confusion_matrix": {
+    "missing-correlation": {
+      "fn": 0,
+      "fp": 1,
+      "tn": 11,
+      "tp": 9
+    },
+    "missing-duration": {
+      "fn": 0,
+      "fp": 0,
+      "tn": 11,
+      "tp": 9
+    },
+    "missing-error-evidence": {
+      "fn": 0,
+      "fp": 1,
+      "tn": 10,
+      "tp": 9
+    },
+    "sensitive-values": {
+      "fn": 1,
+      "fp": 0,
+      "tn": 9,
+      "tp": 9
+    },
+    "unbounded-cardinality": {
+      "fn": 1,
+      "fp": 0,
+      "tn": 6,
+      "tp": 6
+    },
+    "unclassified-sensitive": {
+      "fn": 1,
+      "fp": 0,
+      "tn": 9,
+      "tp": 9
+    }
+  },
+  "error_analysis": {
+    "false_negative_total": 3,
+    "false_negatives": [
+      {
+        "bug_class": "sensitive-values",
+        "codes": [],
+        "gold": true,
+        "id": "sv-hard-b64",
+        "predicted": false,
+        "rationale": "value is a base64-encoded credential; genuinely sensitive but not matched by raw patterns (documented FN source)"
+      },
+      {
+        "bug_class": "unbounded-cardinality",
+        "codes": [],
+        "gold": true,
+        "id": "uc-hard-smallsample",
+        "predicted": false,
+        "rationale": "session_id is unique per session by construction, so the label is unbounded at scale; the sampled window is below the cardinality-trust threshold (documented FN source)"
+      },
+      {
+        "bug_class": "unclassified-sensitive",
+        "codes": [],
+        "gold": true,
+        "id": "us-hard-altname",
+        "predicted": false,
+        "rationale": "'org_id' is a tenant-scoped identifier but is not in the recognized name set (documented FN source)"
+      }
+    ],
+    "false_positive_total": 2,
+    "false_positives": [
+      {
+        "bug_class": "missing-correlation",
+        "codes": [
+          "telemetry.correlation_missing"
+        ],
+        "gold": false,
+        "id": "mc-hard-altkey",
+        "predicted": true,
+        "rationale": "a correlation id exists but under an unrecognized field name; the gap is truly absent (documented FP source)"
+      },
+      {
+        "bug_class": "missing-error-evidence",
+        "codes": [
+          "discovery.missing_error_evidence"
+        ],
+        "gold": false,
+        "id": "me-hard-msgonly",
+        "predicted": true,
+        "rationale": "the error cause is in the free-text message; structured evidence absent (documented FP source)"
+      }
+    ]
+  },
+  "inter_rater": {
+    "cohen_kappa_permille": 883,
+    "second_labeled": 17
+  },
+  "macro": {
+    "f1_permille": 952,
+    "precision_permille": 967,
+    "recall_permille": 943
+  },
+  "overall": {
+    "f1_permille": 953,
+    "fn": 3,
+    "fp": 2,
+    "precision_permille": 962,
+    "recall_permille": 944,
+    "samples": 112,
+    "support_negative": 58,
+    "support_positive": 54,
+    "tn": 56,
+    "tp": 51
+  },
+  "per_class": {
+    "missing-correlation": {
+      "f1_permille": 947,
+      "fn": 0,
+      "fp": 1,
+      "precision_permille": 900,
+      "recall_permille": 1000,
+      "support_negative": 12,
+      "support_positive": 9,
+      "tn": 11,
+      "tp": 9
+    },
+    "missing-duration": {
+      "f1_permille": 1000,
+      "fn": 0,
+      "fp": 0,
+      "precision_permille": 1000,
+      "recall_permille": 1000,
+      "support_negative": 11,
+      "support_positive": 9,
+      "tn": 11,
+      "tp": 9
+    },
+    "missing-error-evidence": {
+      "f1_permille": 947,
+      "fn": 0,
+      "fp": 1,
+      "precision_permille": 900,
+      "recall_permille": 1000,
+      "support_negative": 11,
+      "support_positive": 9,
+      "tn": 10,
+      "tp": 9
+    },
+    "sensitive-values": {
+      "f1_permille": 947,
+      "fn": 1,
+      "fp": 0,
+      "precision_permille": 1000,
+      "recall_permille": 900,
+      "support_negative": 9,
+      "support_positive": 10,
+      "tn": 9,
+      "tp": 9
+    },
+    "unbounded-cardinality": {
+      "f1_permille": 923,
+      "fn": 1,
+      "fp": 0,
+      "precision_permille": 1000,
+      "recall_permille": 857,
+      "support_negative": 6,
+      "support_positive": 7,
+      "tn": 6,
+      "tp": 6
+    },
+    "unclassified-sensitive": {
+      "f1_permille": 947,
+      "fn": 1,
+      "fp": 0,
+      "precision_permille": 1000,
+      "recall_permille": 900,
+      "support_negative": 9,
+      "support_positive": 10,
+      "tn": 9,
+      "tp": 9
+    }
+  },
+  "schema": "telemetry-contracts/gold-eval@1"
+}

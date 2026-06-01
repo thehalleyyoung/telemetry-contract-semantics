@@ -52,10 +52,10 @@ def test_taxonomy_carries_bug_class_guarantee_metadata():
 def test_taxonomy_summarizes_benchmark_findings():
     summary = summarize_findings([ROOT / "reports/current_impact.json"])
 
-    assert summary["summary"]["findings"] == 67
+    assert summary["summary"]["findings"] == 74
     assert summary["summary"]["unknown_codes"] == []
     assert summary["summary"]["by_formal_clause"]["SAT.allowed-values"] == 4
-    assert summary["summary"]["by_category"]["privacy-security"] == 24
+    assert summary["summary"]["by_category"]["privacy-security"] == 26
     assert summary["summary"]["by_formal_clause"]["HYP.pii-non-disclosure"] == 4
     assert summary["summary"]["by_formal_clause"]["OTLP.dropped-evidence"] == 2
     assert summary["summary"]["by_formal_clause"]["SAT.temporal-response"] == 1
@@ -78,7 +78,7 @@ def test_cli_taxonomy_json_and_markdown(capsys):
 
     assert code == 0
     assert data["observed_findings"]["summary"]["unknown_codes"] == []
-    assert data["observed_findings"]["summary"]["by_code"]["static.secret_logging"] == 4
+    assert data["observed_findings"]["summary"]["by_code"]["static.secret_logging"] == 5
     assert data["observed_findings"]["summary"]["by_code"]["static.pii_logging"] == 3
 
     code = main(["taxonomy", "--format", "markdown"])

@@ -295,6 +295,9 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 - `docs/tutorials/` — fixing a broken service; mapping SLO debugging questions to contract clauses.
 - `docs/report_schemas.md` + `docs/report_schemas/*.schema.json` — JSON output envelopes.
 - `docs/replication_guide.md` — exact commands to reproduce benchmark metrics and reports.
+- `docs/artifact_evaluation/` — ACM artifact-evaluation bundle (REQUIREMENTS, STATUS, one-command `reproduce.sh --check`) targeting the Available + Reusable badges; every offline figure and number is regenerated and verified against a committed SHA-256 manifest (`python3 -m telemetry_contracts.cli reproduce --check`).
+- `docs/evaluation/threats_to_validity.md` — internal / external / construct / conclusion validity and the reconstructed-incident caveat.
+- `paper/` — the paper skeleton whose numbers are transcribed directly from the regenerated artifacts.
 - `docs/finding_taxonomy.json` / `claims-matrix` — the finding-rule catalog and a claims-to-evidence matrix.
 
 ## Limitations

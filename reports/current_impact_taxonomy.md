@@ -1,10 +1,10 @@
 # Finding taxonomy
 
-- Schema version: `1.0`
-- Rules: 121
-- Categories: `{"contract": 27, "diagnosability": 32, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 11, "refinement": 11, "scenario": 2, "schema": 19, "static-coverage": 4}`
-- Default severities: `{"error": 91, "info": 3, "warning": 27}`
-- SARIF levels: `{"error": 91, "note": 3, "warning": 27}`
+- Schema version: `1.1`
+- Rules: 122
+- Categories: `{"contract": 27, "diagnosability": 33, "input": 7, "operability": 3, "preservation": 5, "privacy-security": 11, "refinement": 11, "scenario": 2, "schema": 19, "static-coverage": 4}`
+- Default severities: `{"error": 91, "info": 3, "warning": 28}`
+- SARIF levels: `{"error": 91, "note": 3, "warning": 28}`
 
 ## Rule catalog
 
@@ -51,6 +51,7 @@
 | contract_diff.new_obligation | refinement | info | DIFF.obligation-added | note | info | internal | contract service owner | Review the new telemetry obligation and ensure fixtures, owners, and rollout plans cover it. |
 | contract_diff.privacy_changed | privacy-security | warning | DIFF.privacy-change | warning | warning | responsible-disclosure | contract service owner | Review privacy-classification or transformation changes with the data owner before merging. |
 | contract_diff.removed_obligation | refinement | warning | DIFF.obligation-removed | warning | warning | internal | contract service owner | Confirm that removing the telemetry obligation is intentional and does not regress incident diagnosability. |
+| discovery.missing_error_evidence | diagnosability | warning | DISCOVERY.error-evidence | warning | warning | internal | contract service owner | Attach an error code, exception type/stack, or status to failure events so incidents are diagnosable from the data you already emit. |
 | input.load_error | input | error | INPUT.parse | error | error | internal | contract service owner | Fix the referenced input path or file format. |
 | otlp.dropped_evidence | input | warning | OTLP.dropped-evidence | warning | warning | internal | contract service owner | Inspect collector/exporter dropped-count fields before relying on complete contract evidence. |
 | otlp.malformed_record | input | warning | OTLP.malformed-record | warning | warning | internal | contract service owner | Fix or exclude malformed OTLP JSONL records before asserting full export coverage. |
@@ -134,17 +135,17 @@
 
 ## Observed finding coverage
 
-- Findings: 67
+- Findings: 74
 - Unknown codes: `[]`
-- By code: `{"otlp.dropped_evidence": 2, "otlp.malformed_record": 1, "otlp.unsupported_metric": 1, "otlp.unsupported_top_level": 1, "scenario.missing_field": 3, "static.missing_correlation": 2, "static.pii_logging": 3, "static.secret_logging": 4, "static.unbounded_label": 1, "static.unsafe_payload_preview": 1, "telemetry.allowed_values": 4, "telemetry.cardinality": 1, "telemetry.correlation_missing": 2, "telemetry.forbidden_pattern": 2, "telemetry.hyper_pii_disclosure": 4, "telemetry.missing_field": 17, "telemetry.missing_signal": 1, "telemetry.numeric_max": 2, "telemetry.privacy_transformation": 5, "telemetry.sensitive_value": 5, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
-- By category: `{"diagnosability": 30, "input": 5, "operability": 2, "privacy-security": 24, "schema": 6}`
-- By formal clause: `{"ADEQ.required-field": 3, "HYP.pii-non-disclosure": 4, "OTLP.dropped-evidence": 2, "OTLP.malformed-record": 1, "OTLP.unsupported-metric": 1, "OTLP.unsupported-top-level": 1, "SAT.allowed-values": 4, "SAT.cardinality-bound": 1, "SAT.correlation-presence": 2, "SAT.forbidden-pattern": 2, "SAT.numeric-upper-bound": 2, "SAT.privacy-preservation": 5, "SAT.raw-sensitive-value": 5, "SAT.required-field": 17, "SAT.required-signal": 1, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.cardinality-risk": 1, "STATIC.correlation-evidence": 2, "STATIC.payload-preview": 1, "STATIC.pii-sensitive-log": 3, "STATIC.raw-sensitive-log": 4}`
-- By SARIF level: `{"error": 59, "note": 1, "warning": 7}`
-- By service owner: `{"contract service owner": 67}`
+- By code: `{"otlp.dropped_evidence": 2, "otlp.malformed_record": 1, "otlp.unsupported_metric": 1, "otlp.unsupported_top_level": 1, "scenario.missing_field": 3, "static.missing_correlation": 3, "static.missing_error_status": 1, "static.missing_exception_recording": 1, "static.missing_remediation_field": 1, "static.pii_logging": 3, "static.secret_logging": 5, "static.unbounded_label": 2, "static.unsafe_payload_preview": 2, "telemetry.allowed_values": 4, "telemetry.cardinality": 1, "telemetry.correlation_missing": 2, "telemetry.forbidden_pattern": 2, "telemetry.hyper_pii_disclosure": 4, "telemetry.missing_field": 17, "telemetry.missing_signal": 1, "telemetry.numeric_max": 2, "telemetry.privacy_transformation": 5, "telemetry.sensitive_value": 5, "telemetry.temporal_absence": 1, "telemetry.temporal_deadline": 1, "telemetry.temporal_order": 1, "telemetry.temporal_response": 1, "telemetry.temporal_safety": 1}`
+- By category: `{"diagnosability": 34, "input": 5, "operability": 3, "privacy-security": 26, "schema": 6}`
+- By formal clause: `{"ADEQ.required-field": 3, "HYP.pii-non-disclosure": 4, "OTLP.dropped-evidence": 2, "OTLP.malformed-record": 1, "OTLP.unsupported-metric": 1, "OTLP.unsupported-top-level": 1, "SAT.allowed-values": 4, "SAT.cardinality-bound": 1, "SAT.correlation-presence": 2, "SAT.forbidden-pattern": 2, "SAT.numeric-upper-bound": 2, "SAT.privacy-preservation": 5, "SAT.raw-sensitive-value": 5, "SAT.required-field": 17, "SAT.required-signal": 1, "SAT.temporal-absence": 1, "SAT.temporal-deadline": 1, "SAT.temporal-order": 1, "SAT.temporal-response": 1, "SAT.temporal-safety": 1, "STATIC.cardinality-risk": 2, "STATIC.correlation-evidence": 3, "STATIC.error-status": 1, "STATIC.exception-recording": 1, "STATIC.payload-preview": 2, "STATIC.pii-sensitive-log": 3, "STATIC.raw-sensitive-log": 5, "STATIC.remediation-evidence": 1}`
+- By SARIF level: `{"error": 61, "note": 1, "warning": 12}`
+- By service owner: `{"contract service owner": 74}`
 
 | Source | Findings |
 | --- | ---: |
-| reports/current_impact.json | 67 |
+| reports/current_impact.json | 74 |
 
 | Code | Category | Formal clause | Severity | SARIF | Path |
 | --- | --- | --- | --- | --- | --- |
@@ -163,9 +164,9 @@
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.username |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[2].fields.password |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[3].fields.cookie |
-| static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66 |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69 |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41 |
+| static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:26:5-26:66 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:27:5-27:69 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/owasp_securetea_signin/Signin.js:48:13-48:41 |
 | otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceSpans[0].scopeSpans[0].spans[0].droppedLinksCount |
 | otlp.unsupported_metric | input | OTLP.unsupported-metric | warning | warning | $.resourceMetrics[0].scopeMetrics[0].metrics[5] |
 | otlp.dropped_evidence | input | OTLP.dropped-evidence | warning | warning | $.resourceLogs[0].scopeLogs[0].logRecords[0].droppedAttributesCount |
@@ -180,10 +181,10 @@
 | telemetry.cardinality | operability | SAT.cardinality-bound | warning | warning | events[metric=checkout.requests].tenant_id |
 | telemetry.sensitive_value | privacy-security | SAT.raw-sensitive-value | error | error | event[1].email |
 | telemetry.hyper_pii_disclosure | privacy-security | HYP.pii-non-disclosure | error | error | event[1].fields.email |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91 |
-| static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91 |
-| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:2:5-2:91 |
-| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/privacy_static_source.py:3:5-3:91 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | examples/benchmarks/privacy_static_source.py:2:5-2:91 |
+| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | examples/benchmarks/privacy_static_source.py:3:5-3:91 |
 | otlp.malformed_record | input | OTLP.malformed-record | warning | warning | records[1] |
 | telemetry.forbidden_pattern | privacy-security | SAT.forbidden-pattern | error | error | event[1].auth_token |
 | telemetry.privacy_transformation | privacy-security | SAT.privacy-preservation | error | error | event[1].auth_token |
@@ -196,10 +197,17 @@
 | telemetry.privacy_transformation | privacy-security | SAT.privacy-preservation | error | error | event[1].tenant_id |
 | telemetry.privacy_transformation | privacy-security | SAT.privacy-preservation | error | error | event[1].payload_preview |
 | telemetry.sensitive_value | privacy-security | SAT.raw-sensitive-value | error | error | event[1].payload_preview |
-| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
-| static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
-| static.unsafe_payload_preview | privacy-security | STATIC.payload-preview | warning | warning | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
-| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | /Users/halleyyoung/Documents/repo/telemetry-contracts-repo/examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
+| static.pii_logging | privacy-security | STATIC.pii-sensitive-log | error | error | examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
+| static.unsafe_payload_preview | privacy-security | STATIC.payload-preview | warning | warning | examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
+| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | examples/benchmarks/unsafe_transformations_source.py:2:5-2:155 |
+| static.secret_logging | privacy-security | STATIC.raw-sensitive-log | error | error | case_studies/current/public_static_patterns/app.py:13:9-13:104 |
+| static.unsafe_payload_preview | privacy-security | STATIC.payload-preview | warning | warning | case_studies/current/public_static_patterns/app.py:13:9-13:104 |
+| static.missing_correlation | diagnosability | STATIC.correlation-evidence | warning | error | case_studies/current/public_static_patterns/app.py:13:9-13:104 |
+| static.unbounded_label | operability | STATIC.cardinality-risk | warning | warning | case_studies/current/public_static_patterns/app.py:14:9-14:93 |
+| static.missing_exception_recording | diagnosability | STATIC.exception-recording | warning | warning | case_studies/current/public_static_patterns/app.py:11:10-11:58 |
+| static.missing_error_status | diagnosability | STATIC.error-status | warning | warning | case_studies/current/public_static_patterns/app.py:11:10-11:58 |
+| static.missing_remediation_field | diagnosability | STATIC.remediation-evidence | warning | warning | case_studies/current/public_static_patterns/app.py:11:10-11:58 |
 | telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[1].autoscaling_policy_id |
 | telemetry.missing_field | diagnosability | SAT.required-field | error | error | event[1].observed_backlog_depth |
 | telemetry.missing_signal | diagnosability | SAT.required-signal | error | error | events[log=queue.autoscaling_decision] |

@@ -183,6 +183,26 @@ CLAIMS: list[dict[str, Any]] = [
             "The social card and blog headline summarize a small, demonstrative frozen corpus; the numbers are honest for that corpus and scale with additional corpus subjects.",
         ],
     },
+    {
+        "id": "reproducible-artifact-evaluation",
+        "claim": "Every offline figure, table, and headline number is a pure function of frozen inputs and is regenerated and verified against a committed SHA-256 determinism manifest by a single command. The reproduce module regenerates all correctness-bearing artifacts in place and records a manifest of only the portable ones; artifacts that legitimately vary (measured runtime, absolute case-study paths, the git commit hash) are explicitly excluded and documented. A determinism CI workflow runs the same regenerate-and-diff check on every push and fails on drift, a nightly matrix workflow reproduces the real-repository suites and corpus study across Python versions, and an ACM artifact-evaluation bundle (REQUIREMENTS, STATUS, one-command reproduce.sh) targets the Available and Reusable badges. A threats-to-validity analysis and a paper skeleton transcribe their numbers from these regenerated artifacts.",
+        "public_artifacts": [
+            "telemetry_contracts/reproduce.py",
+            "reports/reproduce_manifest.json",
+            "docs/artifact_evaluation/REQUIREMENTS.md",
+            "docs/artifact_evaluation/STATUS.md",
+            "docs/artifact_evaluation/reproduce.sh",
+            "docs/evaluation/threats_to_validity.md",
+            "paper/README.md",
+        ],
+        "tests": ["tests/test_reproduce.py"],
+        "fixtures": [],
+        "benchmark_rows": [],
+        "limitations": [
+            "The determinism manifest covers only byte-portable artifacts; runtime-, path-, and commit-bearing artifacts are regenerated but intentionally excluded from the cross-host manifest.",
+            "The nightly real-repository matrix and corpus study require network access and are gated behind TELEMETRY_CONTRACTS_NETWORK_TESTS=1; they are not part of the default offline reproduction.",
+        ],
+    },
 ]
 
 
