@@ -33,7 +33,7 @@ fail?".
   pinned-commit set of pre-existing repositories is scanned and reduced to a
   single deterministic dataset and report, including the headline statistic.
 - [`ground_truth.md`](ground_truth.md) — the precision/recall benchmark: a
-  hand-labeled gold set scored against the shipped detectors, reporting per-class
+  author-labeled gold set scored against the shipped detectors, reporting per-class
   and overall precision / recall / F1, a confusion matrix, error analysis, and an
   inter-rater agreement slot (empty: single labeler; see
   [`annotation/GUIDE.md`](annotation/GUIDE.md)).

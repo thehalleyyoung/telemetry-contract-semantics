@@ -1,7 +1,7 @@
 # Ground-truth precision/recall evaluation (curated conformance benchmark)
 
 This benchmark answers a question reviewers always ask: *how accurate are the
-detectors?* It pairs a hand-labeled gold set with a deterministic scorer that
+detectors?* It pairs a author-labeled gold set with a deterministic scorer that
 reports per-class and overall precision / recall / F1, a confusion matrix, a
 representative error analysis, and an inter-rater agreement slot — with no
 network and no randomness.
