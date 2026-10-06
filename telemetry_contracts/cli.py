@@ -755,7 +755,7 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 0
-
+        if args.command == "evaluate-gold":
             from .evaluation import (
                 GroundTruthError,
                 load_gold_set,

@@ -173,3 +173,17 @@ def test_render_markdown_is_stable_and_complete():
     assert "Per bug class" in md
     assert "Cohen's kappa" in md
     assert md == render_evaluation_markdown(ds)
+
+
+def test_evaluate_gold_cli_runs_and_matches_library():
+    import json as _json
+    import subprocess
+    import sys
+
+    proc = subprocess.run(
+        [sys.executable, "-m", "telemetry_contracts.cli", "evaluate-gold",
+         "--gold", str(CURATED), "--format", "json"],
+        capture_output=True, text=True, check=True,
+    )
+    ds = _json.loads(proc.stdout)
+    assert ds["overall"]["f1_permille"] == score_gold_set(load_gold_set(CURATED))["overall"]["f1_permille"]
