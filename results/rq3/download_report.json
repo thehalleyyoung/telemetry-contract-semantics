@@ -1,0 +1,308 @@
+{
+  "downloaded": [
+    {
+      "path": "benchmarks/corpus/_repos/github/5GR5__MCProtector@9d494a22efee",
+      "sha": "9d494a22efee6e2c32b0d58648a67e9999e024ca",
+      "target": "5GR5/MCProtector"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/AGENT17-tech__JARVIS-MKIII@626047b451a9",
+      "sha": "626047b451a92bd97e1130d472a61ec5cc794961",
+      "target": "AGENT17-tech/JARVIS-MKIII"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/AmitabhainArunachala__mech-interp-latent-lab-phase1@02de8207b1a7",
+      "sha": "02de8207b1a72e91842bef5faea5d617c915c671",
+      "target": "AmitabhainArunachala/mech-interp-latent-lab-phase1"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Andert51__dt-QualityCtrl_ANN-FIS-GA@4dfc42761eaf",
+      "sha": "4dfc42761eaf87e0eb9c9359d06b1a57743b8556",
+      "target": "Andert51/dt-QualityCtrl_ANN-FIS-GA"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Architit__LAM_Test_Agent@1d17163f50ac",
+      "sha": "1d17163f50ac8d5b92925449058132aaf1e21ec8",
+      "target": "Architit/LAM_Test_Agent"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/ArdurAI__mara@68fbfcb1261a",
+      "sha": "68fbfcb1261a8cb6b67d91e2efa431c31621365e",
+      "target": "ArdurAI/mara"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/BYU-PRISM__GEKKO@62206a086d91",
+      "sha": "62206a086d91b465fcc2c045265a4ae818977c42",
+      "target": "BYU-PRISM/GEKKO"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Bbar0n234__learnflow-ai@562430744858",
+      "sha": "5624307448581dab73cf8658592d815451d2ae44",
+      "target": "Bbar0n234/learnflow-ai"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/BhuvanChaithanya__Log_Triaging_Application@6aa7a7c2e282",
+      "sha": "6aa7a7c2e2821e5c449d8c57a3fdd34418eee02b",
+      "target": "BhuvanChaithanya/Log_Triaging_Application"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/BstWPY__WildGraphBench@c334bc806511",
+      "sha": "c334bc806511e029285d208c24c2a8901ed5cf2c",
+      "target": "BstWPY/WildGraphBench"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/CidLucas__platform@b431435575c4",
+      "sha": "b431435575c48c862e5fb813a6ca327c47367807",
+      "target": "CidLucas/platform"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Contingencyplana__high_command_ai_0@99d5753a581f",
+      "sha": "99d5753a581f7ba273eb4d851d3e0d4849473e50",
+      "target": "Contingencyplana/high_command_ai_0"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/DNYoussef__context-cascade@12bc124ee69b",
+      "sha": "12bc124ee69b524b17cd78ea7186204c5fd935b8",
+      "target": "DNYoussef/context-cascade"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/DavidAdolfoGomezUribe__chatbot_WS@582d637f09d9",
+      "sha": "582d637f09d9901a2173f4f32fa5b11493e33915",
+      "target": "DavidAdolfoGomezUribe/chatbot_WS"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Dicklesworthstone__franken_node@22abb3b17d5f",
+      "sha": "22abb3b17d5f441e7c2291480f958351d8512f93",
+      "target": "Dicklesworthstone/franken_node"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Keyhole-Koro__InsightifyCore@3a85106504fd",
+      "sha": "3a85106504fdd2634dca78a4e883cdf70fd12e14",
+      "target": "Keyhole-Koro/InsightifyCore"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/Vannut97__web-refinery@c542937d21d4",
+      "sha": "c542937d21d4eaef3d6a9d21bb0a9e2e334d0356",
+      "target": "Vannut97/web-refinery"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/adamiao__data-pipeline@2c4facf171b1",
+      "sha": "2c4facf171b15314c5c186d570df1ad681de1217",
+      "target": "adamiao/data-pipeline"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/adinath-codes__ThreatZero@dd18d489a056",
+      "sha": "dd18d489a056053dcf444959251deea8a1b4f099",
+      "target": "adinath-codes/ThreatZero"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/agentverus__agentverus-scanner@da63b5ccb5ef",
+      "sha": "da63b5ccb5efe85e7ef6f82c88c86e98f6c82194",
+      "target": "agentverus/agentverus-scanner"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/alexeyshockov__fingerscrossed@8ec726343d2f",
+      "sha": "8ec726343d2fbffac8c0587e294c8fdb19f25c6e",
+      "target": "alexeyshockov/fingerscrossed"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/alexleighton__knowledge-bases@b7049b0d48a6",
+      "sha": "b7049b0d48a6f265049870eb4fae7d54c1b49350",
+      "target": "alexleighton/knowledge-bases"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/alextanhongpin__go-telemetry@ce3ec97e7305",
+      "sha": "ce3ec97e73051ff3105569fe14245fbf97bd7614",
+      "target": "alextanhongpin/go-telemetry"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/allenai__noncompliance@25bf77cc6688",
+      "sha": "25bf77cc668814360405cdb8197c4368205806c7",
+      "target": "allenai/noncompliance"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/almbayedahmad__medflux@d928bdbb43fc",
+      "sha": "d928bdbb43fcc072d7fea0636796c687fb5d563b",
+      "target": "almbayedahmad/medflux"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/amirbahador-hub__Repository_Example@a2861892bf78",
+      "sha": "a2861892bf784e6dbbc20981ef5ed2c914f3158c",
+      "target": "amirbahador-hub/Repository_Example"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/amsfwd__rootly-mcp-server@641391280d3f",
+      "sha": "641391280d3f248d15bdf213d5e5fbb3b53ba3e7",
+      "target": "amsfwd/rootly-mcp-server"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/aniketpoojari__OmniDoc-QA-LLM-RAG@a9cc8e363769",
+      "sha": "a9cc8e36376973bfcc4aeac63388d207478d8611",
+      "target": "aniketpoojari/OmniDoc-QA-LLM-RAG"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/api-evangelist__helicone@78cafe506c0b",
+      "sha": "78cafe506c0bcc1ca237e3c555858c23908e5d60",
+      "target": "api-evangelist/helicone"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/arefiva__mARCH-cli@0e46d181965d",
+      "sha": "0e46d181965d89e451c5e05494dd9b0d3a130c2c",
+      "target": "arefiva/mARCH-cli"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/arolang__aro@b55585bdb844",
+      "sha": "b55585bdb844f85f4316641397330f4d4a605676",
+      "target": "arolang/aro"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/aws-samples__sample-Agentic-Ai-Data-Operations@a07214f3ce25",
+      "sha": "a07214f3ce2587dd30e9eb6320f9964c13b9b129",
+      "target": "aws-samples/sample-Agentic-Ai-Data-Operations"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/aws-samples__sample-bedrock-migration-and-modernization-tools@64e54ba5d759",
+      "sha": "64e54ba5d759f4483ca77dd82cd69b059a82343e",
+      "target": "aws-samples/sample-bedrock-migration-and-modernization-tools"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/backrat13__Brave_New_Commune3@5a8f381ea49c",
+      "sha": "5a8f381ea49c04419eaf72111ec5c0d189348d79",
+      "target": "backrat13/Brave_New_Commune3"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/barneyson55__incident-triage-toolkit@3cfbf69d0462",
+      "sha": "3cfbf69d04628a1295fe491cc95e74356de15e0a",
+      "target": "barneyson55/incident-triage-toolkit"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/baz-scm__awesome-reviewers@eba0425fa059",
+      "sha": "eba0425fa059c2f11c8586ca4bc612104709de20",
+      "target": "baz-scm/awesome-reviewers"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/bitbucket/bb_atlassian_tutorial__helloworld@65d938f39f36",
+      "sha": "65d938f39f364da3f90767e008022ffe45c562af",
+      "target": "bb:atlassian_tutorial/helloworld"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/beenlanced__python_project_uv_flask_webapp_demo@60645405fded",
+      "sha": "60645405fded8657ef337371c3b994013d144363",
+      "target": "beenlanced/python_project_uv_flask_webapp_demo"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/benmoggee__sre-agent@80a561e50a60",
+      "sha": "80a561e50a609a8fa8170fc97e7b8eebb79c71b8",
+      "target": "benmoggee/sre-agent"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/bmdhodl__agent47@c3c3de7b7e84",
+      "sha": "c3c3de7b7e8405392e2d8fc511d2fa4aabb1ce72",
+      "target": "bmdhodl/agent47"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/bmislol__decision-intelligence-assistant@1e16231e97c8",
+      "sha": "1e16231e97c85fc6cdea11add001a07fa819b7a1",
+      "target": "bmislol/decision-intelligence-assistant"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/bob-takuya__archi-site@e20a13a054ca",
+      "sha": "e20a13a054ca084e3ff4e402b8a8f0f9124814a5",
+      "target": "bob-takuya/archi-site"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/bob-takuya__genshi-studio@024012008cd3",
+      "sha": "024012008cd375f9e26a4a79e34c65bd52733d75",
+      "target": "bob-takuya/genshi-studio"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/brant-ruan__vpss@796d7937de18",
+      "sha": "796d7937de18c0ef31450e37414b68421478a859",
+      "target": "brant-ruan/vpss"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/brevity1swos__agx@e25d76f0e24d",
+      "sha": "e25d76f0e24d87030e4a1bf7764ecbf303b5bb90",
+      "target": "brevity1swos/agx"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/brian14708__duron@a576b63dd2b7",
+      "sha": "a576b63dd2b70f84a3f682877a72183530a0364a",
+      "target": "brian14708/duron"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/c4r-dev__c4r-monorepo@0b3819c202d6",
+      "sha": "0b3819c202d615cb50c0bcbea8d5b5b0a0655eb9",
+      "target": "c4r-dev/c4r-monorepo"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/cameronsjo__bosun@a18395dd7ead",
+      "sha": "a18395dd7eadc0d0367109e73f16004e6e72767c",
+      "target": "cameronsjo/bosun"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/cdxgen__cdxgen@d67370778d66",
+      "sha": "d67370778d660527b55d2ca11a94f704a778f4e8",
+      "target": "cdxgen/cdxgen"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/cerc-io__stack-orchestrator@fe7754001a14",
+      "sha": "fe7754001a144ebba9241724e287da967460b456",
+      "target": "cerc-io/stack-orchestrator"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/comradesurendra__Argus@2923fca4b55c",
+      "sha": "2923fca4b55c5a80cbcb331291231bfd07ca68fd",
+      "target": "comradesurendra/Argus"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/connachermurphy__llm-forecasting-aid-public@6ec3dc241beb",
+      "sha": "6ec3dc241beb91491a1ce8c2a8cbe575d2a519ba",
+      "target": "connachermurphy/llm-forecasting-aid-public"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/cyrille-leclerc__my-shopping-cart@1e4440b1d7f2",
+      "sha": "1e4440b1d7f2ee6cd2339f2cc62cc46cc7ec8ce6",
+      "target": "cyrille-leclerc/my-shopping-cart"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/darshan-sc__agentreplay@c900eb8646a3",
+      "sha": "c900eb8646a369c4bdbcc4da99a9168837174a66",
+      "target": "darshan-sc/agentreplay"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/dash0hq__dash0-cli@4fac994838b6",
+      "sha": "4fac994838b6f34ed0b6da7b06d7d2c3acdf8ccc",
+      "target": "dash0hq/dash0-cli"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/dloss__kelora@333e27eda618",
+      "sha": "333e27eda6180827877f8cbb7d5ba66138790d24",
+      "target": "dloss/kelora"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/github/ecostratus__personal-operating-system-60d@97b1ec3fa0f3",
+      "sha": "97b1ec3fa0f314839ad196651d69c2704c02817b",
+      "target": "ecostratus/personal-operating-system-60d"
+    },
+    {
+      "path": "benchmarks/corpus/_repos/gitlab/gl_gitlab-examples__python-getting-started@4104c678f2a7",
+      "sha": "4104c678f2a724f301952911f2b103218e30c1e7",
+      "target": "gl:gitlab-examples/python-getting-started"
+    }
+  ],
+  "errors": [
+    {
+      "error": "git clone failed for https://github.com/Alvoradozerouno/STEURER-Framework.git: fatal: repository 'https://github.com/Alvoradozerouno/STEURER-Framework.git/' not found",
+      "sha": "a4bc7828418418aab20d765b6b7b10888d6156fb",
+      "target": "Alvoradozerouno/STEURER-Framework"
+    }
+  ],
+  "repos_dir": "benchmarks/corpus/_repos",
+  "schema": "telemetry-contracts/corpus-download@1",
+  "summary": {
+    "downloaded": 58,
+    "errors": 1,
+    "requested": 59
+  }
+}

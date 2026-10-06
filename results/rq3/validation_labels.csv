@@ -1,0 +1,61 @@
+sample_id,matches_definition,artifact_kind,actionable_in_project_telemetry,rationale
+rq3-missing-correlation-01,yes,sample-telemetry,no,"ERROR event, no trace/request id field; file is a synthetic incident scenario"
+rq3-missing-correlation-02,yes,runtime-log,unclear,"committed app log; ERROR with no id, but it is a build/startup failure where a request id may not apply"
+rq3-missing-correlation-03,yes,runtime-log,unclear,"committed error log; build failure, not request-scoped"
+rq3-missing-correlation-04,yes,sample-telemetry,no,synthetic scenario; ERROR with no id field
+rq3-missing-correlation-05,no,sample-telemetry,no,FP: trace_id and span_id are present under attributes.mdc (nested logback MDC) and not recognized
+rq3-missing-correlation-06,yes,sample-telemetry,no,example log for a log-query tool; ERROR status 503 with no id
+rq3-missing-correlation-07,yes,sample-telemetry,no,no id field; a request UUID appears only inside the message text
+rq3-missing-correlation-08,yes,sample-telemetry,no,example events; ERROR with no id
+rq3-missing-correlation-09,no,non-telemetry,no,"FP: disaster-recovery drill specification JSON, not an emitted event; 'failure' comes from the category name"
+rq3-missing-correlation-10,yes,runtime-log,yes,committed system error log; API 429 failure with no request/trace id
+rq3-missing-correlation-11,yes,runtime-log,yes,committed system error log; exception with no request/trace id
+rq3-missing-correlation-12,yes,test-fixture,no,golden test input; 'cid=q-9' correlation token only inside message text
+rq3-missing-correlation-13,yes,test-fixture,no,OTLP test fixture; log record has no traceId/spanId
+rq3-missing-correlation-14,yes,sample-telemetry,no,example events; ERROR with no id
+rq3-missing-correlation-15,yes,runtime-log,unclear,log produced by a unit test run; carries run_id ('RID') but no request/trace id
+rq3-missing-error-evidence-01,no,sample-telemetry,no,FP: attributes.throwable.className=java.lang.RuntimeException is present (nested) and not recognized
+rq3-missing-error-evidence-02,yes,sample-telemetry,no,ERROR 'timeout' with no code/exception/status field
+rq3-missing-error-evidence-03,yes,runtime-log,yes,committed error log; 'request handler error' with no exception or code captured
+rq3-missing-error-evidence-04,yes,sample-telemetry,no,sample log; validation error with no code field
+rq3-missing-error-evidence-05,yes,runtime-log,yes,committed app log; build failure with no exception or code captured
+rq3-missing-error-evidence-06,yes,sample-telemetry,no,"CRITICAL disk-space event with no code; free_gb is context, not error evidence"
+rq3-missing-error-evidence-07,yes,sample-telemetry,no,sample log; timeout with no code field
+rq3-missing-error-evidence-08,no,sample-telemetry,no,FP: nested throwable.className present (same pattern as -01)
+rq3-missing-error-evidence-09,yes,runtime-log,yes,"committed error log; exception text only in message, no exception type field"
+rq3-missing-error-evidence-10,yes,runtime-log,yes,"committed error log; AttributeError text only in message, no type field"
+rq3-missing-error-evidence-11,yes,sample-telemetry,no,synthetic scenario; attributes.error is the empty string
+rq3-missing-error-evidence-12,yes,sample-telemetry,no,example events; no error evidence field
+rq3-missing-error-evidence-13,yes,sample-telemetry,no,library example log 'Error!' with no evidence field
+rq3-missing-error-evidence-14,yes,sample-telemetry,no,example events; no error evidence field
+rq3-missing-error-evidence-15,no,test-fixture,no,FP: OTel semantic-convention attribute error.type='timeout' is present and not recognized
+rq3-sensitive-values-01,yes,sample-telemetry,no,email address value in an email field (example.com)
+rq3-sensitive-values-02,no,non-telemetry,no,"FP: LLM preference dataset; 'password: Use a combination' is prose, not an assignment"
+rq3-sensitive-values-03,no,non-telemetry,no,FP: LLM dataset; 'Change Password:**' heading matched the password-assignment regex
+rq3-sensitive-values-04,no,non-telemetry,no,FP: code-review dataset; NUXT_SESSION_PASSWORD placeholder text in a diff
+rq3-sensitive-values-05,yes,non-telemetry,no,email address inside LLM-generated text in experiment results; pattern match is real but file is not telemetry
+rq3-sensitive-values-06,no,non-telemetry,no,"FP: code diff 'emptyPassword = """"' in a review dataset"
+rq3-sensitive-values-07,yes,sample-telemetry,no,email value in example analytics span
+rq3-sensitive-values-08,no,non-telemetry,no,FP: issue tracker prose 'opaque-bearer shortcuts' matched the bearer-token regex
+rq3-sensitive-values-09,yes,non-telemetry,no,GitHub noreply email in an issue-tracker JSONL owner field
+rq3-sensitive-values-10,yes,sample-telemetry,no,synthetic log message contains noreply@example.com
+rq3-sensitive-values-11,no,non-telemetry,no,FP: training-data code sample about hashing a password
+rq3-sensitive-values-12,yes,non-telemetry,no,same issue-tracker owner email as -09
+rq3-sensitive-values-13,yes,non-telemetry,no,same LLM-output email as -05
+rq3-sensitive-values-14,yes,runtime-log,yes,committed agent prompt log contains the author's personal email address
+rq3-sensitive-values-15,yes,test-fixture,no,golden input for a redaction test; the email is intentional
+rq3-unclassified-sensitive-01,no,non-telemetry,no,FP: 'generated_tokens' is a token count; name heuristic matched 'token'
+rq3-unclassified-sensitive-02,borderline,runtime-log,unclear,session_id of an agent session; session ids are pseudonymous but not clearly user/tenant identifiers here
+rq3-unclassified-sensitive-03,borderline,runtime-log,unclear,session_id UUID in an agent-team log; user_id is null
+rq3-unclassified-sensitive-04,no,test-fixture,no,FP: 'tokens_per_sec' is a throughput metric
+rq3-unclassified-sensitive-05,borderline,runtime-log,unclear,session_id in committed execution telemetry
+rq3-unclassified-sensitive-06,borderline,runtime-log,unclear,session_id in committed execution telemetry
+rq3-unclassified-sensitive-07,yes,sample-telemetry,no,field 'token' carries a JWT in an example auth log
+rq3-unclassified-sensitive-08,borderline,runtime-log,unclear,session_id UUID in agent-team structured log
+rq3-unclassified-sensitive-09,borderline,runtime-log,unclear,UI session id in a committed sync feed
+rq3-unclassified-sensitive-10,borderline,runtime-log,unclear,session_id UUID in agent-team log
+rq3-unclassified-sensitive-11,borderline,sample-telemetry,no,session_id in example API log (user_id and client_ip in the same event were not the sampled finding)
+rq3-unclassified-sensitive-12,borderline,runtime-log,unclear,UI session id in committed session metrics
+rq3-unclassified-sensitive-13,no,runtime-log,no,FP: 'tokens_input' is an LLM token count
+rq3-unclassified-sensitive-14,no,runtime-log,no,FP: 'estimated_output_tokens' is a token count
+rq3-unclassified-sensitive-15,no,runtime-log,no,FP: 'estimated_output_tokens' is a token count

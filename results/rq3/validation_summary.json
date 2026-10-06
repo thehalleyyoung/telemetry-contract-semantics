@@ -1,0 +1,66 @@
+{
+  "method": "LLM-assisted inspection of each sampled finding's source event in the pinned checkout; single rater; not human expert review",
+  "sample": "stratified: <=15 findings per bug class, <=2 per (repo, class), ordered by sha256 (scripts/rq3_extract_findings.py)",
+  "overall": {
+    "actionable_no": 42,
+    "actionable_unclear": 11,
+    "actionable_yes": 7,
+    "def_borderline": 9,
+    "def_no": 16,
+    "def_yes": 35,
+    "n": 60,
+    "precision_strict": 0.583,
+    "precision_lenient_borderline_as_yes": 0.733,
+    "actionable_share": 0.117
+  },
+  "by_class": {
+    "missing-correlation": {
+      "actionable_no": 10,
+      "actionable_unclear": 3,
+      "actionable_yes": 2,
+      "def_no": 2,
+      "def_yes": 13,
+      "n": 15,
+      "precision_strict": 0.867,
+      "precision_lenient_borderline_as_yes": 0.867,
+      "actionable_share": 0.133
+    },
+    "missing-error-evidence": {
+      "actionable_no": 11,
+      "actionable_yes": 4,
+      "def_no": 3,
+      "def_yes": 12,
+      "n": 15,
+      "precision_strict": 0.8,
+      "precision_lenient_borderline_as_yes": 0.8,
+      "actionable_share": 0.267
+    },
+    "sensitive-values": {
+      "actionable_no": 14,
+      "actionable_yes": 1,
+      "def_no": 6,
+      "def_yes": 9,
+      "n": 15,
+      "precision_strict": 0.6,
+      "precision_lenient_borderline_as_yes": 0.6,
+      "actionable_share": 0.067
+    },
+    "unclassified-sensitive": {
+      "actionable_no": 7,
+      "actionable_unclear": 8,
+      "def_borderline": 9,
+      "def_no": 5,
+      "def_yes": 1,
+      "n": 15,
+      "precision_strict": 0.067,
+      "precision_lenient_borderline_as_yes": 0.667,
+      "actionable_share": 0.0
+    }
+  },
+  "artifact_kind": {
+    "non-telemetry": 12,
+    "runtime-log": 21,
+    "sample-telemetry": 22,
+    "test-fixture": 5
+  }
+}

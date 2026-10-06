@@ -1,0 +1,2975 @@
+{
+  "bug_class_prevalence": {
+    "missing-correlation": {
+      "blocks_question": "Why did this request fail (which trace/request was it)?",
+      "by_host": {
+        "github": 10
+      },
+      "subjects_present": 10,
+      "subjects_present_permille": 179,
+      "title": "Failure without correlation id",
+      "total_findings": 171
+    },
+    "missing-duration": {
+      "blocks_question": "How long did this operation take?",
+      "by_host": {},
+      "subjects_present": 0,
+      "subjects_present_permille": 0,
+      "title": "Span without duration",
+      "total_findings": 0
+    },
+    "missing-error-evidence": {
+      "blocks_question": "What error caused this failure?",
+      "by_host": {
+        "github": 10
+      },
+      "subjects_present": 10,
+      "subjects_present_permille": 179,
+      "title": "Failure without error evidence",
+      "total_findings": 127
+    },
+    "sensitive-values": {
+      "blocks_question": "Is this telemetry safe to retain and share?",
+      "by_host": {
+        "github": 10
+      },
+      "subjects_present": 10,
+      "subjects_present_permille": 179,
+      "title": "Raw sensitive value in telemetry",
+      "total_findings": 110
+    },
+    "unbounded-cardinality": {
+      "blocks_question": "Will this metric explode storage / cost as it scales?",
+      "by_host": {},
+      "subjects_present": 0,
+      "subjects_present_permille": 0,
+      "title": "Unbounded metric label cardinality",
+      "total_findings": 0
+    },
+    "unclassified-sensitive": {
+      "blocks_question": "Which fields carry regulated or tenant-scoped data?",
+      "by_host": {
+        "github": 19
+      },
+      "subjects_present": 19,
+      "subjects_present_permille": 339,
+      "title": "Unclassified sensitive / tenant identifier",
+      "total_findings": 1861
+    }
+  },
+  "errors": [
+    {
+      "error": "git clone failed for https://github.com/Alvoradozerouno/STEURER-Framework.git: fatal: repository 'https://github.com/Alvoradozerouno/STEURER-Framework.git/' not found",
+      "sha": "a4bc7828418418aab20d765b6b7b10888d6156fb",
+      "target": "Alvoradozerouno/STEURER-Framework"
+    }
+  ],
+  "events_total": 116420,
+  "headline": {
+    "cannot_answer": 10,
+    "cannot_answer_permille": 714,
+    "definition": "has at least one sampled failure event that cannot be joined to a recognized request/trace identifier from telemetry alone",
+    "denominator": 14,
+    "denominator_basis": "telemetry-bearing subjects with >=1 failure event",
+    "gap": "missing-correlation",
+    "question": "Why did this request fail (which trace/request was it)?",
+    "share_of_telemetry_permille": 179,
+    "subjects_with_telemetry": 56
+  },
+  "hosts": [
+    "bitbucket",
+    "github",
+    "gitlab"
+  ],
+  "schema": "telemetry-contracts/corpus-dataset@1",
+  "score_distribution": {
+    "count": 56,
+    "max": 100,
+    "mean_milli": 97643,
+    "median": 100,
+    "min": 69,
+    "p25": 98,
+    "p75": 100
+  },
+  "subjects": [
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 25
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "log": 26
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 26,
+      "failure_events": 0,
+      "findings_total": 25,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 41
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "9d494a22efee6e2c32b0d58648a67e9999e024ca",
+      "target": "5GR5/MCProtector",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 100
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 100,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "pino"
+      ],
+      "instrumentation_present": true,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 26,
+        "Python": 93
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "626047b451a92bd97e1130d472a61ec5cc794961",
+      "target": "AGENT17-tech/JARVIS-MKIII",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 11,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 1457
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 56190
+      },
+      "candidate_files": 276,
+      "diagnosability_score": 100,
+      "event_count": 56190,
+      "failure_events": 0,
+      "findings_total": 1468,
+      "formats": [
+        "json",
+        "json-array",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 5,
+        "Python": 511
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "02de8207b1a72e91842bef5faea5d617c915c671",
+      "target": "AmitabhainArunachala/mech-interp-latent-lab-phase1",
+      "telemetry_files": 276,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 54
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 54,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 16
+      },
+      "license": "GPL-3.0",
+      "services": [],
+      "sha": "4dfc42761eaf87e0eb9c9359d06b1a57743b8556",
+      "target": "Andert51/dt-QualityCtrl_ANN-FIS-GA",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 10,
+        "log": 51
+      },
+      "candidate_files": 11,
+      "diagnosability_score": 100,
+      "event_count": 61,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "C#": 1,
+        "JavaScript": 2,
+        "Python": 197
+      },
+      "license": "GPL-3.0",
+      "services": [],
+      "sha": "1d17163f50ac8d5b92925449058132aaf1e21ec8",
+      "target": "Architit/LAM_Test_Agent",
+      "telemetry_files": 11,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 2
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 2,
+        "log": 44,
+        "span": 23
+      },
+      "candidate_files": 11,
+      "diagnosability_score": 100,
+      "event_count": 69,
+      "failure_events": 0,
+      "findings_total": 2,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "opentelemetry",
+        "tracing"
+      ],
+      "instrumentation_present": true,
+      "language": "Rust",
+      "language_counts": {
+        "Python": 7,
+        "Ruby": 1,
+        "Rust": 56
+      },
+      "license": "Apache-2.0",
+      "services": [],
+      "sha": "68fbfcb1261a8cb6b67d91e2efa431c31621365e",
+      "target": "ArdurAI/mara",
+      "telemetry_files": 11,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 606
+      },
+      "candidate_files": 2,
+      "diagnosability_score": 100,
+      "event_count": 606,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 3,
+        "Python": 107
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "62206a086d91b465fcc2c045265a4ae818977c42",
+      "target": "BYU-PRISM/GEKKO",
+      "telemetry_files": 2,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 86,
+        "span": 19
+      },
+      "candidate_files": 4,
+      "diagnosability_score": 100,
+      "event_count": 105,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "structlog"
+      ],
+      "instrumentation_present": true,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 1,
+        "Python": 164,
+        "TypeScript": 103
+      },
+      "license": "Apache-2.0",
+      "services": [],
+      "sha": "5624307448581dab73cf8658592d815451d2ae44",
+      "target": "Bbar0n234/learnflow-ai",
+      "telemetry_files": 4,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 2,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 59,
+        "log": 259
+      },
+      "candidate_files": 5,
+      "diagnosability_score": 100,
+      "event_count": 318,
+      "failure_events": 192,
+      "findings_total": 2,
+      "formats": [
+        "json-array",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 9
+      },
+      "license": "NOASSERTION",
+      "services": [
+        "audit-service",
+        "auth-service",
+        "claims-service",
+        "document-service",
+        "notification-service",
+        "payment-service",
+        "policy-service",
+        "pricing-service",
+        "underwriting-service",
+        "vendor-integration-service"
+      ],
+      "sha": "6aa7a7c2e2821e5c449d8c57a3fdd34418eee02b",
+      "target": "BhuvanChaithanya/Log_Triaging_Application",
+      "telemetry_files": 5,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 7615
+      },
+      "candidate_files": 48,
+      "diagnosability_score": 100,
+      "event_count": 7615,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 10
+      },
+      "license": "Apache-2.0",
+      "services": [],
+      "sha": "c334bc806511e029285d208c24c2a8901ed5cf2c",
+      "target": "BstWPY/WildGraphBench",
+      "telemetry_files": 48,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 13
+      },
+      "candidate_files": 13,
+      "diagnosability_score": 100,
+      "event_count": 13,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "@opentelemetry",
+        "@sentry",
+        "dd-trace",
+        "opentelemetry",
+        "python-json-logger",
+        "winston"
+      ],
+      "instrumentation_present": true,
+      "language": "TypeScript",
+      "language_counts": {
+        "JavaScript": 14,
+        "Python": 365,
+        "TypeScript": 1894
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "b431435575c48c862e5fb813a6ca327c47367807",
+      "target": "CidLucas/platform",
+      "telemetry_files": 13,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 42
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 198,
+        "log": 197,
+        "metric": 3,
+        "span": 58
+      },
+      "candidate_files": 219,
+      "diagnosability_score": 99,
+      "event_count": 456,
+      "failure_events": 0,
+      "findings_total": 42,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 72
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "99d5753a581f7ba273eb4d851d3e0d4849473e50",
+      "target": "Contingencyplana/high_command_ai_0",
+      "telemetry_files": 206,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 100
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 178,
+        "log": 1,
+        "span": 51
+      },
+      "candidate_files": 83,
+      "diagnosability_score": 100,
+      "event_count": 230,
+      "failure_events": 0,
+      "findings_total": 100,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 271,
+        "Python": 314,
+        "TypeScript": 16
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "12bc124ee69b524b17cd78ea7186204c5fd935b8",
+      "target": "DNYoussef/context-cascade",
+      "telemetry_files": 81,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 46
+      },
+      "candidate_files": 2,
+      "diagnosability_score": 100,
+      "event_count": 46,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "TypeScript",
+      "language_counts": {
+        "JavaScript": 1,
+        "TypeScript": 13
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "582d637f09d9901a2173f4f32fa5b11493e33915",
+      "target": "DavidAdolfoGomezUribe/chatbot_WS",
+      "telemetry_files": 2,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 5,
+        "missing-duration": 0,
+        "missing-error-evidence": 6,
+        "sensitive-values": 2,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 3
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 6580,
+        "log": 69,
+        "span": 214
+      },
+      "candidate_files": 248,
+      "diagnosability_score": 100,
+      "event_count": 6863,
+      "failure_events": 22,
+      "findings_total": 16,
+      "formats": [
+        "json",
+        "json-array",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [
+        "tracing"
+      ],
+      "instrumentation_present": true,
+      "language": "Rust",
+      "language_counts": {
+        "JavaScript": 28,
+        "Python": 918,
+        "Rust": 1173
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "22abb3b17d5f441e7c2291480f958351d8512f93",
+      "target": "Dicklesworthstone/franken_node",
+      "telemetry_files": 242,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 38
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 38,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Go",
+      "language_counts": {
+        "Go": 280,
+        "Python": 1
+      },
+      "license": "UNKNOWN",
+      "services": [],
+      "sha": "3a85106504fdd2634dca78a4e883cdf70fd12e14",
+      "target": "Keyhole-Koro/InsightifyCore",
+      "telemetry_files": 1,
+      "tier": 1,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 9
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 87,
+      "event_count": 9,
+      "failure_events": 4,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "JavaScript",
+      "language_counts": {
+        "JavaScript": 5,
+        "Python": 2
+      },
+      "license": "UNKNOWN",
+      "services": [],
+      "sha": "c542937d21d4eaef3d6a9d21bb0a9e2e334d0356",
+      "target": "Vannut97/web-refinery",
+      "telemetry_files": 1,
+      "tier": 1,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 8
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 8,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 14
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "2c4facf171b15314c5c186d570df1ad681de1217",
+      "target": "adamiao/data-pipeline",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 7
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "log": 41
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 41,
+      "failure_events": 0,
+      "findings_total": 7,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 1,
+        "Python": 20,
+        "TypeScript": 10
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "dd18d489a056053dcf444959251deea8a1b4f099",
+      "target": "adinath-codes/ThreatZero",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 177
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 177,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "TypeScript",
+      "language_counts": {
+        "JavaScript": 3,
+        "Python": 3,
+        "TypeScript": 71
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "da63b5ccb5efe85e7ef6f82c88c86e98f6c82194",
+      "target": "agentverus/agentverus-scanner",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 2,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 11
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 95,
+      "event_count": 11,
+      "failure_events": 2,
+      "findings_total": 2,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Rust",
+      "language_counts": {
+        "Rust": 3
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "8ec726343d2fbffac8c0587e294c8fdb19f25c6e",
+      "target": "alexeyshockov/fingerscrossed",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 356
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 356,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 3
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "b7049b0d48a6f265049870eb4fae7d54c1b49350",
+      "target": "alexleighton/knowledge-bases",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 5
+      },
+      "candidate_files": 2,
+      "diagnosability_score": 100,
+      "event_count": 5,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "go.opentelemetry.io"
+      ],
+      "instrumentation_present": true,
+      "language": "Go",
+      "language_counts": {
+        "Go": 8
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "ce3ec97e73051ff3105569fe14245fbf97bd7614",
+      "target": "alextanhongpin/go-telemetry",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 23,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 13784
+      },
+      "candidate_files": 4,
+      "diagnosability_score": 100,
+      "event_count": 13784,
+      "failure_events": 0,
+      "findings_total": 23,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 2
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "25bf77cc668814360405cdb8197c4368205806c7",
+      "target": "allenai/noncompliance",
+      "telemetry_files": 4,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 2,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 2
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 4,
+        "log": 57
+      },
+      "candidate_files": 5,
+      "diagnosability_score": 99,
+      "event_count": 61,
+      "failure_events": 13,
+      "findings_total": 4,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [
+        "opentelemetry",
+        "prometheus-client"
+      ],
+      "instrumentation_present": true,
+      "language": "Python",
+      "language_counts": {
+        "Python": 224
+      },
+      "license": "UNKNOWN",
+      "services": [],
+      "sha": "d928bdbb43fcc072d7fea0636796c687fb5d563b",
+      "target": "almbayedahmad/medflux",
+      "telemetry_files": 5,
+      "tier": 1,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 2
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 2,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 52
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "a2861892bf784e6dbbc20981ef5ed2c914f3158c",
+      "target": "amirbahador-hub/Repository_Example",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 1,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 13
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 98,
+      "event_count": 13,
+      "failure_events": 0,
+      "findings_total": 1,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 16
+      },
+      "license": "GPL-2.0",
+      "services": [],
+      "sha": "641391280d3f248d15bdf213d5e5fbb3b53ba3e7",
+      "target": "amsfwd/rootly-mcp-server",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 25
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 24
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 24,
+      "failure_events": 0,
+      "findings_total": 25,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 1,
+        "Python": 9
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "a9cc8e36376973bfcc4aeac63388d207478d8611",
+      "target": "aniketpoojari/OmniDoc-QA-LLM-RAG",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 1
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 1,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": null,
+      "language_counts": {},
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "78cafe506c0bcc1ca237e3c555858c23908e5d60",
+      "target": "api-evangelist/helicone",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 23
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "log": 130
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 130,
+      "failure_events": 0,
+      "findings_total": 23,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 159
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "0e46d181965d89e451c5e05494dd9b0d3a130c2c",
+      "target": "arefiva/mARCH-cli",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 6,
+        "missing-duration": 0,
+        "missing-error-evidence": 6,
+        "sensitive-values": 1,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 504,
+        "log": 18
+      },
+      "candidate_files": 36,
+      "diagnosability_score": 99,
+      "event_count": 522,
+      "failure_events": 6,
+      "findings_total": 13,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Swift",
+      "language_counts": {
+        "C": 3,
+        "Java": 17,
+        "JavaScript": 6,
+        "Python": 10,
+        "Rust": 1,
+        "Swift": 379,
+        "TypeScript": 3
+      },
+      "license": "MIT",
+      "services": [
+        "api",
+        "auth",
+        "worker"
+      ],
+      "sha": "b55585bdb844f85f4316641397330f4d4a605676",
+      "target": "arolang/aro",
+      "telemetry_files": 35,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 2,
+        "span": 53
+      },
+      "candidate_files": 8,
+      "diagnosability_score": 90,
+      "event_count": 55,
+      "failure_events": 3,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 106
+      },
+      "license": "MIT-0",
+      "services": [],
+      "sha": "a07214f3ce2587dd30e9eb6320f9964c13b9b129",
+      "target": "aws-samples/sample-Agentic-Ai-Data-Operations",
+      "telemetry_files": 8,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 7
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 24,
+        "span": 9
+      },
+      "candidate_files": 27,
+      "diagnosability_score": 96,
+      "event_count": 33,
+      "failure_events": 0,
+      "findings_total": 7,
+      "formats": [
+        "json",
+        "jsonl",
+        "otlp"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 62,
+        "Python": 193,
+        "TypeScript": 26
+      },
+      "license": "Apache-2.0",
+      "services": [
+        "agent-service",
+        "python3 app.py"
+      ],
+      "sha": "64e54ba5d759f4483ca77dd82cd69b059a82343e",
+      "target": "aws-samples/sample-bedrock-migration-and-modernization-tools",
+      "telemetry_files": 27,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 367
+      },
+      "candidate_files": 15,
+      "diagnosability_score": 100,
+      "event_count": 367,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 7
+      },
+      "license": "GPL-3.0",
+      "services": [],
+      "sha": "5a8f381ea49c04419eaf72111ec5c0d189348d79",
+      "target": "backrat13/Brave_New_Commune3",
+      "telemetry_files": 15,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 2,
+        "missing-duration": 0,
+        "missing-error-evidence": 6,
+        "sensitive-values": 1,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 2
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 9,
+        "log": 14
+      },
+      "candidate_files": 18,
+      "diagnosability_score": 90,
+      "event_count": 23,
+      "failure_events": 6,
+      "findings_total": 11,
+      "formats": [
+        "json",
+        "jsonl",
+        "logfmt",
+        "mixed"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 22
+      },
+      "license": "MIT",
+      "services": [
+        "api",
+        "payments"
+      ],
+      "sha": "3cfbf69d04628a1295fe491cc95e74356de15e0a",
+      "target": "barneyson55/incident-triage-toolkit",
+      "telemetry_files": 11,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 13,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 1143
+      },
+      "candidate_files": 300,
+      "diagnosability_score": 100,
+      "event_count": 1143,
+      "failure_events": 0,
+      "findings_total": 13,
+      "formats": [
+        "json-array"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "JavaScript",
+      "language_counts": {
+        "JavaScript": 22,
+        "Python": 7
+      },
+      "license": "Apache-2.0",
+      "services": [],
+      "sha": "eba0425fa059c2f11c8586ca4bc612104709de20",
+      "target": "baz-scm/awesome-reviewers",
+      "telemetry_files": 300,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {},
+      "candidate_files": 0,
+      "diagnosability_score": null,
+      "event_count": 0,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [],
+      "has_telemetry": false,
+      "headline_blocked": false,
+      "host": "bitbucket",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Java",
+      "language_counts": {
+        "Java": 3
+      },
+      "license": "UNKNOWN",
+      "services": [],
+      "sha": "65d938f39f364da3f90767e008022ffe45c562af",
+      "target": "bb:atlassian_tutorial/helloworld",
+      "telemetry_files": 0,
+      "tier": 1,
+      "verdict": null
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 1,
+        "log": 30
+      },
+      "candidate_files": 2,
+      "diagnosability_score": 100,
+      "event_count": 31,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 25
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "60645405fded8657ef337371c3b994013d144363",
+      "target": "beenlanced/python_project_uv_flask_webapp_demo",
+      "telemetry_files": 2,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 24,
+        "missing-duration": 0,
+        "missing-error-evidence": 1,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 3,
+        "log": 105
+      },
+      "candidate_files": 6,
+      "diagnosability_score": 93,
+      "event_count": 108,
+      "failure_events": 44,
+      "findings_total": 25,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [
+        "loguru"
+      ],
+      "instrumentation_present": true,
+      "language": "Python",
+      "language_counts": {
+        "Python": 80
+      },
+      "license": "MIT",
+      "services": [
+        "checkout-api"
+      ],
+      "sha": "80a561e50a609a8fa8170fc97e7b8eebb79c71b8",
+      "target": "benmoggee/sre-agent",
+      "telemetry_files": 6,
+      "tier": 2,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 10
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 13,
+        "log": 240,
+        "span": 333
+      },
+      "candidate_files": 13,
+      "diagnosability_score": 96,
+      "event_count": 586,
+      "failure_events": 0,
+      "findings_total": 10,
+      "formats": [
+        "json",
+        "jsonl",
+        "logfmt"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "opentelemetry"
+      ],
+      "instrumentation_present": true,
+      "language": "Python",
+      "language_counts": {
+        "Python": 134,
+        "TypeScript": 9
+      },
+      "license": "MIT",
+      "services": [
+        "budget-aware-escalation-example",
+        "coding-agent-review-loop",
+        "demo",
+        "dev-agent",
+        "loop-demo",
+        "managed-harness-a",
+        "managed-harness-b",
+        "my-agent",
+        "per-token-budget-spike"
+      ],
+      "sha": "c3c3de7b7e8405392e2d8fc511d2fa4aabb1ce72",
+      "target": "bmdhodl/agent47",
+      "telemetry_files": 12,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 4,
+        "missing-duration": 0,
+        "missing-error-evidence": 4,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 3,
+        "log": 4
+      },
+      "candidate_files": 2,
+      "diagnosability_score": 69,
+      "event_count": 7,
+      "failure_events": 4,
+      "findings_total": 8,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 4,
+        "Python": 24
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "1e16231e97c85fc6cdea11add001a07fa819b7a1",
+      "target": "bmislol/decision-intelligence-assistant",
+      "telemetry_files": 2,
+      "tier": 2,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 75
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 2,
+        "log": 387
+      },
+      "candidate_files": 9,
+      "diagnosability_score": 100,
+      "event_count": 389,
+      "failure_events": 0,
+      "findings_total": 75,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "TypeScript",
+      "language_counts": {
+        "JavaScript": 54,
+        "Python": 4,
+        "TypeScript": 220
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "e20a13a054ca084e3ff4e402b8a8f0f9124814a5",
+      "target": "bob-takuya/archi-site",
+      "telemetry_files": 5,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 50
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 6,
+        "log": 119
+      },
+      "candidate_files": 9,
+      "diagnosability_score": 100,
+      "event_count": 125,
+      "failure_events": 0,
+      "findings_total": 50,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "TypeScript",
+      "language_counts": {
+        "JavaScript": 18,
+        "Python": 25,
+        "TypeScript": 176
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "024012008cd375f9e26a4a79e34c65bd52733d75",
+      "target": "bob-takuya/genshi-studio",
+      "telemetry_files": 9,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 300
+      },
+      "candidate_files": 300,
+      "diagnosability_score": 100,
+      "event_count": 300,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "logback"
+      ],
+      "instrumentation_present": true,
+      "language": "Java",
+      "language_counts": {
+        "Java": 16,
+        "Python": 10
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "796d7937de18c0ef31450e37414b68421478a859",
+      "target": "brant-ruan/vpss",
+      "telemetry_files": 300,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 6
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 19,
+        "log": 8,
+        "span": 3
+      },
+      "candidate_files": 7,
+      "diagnosability_score": 98,
+      "event_count": 30,
+      "failure_events": 0,
+      "findings_total": 6,
+      "formats": [
+        "json",
+        "jsonl",
+        "otlp"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "opentelemetry"
+      ],
+      "instrumentation_present": true,
+      "language": "Rust",
+      "language_counts": {
+        "Rust": 35
+      },
+      "license": "NOASSERTION",
+      "services": [
+        "agx-synthetic-otel"
+      ],
+      "sha": "e25d76f0e24d87030e4a1bf7764ecbf303b5bb90",
+      "target": "brevity1swos/agx",
+      "telemetry_files": 7,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 56,
+        "span": 3
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 99,
+      "event_count": 59,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 1,
+        "Python": 46,
+        "TypeScript": 20
+      },
+      "license": "Apache-2.0",
+      "services": [],
+      "sha": "a576b63dd2b70f84a3f682877a72183530a0364a",
+      "target": "brian14708/duron",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 50,
+        "missing-duration": 0,
+        "missing-error-evidence": 50,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 3,
+        "log": 18604
+      },
+      "candidate_files": 9,
+      "diagnosability_score": 98,
+      "event_count": 18607,
+      "failure_events": 806,
+      "findings_total": 100,
+      "formats": [
+        "json",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [
+        "winston"
+      ],
+      "instrumentation_present": true,
+      "language": "JavaScript",
+      "language_counts": {
+        "JavaScript": 1617,
+        "Python": 5,
+        "TypeScript": 86
+      },
+      "license": "NOASSERTION",
+      "services": [
+        "activity",
+        "c4r-app",
+        "dev",
+        "performance"
+      ],
+      "sha": "0b3819c202d615cb50c0bcbea8d5b5b0a0655eb9",
+      "target": "c4r-dev/c4r-monorepo",
+      "telemetry_files": 8,
+      "tier": 2,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 25,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 184
+      },
+      "candidate_files": 2,
+      "diagnosability_score": 71,
+      "event_count": 184,
+      "failure_events": 0,
+      "findings_total": 25,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "getsentry/sentry-go",
+        "go.opentelemetry.io",
+        "rs/zerolog",
+        "sirupsen/logrus"
+      ],
+      "instrumentation_present": true,
+      "language": "Go",
+      "language_counts": {
+        "Go": 214,
+        "JavaScript": 4,
+        "TypeScript": 14
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "a18395dd7eadc0d0367109e73f16004e6e72767c",
+      "target": "cameronsjo/bosun",
+      "telemetry_files": 2,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 4217
+      },
+      "candidate_files": 47,
+      "diagnosability_score": 100,
+      "event_count": 4217,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "json-array",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "log4j"
+      ],
+      "instrumentation_present": true,
+      "language": "JavaScript",
+      "language_counts": {
+        "Go": 1,
+        "Java": 1,
+        "JavaScript": 263,
+        "Python": 11,
+        "Rust": 1,
+        "TypeScript": 214
+      },
+      "license": "Apache-2.0",
+      "services": [],
+      "sha": "d67370778d660527b55d2ca11a94f704a778f4e8",
+      "target": "cdxgen/cdxgen",
+      "telemetry_files": 45,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 65
+      },
+      "candidate_files": 7,
+      "diagnosability_score": 100,
+      "event_count": 65,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "json-array",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "JavaScript": 2,
+        "Python": 73,
+        "TypeScript": 6
+      },
+      "license": "AGPL-3.0",
+      "services": [],
+      "sha": "fe7754001a144ebba9241724e287da967460b456",
+      "target": "cerc-io/stack-orchestrator",
+      "telemetry_files": 7,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 1
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 1,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [
+        "opentelemetry",
+        "prometheus-client",
+        "structlog"
+      ],
+      "instrumentation_present": true,
+      "language": "Python",
+      "language_counts": {
+        "Python": 49,
+        "TypeScript": 4
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "2923fca4b55c5a80cbcb331291231bfd07ca68fd",
+      "target": "comradesurendra/Argus",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 4
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 4
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 4,
+      "failure_events": 0,
+      "findings_total": 4,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 2
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "6ec3dc241beb91491a1ce8c2a8cbe575d2a519ba",
+      "target": "connachermurphy/llm-forecasting-aid-public",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 2,
+        "missing-duration": 0,
+        "missing-error-evidence": 2,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 3
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 14,
+        "log": 28,
+        "span": 11
+      },
+      "candidate_files": 14,
+      "diagnosability_score": 95,
+      "event_count": 53,
+      "failure_events": 2,
+      "findings_total": 7,
+      "formats": [
+        "json",
+        "jsonl",
+        "logfmt",
+        "otlp"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [
+        "logback",
+        "opentelemetry"
+      ],
+      "instrumentation_present": true,
+      "language": "Java",
+      "language_counts": {
+        "Java": 49,
+        "JavaScript": 4,
+        "TypeScript": 22
+      },
+      "license": "NOASSERTION",
+      "services": [
+        ",",
+        "checkout"
+      ],
+      "sha": "1e4440b1d7f2ee6cd2339f2cc62cc46cc7ec8ce6",
+      "target": "cyrille-leclerc/my-shopping-cart",
+      "telemetry_files": 12,
+      "tier": 2,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "log": 4
+      },
+      "candidate_files": 1,
+      "diagnosability_score": 100,
+      "event_count": 4,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Go",
+      "language_counts": {
+        "Go": 18,
+        "Python": 14
+      },
+      "license": "NOASSERTION",
+      "services": [],
+      "sha": "c900eb8646a369c4bdbcc4da99a9168837174a66",
+      "target": "darshan-sc/agentreplay",
+      "telemetry_files": 1,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 1,
+        "missing-duration": 0,
+        "missing-error-evidence": 1,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 99,
+        "log": 15,
+        "metric": 1,
+        "span": 12
+      },
+      "candidate_files": 53,
+      "diagnosability_score": 98,
+      "event_count": 127,
+      "failure_events": 1,
+      "findings_total": 2,
+      "formats": [
+        "json",
+        "json-array",
+        "otlp"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [
+        "go.opentelemetry.io"
+      ],
+      "instrumentation_present": true,
+      "language": "Go",
+      "language_counts": {
+        "Go": 164,
+        "Ruby": 1
+      },
+      "license": "Apache-2.0",
+      "services": [
+        "api-gateway",
+        "frontend",
+        "my-service",
+        "order-service"
+      ],
+      "sha": "4fac994838b6f34ed0b6da7b06d7d2c3acdf8ccc",
+      "target": "dash0hq/dash0-cli",
+      "telemetry_files": 43,
+      "tier": 2,
+      "verdict": "under-instrumented for incidents"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 75,
+        "missing-duration": 0,
+        "missing-error-evidence": 49,
+        "sensitive-values": 31,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 18
+      },
+      "bug_class_present": {
+        "missing-correlation": true,
+        "missing-duration": false,
+        "missing-error-evidence": true,
+        "sensitive-values": true,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": true
+      },
+      "by_kind": {
+        "event": 158,
+        "log": 1716,
+        "metric": 31,
+        "span": 29
+      },
+      "candidate_files": 70,
+      "diagnosability_score": 98,
+      "event_count": 1934,
+      "failure_events": 87,
+      "findings_total": 173,
+      "formats": [
+        "jsonl",
+        "logfmt",
+        "mixed"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": true,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Rust",
+      "language_counts": {
+        "Python": 1,
+        "Rust": 161
+      },
+      "license": "MIT",
+      "services": [
+        "admin",
+        "analytics",
+        "api",
+        "api-gateway",
+        "audit",
+        "auth",
+        "auth-service",
+        "backup",
+        "billing",
+        "cache",
+        "cache-service",
+        "checkout",
+        "ci",
+        "cleanup",
+        "config",
+        "database",
+        "db",
+        "disk",
+        "email",
+        "external",
+        "external_api",
+        "health",
+        "metrics",
+        "monitoring",
+        "notification-service",
+        "notifications",
+        "order-service",
+        "payment",
+        "payment-api",
+        "payment-gateway",
+        "payment-service",
+        "performance",
+        "rate-limiter",
+        "rate_limiter",
+        "ratelimit",
+        "reports",
+        "scheduler",
+        "search",
+        "search-service",
+        "security",
+        "session",
+        "storage",
+        "virus-scan",
+        "web",
+        "webhook",
+        "websocket",
+        "worker"
+      ],
+      "sha": "333e27eda6180827877f8cbb7d5ba66138790d24",
+      "target": "dloss/kelora",
+      "telemetry_files": 51,
+      "tier": 2,
+      "verdict": "privacy-risky"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {
+        "event": 10,
+        "log": 24
+      },
+      "candidate_files": 8,
+      "diagnosability_score": 100,
+      "event_count": 34,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [
+        "json",
+        "json-array",
+        "jsonl"
+      ],
+      "has_telemetry": true,
+      "headline_blocked": false,
+      "host": "github",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 77
+      },
+      "license": "MIT",
+      "services": [],
+      "sha": "97b1ec3fa0f314839ad196651d69c2704c02817b",
+      "target": "ecostratus/personal-operating-system-60d",
+      "telemetry_files": 8,
+      "tier": 2,
+      "verdict": "well-covered"
+    },
+    {
+      "bug_class_counts": {
+        "missing-correlation": 0,
+        "missing-duration": 0,
+        "missing-error-evidence": 0,
+        "sensitive-values": 0,
+        "unbounded-cardinality": 0,
+        "unclassified-sensitive": 0
+      },
+      "bug_class_present": {
+        "missing-correlation": false,
+        "missing-duration": false,
+        "missing-error-evidence": false,
+        "sensitive-values": false,
+        "unbounded-cardinality": false,
+        "unclassified-sensitive": false
+      },
+      "by_kind": {},
+      "candidate_files": 0,
+      "diagnosability_score": null,
+      "event_count": 0,
+      "failure_events": 0,
+      "findings_total": 0,
+      "formats": [],
+      "has_telemetry": false,
+      "headline_blocked": false,
+      "host": "gitlab",
+      "instrumentation_libraries": [],
+      "instrumentation_present": false,
+      "language": "Python",
+      "language_counts": {
+        "Python": 10
+      },
+      "license": "UNKNOWN",
+      "services": [],
+      "sha": "4104c678f2a724f301952911f2b103218e30c1e7",
+      "target": "gl:gitlab-examples/python-getting-started",
+      "telemetry_files": 0,
+      "tier": 1,
+      "verdict": null
+    }
+  ],
+  "subjects_total": 58,
+  "subjects_with_telemetry": 56
+}
