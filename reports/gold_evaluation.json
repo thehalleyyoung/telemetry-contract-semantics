@@ -90,8 +90,8 @@
     ]
   },
   "inter_rater": {
-    "cohen_kappa_permille": 883,
-    "second_labeled": 17
+    "cohen_kappa_permille": null,
+    "second_labeled": 0
   },
   "macro": {
     "f1_permille": 952,

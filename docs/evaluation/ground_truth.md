@@ -95,7 +95,8 @@ measures the real tool:
 - **Confusion matrix:** TP/FP/FN/TN per class, so error modes are explicit.
 - **Error analysis:** up to eight representative false positives and false
   negatives with their rationale, feeding the discussion of limitations.
-- **Inter-rater reliability:** Cohen's kappa over the doubly-labeled subset.
+- **Inter-rater reliability:** Cohen's kappa over items that carry a
+  `second_label`. The curated set currently has none (see below).
 
 ## Honesty: every residual error is a documented limitation
 
@@ -149,6 +150,10 @@ and are covered only by the curated set.
   byte-stable, so the numbers are reproducible. (Cohen's kappa uses floating
   point over small rationals; it is stable across platforms but is not part of
   the byte-locked core.)
-- **Inter-rater subset.** The doubly-labeled subset is small and includes the
-  ambiguous hard cases plus representative clean cases; it is illustrative of the
-  IRR mechanism rather than a powered agreement study.
+- **Single labeler.** All 112 labels were written by the tool's author. An
+  earlier version carried 17 `second_label` values (reported kappa 0.883), but
+  those were also written by the author inside `scripts/gen_gold.py`, so they did
+  not measure agreement and have been removed. An independent human annotation
+  packet (blinded items, guide, agreement script) is in
+  [`annotation/`](annotation/GUIDE.md); until it is completed, the gold-set
+  accuracy is a single-author measurement and should be read as such.

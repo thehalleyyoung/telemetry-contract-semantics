@@ -185,17 +185,12 @@ add("uc-hard-smallsample", "unbounded-cardinality", True,
     source={"generator": "session_id is unique per session by construction; population cardinality is unbounded though only 4 points were sampled"})
 
 
-# A handful of second labels for inter-rater reliability (kappa), mostly agreeing.
-SECOND = {
-    "mc-pos-00": True, "mc-neg-00": False, "mc-hard-altkey": False,
-    "me-pos-00": True, "me-neg-00": False, "me-hard-msgonly": False,
-    "md-pos-00": True, "md-neg-00": False,
-    "sv-pos-00": True, "sv-neg-00": False, "sv-hard-b64": True,
-    "us-pos-00": True, "us-neg-00": False,
-    "uc-pos-00": True, "uc-neg-00": False, "uc-hard-smallsample": True,
-    # one genuine disagreement between labelers
-    "us-pos-04": False,
-}
+# No second labels. An earlier version hard-coded "second labels" here, but they
+# were written by the same author as the primary labels and so did not measure
+# inter-rater agreement. Real second labels come only from an independent human
+# annotator via docs/evaluation/annotation/ (merged with
+# scripts/annotation_agreement.py).
+SECOND: dict[str, bool] = {}
 for row in items:
     if row["id"] in SECOND:
         row["labeler"] = "primary"

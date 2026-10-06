@@ -250,6 +250,14 @@ def render_evaluation_markdown(dataset: dict[str, Any]) -> str:
             f"Cohen's kappa over {ir['second_labeled']} doubly-labeled samples: "
             f"**{_fmt_permille(ir['cohen_kappa_permille'])}** (per-mille of 1.0).",
         ]
+    else:
+        lines += [
+            "",
+            "## Inter-rater reliability",
+            "",
+            "No item carries an independent second label, so Cohen's kappa is not "
+            "reported (single-labeler set; see docs/evaluation/annotation/GUIDE.md).",
+        ]
     ea = dataset["error_analysis"]
     lines += [
         "",
