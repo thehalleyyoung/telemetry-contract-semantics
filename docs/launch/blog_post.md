@@ -66,8 +66,9 @@ Pyodide; nothing you paste is uploaded.
   a test, annotated with its approximation direction, and discharged by an
   executable witness.
 - **Baselines** (`docs/evaluation/baselines.md`): the tool is compared against
-  rule-light, semantic-convention-only, and an offline LLM-surrogate baseline
-  through the *same* gold-set pipeline, with a paired McNemar test.
+  rule-light, semantic-convention-only, and two recorded real LLMs through the
+  *same* gold-set pipeline, with a paired McNemar test (the LLMs match or beat
+  the tool on that set).
 - **Ground truth** (`docs/evaluation/ground_truth.md`): precision/recall on a
   labeled set.
 - **Determinism everywhere**: SARIF, badges, the browser report, and the corpus

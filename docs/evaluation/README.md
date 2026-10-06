@@ -35,11 +35,11 @@ fail?".
 - [`ground_truth.md`](ground_truth.md) — the precision/recall benchmark: a
   hand-labeled gold set scored against the shipped detectors, reporting per-class
   and overall precision / recall / F1, a confusion matrix, error analysis, and an
-  inter-rater agreement slot.
+  inter-rater agreement slot (empty: single labeler; see
+  [`annotation/GUIDE.md`](annotation/GUIDE.md)).
 - [`baselines.md`](baselines.md) — the baseline comparison: the detectors scored
-  head-to-head, through the same gold-set pipeline, against deterministic
-  capability baselines (rule-light, OTel-convention conformance, and an offline
-  LLM-baseline harness), with covered-class metrics, a symmetric win/loss
+  head-to-head, through the same gold-set pipeline, against two rule baselines
+  (rule-light, OTel-convention conformance) and two recorded real LLMs, with covered-class metrics, a symmetric win/loss
   analysis, and an exact paired significance test.
 - [`../formal_model.md`](../formal_model.md) — the formal model: the semantic
   guarantees (refinement order, monotonicity, termination, assume-guarantee,

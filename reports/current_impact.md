@@ -5,8 +5,8 @@
 - Contracts: 25
 - Events: 72
 - Findings: 74
-- Runtime: 17.785 ms
-- Runtime per K events: 247.013889 ms
+- Runtime: 56.614 ms
+- Runtime per K events: 786.305556 ms
 - Findings per K events: 1027.777778
 - Import loss rate: 1.0
 - Label precision/recall/F1: 1.0 / 1.0 / 1.0
@@ -15,21 +15,21 @@
 
 | Case | Tags | Checks | Pass | Events | Findings | Validation pass | Label precision | Label recall | Label F1 | Runtime ms | Findings/K events | Import loss |
 | --- | --- | --- | --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| checkout-payment-timeout-pass | none | runtime,scenario | `true` | 5 | 0 | `true` | n/a | n/a | n/a | 0.895 | 0.0 | 0.0 |
-| gitlab-2017-database-outage-reconstructed | none | runtime,scenario | `true` | 5 | 12 | `false` | 1.0 | 1.0 | 1.0 | 0.948 | 2400.0 | 0.0 |
-| owasp-securetea-signin-current-static-and-hyperproperty | none | runtime,static | `true` | 3 | 6 | `false` | 1.0 | 1.0 | 1.0 | 2.288 | 2000.0 | 0.0 |
-| otlp-collector-mixed-signals-pass | none | runtime | `true` | 3 | 0 | `true` | n/a | n/a | n/a | 0.325 | 0.0 | 0.0 |
-| otlp-collector-coverage-analysis | otlp,collector,diagnostics | import_diagnostics | `true` | 0 | 4 | `true` | 1.0 | 1.0 | 1.0 | 0.034 | 0.0 | 3.0 |
-| temporal-logic-properties-fail | none | runtime | `true` | 8 | 5 | `false` | 1.0 | 1.0 | 1.0 | 0.312 | 625.0 | 0.0 |
-| benchmark-missing-correlation | correlation,diagnosability,runtime | runtime | `true` | 3 | 2 | `false` | 1.0 | 1.0 | 1.0 | 0.32 | 666.666667 | 0.0 |
-| benchmark-cardinality-budget | cardinality,operability,runtime | runtime | `true` | 2 | 1 | `true` | 1.0 | 1.0 | 1.0 | 0.188 | 500.0 | 0.0 |
-| benchmark-privacy-static-source | privacy,security,static,runtime | runtime,static | `true` | 1 | 6 | `false` | 1.0 | 1.0 | 1.0 | 0.643 | 6000.0 | 0.0 |
-| benchmark-partial-otlp-diagnostics | otlp,import,diagnostics | import_diagnostics | `true` | 0 | 1 | `true` | 1.0 | 1.0 | 1.0 | 0.01 | 0.0 | 0.333333 |
-| benchmark-unsafe-transformations-and-payload-preview | privacy,security,runtime,static,transformation,payload-preview | runtime,static | `true` | 1 | 15 | `false` | 1.0 | 1.0 | 1.0 | 0.924 | 15000.0 | 0.0 |
-| path-sensitive-checkout-pass | path-sensitive,runtime,slo-debugging | runtime | `true` | 4 | 0 | `true` | n/a | n/a | n/a | 0.533 | 0.0 | 0.0 |
-| current-public-static-patterns | public-code,static,privacy,operability | static | `true` | 0 | 7 | `false` | 1.0 | 1.0 | 1.0 | 1.14 | 0.0 | 0.0 |
-| synthetic-microservices-checkout-pass | microservices,correlation,scenario,runtime | runtime | `true` | 30 | 0 | `true` | n/a | n/a | n/a | 4.486 | 0.0 | 0.0 |
-| reconstructed-incident-blind-spots | incident-readiness,reconstruction,runtime | runtime | `true` | 7 | 15 | `false` | 1.0 | 1.0 | 1.0 | 1.103 | 2142.857143 | 0.0 |
+| checkout-payment-timeout-pass | none | runtime,scenario | `true` | 5 | 0 | `true` | n/a | n/a | n/a | 2.556 | 0.0 | 0.0 |
+| gitlab-2017-database-outage-reconstructed | none | runtime,scenario | `true` | 5 | 12 | `false` | 1.0 | 1.0 | 1.0 | 2.666 | 2400.0 | 0.0 |
+| owasp-securetea-signin-current-static-and-hyperproperty | none | runtime,static | `true` | 3 | 6 | `false` | 1.0 | 1.0 | 1.0 | 9.471 | 2000.0 | 0.0 |
+| otlp-collector-mixed-signals-pass | none | runtime | `true` | 3 | 0 | `true` | n/a | n/a | n/a | 1.087 | 0.0 | 0.0 |
+| otlp-collector-coverage-analysis | otlp,collector,diagnostics | import_diagnostics | `true` | 0 | 4 | `true` | 1.0 | 1.0 | 1.0 | 0.092 | 0.0 | 3.0 |
+| temporal-logic-properties-fail | none | runtime | `true` | 8 | 5 | `false` | 1.0 | 1.0 | 1.0 | 0.788 | 625.0 | 0.0 |
+| benchmark-missing-correlation | correlation,diagnosability,runtime | runtime | `true` | 3 | 2 | `false` | 1.0 | 1.0 | 1.0 | 0.856 | 666.666667 | 0.0 |
+| benchmark-cardinality-budget | cardinality,operability,runtime | runtime | `true` | 2 | 1 | `true` | 1.0 | 1.0 | 1.0 | 5.798 | 500.0 | 0.0 |
+| benchmark-privacy-static-source | privacy,security,static,runtime | runtime,static | `true` | 1 | 6 | `false` | 1.0 | 1.0 | 1.0 | 1.946 | 6000.0 | 0.0 |
+| benchmark-partial-otlp-diagnostics | otlp,import,diagnostics | import_diagnostics | `true` | 0 | 1 | `true` | 1.0 | 1.0 | 1.0 | 0.027 | 0.0 | 0.333333 |
+| benchmark-unsafe-transformations-and-payload-preview | privacy,security,runtime,static,transformation,payload-preview | runtime,static | `true` | 1 | 15 | `false` | 1.0 | 1.0 | 1.0 | 2.703 | 15000.0 | 0.0 |
+| path-sensitive-checkout-pass | path-sensitive,runtime,slo-debugging | runtime | `true` | 4 | 0 | `true` | n/a | n/a | n/a | 1.032 | 0.0 | 0.0 |
+| current-public-static-patterns | public-code,static,privacy,operability | static | `true` | 0 | 7 | `false` | 1.0 | 1.0 | 1.0 | 1.784 | 0.0 | 0.0 |
+| synthetic-microservices-checkout-pass | microservices,correlation,scenario,runtime | runtime | `true` | 30 | 0 | `true` | n/a | n/a | n/a | 9.586 | 0.0 | 0.0 |
+| reconstructed-incident-blind-spots | incident-readiness,reconstruction,runtime | runtime | `true` | 7 | 15 | `false` | 1.0 | 1.0 | 1.0 | 3.395 | 2142.857143 | 0.0 |
 
 ## Top remediations
 

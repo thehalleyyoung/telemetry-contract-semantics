@@ -297,12 +297,37 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 - `docs/replication_guide.md` — exact commands to reproduce benchmark metrics and reports.
 - `docs/artifact_evaluation/` — ACM artifact-evaluation bundle (REQUIREMENTS, STATUS, one-command `reproduce.sh --check`) targeting the Available + Reusable badges; every offline figure and number is regenerated and verified against a committed SHA-256 manifest (`python3 -m telemetry_contracts.cli reproduce --check`).
 - `docs/evaluation/threats_to_validity.md` — internal / external / construct / conclusion validity and the reconstructed-incident caveat.
-- `paper/` — the paper skeleton whose numbers are transcribed directly from the regenerated artifacts.
+- `paper/` — `tool_paper.tex` (preprint, not submitted), its verified bibliography, and the older outline in `paper/README.md`.
 - `docs/finding_taxonomy.json` / `claims-matrix` — the finding-rule catalog and a claims-to-evidence matrix.
+
+## Measured results (October 2026)
+
+All numbers below come from committed raw outputs. The commands are in
+[`REPRODUCE.md`](REPRODUCE.md).
+
+| Question | Result | Raw output |
+| --- | --- | --- |
+| Gold-set accuracy (112 items, **single author-labeller**) | P 0.962, R 0.944, F1 0.953 | `reports/gold_evaluation.json` |
+| vs rule baselines | rule-light F1 0.750, OTel-convention F1 0.557; tool better on both (McNemar p < 0.001) | `reports/baseline_comparison.json` |
+| vs real LLMs, zero-shot, same definitions | claude-haiku-4.5 F1 0.991, gpt-4.1-mini F1 0.952; **neither differs significantly from the tool, and Haiku scores higher** | `results/llm_baseline/`, `benchmarks/baselines/llm_*.json` |
+| Corpus scan, 58 pinned public repos | 116,420 events, 2,269 findings; 10 of 14 repos with failure events have an uncorrelated failure | `results/rq3/corpus_dataset.json`, `results/rq3/findings.jsonl` |
+| Validated sample of 60 corpus findings (LLM-assisted inspection, not human review) | matches definition: correlation 13/15, error evidence 12/15, sensitive values 9/15, unclassified identifiers 1/15 (+9 borderline); 21/60 from runtime logs; 7/60 actionable | `results/rq3/validation_labels.csv`, `results/rq3/validation_summary.json` |
+
+What this supports: the failure-path checks (correlation, error evidence) are
+mostly correct on real repositories. What it does not support: an accuracy
+advantage over small LLMs, or corpus prevalence figures. The privacy heuristics
+and file discovery produce many findings in demo data, fixtures and
+non-telemetry JSON.
+
+Open work: an independent human annotation of the gold set and the RQ3 sample
+([`docs/evaluation/annotation/GUIDE.md`](docs/evaluation/annotation/GUIDE.md));
+support for nested keys (`mdc.trace_id`, `throwable.className`) and OTel
+`error.type`, which caused the failure-path false positives; and upstream
+reports of findings with maintainer responses.
 
 ## Limitations
 
-The prototype is intentionally non-AI: contracts are explicit files, telemetry
+The checker itself makes no model calls: contracts are explicit files, telemetry
 is concrete JSONL, and pass/fail comes from deterministic validators. No model
 call is required to run or trust the checks. Static analysis uses Python AST
 plus lightweight heuristics for JS/TS/Go/Java/C#/Ruby/Rust (not a full
