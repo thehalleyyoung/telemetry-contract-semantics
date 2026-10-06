@@ -156,7 +156,8 @@ def main(argv: list[str] | None = None) -> int:
 
     baselines_parser = subparsers.add_parser("compare-baselines", help="score the tool against deterministic comparison baselines on a gold set (head-to-head)")
     baselines_parser.add_argument("--gold", required=True, action="append", help="path to a gold JSONL file (telemetry-contracts/gold@1); repeatable")
-    baselines_parser.add_argument("--cache", default="benchmarks/baselines/llm_recorded.json", help="recorded-surrogate response cache (JSON) for the LLM-baseline harness")
+    baselines_parser.add_argument("--cache", default=None, help="optional hand-written surrogate cache (harness check, NOT an LLM), e.g. benchmarks/baselines/llm_recorded.json")
+    baselines_parser.add_argument("--llm-cache", action="append", default=None, help="recorded real-LLM response cache (repeatable); defaults to the committed caches")
     baselines_parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     baselines_parser.add_argument("--output", help="write the comparison/report to this path instead of stdout")
 
@@ -806,14 +807,26 @@ def main(argv: list[str] | None = None) -> int:
             except GroundTruthError as exc:
                 print(f"ERROR gold-set: {exc}", file=sys.stderr)
                 return 2
+            llm_paths = args.llm_cache if args.llm_cache is not None else [
+                "benchmarks/baselines/llm_anthropic__claude-haiku-4-5.json",
+                "benchmarks/baselines/llm_openai__gpt-4-1-mini.json",
+            ]
+            cache = None
+            llm_caches = []
             try:
-                with open(args.cache, encoding="utf-8") as handle:
-                    cache = json.load(handle)
+                if args.cache:
+                    with open(args.cache, encoding="utf-8") as handle:
+                        cache = json.load(handle)
+                for path in llm_paths:
+                    if not Path(path).exists() and args.llm_cache is None:
+                        continue
+                    with open(path, encoding="utf-8") as handle:
+                        llm_caches.append(json.load(handle))
             except (OSError, ValueError) as exc:
-                print(f"ERROR compare-baselines: cannot read cache {args.cache}: {exc}", file=sys.stderr)
+                print(f"ERROR compare-baselines: cannot read cache: {exc}", file=sys.stderr)
                 return 2
             try:
-                comparison = compare_baselines(items, cache)
+                comparison = compare_baselines(items, cache, llm_caches=llm_caches)
             except KeyError as exc:
                 print(f"ERROR compare-baselines: {exc}", file=sys.stderr)
                 return 2

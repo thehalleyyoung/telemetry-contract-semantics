@@ -483,19 +483,74 @@ def _win_loss(
     }
 
 
+def _llm_method_spec(cache: dict[str, Any]) -> dict[str, Any]:
+    model = str(cache.get("model", "unknown-model"))
+    return {
+        "id": f"llm:{model}",
+        "name": f"LLM zero-shot ({model})",
+        "kind": "llm",
+        "covered_classes": list(BUG_CLASS_IDS),
+        "description": "Real LLM responses to the build_llm_prompt prompt, recorded "
+        "once via OpenRouter (temperature 0) and replayed from the cache; raw "
+        f"responses in {cache.get('raw_log', '?')}.",
+        "model": model,
+        "model_served": cache.get("model_served"),
+        "unparseable_scored_as_no": cache.get("unparseable_scored_as_no", 0),
+        "feasibility": {
+            "setup_required": "API key + per-item model call",
+            "conventions_assumed": "none",
+            "deterministic": False,
+            "offline": False,
+            "value_aware": True,
+            "statistical": False,
+        },
+    }
+
+
+def make_recorded_llm_predictor(cache: dict[str, Any]) -> Predictor:
+    """Replay a recorded real-LLM response cache (same format as the surrogate)."""
+
+    responses = cache.get("responses", {})
+    model = str(cache.get("model", "llm"))
+
+    def predict(events: list[dict[str, Any]], bug_class: str) -> tuple[bool, list[str]]:
+        key = llm_cache_key(events, bug_class)
+        if key not in responses:
+            raise KeyError(
+                f"recorded LLM cache miss for {bug_class} (key {key[:12]}…, model {model}); "
+                "re-record with scripts/run_llm_baseline.py"
+            )
+        present = parse_llm_verdict(responses[key]["verdict"])
+        return present, _witness("llm", bug_class, present)
+
+    return predict
+
+
 def compare_baselines(
-    items: list[GoldItem], recorded_cache: dict[str, Any]
+    items: list[GoldItem],
+    recorded_cache: dict[str, Any] | None = None,
+    llm_caches: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Run the tool + every baseline over ``items`` and build the comparison."""
+    """Run the tool + every baseline over ``items`` and build the comparison.
+
+    ``recorded_cache`` adds the hand-written surrogate row (harness check only,
+    not an LLM). ``llm_caches`` adds one row per recorded real-LLM cache.
+    """
 
     predictors: dict[str, Predictor] = {
         "tool": predict_bug_class,
         "rule-light": predict_rule_light,
         "semantic-convention-only": predict_semantic_convention_only,
-        "recorded-surrogate": make_recorded_surrogate_predictor(recorded_cache),
     }
+    specs = [s for s in _method_specs() if s["id"] != "recorded-surrogate"]
+    for cache in llm_caches or []:
+        spec = _llm_method_spec(cache)
+        predictors[spec["id"]] = make_recorded_llm_predictor(cache)
+        specs.append(spec)
+    if recorded_cache is not None:
+        predictors["recorded-surrogate"] = make_recorded_surrogate_predictor(recorded_cache)
+        specs += [s for s in _method_specs() if s["id"] == "recorded-surrogate"]
 
-    specs = _method_specs()
     scored: dict[str, dict[str, Any]] = {}
     for spec in specs:
         scored[spec["id"]] = _score_one(items, predictors[spec["id"]], spec["covered_classes"])
@@ -519,6 +574,9 @@ def compare_baselines(
             "per_class_f1_permille": s["per_class_f1_permille"],
             "feasibility": spec["feasibility"],
         }
+        for extra in ("model", "model_served", "unparseable_scored_as_no"):
+            if extra in spec:
+                method[extra] = spec[extra]
         if sid != "tool":
             wl = _win_loss(items, tool_correct, s["_correct"])
             mc = _mcnemar_exact(len(wl["tool_only_correct"]), len(wl["baseline_only_correct"]))

@@ -30,7 +30,10 @@ from .regenerate import regenerate_artifacts
 
 _MANIFEST_REL = "reports/reproduce_manifest.json"
 _GOLD = "benchmarks/ground_truth/curated.jsonl"
-_BASELINE_CACHE = "benchmarks/baselines/llm_recorded.json"
+_LLM_CACHES = (
+    "benchmarks/baselines/llm_anthropic__claude-haiku-4-5.json",
+    "benchmarks/baselines/llm_openai__gpt-4-1-mini.json",
+)
 
 # Artifacts that are regenerated but deliberately excluded from the
 # cross-host/cross-commit determinism manifest, because their bytes legitimately
@@ -81,8 +84,8 @@ def _gen_gold(root: Path) -> list[str]:
 
 def _gen_baselines(root: Path) -> list[str]:
     items = load_gold_set(str(root / _GOLD))
-    cache = json.loads((root / _BASELINE_CACHE).read_text(encoding="utf-8"))
-    comparison = compare_baselines(items, cache)
+    caches = [json.loads((root / rel).read_text(encoding="utf-8")) for rel in _LLM_CACHES]
+    comparison = compare_baselines(items, llm_caches=caches)
     rel = "reports/baseline_comparison.json"
     _write(root, rel, json.dumps(comparison, indent=2, sort_keys=True))
     return [rel]

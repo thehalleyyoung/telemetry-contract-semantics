@@ -231,3 +231,41 @@ def test_markdown_renders_all_sections(comparison):
 def test_all_bug_classes_present_in_per_class(comparison):
     for m in comparison["methods"]:
         assert sorted(m["per_class_f1_permille"]) == sorted(BUG_CLASS_IDS)
+
+
+# --- real recorded LLM rows --------------------------------------------------
+
+LLM_CACHES = [
+    ROOT / "benchmarks" / "baselines" / "llm_anthropic__claude-haiku-4-5.json",
+    ROOT / "benchmarks" / "baselines" / "llm_openai__gpt-4-1-mini.json",
+]
+
+
+@pytest.fixture(scope="module")
+def llm_comparison(gold):
+    caches = [json.loads(p.read_text(encoding="utf-8")) for p in LLM_CACHES]
+    return compare_baselines(gold, llm_caches=caches)
+
+
+def test_real_llm_caches_cover_every_gold_item_and_keep_raw_text(gold):
+    for path in LLM_CACHES:
+        cache = json.loads(path.read_text(encoding="utf-8"))
+        assert cache["policy"].startswith("Real LLM responses")
+        assert (ROOT / cache["raw_log"]).exists()
+        for item in gold:
+            entry = cache["responses"][llm_cache_key(item.events, item.bug_class)]
+            assert entry["raw_response"].strip()
+            assert entry["verdict"] in {"YES", "NO"}
+
+
+def test_real_llm_rows_replay_recorded_numbers(llm_comparison):
+    by_id = {m["id"]: m for m in llm_comparison["methods"]}
+    assert [m["kind"] for m in llm_comparison["methods"]] == [
+        "tool", "baseline", "baseline", "llm", "llm"
+    ]
+    assert "recorded-surrogate" not in by_id
+    assert by_id["llm:anthropic/claude-haiku-4.5"]["overall"]["f1_permille"] == 991
+    assert by_id["llm:openai/gpt-4.1-mini"]["overall"]["f1_permille"] == 952
+    # Neither LLM differs significantly from the tool on this set.
+    for sid in ("llm:anthropic/claude-haiku-4.5", "llm:openai/gpt-4.1-mini"):
+        assert by_id[sid]["vs_tool"]["mcnemar"]["significant_at_0p05"] is False

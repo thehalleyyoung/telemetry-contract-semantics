@@ -1,0 +1,577 @@
+{
+  "decoding": {
+    "max_tokens": 200,
+    "temperature": 0
+  },
+  "model": "anthropic/claude-haiku-4.5",
+  "model_served": [
+    "anthropic/claude-haiku-4.5"
+  ],
+  "policy": "Real LLM responses recorded via OpenRouter (see raw_log).",
+  "prompt_schema": "telemetry-contracts/llm-baseline-prompt@1",
+  "raw_log": "results/llm_baseline/anthropic__claude-haiku-4-5.raw.jsonl",
+  "responses": {
+    "026363d89fe4dd0ac66df57be7e74d2f20193eeb245764b3856ad3706a60625a": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0005\"), which satisfies the requirement for tracing failure events.",
+      "verdict": "NO"
+    },
+    "08cbbdee13f2e25b6fc0dce80ffbef18bd786205a0c7775d9668ef71263d435c": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error code, exception type, status code, or other error evidence field required to diagnose why the fetch operation failed.",
+      "verdict": "YES"
+    },
+    "0c7f75c71c5a5bf92789906f27e4d6882e1fd7a3e0433417a559c7f7cd42fd0e": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0000\"), which satisfies the requirement for tracing failure events.",
+      "verdict": "NO"
+    },
+    "0d108ca77f179391bbd2a66ebf495b7f8fc2fb1c5908350dd067cc4debbc3145": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe metric exhibits bounded cardinality with only 3 distinct status_code values (200, 404, 500) repeating predictably across 60 samples, which is a well-controlled and expected set of HTTP status codes.",
+      "verdict": "NO"
+    },
+    "0d98683acd77ec14cc12e152c6e6b27ec4247de009ceb1bcbc652f632b430057": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"lookup_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "0d988556be30357ddbe402cfc5841657a6290713f15630faf08b4706d9a9ede0": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a JWT token in the \"jwt\" field, which matches the high-precision raw-secret pattern and should not be logged in telemetry.",
+      "verdict": "YES"
+    },
+    "0f81dcf4d5013fda0e076ce7811f751599a1f85bf62e897d32c58481e1cf4dce": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe \"settle_failed\" event lacks any error code, exception type, status code, or other error evidence field required to diagnose why the settlement operation failed.",
+      "verdict": "YES"
+    },
+    "1157c8f28dd927ae44db9e64a8f3c4931ece88b6d6f5dd18956c06afe497ebd6": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event exhibits proper observability as it is classified as a failure (severity: \"error\") and includes a correlation identifier (trace_id: \"trace-0001\").",
+      "verdict": "NO"
+    },
+    "1765bf91c348b562cf3a98ba185a07469e3c192cbdde667dbc4f28ceebb3ed00": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event \"request\" from the \"users\" service contains no fields with names indicating tenant/customer/account/user identifiers or sensitive attributes, so there is no unredacted sensitive data to classify.",
+      "verdict": "NO"
+    },
+    "17fe44671722c1e0bfcabbba19ba0af2beb7e341dd8513a5e7bda190648fa81b": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"fetch_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "198939b0f77ab557f273711f0fbbb5f18383a0b75109b8f90f99c53a4e7af539": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"validate_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "1bc2808a83826f1df460d06fa0f4f865dccda5948b8d84eea62ea5a9f4b003fc": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0007\"), which satisfies the requirement for correlation tracking in failure events.",
+      "verdict": "NO"
+    },
+    "1d61b1512d4e02abb3049a4c512534dba4a9c824caf92d9bb307d07eab05c434": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe \"contact\" field contains an email address (bob.jones@corp.example.org), which matches the PII pattern and should not be included in telemetry events.",
+      "verdict": "YES"
+    },
+    "2165bfe92910996b0459e211ddf03f7b3be3ed41683c9cf08c1a57adc87deb38": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0004\"), which satisfies the requirement for tracing failure events.",
+      "verdict": "NO"
+    },
+    "238c7cc07979910c45befe482ee4c10a2a7ef88e13e015ce2c53cff5b3084be6": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0003\"), which satisfies the requirement for tracing failure events.",
+      "verdict": "NO"
+    },
+    "239b33f52e4afb3153a5c94bbc6c8edab1634190801e35d911842443b9a7622c": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe \"commit_failed\" event lacks any error code, exception type, status code, or other error evidence field required to diagnose why the commit operation failed.",
+      "verdict": "YES"
+    },
+    "257695af41a13fb6979a8a6e5d3370abad0b1b65b5286d585353ed7d1e57ce4b": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0002\"), which satisfies the requirement for correlation tracking in failure events.",
+      "verdict": "NO"
+    },
+    "25b79c3ada6d5d368a177f19864a54f58608c035002a2044571ab175cdcb3d01": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "265951d3544a12799dee13fc559d6d8c1da7d5ecabf94dcf8083788712b1d4de": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "2865575c9ee1194e9b01d87f5975276c662d1c27ee548d18ca7f4a76db6add75": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains a correlation identifier (\"correlationGuid\") which serves as a recognized alias for trace correlation, satisfying the observability requirement despite the failure severity classification.",
+      "verdict": "NO"
+    },
+    "286cd3b20816afc1e5ff236ff074511f1ec4d942463830a8d79defab2341bc89": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe telemetry event contains only structural metadata (kind, name, node, service) with no scalar fields matching sensitive patterns like emails, tokens, passwords, or PII.",
+      "verdict": "NO"
+    },
+    "2cb39def642564e1e6fbed28aa3b4a7f9203250e81e0e2f3e94fbb5fd7dffa56": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it with related events for debugging.",
+      "verdict": "YES"
+    },
+    "31dbb772ed4bd6fd53bd08d18ebcfb80bb770ad830926f5fafe53bbb0834e685": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"process_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "32f511939e8582fb11c115c04eb7664fc2f36be098fb16b63543071fd23c45cb": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the missing-duration bug class.",
+      "verdict": "NO"
+    },
+    "34661d63986f970efe78052fb5f9bbeed3aec022484ea90779c440743d2ba3f0": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"settle_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-type telemetry to be observable.",
+      "verdict": "YES"
+    },
+    "352aab7d70db2a984e6d7c92619c2154459890d5c71f2bf8f23bd31cafa47676": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only generic metadata fields (kind, name, service, status) with no fields indicating tenant, customer, account, user identifiers, or sensitive attributes.",
+      "verdict": "NO"
+    },
+    "37f84feb52320e4ee26d0cd4044055b4b527e233a78f505249a8fee5af3bc634": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `session_id` field contains a user/session identifier that is emitted in plaintext without redaction, hashing, or privacy classification, matching the unclassified-sensitive bug class definition.",
+      "verdict": "YES"
+    },
+    "38d660c1445ac56a2535779c6d25e57f7aa473609bc2d9a8ab827d865d8d368e": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only a build_id, kind, name, and service field\u2014none of which are tenant, customer, account, user identifiers or sensitive attributes based on their names.",
+      "verdict": "NO"
+    },
+    "40c4ea258f0103d2475426727667eb710f0b8cfa9de3850e1b3ecd152dfb0ecc": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error evidence fields (error_code, exception, exception_type, status, or status_code) that would explain why validation failed.",
+      "verdict": "YES"
+    },
+    "4198f3e88e6f28036c9f893dbb6423cb8c13bd7717aa524671bf0194913b872f": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a user_email field with an email address (alice@example.com), which matches the PII pattern and should not be included in telemetry.",
+      "verdict": "YES"
+    },
+    "41fb7893f27142e4a78cf878ed63d7d4043e07f1cd5ae9aee52655a5b0eaf097": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only generic operational fields (retry_count, service) with no identifiers or sensitive attributes that would indicate tenant, customer, account, user, or other sensitive data.",
+      "verdict": "NO"
+    },
+    "4310651c2aa8c774fda3045b00e7bcf4ae1c3ab91274b4e06d6d0b6bf613a903": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe metric exhibits bounded cardinality with only 3 distinct status_code values (200, 404, 500) repeating in a predictable pattern across 60 samples, which is well-controlled and not indicative of unbounded cardinality.",
+      "verdict": "NO"
+    },
+    "44f2df3433ecbbb576594a94d2e09c227a62e04483d6fa78523745367087cf5f": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only metadata fields (kind, label, name, service) with non-sensitive values and no scalar fields matching high-precision raw-secret/PII patterns.",
+      "verdict": "NO"
+    },
+    "454469433467969abcf1745fc4d4d30165f9d2ed5423f8f7f34f2092249aa0fc": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the missing-duration bug class.",
+      "verdict": "NO"
+    },
+    "49395412c8d09134bc0651f0ce557392dee72a5f08eb5faa729fe241d2784afa": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe metric `req_3` has a `user_id` label with 60 distinct values across 60 samples (cardinality ratio of 1.0), indicating unbounded cardinality that will cause metric explosion as the user base grows.",
+      "verdict": "YES"
+    },
+    "4fa2b6444023bc18f5cef8a3baade6097ec69209ca5e84aaf25ed99821da3b2e": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe \"authorization\" field contains what appears to be a user/account identifier (\"id-1006\") that is emitted without redaction, hashing, or privacy classification, matching the unclassified-sensitive bug class definition.",
+      "verdict": "YES"
+    },
+    "5316ff4a13b874016a642fa9ad8da810129e468a3cf6f5e4e200ff6eeb21315a": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "567c3656e11b26e4486092ed55579d13835902d8f5b6fff663c1d662a14c7567": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event contains an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "56a1cc2e97fe10b87bcd29cb7bdbf75c4af2c6293ce4575e721d281ebcb4ec10": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event contains an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "5a1951180196840318bf35e816178d94a47d35fe496eb7c923b40960ba3d52ca": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a database password field with an exposed plaintext secret value (\"Sup3rSecretValue!\"), which matches the sensitive-values bug class pattern for password assignments.",
+      "verdict": "YES"
+    },
+    "5b41d7523eb9dbf1d7aff7a599cd615b89ac8e5d3f720a95820b3586f1ba2d16": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe metric exhibits bounded cardinality with only 3 distinct status_code values (200, 404, 500) repeating uniformly across 60 samples, which is a well-controlled and expected set of HTTP status codes.",
+      "verdict": "NO"
+    },
+    "5de6202253eb18479980500d44125e17a19034f8c569b5aeed98e22d26053b0e": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe span event contains a `duration_ms` field, which is a recognized duration measure for the span kind.",
+      "verdict": "NO"
+    },
+    "5fbf63274b3ddd5d03c2054d227c3fb589ba3fda2b4793451e746d203d042784": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe metric exhibits bounded cardinality with only 3 distinct status_code values (200, 404, 500) across 60 samples, which is a well-controlled and expected set of HTTP status codes.",
+      "verdict": "NO"
+    },
+    "629590319cc54c7995a8fea4d1043985e495e45d02b2ec5750117a9cf2f2ecbd": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event \"handle_log\" has kind \"event\", not \"span\" or \"spans\", so the missing-duration bug class does not apply.",
+      "verdict": "NO"
+    },
+    "63589d05a9f007061d6efb2b99267011063f342829b66ff5025e3fe0f8de637a": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only generic metadata fields (kind, name, service, shard) with no fields indicating tenant, customer, account, user identifiers, or sensitive attributes.",
+      "verdict": "NO"
+    },
+    "63debae640fc679fcb7b8cafe2e2a6d9581d308c8cad6709ccd43076a2be9ed4": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe \"process_failed\" event lacks any error code, exception type, status code, or other error evidence field required to diagnose why the process failed.",
+      "verdict": "YES"
+    },
+    "64e3488c082bf6152650729f21b0324776739a73fe8fa7ce9f62f1fc34170533": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe telemetry event contains only structural metadata (kind, name, path, service) with no scalar fields matching sensitive patterns like emails, tokens, passwords, or PII.",
+      "verdict": "NO"
+    },
+    "65ffa5c95b6f082b2c9c2251f73814eb9adc104a143950cdc54ca22aa9a2ccfc": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe span event includes a duration_ms field with a value of 19, which satisfies the duration measure requirement for span-type events.",
+      "verdict": "NO"
+    },
+    "66c03c2b4d124299ee4e35db6d897b8676ff44dc753374dc116628b755b0d889": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe metric `req_4` has 60 distinct values for the `user_id` label across 60 samples, indicating a cardinality ratio of 1.0 which suggests unbounded cardinality growth as user IDs are likely to be unique and unlimited in production.",
+      "verdict": "YES"
+    },
+    "66e02fc75768299837e1a38c7062dc8bcb01e7a1115f175d75c56de67cd1b70c": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe audit event contains only metadata (kind, name, service, version) with no scalar fields containing sensitive values like secrets, PII, emails, tokens, passwords, or card/phone data.",
+      "verdict": "NO"
+    },
+    "68fa5ede83f530e1c1e17897a6b9f3dc6b2cb3fa0ada600ef626b9ba4900de2a": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"handle_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "6d9fd4273d5c877a8cf031d777c5061fb547d67c5485e31e4b31f6781698db78": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe \"authorization\" field contains a Bearer token value that matches the high-precision raw-secret pattern and should not be logged in telemetry.",
+      "verdict": "YES"
+    },
+    "70048e0ae7ad6f8834eb80e923cd45a97107dc46615c7d7719f25ae053e71530": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "70550fd4299cd62f843132bb51f3d9a6c35c54a9c0e92b5f525d83efd5e2ed5f": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains the field \"owner_email\" with value \"dave@team.example.com\", which matches the PII pattern for email addresses and should not be included in telemetry.",
+      "verdict": "YES"
+    },
+    "71797205b3b1346b0408465e7033e03a59d68a17160c2b99a8c8eb11824a211c": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `api_key` field contains a Bearer token pattern (\"Bearer ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210\"), which is a high-precision raw-secret that should not be logged in telemetry.",
+      "verdict": "YES"
+    },
+    "72a7d687e16615e5ba9469e35d353c9eff4ea8003fe1aae919787f7a3168ad97": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a correlation identifier (trace_id: \"trace-0006\"), which satisfies the requirement for tracing failure events.",
+      "verdict": "NO"
+    },
+    "72b2258bc6dea324ba669c951de7f75c1faaa41aad9eb410ab7962343e411f5d": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains generic operational fields (queue_depth, service) with no indicators of tenant, customer, account, user identifiers, or sensitive attributes that would require redaction or privacy classification.",
+      "verdict": "NO"
+    },
+    "74d7695a20fbd3e4a2036e65ec0ce334850c20e171a5990bd8c448774bf2f960": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a `secret_token` field with value \"id-1008\" that is emitted without redaction, hashing, or privacy classification, which matches the unclassified-sensitive bug class definition.",
+      "verdict": "YES"
+    },
+    "7735cb33dfba3ecd199283834998a98b352b202d28135daa1741d82f2bf46243": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe metric `req_2` has a `user_id` label with 60 distinct values across 60 samples (cardinality ratio of 1.0), indicating unbounded cardinality where each user generates a unique label value.",
+      "verdict": "YES"
+    },
+    "794d6c154bb0f78818786f833574efb4e0ae02c05c3313dfb3b335200bda882b": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains an \"account_id\" field that is a tenant/customer identifier emitted in plain text without redaction, hashing, or privacy classification.",
+      "verdict": "YES"
+    },
+    "7a16d4287f5293c2480c3753f77aa67ddef5d1cd7910bb2cbffa644cfa0050c1": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe metric `req_5` has a `user_id` label with 60 distinct values across 60 samples (cardinality ratio of 1.0), indicating unbounded cardinality where each request is tagged with a unique user identifier that will grow without limit.",
+      "verdict": "YES"
+    },
+    "7ec31b2a78bc218eeaf0664b50ce7ea46166474f32ff81ce433c60f9418b6526": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "87e93bb6521f8c8ed6e27a2d1fad868b06bff62f71d3b0007d69a2d6b98ea1ce": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event carries a trace_id (\"trace-0008\"), which is a recognized correlation identifier, so it meets the observability requirement for failure events.",
+      "verdict": "NO"
+    },
+    "892d8413a0b08dcc3b4cd29e40d0e8018583576258d179ddf270d967697b3848": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe telemetry event contains only structural metadata (kind, method, name, service) with no scalar fields matching sensitive patterns like emails, tokens, passwords, or PII.",
+      "verdict": "NO"
+    },
+    "8b88e2bd2b762c034eb6d47554a85cd1409ee50dc0e8b44f120e765bdff9c717": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error evidence fields (error_code, exception, exception_type, status, status_code) that would explain why the handle operation failed.",
+      "verdict": "YES"
+    },
+    "916914bfe2a51586593fd5fda6a1e06f3e0a4330cff482ae152500c4227b4278": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a `notify_email` field with an email address value, which matches the PII pattern for sensitive values.",
+      "verdict": "YES"
+    },
+    "9a7d437f232ffb9ca471980c0be662eb5b60b7664407b9e94c9508d9105cb7b1": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "9b16228757e53b53f5cec786c1a9002043c35527cdf4301994a9462074b35d2f": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe metric `req_1` has a `user_id` label with 60 distinct values across 60 samples (cardinality ratio of 1.0), indicating unbounded cardinality where each request is tagged with a unique user identifier rather than a bounded set of label values.",
+      "verdict": "YES"
+    },
+    "9bf66fc0a71efcdd9e79c22fe26fe21f0631a7bdcb933fb2c3b19dfa3a4ff8c6": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "a04fc44183bcd4eadefe6aed1b5f3dc6b7a63876c8219e98843466e984b10ac2": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error code, exception type, or status evidence field\u2014it only contains a message string describing the connection failure without structured error metadata.",
+      "verdict": "YES"
+    },
+    "a1d1f9ae0c98d370ecff29e9fcb46c709080f6662ea209500d41a3c8a07c4277": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only metadata fields (kind, name, service, status) with non-sensitive values and no scalar fields matching high-precision raw-secret or PII patterns.",
+      "verdict": "NO"
+    },
+    "a21342be0ff4b9151b538a929c97330f441554a679777420aa3f016da0c50d3a": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "a6751d2daa04a47205fc0a6f64db65e02437178b150cb17e651aa96d106e5ef6": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `session_id` label has 4 distinct values across 4 samples (100% cardinality ratio), indicating unbounded cardinality risk as session identifiers are typically unique per user session and will grow without bound.",
+      "verdict": "YES"
+    },
+    "a73718727d46ba242ea611a74ad81e04513395cb826715b49dc3acdeda858b75": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a JWT token in the \"token\" field, which matches the sensitive-values bug class pattern for bearer tokens/JWTs that should not be logged in telemetry.",
+      "verdict": "YES"
+    },
+    "a9bfc482dc59d9948fcd98d85b99625f34916abfa95aad17565d58ce9a44d9c7": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the span kind.",
+      "verdict": "NO"
+    },
+    "ab933f3bbc6f53dc6c5056c0ab427070e14df1b5646503a2e7f63b5b9b7167ab": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe `status_code` label exhibits bounded cardinality with only 3 distinct values (200, 404, 500) across 60 samples, which is a healthy ratio and does not indicate unbounded cardinality risk.",
+      "verdict": "NO"
+    },
+    "ab9d6cc2b584306e3389a047c2e325927f9fcdc655a5747ca2dfd9b365814852": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes \"exception\":\"ValueError\" which is a recognized error evidence field, satisfying the requirement for exception type documentation.",
+      "verdict": "NO"
+    },
+    "abe46b686858b6de71a08cde768250436dcd54ee06315a36525a8068962e7093": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `org_id` field contains a tenant identifier (\"org-42\") that is emitted without redaction, hashing, or privacy classification, directly violating the requirement for sensitive identifiers.",
+      "verdict": "YES"
+    },
+    "ae9b295ccafa38c4bc825f18457a30838213788f397b6c84bf414bab00383339": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the span kind.",
+      "verdict": "NO"
+    },
+    "af4a660dad858d46f540914fd52c95f89023e8b03a836141f2e1df6622985ed5": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event has \"info\" severity, which does not indicate failure, so it does not meet the bug class criteria requiring failure classification.",
+      "verdict": "NO"
+    },
+    "b14df6ae92f2fea9b413aab7dcea0af919d73fc438ef1e20238a6033fbb6215e": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the missing-duration bug class.",
+      "verdict": "NO"
+    },
+    "b29778afaf9029839c49d923ef58bda3609a293216b25ba78ac747afdcf40844": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"render_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "b44590d8539bb98c9c97a89a795796dbd852bc3ff8a1821631bdb8ec6edaffea": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event has kind \"event\" rather than \"span\" or \"spans\", so it does not fall under the bug class definition which specifically requires span-type events.",
+      "verdict": "NO"
+    },
+    "b5241095bf8b79abafdbeb472751cb4007b59927b4d17164b8a99b70783470da": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error evidence fields (error_code, exception, exception_type, status, status_code, or recognized aliases) despite being an error-severity failure event, making it impossible to diagnose why the enqueue operation failed.",
+      "verdict": "YES"
+    },
+    "b617f3b56c580167c5e5ba570cf16cc2b3db20030dbbadd2916f12e3a57f3f84": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains an \"ssn\" field (Social Security Number) which is a highly sensitive personal identifier emitted without any redaction, hashing, or privacy classification.",
+      "verdict": "YES"
+    },
+    "b6cc2b5256afe491dc661dea0ad1bcaaeda9c05a4c934f30fc6ffa5ff8cf974f": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the span kind.",
+      "verdict": "NO"
+    },
+    "b9d900668a181ed569b2c49237aa7fb76bff1cb34ac98caa872d981aa62c8ff9": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a `tenant_id` field with an actual identifier value (\"id-1000\") that is emitted without redaction, hashing, or privacy classification, directly matching the bug class definition.",
+      "verdict": "YES"
+    },
+    "bce93a29d0d115f31f00fd7f87033841b6275466e635ec3cbfb5def0639e7bbd": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `api_key` field contains a sensitive credential that should be redacted or hashed before emission, as API keys are authentication secrets that could enable unauthorized access if exposed in telemetry logs.",
+      "verdict": "YES"
+    },
+    "beed874681a3c3df3add0ab3120bda70055e8827f4c8695634d8ee847b0a1437": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error evidence fields (error_code, exception, exception_type, status, or status_code) that would explain why the lookup failed.",
+      "verdict": "YES"
+    },
+    "c291cabc36bd6992105eee41a6ef2f1f324e31560a2ec35e59bd79fefd05f3f3": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only generic HTTP metadata (method, kind, name, service) with no fields indicating tenant, customer, account, user identifiers, or sensitive attributes.",
+      "verdict": "NO"
+    },
+    "c5d576c03c331ba5a84f99f21548c4580b8d139cf446b67d81263faa3de4aeff": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe blob field contains a base64-encoded string that decodes to \"user:password@secret\", which matches the password assignment pattern and represents sensitive credentials that should not be logged in telemetry.",
+      "verdict": "YES"
+    },
+    "c80fa827b76dc404aca1eec246600c3f5727d7c047e9b1a6e8585eec3acf4376": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"commit_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for span-kind telemetry to be properly observable.",
+      "verdict": "YES"
+    },
+    "c8378b1113f7e91dbd42bfeab7a229c68588af69474e23c101d5deb2e35a851c": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event contains a `customer_id` field that is emitted as a plain identifier without redaction, hashing, or privacy classification, which directly matches the unclassified-sensitive bug class definition.",
+      "verdict": "YES"
+    },
+    "cd8ec32b0612e4df14c218017f2085dd389a7d3f8d378b190df4f3ec87f6fbc5": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "d514ab3acdeefc1dc2e3c4fb0b85f9c83843d2126fe9fc0c154709763d9f973d": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe metric exhibits bounded cardinality with only 3 distinct status_code values (200, 404, 500) repeated across 60 samples, which is a controlled and expected set of HTTP status codes.",
+      "verdict": "NO"
+    },
+    "ddb9a4cddba93cd7cd7607b789e345ca2b68df4183a3e013889614f9f1e83a8e": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `user_email` field contains a sensitive user identifier that is emitted in plaintext without redaction, hashing, or privacy classification.",
+      "verdict": "YES"
+    },
+    "decf46fbde5d975b0ac97bc3edca145c69894cfc8cf7366fe9c12f0cdb6662ee": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe `user_id` label has 60 distinct values across 60 samples (cardinality ratio of 1.0), which is unbounded and will grow linearly with user traffic, causing metric explosion in the checkout service.",
+      "verdict": "YES"
+    },
+    "e4b396d87c944cdfdbacc7f18e00f1204f433b1676b227f2b10e280d065de7e3": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event lacks any fields that would indicate tenant/customer/account/user identifiers or sensitive attributes; it only contains metadata about the event itself (kind, name, priority, service).",
+      "verdict": "NO"
+    },
+    "e55a01405832b184203358e8f7efefbb346e17622429f44539033f8b30c54b63": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event has error severity but contains no correlation identifier (trace_id, traceId, request_id, span_id, or recognized alias) to link it to related events in a distributed system.",
+      "verdict": "YES"
+    },
+    "e8c78f7cbab08e2ea10b50a06373843217e2d4f4710192f009a1b6a02dbf2364": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only generic metadata fields (kind, name, region, service) with no fields indicating tenant, customer, account, user identifiers, or sensitive attributes.",
+      "verdict": "NO"
+    },
+    "e902f17036e003e4aaa4e190611e692b257189aeb3631d0a14008b601f6927dd": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "ee90558cba9888ce27fd2648bbfd8b1e1c22e44de244f1daadcd7b4acfccf1a0": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe span event \"enqueue_span\" lacks any duration measurement field (duration_ms, duration, elapsed_ms, latency_ms, or recognized alias), which is required for proper span observability.",
+      "verdict": "YES"
+    },
+    "f2918e87356619a15a197d1a4413da8beb68263d1051f573c6a4c58f18497bb1": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe telemetry event contains only metadata fields (count, kind, name, service) with non-sensitive values that do not match any high-precision raw-secret/PII patterns.",
+      "verdict": "NO"
+    },
+    "f3777e7f67fd7c7af1c1fa17b5739c3bcc7517ca2e0f01a430a90c1c5515f1ec": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "f4097711051b53f7e58f55d74015bc279a38558db38d22639514b5ace3296a8b": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe event contains only metadata fields (kind, name, phase, service) with no scalar values matching sensitive patterns like emails, tokens, passwords, or PII.",
+      "verdict": "NO"
+    },
+    "f41532301b2eab97fb99720fbbe59fa394d8f5589f6db119fb37dacc5c33fa50": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "f4b5eae2f57f01ad91f3550091080628626323536b500b795f153ae3f267c292": {
+      "parse_ok": true,
+      "raw_response": "YES\nThe event lacks any error evidence fields (error_code, exception, exception_type, status, or status_code) that would help diagnose why the render operation failed.",
+      "verdict": "YES"
+    },
+    "f4fa374399769c9c3c995d4acd622c41aecc0ffff4ede2d5a8e0f14b5e805f21": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis event has \"info\" severity, which does not indicate failure, so it does not meet the bug class criteria requiring failure classification.",
+      "verdict": "NO"
+    },
+    "f7edbf4b7defba0b35d4050504cd9c562b1750ae9126a1df055eb362ab6810c7": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event includes an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "fb0728ea92ecf714c030ff07ea84b85ea461c2c85a9ee20d4c09bbf5dc2b990e": {
+      "parse_ok": true,
+      "raw_response": "NO\nThe telemetry event contains only structural metadata (kind, name, region, service) with no scalar fields matching high-precision raw-secret or PII patterns like emails, tokens, passwords, or card/phone numbers.",
+      "verdict": "NO"
+    },
+    "fc12dc5359a90d233493d2cf0b05a793be9aeadb4a2ce6243d9932381005bfea": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis telemetry event contains an error_code field (\"E_TIMEOUT\"), which is a recognized error evidence field per the bug class definition.",
+      "verdict": "NO"
+    },
+    "ff333dbe733bc4e9503d7d969196c1c1a443aba0fede6b9f0b4314dd9aabb714": {
+      "parse_ok": true,
+      "raw_response": "NO\nThis span event includes a duration_ms field, which is a recognized duration measure for the span kind.",
+      "verdict": "NO"
+    }
+  },
+  "schema": "telemetry-contracts/llm-recorded@1",
+  "unparseable_scored_as_no": 0
+}

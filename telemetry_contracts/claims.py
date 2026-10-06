@@ -102,14 +102,14 @@ CLAIMS: list[dict[str, Any]] = [
     },
     {
         "id": "baseline-comparison",
-        "claim": "The shipped detectors are compared head-to-head, through the identical gold-set pipeline, against deterministic capability baselines: a deliberately naive field-name keyword detector (rule-light), an OpenTelemetry semantic-convention conformance checker (coverage-limited, with out-of-scope classes reported as coverage gaps rather than accuracy failures), and an offline LLM-baseline harness (prompt + parser + replay cache) whose shipped cache is a transparent hand-written surrogate policy that is explicitly NOT an LLM result. The comparison reports all-class and covered-class micro/macro precision/recall/F1, a symmetric per-item win/loss analysis, and an exact two-sided paired McNemar test; on the curated set the tool significantly outperforms every baseline. Baseline definitions are frozen before snapshotting, no threshold is tuned on the gold set, and every method sees only (events, bug_class).",
+        "claim": "The shipped detectors are compared head-to-head, through the identical gold-set pipeline, against two deterministic capability baselines (a naive field-name keyword detector and an OpenTelemetry semantic-convention conformance checker, with out-of-scope classes reported as coverage gaps) and two real LLMs (anthropic/claude-haiku-4.5 and openai/gpt-4.1-mini, zero-shot, temperature 0, responses recorded once via OpenRouter and replayed from a cache). The comparison reports all-class and covered-class precision/recall/F1, a per-item win/loss analysis, and an exact two-sided paired McNemar test. The tool significantly outperforms both rule baselines; it does not significantly differ from either LLM, and claude-haiku-4.5 scores higher (F1 0.991 vs 0.953). Every method sees only (events, bug_class).",
         "public_artifacts": ["telemetry_contracts/evaluation/baselines.py", "docs/evaluation/baselines.md"],
         "tests": ["tests/test_baselines.py", "tests/test_baselines_real.py"],
-        "fixtures": ["benchmarks/ground_truth/curated.jsonl", "benchmarks/baselines/llm_recorded.json"],
+        "fixtures": ["benchmarks/ground_truth/curated.jsonl", "benchmarks/baselines/llm_anthropic__claude-haiku-4-5.json", "benchmarks/baselines/llm_openai__gpt-4-1-mini.json"],
         "benchmark_rows": [],
         "limitations": [
             "The baselines are deliberately scoped capability comparators, not state-of-the-art detectors; the head-to-head numbers describe the curated conformance set, not a prevalence-representative sample.",
-            "The LLM-baseline row replays a transparent deterministic surrogate, not a commercial model; it demonstrates the offline harness and a different error profile and makes no claim about real LLM accuracy.",
+            "The LLM rows are one recorded run per model at temperature 0; re-querying the API may give different answers. The gold set is author-labelled, so all rows inherit that limitation.",
         ],
     },
     {

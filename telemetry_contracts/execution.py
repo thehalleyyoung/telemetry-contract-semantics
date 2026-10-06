@@ -151,7 +151,8 @@ def _setrlimits() -> None:  # pragma: no cover - POSIX child process only
     try:
         import resource
 
-        resource.setrlimit(resource.RLIMIT_CPU, (2, 3))
+        # 5s CPU soft cap: 2s produced intermittent SIGXCPU on a loaded host.
+        resource.setrlimit(resource.RLIMIT_CPU, (5, 6))
         # Cap file size (we only print to a pipe); do NOT cap address space —
         # RLIMIT_AS makes interpreter startup flaky across platforms.
         resource.setrlimit(resource.RLIMIT_FSIZE, (1 << 20, 1 << 20))
