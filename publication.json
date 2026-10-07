@@ -1,0 +1,7 @@
+{
+  "lane": "telemetry",
+  "reviewed_revision": "613722d60c835ad4894007dc05ecf039e0171586",
+  "paper_sha256": "00560fb827542980380e696c01adb5cfb82c04398e7e3f6a5556f9298c469a59",
+  "source_changes": "local; GitHub repository links currently point to public source",
+  "zenodo_deposit": "none; recommendation only"
+}
