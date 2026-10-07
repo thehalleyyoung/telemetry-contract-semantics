@@ -1,0 +1,690 @@
+{
+ "checked_on": "2026-10-06",
+ "bib": "paper/references.bib",
+ "method": [
+  "    python3 scripts/check_references.py   # writes paper/reference_check.json",
+  "",
+  "For each entry the script fetches one authoritative record and compares it with",
+  "the .bib fields:",
+  "  * DOI present      -> Crossref /works/{doi}",
+  "  * arXiv eprint     -> arXiv export API",
+  "  * otherwise        -> the publisher / project page of the work, whose text",
+  "                        must contain the title, every .bib author surname and",
+  "                        the .bib year. (DBLP sits behind a bot challenge and",
+  "                        OpenAlex dates the OSDI'12 paper from a CiteSeerX copy,",
+  "                        so neither is used.)",
+  "Title match: normalised token Jaccard >= 0.9 (case, punctuation, LaTeX braces",
+  "ignored). Authors: every .bib surname must appear among the record's authors,",
+  "and the counts must agree. Year must be equal. An entry passes only if every",
+  "comparison it can make passes. Exits non-zero if any entry fails."
+ ],
+ "entries": [
+  {
+   "key": "yuan2012characterizing",
+   "bib_title": "Characterizing Logging Practices in Open-Source Software",
+   "bib_year": "2012",
+   "bib_authors": [
+    "Yuan",
+    "Park",
+    "Zhou"
+   ],
+   "record_title": "Characterizing logging practices in open-source software",
+   "record_year": 2012,
+   "record_authors": [
+    "Ding Yuan",
+    "Soyeon Park",
+    "Yuanyuan Zhou"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1109/ICSE.2012.6227202",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    3,
+    3
+   ],
+   "pass": true
+  },
+  {
+   "key": "yuan2012conservative",
+   "bib_title": "Be Conservative: Enhancing Failure Diagnosis with Proactive Logging",
+   "bib_year": "2012",
+   "bib_authors": [
+    "Yuan",
+    "Park",
+    "Huang",
+    "Liu",
+    "Lee",
+    "Tang",
+    "Zhou",
+    "Savage"
+   ],
+   "source": "publisher-page",
+   "url": "https://www.usenix.org/conference/osdi12/technical-sessions/presentation/yuan",
+   "title_found_on_page": true,
+   "authors_missing_from_page": [],
+   "year_found_on_page": true,
+   "pass": true
+  },
+  {
+   "key": "yuan2011logenhancer",
+   "bib_title": "Improving Software Diagnosability via Log Enhancement",
+   "bib_year": "2011",
+   "bib_authors": [
+    "Yuan",
+    "Zheng",
+    "Park",
+    "Zhou",
+    "Savage"
+   ],
+   "record_title": "Improving software diagnosability via log enhancement",
+   "record_year": 2011,
+   "record_authors": [
+    "Ding Yuan",
+    "Jing Zheng",
+    "Soyeon Park",
+    "Yuanyuan Zhou",
+    "Stefan Savage"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/1950365.1950369",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    5,
+    5
+   ],
+   "pass": true
+  },
+  {
+   "key": "zhu2015learning",
+   "bib_title": "Learning to Log: Helping Developers Make Informed Logging Decisions",
+   "bib_year": "2015",
+   "bib_authors": [
+    "Zhu",
+    "He",
+    "Fu",
+    "Zhang",
+    "Lyu",
+    "Zhang"
+   ],
+   "record_title": "Learning to Log: Helping Developers Make Informed Logging Decisions",
+   "record_year": 2015,
+   "record_authors": [
+    "Jieming Zhu",
+    "Pinjia He",
+    "Qiang Fu",
+    "Hongyu Zhang",
+    "Michael R. Lyu",
+    "Dongmei Zhang"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1109/ICSE.2015.60",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    6,
+    6
+   ],
+   "pass": true
+  },
+  {
+   "key": "fu2014where",
+   "bib_title": "Where Do Developers Log? An Empirical Study on Logging Practices in Industry",
+   "bib_year": "2014",
+   "bib_authors": [
+    "Fu",
+    "Zhu",
+    "Hu",
+    "Lou",
+    "Ding",
+    "Lin",
+    "Zhang",
+    "Xie"
+   ],
+   "record_title": "Where do developers log? an empirical study on logging practices in industry",
+   "record_year": 2014,
+   "record_authors": [
+    "Qiang Fu",
+    "Jieming Zhu",
+    "Wenlu Hu",
+    "Jian-Guang Lou",
+    "Rui Ding",
+    "Qingwei Lin",
+    "Dongmei Zhang",
+    "Tao Xie"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/2591062.2591175",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    8,
+    8
+   ],
+   "pass": true
+  },
+  {
+   "key": "chen2017replication",
+   "bib_title": "Characterizing Logging Practices in Java-based Open Source Software Projects -- a Replication Study in Apache Software Foundation",
+   "bib_year": "2017",
+   "bib_authors": [
+    "Chen",
+    "Jiang"
+   ],
+   "record_title": "Characterizing logging practices in Java-based open source software projects – a replication study in Apache Software Foundation",
+   "record_year": 2017,
+   "record_authors": [
+    "Boyuan Chen",
+    "Zhen Ming (Jack) Jiang"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1007/s10664-016-9429-5",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    2,
+    2
+   ],
+   "pass": true
+  },
+  {
+   "key": "chen2017antipatterns",
+   "bib_title": "Characterizing and Detecting Anti-Patterns in the Logging Code",
+   "bib_year": "2017",
+   "bib_authors": [
+    "Chen",
+    "Jiang"
+   ],
+   "record_title": "Characterizing and Detecting Anti-Patterns in the Logging Code",
+   "record_year": 2017,
+   "record_authors": [
+    "Boyuan Chen",
+    "Zhen Ming Jiang"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1109/ICSE.2017.15",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    2,
+    2
+   ],
+   "pass": true
+  },
+  {
+   "key": "li2021qualitative",
+   "bib_title": "A Qualitative Study of the Benefits and Costs of Logging from Developers' Perspectives",
+   "bib_year": "2021",
+   "bib_authors": [
+    "Li",
+    "Shang",
+    "Adams",
+    "Sayagh",
+    "Hassan"
+   ],
+   "record_title": "A Qualitative Study of the Benefits and Costs of Logging From Developers’ Perspectives",
+   "record_year": 2021,
+   "record_authors": [
+    "Heng Li",
+    "Weiyi Shang",
+    "Bram Adams",
+    "Mohammed Sayagh",
+    "Ahmed E. Hassan"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1109/TSE.2020.2970422",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    5,
+    5
+   ],
+   "pass": true
+  },
+  {
+   "key": "li2020where",
+   "bib_title": "Where Shall We Log? Studying and Suggesting Logging Locations in Code Blocks",
+   "bib_year": "2020",
+   "bib_authors": [
+    "Li",
+    "Chen",
+    "Shang"
+   ],
+   "record_title": "Where shall we log?: studying and suggesting logging locations in code blocks",
+   "record_year": 2020,
+   "record_authors": [
+    "Zhenhao Li",
+    "Tse-Hsun (Peter) Chen",
+    "Weiyi Shang"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/3324884.3416636",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    3,
+    3
+   ],
+   "pass": true
+  },
+  {
+   "key": "zeng2019mobile",
+   "bib_title": "Studying the Characteristics of Logging Practices in Mobile Apps: A Case Study on F-Droid",
+   "bib_year": "2019",
+   "bib_authors": [
+    "Zeng",
+    "Chen",
+    "Shang",
+    "Chen"
+   ],
+   "record_title": "Studying the characteristics of logging practices in mobile apps: a case study on F-Droid",
+   "record_year": 2019,
+   "record_authors": [
+    "Yi Zeng",
+    "Jinfu Chen",
+    "Weiyi Shang",
+    "Tse-Hsun (Peter) Chen"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1007/s10664-019-09687-9",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    4,
+    4
+   ],
+   "pass": true
+  },
+  {
+   "key": "he2021survey",
+   "bib_title": "A Survey on Automated Log Analysis for Reliability Engineering",
+   "bib_year": "2022",
+   "bib_authors": [
+    "He",
+    "He",
+    "Chen",
+    "Yang",
+    "Su",
+    "Lyu"
+   ],
+   "record_title": "A Survey on Automated Log Analysis for Reliability Engineering",
+   "record_year": 2022,
+   "record_authors": [
+    "Shilin He",
+    "Pinjia He",
+    "Zhuangbin Chen",
+    "Tianyi Yang",
+    "Yuxin Su",
+    "Michael R. Lyu"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/3460345",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    6,
+    6
+   ],
+   "pass": true
+  },
+  {
+   "key": "zhu2019parsing",
+   "bib_title": "Tools and Benchmarks for Automated Log Parsing",
+   "bib_year": "2019",
+   "bib_authors": [
+    "Zhu",
+    "He",
+    "Liu",
+    "He",
+    "Xie",
+    "Zheng",
+    "Lyu"
+   ],
+   "record_title": "Tools and Benchmarks for Automated Log Parsing",
+   "record_year": 2019,
+   "record_authors": [
+    "Jieming Zhu",
+    "Shilin He",
+    "Jinyang Liu",
+    "Pinjia He",
+    "Qi Xie",
+    "Zibin Zheng",
+    "Michael R. Lyu"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1109/ICSE-SEIP.2019.00021",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    7,
+    7
+   ],
+   "pass": true
+  },
+  {
+   "key": "zhu2023loghub",
+   "bib_title": "Loghub: A Large Collection of System Log Datasets for AI-driven Log Analytics",
+   "bib_year": "2023",
+   "bib_authors": [
+    "Zhu",
+    "He",
+    "He",
+    "Liu",
+    "Lyu"
+   ],
+   "record_title": "Loghub: A Large Collection of System Log Datasets for AI-driven Log Analytics",
+   "record_year": 2023,
+   "record_authors": [
+    "Jieming Zhu",
+    "Shilin He",
+    "Pinjia He",
+    "Jinyang Liu",
+    "Michael R. Lyu"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1109/ISSRE59848.2023.00071",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    5,
+    5
+   ],
+   "pass": true
+  },
+  {
+   "key": "xu2024unilog",
+   "bib_title": "UniLog: Automatic Logging via LLM and In-Context Learning",
+   "bib_year": "2024",
+   "bib_authors": [
+    "Xu",
+    "Cui",
+    "Zhao",
+    "Zhang",
+    "He",
+    "He",
+    "Li",
+    "Kang",
+    "Lin",
+    "Dang",
+    "Rajmohan",
+    "Zhang"
+   ],
+   "record_title": "UniLog: Automatic Logging via LLM and In-Context Learning",
+   "record_year": 2024,
+   "record_authors": [
+    "Junjielong Xu",
+    "Ziang Cui",
+    "Yuan Zhao",
+    "Xu Zhang",
+    "Shilin He",
+    "Pinjia He",
+    "Liqun Li",
+    "Yu Kang",
+    "Qingwei Lin",
+    "Yingnong Dang",
+    "Saravan Rajmohan",
+    "Dongmei Zhang"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/3597503.3623326",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    12,
+    12
+   ],
+   "pass": true
+  },
+  {
+   "key": "li2023llmlogging",
+   "bib_title": "Exploring the Effectiveness of LLMs in Automated Logging Generation: An Empirical Study",
+   "bib_year": "2023",
+   "bib_authors": [
+    "Li",
+    "Huo",
+    "Jiang",
+    "Zhong",
+    "He",
+    "Su",
+    "Briand",
+    "Lyu"
+   ],
+   "record_title": "Exploring the Effectiveness of LLMs in Automated Logging Generation: An Empirical Study",
+   "record_year": 2023,
+   "record_authors": [
+    "Yichen Li",
+    "Yintong Huo",
+    "Zhihan Jiang",
+    "Renyi Zhong",
+    "Pinjia He",
+    "Yuxin Su",
+    "Lionel Briand",
+    "Michael R. Lyu"
+   ],
+   "source": "arxiv",
+   "url": "https://arxiv.org/abs/2307.05950",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    8,
+    8
+   ],
+   "pass": true
+  },
+  {
+   "key": "ammons2002mining",
+   "bib_title": "Mining Specifications",
+   "bib_year": "2002",
+   "bib_authors": [
+    "Ammons",
+    "Bodik",
+    "Larus"
+   ],
+   "record_title": "Mining specifications",
+   "record_year": 2002,
+   "record_authors": [
+    "Glenn Ammons",
+    "Rastislav Bodík",
+    "James R. Larus"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/503272.503275",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    3,
+    3
+   ],
+   "pass": true
+  },
+  {
+   "key": "ernst2007daikon",
+   "bib_title": "The Daikon System for Dynamic Detection of Likely Invariants",
+   "bib_year": "2007",
+   "bib_authors": [
+    "Ernst",
+    "Perkins",
+    "Guo",
+    "McCamant",
+    "Pacheco",
+    "Tschantz",
+    "Xiao"
+   ],
+   "record_title": "The Daikon system for dynamic detection of likely invariants",
+   "record_year": 2007,
+   "record_authors": [
+    "Michael D. Ernst",
+    "Jeff H. Perkins",
+    "Philip J. Guo",
+    "Stephen McCamant",
+    "Carlos Pacheco",
+    "Matthew S. Tschantz",
+    "Chen Xiao"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1016/j.scico.2007.01.015",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    7,
+    7
+   ],
+   "pass": true
+  },
+  {
+   "key": "legoues2009specmining",
+   "bib_title": "Specification Mining with Few False Positives",
+   "bib_year": "2009",
+   "bib_authors": [
+    "Goues",
+    "Weimer"
+   ],
+   "record_title": "Specification Mining with Few False Positives",
+   "record_year": 2009,
+   "record_authors": [
+    "Claire Le Goues",
+    "Westley Weimer"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1007/978-3-642-00768-2_26",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    2,
+    2
+   ],
+   "pass": true
+  },
+  {
+   "key": "leucker2009brief",
+   "bib_title": "A Brief Account of Runtime Verification",
+   "bib_year": "2009",
+   "bib_authors": [
+    "Leucker",
+    "Schallhart"
+   ],
+   "record_title": "A brief account of runtime verification",
+   "record_year": 2009,
+   "record_authors": [
+    "Martin Leucker",
+    "Christian Schallhart"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1016/j.jlap.2008.08.004",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    2,
+    2
+   ],
+   "pass": true
+  },
+  {
+   "key": "bauer2011ltl",
+   "bib_title": "Runtime Verification for LTL and TLTL",
+   "bib_year": "2011",
+   "bib_authors": [
+    "Bauer",
+    "Leucker",
+    "Schallhart"
+   ],
+   "record_title": "Runtime Verification for LTL and TLTL",
+   "record_year": 2011,
+   "record_authors": [
+    "Andreas Bauer",
+    "Martin Leucker",
+    "Christian Schallhart"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.1145/2000799.2000800",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    3,
+    3
+   ],
+   "pass": true
+  },
+  {
+   "key": "clarkson2010hyperproperties",
+   "bib_title": "Hyperproperties",
+   "bib_year": "2010",
+   "bib_authors": [
+    "Clarkson",
+    "Schneider"
+   ],
+   "record_title": "Hyperproperties",
+   "record_year": 2010,
+   "record_authors": [
+    "Michael R. Clarkson",
+    "Fred B. Schneider"
+   ],
+   "source": "crossref",
+   "url": "https://doi.org/10.3233/JCS-2009-0393",
+   "title_similarity": 1.0,
+   "year_match": true,
+   "authors_missing_from_record": [],
+   "author_count": [
+    2,
+    2
+   ],
+   "pass": true
+  },
+  {
+   "key": "sigelman2010dapper",
+   "bib_title": "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure",
+   "bib_year": "2010",
+   "bib_authors": [
+    "Sigelman",
+    "Barroso",
+    "Burrows",
+    "Stephenson",
+    "Plakal",
+    "Beaver",
+    "Jaspan",
+    "Shanbhag"
+   ],
+   "source": "publisher-page",
+   "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+   "title_found_on_page": true,
+   "authors_missing_from_page": [],
+   "year_found_on_page": true,
+   "pass": true
+  },
+  {
+   "key": "otel-semconv",
+   "bib_title": "OpenTelemetry Semantic Conventions",
+   "bib_year": null,
+   "bib_authors": [],
+   "source": "publisher-page",
+   "url": "https://opentelemetry.io/docs/specs/semconv/",
+   "title_found_on_page": true,
+   "pass": true
+  }
+ ],
+ "summary": {
+  "entries": 23,
+  "pass": 23,
+  "fail": 0
+ }
+}

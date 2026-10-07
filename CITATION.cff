@@ -10,8 +10,8 @@ repository-code: "https://github.com/thehalleyyoung/telemetry-contract-semantics
 license: MIT
 abstract: >-
   telemetry-contracts is a pure-Python command-line tool that checks the logs,
-  traces and metrics a project already emits for failure-path gaps: failures
-  with no correlation id and failures with no error evidence. On 60 findings
+  traces and metrics a project already emits for failures that carry no
+  correlation id or no error evidence. On 60 findings
   sampled from a scan of 58 public repositories, the two failure-path checks
   matched their definitions in 25 of 30 cases. On a 112-item gold set it
   reaches F1 0.953, against 0.991 and 0.952 for two zero-shot LLMs, with no
