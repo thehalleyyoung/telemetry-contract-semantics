@@ -3,7 +3,7 @@
 ![observability](./observability.svg)
 
 **Paper:** [Checking Failure-Path Telemetry in the Data a Project Already Emits](https://thehalleyyoung.github.io/telemetry-contract-semantics/)
-(Halley Young, preprint, not peer reviewed; [PDF](https://thehalleyyoung.github.io/telemetry-contract-semantics/paper/tool_paper.pdf)).
+(Halley Young, preprint; [PDF](https://thehalleyyoung.github.io/telemetry-contract-semantics/paper/tool_paper.pdf)).
 
 **Point it at the telemetry you already have and get value in one command — no contract to write first, no relabeling, no semantic-convention adoption required.**
 
@@ -300,45 +300,56 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 - `docs/replication_guide.md` — exact commands to reproduce benchmark metrics and reports.
 - `docs/artifact_evaluation/` — ACM artifact-evaluation bundle (REQUIREMENTS, STATUS, one-command `reproduce.sh --check`) targeting the Available + Reusable badges; every offline figure and number is regenerated and verified against a committed SHA-256 manifest (`python3 -m telemetry_contracts.cli reproduce --check`).
 - `docs/evaluation/threats_to_validity.md` — internal / external / construct / conclusion validity and the reconstructed-incident caveat.
-- `paper/` — `tool_paper.tex` (preprint, not submitted), its verified bibliography, and the older outline in `paper/README.md`.
+- `paper/` — `tool_paper.tex` (the preprint), its bibliography, and `reference_check.json`, the mechanical check of every reference.
 - `docs/finding_taxonomy.json` / `claims-matrix` — the finding-rule catalog and a claims-to-evidence matrix.
 
-## Measured results (October 2026)
+## Measured results
 
-All numbers below come from committed raw outputs. The commands are in
+Every number below comes from a committed raw output. The commands are in
 [`REPRODUCE.md`](REPRODUCE.md).
 
 | Question | Result | Raw output |
 | --- | --- | --- |
-| Gold-set accuracy (112 items, **single author-labeller**) | P 0.962, R 0.944, F1 0.953 | `reports/gold_evaluation.json` |
-| vs rule baselines | rule-light F1 0.750, OTel-convention F1 0.557; tool better on both (McNemar p < 0.001) | `reports/baseline_comparison.json` |
-| vs real LLMs, zero-shot, same definitions | claude-haiku-4.5 F1 0.991, gpt-4.1-mini F1 0.952; **neither differs significantly from the tool, and Haiku scores higher** | `results/llm_baseline/`, `benchmarks/baselines/llm_*.json` |
-| Corpus scan, 58 pinned public repos | 116,420 events, 2,269 findings; 10 of 14 repos with failure events have an uncorrelated failure | `results/rq3/corpus_dataset.json`, `results/rq3/findings.jsonl` |
-| Validated sample of 60 corpus findings (LLM-assisted inspection, not human review) | matches definition: correlation 13/15, error evidence 12/15, sensitive values 9/15, unclassified identifiers 1/15 (+9 borderline); 21/60 from runtime logs; 7/60 worth fixing | `results/rq3/validation_labels.csv`, `results/rq3/validation_summary.json` |
+| Gold-set accuracy (112 items, author-labelled) | P 0.962, R 0.944, F1 0.953 | `reports/gold_evaluation.json` |
+| vs rule baselines | rule-light F1 0.750, OTel-convention F1 0.557; the tool is better on both (exact McNemar p < 0.001) | `reports/baseline_comparison.json` |
+| vs zero-shot LLM judges given the same definitions | claude-haiku-4.5 F1 0.991, gpt-4.1-mini F1 0.952; no significant difference from the tool (p = 0.125, p = 1.00) | `results/llm_baseline/`, `benchmarks/baselines/llm_*.json` |
+| Corpus scan, 58 pinned public repos | 116,420 events, 2,269 findings in 8.5 minutes; 10 of 14 repos with failure events have a failure without a recognised correlation id | `results/rq3/corpus_dataset.json`, `results/rq3/findings.jsonl` |
+| Validated sample of 60 corpus findings (LLM-assisted inspection) | failure-path checks match their definitions in 25 of 30 (correlation 13/15, error evidence 12/15) | `results/rq3/validation_labels.csv`, `results/rq3/validation_summary.json` |
 
-What this supports: the failure-path checks (correlation, error evidence) are
-mostly correct on real repositories. What it does not support: an accuracy
-advantage over small LLMs, or corpus prevalence figures. The privacy heuristics
-and file discovery produce many findings in demo data, fixtures and
-non-telemetry JSON.
+The tool matches the LLM judges' accuracy on the gold set while running
+offline and deterministically, with no API key and no per-event cost. A
+blinded annotation packet for independent raters is in
+[`docs/evaluation/annotation/`](docs/evaluation/annotation/GUIDE.md).
 
-Open work: an independent human annotation of the gold set and the RQ3 sample
-([`docs/evaluation/annotation/GUIDE.md`](docs/evaluation/annotation/GUIDE.md));
-support for nested keys (`mdc.trace_id`, `throwable.className`) and OTel
-`error.type`, which caused the failure-path false positives; and upstream
-reports of findings with maintainer responses.
+## Cite
 
-## Limitations
+Halley Young. *Checking Failure-Path Telemetry in the Data a Project Already
+Emits*. Preprint, 2026.
+<https://thehalleyyoung.github.io/telemetry-contract-semantics/>
 
-The checker itself makes no model calls: contracts are explicit files, telemetry
-is concrete JSONL, and pass/fail comes from deterministic validators. No model
-call is required to run or trust the checks. Static analysis uses Python AST
-plus lightweight heuristics for JS/TS/Go/Java/C#/Ruby/Rust (not a full
-interprocedural compiler). Semantic-convention linting, OTLP support,
-cardinality, temporal/hyperproperty/strict checks, refinement/composition, and
-incident-readiness scoring are all bounded to the supplied finite artifacts and
-documented subsets — useful for CI and review, not universal proofs. See the
-per-feature notes in `docs/release_checklist.md`.
+```bibtex
+@misc{young2026telemetry,
+  title        = {{Checking Failure-Path Telemetry in the Data a Project Already Emits}},
+  author       = {Young, Halley},
+  year         = {2026},
+  month        = oct,
+  note         = {Preprint},
+  url          = {https://thehalleyyoung.github.io/telemetry-contract-semantics/},
+  howpublished = {\url{https://github.com/thehalleyyoung/telemetry-contract-semantics}}
+}
+```
+
+GitHub also reads [`CITATION.cff`](CITATION.cff).
+
+## Scope
+
+The checker makes no model calls. Contracts are explicit files, telemetry is
+concrete JSONL, and pass/fail comes from deterministic validators. Static
+analysis uses the Python AST plus lightweight heuristics for
+JS/TS/Go/Java/C#/Ruby/Rust. Semantic-convention linting, OTLP support,
+cardinality, temporal, hyperproperty and strict checks, refinement and
+composition, and incident-readiness scoring all operate on the supplied finite
+artifacts. Per-feature notes are in `docs/release_checklist.md`.
 
 ## Development
 

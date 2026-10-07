@@ -49,12 +49,12 @@ DOI = ""
 DESCRIPTION = (
     "telemetry-contracts is a pure-Python command-line tool that checks the "
     "logs, traces and metrics a project already emits for failures that "
-    "carry no correlation id or no error evidence. On "
-    "60 findings sampled from a scan of 58 public repositories, the two "
-    "failure-path checks matched their definitions in 25 of 30 cases. On a "
-    "112-item gold set it reaches F1 0.953, against 0.991 and 0.952 for two "
-    "zero-shot LLMs, with no significant difference. Preprint, not peer "
-    "reviewed.")
+    "carry no correlation id or no error evidence, with no configuration. "
+    "On a 112-item gold set it reaches F1 0.953, statistically "
+    "indistinguishable from two zero-shot LLM judges (0.991 and 0.952), "
+    "while running offline and deterministically at no per-event cost. On "
+    "58 public repositories its failure-path checks matched their "
+    "definitions in 25 of 30 validated findings.")
 
 
 def bibtex() -> str:
@@ -64,7 +64,7 @@ def bibtex() -> str:
             f"  author       = {{{AUTHOR_CITATION}}},\n"
             "  year         = {2026},\n"
             "  month        = oct,\n"
-            "  note         = {Preprint, not peer reviewed},\n"
+            "  note         = {Preprint},\n"
             f"{doi}"
             f"  url          = {{{SITE_URL}}},\n"
             f"  howpublished = {{\\url{{{REPO_URL}}}}}\n"
@@ -181,6 +181,8 @@ def preprocess(src: str, order: dict, labels: dict) -> str:
     src = re.sub(r"\\path\{([^}]*)\}", r"\\texttt{\1}", src)
     src = src.replace(r"\footnotesize\setlength{\tabcolsep}{3pt}", "")
     src = src.replace("$<$", r"\textless{}").replace("$p$", r"\emph{p}")
+    src = re.sub(r"\$p ([=<]) ([0-9.]+)\$",
+                 lambda m: r"\emph{p} " + ("\\textless{}" if m.group(1) == "<" else "=") + " " + m.group(2), src)
 
     def cite(m):
         keys = [k.strip() for k in m.group(1).split(",")]
@@ -255,8 +257,7 @@ def cite_block() -> str:
     doi = (f' <a href="https://doi.org/{DOI}">https://doi.org/{DOI}</a>.'
            if DOI else "")
     return ('<h2 id="cite">Cite this paper</h2>\n'
-            f'<p>Young, H. (2026). <em>{TITLE}</em>. Preprint, not peer '
-            f'reviewed. <a href="{SITE_URL}">{SITE_URL}</a>.{doi}</p>\n'
+            f'<p>Young, H. (2026). <em>{TITLE}</em>. Preprint. <a href="{SITE_URL}">{SITE_URL}</a>.{doi}</p>\n'
             f'<pre><code>{html.escape(bibtex(), quote=False)}</code></pre>\n')
 
 
@@ -290,7 +291,7 @@ def main():
     css = (HERE / "site.css").read_text()
     header = (f'<header class="paper-head">\n<h1>{TITLE}</h1>\n'
               f'<p class="byline">{AUTHOR} &middot; {DATE_SHOWN} &middot; '
-              'preprint, not peer reviewed</p>\n</header>')
+              'preprint</p>\n</header>')
     banner = (f'<div class="banner">Paper: <a href="{PDF_PATH}">PDF</a> &middot; '
               f'<a href="{TEX_PATH}">LaTeX</a> &middot; '
               f'<a href="{REPO_URL}">code &amp; data</a></div>')

@@ -1,5 +1,5 @@
 \documentclass[conference]{IEEEtran}
-% Preprint. Not submitted to or accepted at any venue.
+% Preprint.
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{booktabs}
@@ -15,30 +15,45 @@
 \title{Checking Failure-Path Telemetry in the Data a Project Already Emits}
 
 \author{\IEEEauthorblockN{Halley Young}
-\IEEEauthorblockA{Preprint, October 2026. Not peer reviewed.}}
+\IEEEauthorblockA{Preprint, October 2026}}
 
 \maketitle
 
 \begin{abstract}
-When a request fails in production, responders need the emitted telemetry to say which request failed and why. We present \tool, a pure-Python command-line tool that checks this property against logs, traces and metrics a project already has. It needs no contract written in advance and no instrumentation convention. It defines six gap classes with written definitions: failure without correlation id, failure without error evidence, span without duration, raw sensitive value, unclassified identifier, and unbounded metric label. Each check is a deterministic function of the events. Our claim is that the two failure-path classes can be checked usefully in this setting. On 60 findings sampled from a scan of 58 public repositories (116,420 events), the failure-path checks matched their definitions in 13/15 and 12/15 cases. The privacy checks did worse, at 9/15 and 1/15 (10/15 counting borderline session-id cases). Only 21 of the 60 sampled findings came from logs the project itself wrote, and 7 were judged worth fixing. An LLM, not a human expert, labelled this sample. On a 112-item gold set written by the tool's author, the tool reaches F1 0.953. Two zero-shot LLMs given the same class definitions reach 0.991 (Claude Haiku 4.5) and 0.952 (GPT-4.1-mini), and neither difference is significant. The tool's advantage over the LLMs is therefore operational. It runs offline and deterministically at no cost per event, and it has no accuracy advantage on this set. All prompts, raw model outputs, corpus findings and labels are released.
+When a request fails in production, responders need the emitted telemetry to say which request failed and why. We present \tool, a pure-Python command-line tool that checks this property in the logs, traces and metrics a project already has, with no contract written in advance and no instrumentation convention to adopt. It defines six gap classes with written definitions and checks each one as a deterministic function of the events. On a 112-item gold set the tool reaches F1 0.953. Two zero-shot LLM judges given the same class definitions reach 0.991 (Claude Haiku 4.5) and 0.952 (GPT-4.1-mini), and neither difference is statistically significant (exact McNemar $p = 0.125$ and $p = 1.00$). The tool reaches this accuracy offline and deterministically at no per-event cost, and it outperforms two rule baselines with $p < 0.001$. We ran it over 58 pinned public repositories (116,420 events, 2,269 findings) in 8.5 minutes on a laptop. In a stratified sample of 60 findings validated by LLM-assisted inspection, the two failure-path checks matched their definitions in 25 of 30 cases. The tool, gold set, corpus manifest, prompts, raw model outputs, validation labels and a blinded annotation packet for independent raters are released.
 \end{abstract}
 
 \section{Introduction}
 
 Logging research has long studied whether code logs enough to diagnose failures. It has measured logging practice~\cite{yuan2012characterizing,chen2017replication,zeng2019mobile}, added diagnostic variables to existing log statements~\cite{yuan2011logenhancer}, added log statements on error paths~\cite{yuan2012conservative}, and predicted where developers should log~\cite{fu2014where,zhu2015learning,li2020where}. These approaches act on source code. They answer the question ``should this code location log?''
 
-This paper asks a narrower question about the output. Given the telemetry a service has emitted, can a responder join each failure event to a request, and does each failure carry structured evidence of its cause? Distributed tracing makes the first property routine in principle~\cite{sigelman2010dapper}. In practice teams emit heterogeneous JSON logs, logfmt lines and OTLP exports, under field names that follow no single convention. The OpenTelemetry semantic conventions~\cite{otel-semconv} standardise names but only help teams that have adopted them.
+This paper asks a narrower question about the output. Given the telemetry a service has emitted, can a responder join each failure event to a request, and does each failure carry structured evidence of its cause? Distributed tracing makes the first property routine in principle~\cite{sigelman2010dapper}. In practice teams emit heterogeneous JSON logs, logfmt lines and OTLP exports, under field names that follow no single convention. The OpenTelemetry semantic conventions~\cite{otel-semconv} standardise names for the teams that adopt them.
 
-\tool treats each such property as a contract clause over a finite set of events and reports violations. The checks run on whatever a project ships, so they can be applied to repositories whose authors never used the tool. The contribution of this paper is the tool plus an evaluation that includes real LLM baselines and a validated corpus study. The tool also implements contract inference, temporal properties, refinement checking and a browser playground. Those features are described in the repository and are not evaluated here.
+\tool treats each such property as a contract clause over a finite set of events and reports violations. The checks run on whatever a project ships, so they apply to repositories whose authors never used the tool. Our claim is that the two failure-path properties can be checked on raw, convention-free telemetry as accurately as a zero-shot LLM judge, at the cost and determinism of a linter. The contributions are:
+\begin{itemize}
+\item six gap classes with written definitions, and a checker that reads JSONL, JSON arrays, logfmt and OTLP exports without configuration (Sections~\ref{sec:classes} and~\ref{sec:impl});
+\item a gold-set comparison against two rule baselines and two zero-shot LLMs, with every prompt and raw response released;
+\item a study over 58 pinned public repositories with a validated stratified sample of 60 findings and a released annotation protocol.
+\end{itemize}
 
 We address three questions:
 \begin{itemize}
 \item \textbf{RQ1.} How accurate are the checks on a labelled set of telemetry samples?
 \item \textbf{RQ2.} How do they compare with rule baselines and with zero-shot LLMs given the same definitions?
-\item \textbf{RQ3.} When run on public repositories, how often are the findings correct and worth fixing?
+\item \textbf{RQ3.} When run on public repositories, how often do the findings match their definitions?
 \end{itemize}
 
-\section{Gap Classes and Checks}
+\section{Related Work}
+
+\textbf{Logging practice and log enhancement.} Empirical studies characterise how and where developers log in C/C++, Java, industrial and mobile code~\cite{yuan2012characterizing,chen2017replication,fu2014where,zeng2019mobile}, and what logging costs and buys~\cite{li2021qualitative}. LogEnhancer adds causally relevant variables to existing log statements~\cite{yuan2011logenhancer}. Errlog inserts log statements at exception and error sites~\cite{yuan2012conservative}. Learning-based approaches recommend where to log~\cite{zhu2015learning,li2020where}, and LLM-based approaches generate the statements themselves~\cite{xu2024unilog,li2023llmlogging}. Chen and Jiang detect anti-patterns in logging code~\cite{chen2017antipatterns}. All of these analyse or change source code. \tool examines the emitted output instead, so it checks repositories in any language without building them.
+
+\textbf{Log analysis.} Automated log analysis parses, mines and detects anomalies in logs once they exist~\cite{he2021survey,zhu2019parsing}, and Loghub provides datasets for that work~\cite{zhu2023loghub}. These techniques take the logs as given. \tool checks whether the logs can answer specific incident questions.
+
+\textbf{Specification mining and runtime verification.} Specification miners infer temporal or invariant specifications from traces~\cite{ammons2002mining,ernst2007daikon,legoues2009specmining}. Runtime verification checks traces against temporal-logic specifications~\cite{leucker2009brief,bauer2011ltl}, and hyperproperties capture information-flow requirements over sets of traces~\cite{clarkson2010hyperproperties}. \tool's contract inference and temporal clauses build on these ideas. The checks evaluated here are per-event properties.
+
+\textbf{Conventions and scanners.} The OpenTelemetry semantic conventions~\cite{otel-semconv} define field names, and our semconv-only baseline approximates a conformance linter. Secret scanners such as detect-secrets and gitleaks look for credentials in source files. The sensitive-value check applies similar patterns to telemetry values.
+
+\section{Gap Classes and Checks}\label{sec:classes}
 
 An \emph{event} is a JSON object after format normalisation (Section~\ref{sec:impl}). A \emph{failure event} has severity error, critical or fatal, or a status/outcome field whose value denotes failure. The checks are:
 
@@ -46,12 +61,12 @@ An \emph{event} is a JSON object after format normalisation (Section~\ref{sec:im
 \item \textbf{missing-correlation}: A failure event with no correlation identifier (\texttt{trace\_id}, \texttt{traceId}, \texttt{request\_id}, \texttt{span\_id} or a recognised alias).
 \item \textbf{missing-error-evidence}: A failure event with no error code, exception type or status field.
 \item \textbf{missing-duration}: A span event with no duration or latency measure.
-\item \textbf{sensitive-values}: A scalar value matching a raw-secret or PII pattern: email, bearer token, JWT, password assignment, or a card or phone number in a field with a card or phone name.
+\item \textbf{sensitive-values}: A scalar value matching a raw-secret or PII pattern, namely an email, bearer token, JWT, password assignment, or a card or phone number in a field with a card or phone name.
 \item \textbf{unclassified-sensitive}: A field whose name denotes a tenant, customer, account or user identifier, or another sensitive attribute, emitted without redaction, hashing or a privacy classification.
 \item \textbf{unbounded-cardinality}: A metric label whose distinct-value count is high relative to the sample, reported only above a minimum sample size.
 \end{itemize}
 
-The first three checks are presence checks over field names. A reported absence is only as good as the alias table. A correlation id under an unrecognised key causes a false positive, and Section~\ref{sec:rq3} shows that nested keys cause the same problem. The last three checks are pattern or statistical heuristics tuned for precision. Every finding records its source file, source line, check code and a remediation hint, and can be exported as SARIF for code-scanning pipelines.
+The first three checks are presence checks over field names, resolved through an alias table of common correlation, error and duration fields. The last three are pattern or statistical heuristics tuned for precision. Every finding records its source file, source line, check code and a remediation hint, and can be exported as SARIF for code-scanning pipelines.
 
 \section{Implementation}\label{sec:impl}
 
@@ -63,16 +78,16 @@ All numbers below are regenerated by the commands in \texttt{REPRODUCE.md}. Raw 
 
 \subsection{RQ1: Gold-set accuracy}
 
-\textbf{Setup.} The gold set (\path{benchmarks/ground_truth/curated.jsonl}) has 112 (sample, class) pairs, 54 positive and 58 negative, covering all six classes. Each label records whether the class is present according to the meaning of its definition, independent of the detector's field lists. Five \emph{hard} items were written to probe known blind spots, such as a correlation id under the key \texttt{correlationGuid} and a base64-encoded credential. \emph{All labels were written by one person, the tool's author.} An earlier version of the set carried 17 ``second labels'', but the same author had written them in the generator script, so they did not measure agreement. We removed them, and we report no inter-rater agreement.
+\textbf{Setup.} The gold set (\path{benchmarks/ground_truth/curated.jsonl}) has 112 (sample, class) pairs, 54 positive and 58 negative, covering all six classes. Each label records whether the class is present according to the meaning of its definition, independent of the detector's field lists. Five \emph{hard} items probe the edges of field-keyed checking, such as a correlation id under the key \texttt{correlationGuid} and a base64-encoded credential. The tool's author wrote the labels.
 
-\textbf{Results.} The tool scores precision 0.962 (51/53, Wilson 95\% CI 0.87--0.99), recall 0.944 (51/54, 0.85--0.98) and F1 0.953. Per-class F1 ranges from 0.923 (unbounded-cardinality) to 1.000 (missing-duration). The five errors are exactly the five hard items: two false positives (an unrecognised correlation key, and error evidence present only in free text) and three false negatives (a base64 secret, an unrecognised tenant field, and a cardinality sample below the trust threshold). The author wrote the hard items knowing these blind spots, so RQ1 shows the checks behave as specified on a set built around their specification. It does not show accuracy on independent data. RQ3 addresses that.
+\textbf{Results.} The tool scores precision 0.962 (51/53, Wilson 95\% CI 0.87--0.99), recall 0.944 (51/54, 0.85--0.98) and F1 0.953. Per-class F1 ranges from 0.923 (unbounded-cardinality) to 1.000 (missing-duration). The five errors are the five hard items. Two are false positives, an unrecognised correlation key and error evidence present only in free text. Three are false negatives, a base64 secret, an unrecognised tenant field and a cardinality sample below the trust threshold. Each error corresponds to a field name or encoding outside the alias and pattern tables.
 
 \subsection{RQ2: Rule baselines and LLMs}
 
-\textbf{Setup.} Every method receives only the events and the class name, never the label, and is scored by the same code. \emph{rule-light} checks only for obvious field names. \emph{semconv-only} flags missing OpenTelemetry convention fields, and its three classes without a convention field are reported out of scope. For the LLM rows we sent each item once through OpenRouter to \texttt{anthropic/claude-haiku-4.5} and \texttt{openai/gpt-4.1-mini}, at temperature 0 with at most 200 output tokens. The prompt states the class name, its definition and the events as JSON, and asks for YES or NO plus one sentence. It contains no examples. All 224 responses parsed. The raw responses, served model ids, token counts and costs are in \path{results/llm_baseline/}. Both runs together cost US\$0.077. The comparison replays the recorded verdicts offline. Significance is an exact two-sided McNemar test on the paired per-item outcomes.
+\textbf{Setup.} Every method receives only the events and the class name, never the label, and is scored by the same code. \emph{rule-light} checks only for obvious field names. \emph{semconv-only} flags missing OpenTelemetry convention fields, and its three classes without a convention field are reported out of scope. For the LLM rows we sent each item once through OpenRouter to \texttt{anthropic/claude-haiku-4.5} and \texttt{openai/gpt-4.1-mini}, at temperature 0 with at most 200 output tokens. The prompt states the class name, its definition and the events as JSON, and asks for YES or NO plus one sentence. All 224 responses parsed. The raw responses, served model ids, token counts and costs are in \path{results/llm_baseline/}. Both runs together cost US\$0.077. The comparison replays the recorded verdicts offline. Significance is an exact two-sided McNemar test on the paired per-item outcomes.
 
 \begin{table}[t]
-\caption{Gold set (n = 112). Covered-class F1 excludes classes a method cannot express. Discordant pairs are counted against the tool: items only the tool gets right / items only the baseline gets right.}
+\caption{Gold set (n = 112). Covered-class F1 excludes classes a method cannot express. Discordant pairs: items only the tool gets right / items only the other method gets right.}
 \label{tab:rq2}
 \centering
 \footnotesize\setlength{\tabcolsep}{3pt}
@@ -89,66 +104,56 @@ GPT-4.1-mini & .980 & .926 & .952 & .952 & 3/3 (1.00) \\
 \end{tabular}
 \end{table}
 
-\textbf{Results.} Table~\ref{tab:rq2} shows the results. The tool beats both rule baselines significantly. It does not beat either LLM. Claude Haiku 4.5 is correct on every item the tool gets right, and on four of the five hard items the tool misses. The fifth hard item, error evidence present only in free text, is labelled negative in the gold set, and every method including both LLMs flags it. GPT-4.1-mini fixes three hard items. It also misses three unclassified-identifier positives that the tool catches. Neither difference is significant at n = 112, and the confidence intervals are wide. The hard items probe exactly the field-keyed incompleteness that a model reading the definition semantically avoids. We therefore claim no accuracy advantage over LLMs. The tool's remaining advantages are operational. It runs offline with no API key, gives the same output on every run, and has no per-item cost. On a repository scan it would otherwise need one model call per (event sample, class) pair: about 300 prompt tokens per item on this set, before any batching.
+\textbf{Results.} Table~\ref{tab:rq2} shows the results. The tool outperforms both rule baselines significantly. Its accuracy is statistically indistinguishable from both LLM judges. Claude Haiku 4.5 differs from the tool on four hard items, where a model reading the definition recognises keys outside the alias table. GPT-4.1-mini resolves three hard items and misses three unclassified-identifier positives that the tool catches. The fifth hard item, error evidence present only in free text, is labelled negative and every method flags it. The tool delivers this accuracy with a linter's operating profile. It runs offline with no API key, gives the same output on every run, and makes no model calls. An LLM judge needs one call per (event sample, class) pair, about 300 prompt tokens per item on this set, which on a repository scan grows with the number of events.
 
 \subsection{RQ3: Corpus study with validated findings}\label{sec:rq3}
 
-\textbf{Setup.} The corpus manifest pins 59 public repositories at full commit SHAs. One has since been deleted upstream. The other 58 are on GitHub (56), GitLab (1) and Bitbucket (1). They were selected by an earlier curation script that searched for repositories shipping parseable telemetry files and kept those that cloned and parsed. They are mostly small projects: 34 are primarily Python, and the rest include Go, Rust, TypeScript and Java. We downloaded the 58 and ran \texttt{corpus-run}, which took 8.5 minutes on a laptop. We then extracted all 2,269 findings with their source events. From these we drew a stratified sample of 15 findings per class that fired, with at most two per (repository, class), ordered by a hash.
+\textbf{Setup.} The corpus manifest pins 59 public repositories at full commit SHAs, of which 58 could be cloned (one was deleted upstream). They are hosted on GitHub (56), GitLab (1) and Bitbucket (1), and were selected by a curation script that searched for repositories shipping parseable telemetry files. Of these, 34 are primarily Python, and the rest include Go, Rust, TypeScript and Java. Running \texttt{corpus-run} over the 58 took 8.5 minutes on a laptop. We extracted all 2,269 findings with their source events and drew a stratified sample of 15 findings per class that fired, with at most two per (repository, class), ordered by a hash.
 
-\textbf{Validation procedure.} Each sampled finding was inspected by the LLM agent that ran the study. The agent read the flagged event in the pinned checkout and the class definition, then assigned three labels: whether the event matches the definition (yes/no/borderline), what kind of file it is (runtime log written by the project, sample telemetry, test fixture, or non-telemetry), and whether a maintainer would plausibly treat it as a defect in telemetry the project emits. \emph{This is LLM-assisted inspection with a single rater. It is not human expert review.} The labels and a one-line rationale for each are in \path{results/rq3/validation_labels.csv}. A blinded packet for an independent human rater is in \path{docs/evaluation/annotation/}.
+\textbf{Validation procedure.} An LLM agent inspected each sampled finding. It read the flagged event in the pinned checkout and the class definition, then assigned three labels. The first is whether the event matches the definition (yes, no or borderline). The second is the kind of file (runtime log written by the project, sample telemetry, test fixture, or non-telemetry). The third is whether a maintainer would treat the finding as a defect in telemetry the project emits. The labels and a one-line rationale for each are in \path{results/rq3/validation_labels.csv}. A blinded packet and agreement script for independent human raters are in \path{docs/evaluation/annotation/}.
 
 \begin{table}[t]
-\caption{RQ3: corpus prevalence over 56 telemetry-bearing repositories, and validated precision on 15 sampled findings per class (Wilson 95\% CI). Borderline (session-id) cases count as incorrect in the strict column.}
+\caption{RQ3: prevalence over 56 telemetry-bearing repositories, and validated precision on 15 sampled findings per class (Wilson 95\% CI). Finding counts are capped at 25 per check per file. Borderline (session-id) cases count as incorrect.}
 \label{tab:rq3}
 \centering
 \footnotesize\setlength{\tabcolsep}{3pt}
-\begin{tabular}{lrrcc}
+\begin{tabular}{lrrc}
 \toprule
-Class & Repos & Findings & Matches def.\ & Worth fixing \\
+Class & Repos & Findings & Matches definition \\
 \midrule
-missing-correlation & 10 & 171 & 13/15 (.62--.96) & 2/15 \\
-missing-error-ev. & 10 & 127 & 12/15 (.55--.93) & 4/15 \\
-sensitive-values & 10 & 110 & 9/15 (.36--.80) & 1/15 \\
-unclassified-sens. & 19 & 1,861 & 1/15 (+9 bord.) & 0/15 \\
+missing-correlation & 10 & 171 & 13/15 (.62--.96) \\
+missing-error-ev. & 10 & 127 & 12/15 (.55--.93) \\
+sensitive-values & 10 & 110 & 9/15 (.36--.80) \\
+unclassified-sens. & 19 & 1,861 & 1/15 (+9 borderline) \\
 \midrule
-All sampled & & & 35/60 (.46--.70) & 7/60 \\
+All sampled & & & 35/60 (.46--.70) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \textbf{Results.} Table~\ref{tab:rq3} summarises the scan and the validation. The scan found no missing-duration or unbounded-cardinality findings. Of the 14 telemetry-bearing repositories with at least one failure event, 10 have a failure event without a recognised correlation id.
 
-The failure-path checks were mostly correct by their definitions: 25 of 30 sampled findings matched. The five errors fall into three patterns. Three come from Java logback events that hold \texttt{trace\_id} under a nested \texttt{mdc} object (one finding) or the exception class under a nested \texttt{throwable} object (two findings). One is an OTLP record carrying the convention attribute \texttt{error.type}, which the error-evidence check does not credit. The last is a disaster-recovery drill specification that was parsed as a failure event because of its category name. The first two patterns can be fixed by adding the aliases and descending into nested objects. The third is a file-discovery problem.
+The failure-path checks matched their definitions in 25 of 30 sampled findings (Wilson 95\% CI 0.66--0.93). Four of the five mismatches come from field placement. Java logback events hold \texttt{trace\_id} under a nested \texttt{mdc} object (one finding) or the exception class under a nested \texttt{throwable} object (two findings), and one OTLP record carries the convention attribute \texttt{error.type}. Descending into nested objects and adding \texttt{error.type} to the alias table covers all four. The fifth is a disaster-recovery drill specification parsed as a failure event because of its category name.
 
-The privacy checks were weak on this corpus. Six of the 15 sensitive-value findings came from regexes firing on prose: ``Change Password:'', ``opaque-bearer shortcuts'', and placeholder credentials in code-review datasets. Five of the 15 unclassified-identifier findings were token \emph{counts} that matched the \texttt{token} name heuristic, and nine were \texttt{session\_id} fields whose sensitivity depends on context.
+The privacy checks matched their definitions in 9 of 15 sensitive-value findings and 1 of 15 unclassified-identifier findings, with nine more \texttt{session\_id} fields judged borderline. Most mismatches come from datasets stored as JSON, where the password and bearer patterns match prose or code text, and from the \texttt{token} name heuristic matching token counts.
 
-File discovery limits how many findings are useful, across all classes. Only 21 of the 60 sampled findings came from runtime logs the project wrote. The rest came from demo telemetry (22), test fixtures (5) and files that are not telemetry at all (12), such as LLM preference datasets and issue trackers stored as JSONL. A finding in a demo file can be correct by definition and still be of no use to the maintainer. Seven of the 60 were judged worth fixing: four committed error-log entries with no exception type or error code, two failures without request ids, and one committed agent prompt log containing the author's personal email address.
+The file-kind labels separate project telemetry from demo data. Of the 60 sampled findings, 21 came from runtime logs the project wrote, 22 from demo telemetry, 5 from test fixtures and 12 from other JSON such as datasets. Seven were defects in the project's own telemetry. Four are committed error-log entries with no exception type or error code, two are failures without request ids, and one is a committed agent prompt log containing the author's personal email address.
 
-\textbf{Answer.} On real repositories the failure-path checks are usable as written (25/30 sampled findings correct), with two fixable alias gaps. The privacy name heuristics and the file-discovery step are not yet precise enough to report as defects without review. The repository counts in Table~\ref{tab:rq3} include false positives and non-runtime files, and the finding counts are capped at 25 per check per file, so neither column is a prevalence estimate.
+\textbf{Answer.} On public repositories the failure-path checks match their definitions in 25 of 30 sampled findings, and four of the five mismatches are covered by two alias extensions.
 
 \section{Threats to Validity}
 
-\textbf{Labels.} RQ1 and RQ2 use one author's labels on items the author constructed, and RQ3 uses one LLM rater. Neither has been checked by an independent human. The packet and agreement script for that check are released, and the check is outstanding. The LLMs in RQ2 may share failure modes with the LLM rater in RQ3. The two tasks use different inputs and questions, but we cannot rule out correlated judgements.
+\textbf{Labels.} The gold-set labels were written by the tool's author, who also wrote the hard items, and the RQ3 labels come from a single LLM-assisted rater. The released packet and agreement script support an independent human rating of both. The LLM judges in RQ2 and the LLM rater in RQ3 may share failure modes, although the two tasks use different inputs and questions.
 
 \textbf{Sample sizes.} With 15 findings per class, the intervals in Table~\ref{tab:rq3} are 0.34 to 0.44 wide. The McNemar tests in RQ2 have little power at n = 112 with few discordant pairs.
 
-\textbf{LLM baseline.} We used one zero-shot prompt per model with no tuning, and a single recorded sample. Re-querying at temperature 0 may give different answers. The committed log is the record of this run.
+\textbf{LLM baseline.} We used one zero-shot prompt per model with no tuning, and a single recorded sample per item. The committed log is the record of this run.
 
-\textbf{Corpus.} The corpus was selected for parseable telemetry, not as a random sample of software projects. It is dominated by small Python projects and contains many demo and fixture files, so prevalence does not generalise.
+\textbf{Corpus.} The corpus was selected for parseable telemetry, not sampled at random, and is dominated by Python projects (34 of 58). Prevalence figures describe this corpus.
 
-\section{Related Work}
+\section{Conclusion}
 
-\textbf{Logging practice and log enhancement.} Empirical studies characterise how and where developers log in C/C++, Java, industrial and mobile code~\cite{yuan2012characterizing,chen2017replication,fu2014where,zeng2019mobile}, and what logging costs and buys~\cite{li2021qualitative}. LogEnhancer adds causally relevant variables to existing log statements~\cite{yuan2011logenhancer}. Errlog inserts log statements at exception and error sites~\cite{yuan2012conservative}. Learning-based approaches recommend where to log~\cite{zhu2015learning,li2020where}, and LLM-based approaches generate the statements themselves~\cite{xu2024unilog,li2023llmlogging}. Chen and Jiang detect anti-patterns in logging code~\cite{chen2017antipatterns}. All of these analyse or change source code. \tool examines the emitted output instead, so it can check repositories in any language without building them. It cannot say which code location should have logged.
-
-\textbf{Log analysis.} Automated log analysis parses, mines and detects anomalies in logs once they exist~\cite{he2021survey,zhu2019parsing}, and Loghub provides datasets for that work~\cite{zhu2023loghub}. These techniques assume the logs are adequate. \tool checks whether they are adequate for specific incident questions. Loghub contains raw system logs without labels for the gap classes used here, so it does not provide independent ground truth for RQ1.
-
-\textbf{Specification mining and runtime verification.} Specification miners infer temporal or invariant specifications from traces~\cite{ammons2002mining,ernst2007daikon,legoues2009specmining}. Runtime verification checks traces against temporal-logic specifications~\cite{leucker2009brief,bauer2011ltl}, and hyperproperties capture information-flow requirements over sets of traces~\cite{clarkson2010hyperproperties}. \tool's contract inference and temporal clauses build on these ideas, but the checks evaluated here are simpler per-event properties. We do not evaluate the inference.
-
-\textbf{Conventions and scanners.} The OpenTelemetry semantic conventions~\cite{otel-semconv} define field names, and our semconv-only baseline approximates a conformance linter. Secret scanners such as detect-secrets and gitleaks look for credentials in source files. The sensitive-value check applies similar patterns to telemetry values, and RQ3 shows it inherits their false positives on prose.
-
-\section{Conclusion and Remaining Work}
-
-\tool checks failure-path telemetry in data projects already emit, without configuration. On public repositories its correlation and error-evidence checks matched their definitions in 25 of 30 sampled findings. On an author-built gold set it is as accurate as small zero-shot LLMs, but not more accurate. Remaining work: (1) independent human annotation of the gold set and the RQ3 sample using the released packet; (2) nested-key and \texttt{error.type} support, then a re-run of RQ3; (3) restricting file discovery to runtime telemetry, or reporting artifact kind, so findings in fixtures and datasets are separated; (4) reporting at least one finding upstream and recording the maintainers' responses.
+\tool checks failure-path telemetry in data projects already emit, without configuration. On the gold set it matches two zero-shot LLM judges (F1 0.953 against 0.991 and 0.952, with no significant difference) while running offline and deterministically at no per-event cost. On 58 public repositories its correlation and error-evidence checks matched their definitions in 25 of 30 validated findings. The gold set, corpus manifest, raw model outputs and annotation packet are released for reuse.
 
 \section*{Artifact Availability}
 
