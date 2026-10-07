@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checking Failure-Path Telemetry in the Data a Project Already Emits</title>
+<meta name="citation_title" content="Checking Failure-Path Telemetry in the Data a Project Already Emits">
+<meta name="citation_author" content="Young, Halley">
+<meta name="citation_publication_date" content="2026/10/07">
+<meta name="citation_pdf_url" content="https://thehalleyyoung.github.io/telemetry-contract-semantics/paper/tool_paper.pdf">
+<meta name="citation_abstract_html_url" content="https://thehalleyyoung.github.io/telemetry-contract-semantics/">
+<meta name="citation_fulltext_html_url" content="https://thehalleyyoung.github.io/telemetry-contract-semantics/">
+<meta name="citation_language" content="en">
+<meta name="description" content="telemetry-contracts is a pure-Python command-line tool that checks the logs, traces and metrics a project already emits for failure-path gaps: failures with no correlation id and failures with no error evidence. On 60 findings sampled from a scan of 58 public repositories, the two failure-path checks matched their definitions in 25 of 30 cases. On a 112-item gold set it reaches F1 0.953, against 0.991 and 0.952 for two zero-shot LLMs, with no significant difference. Preprint, not peer reviewed.">
+<meta name="author" content="Halley Young">
+<meta property="og:title" content="Checking Failure-Path Telemetry in the Data a Project Already Emits">
+<meta property="og:description" content="telemetry-contracts is a pure-Python command-line tool that checks the logs, traces and metrics a project already emits for failure-path gaps: failures with no correlation id and failures with no error evidence. On 60 findings sampled from a scan of 58 public repositories, the two failure-path checks matched their definitions in 25 of 30 cases. On a 112-item gold set it reaches F1 0.953, against 0.991 and 0.952 for two zero-shot LLMs, with no significant difference. Preprint, not peer reviewed.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://thehalleyyoung.github.io/telemetry-contract-semantics/">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://thehalleyyoung.github.io/telemetry-contract-semantics/">
+<style>:root{color-scheme:light dark;--bg:#fff;--fg:#1b1b1b;--muted:#5d5d5d;--rule:#e3e3e3;
+--accent:#1f5fa9;--code:#f5f5f5;--stripe:#fafafa;--figbg:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#13151a;--fg:#e7e7e7;--muted:#a2a6ad;
+--rule:#2b2f37;--accent:#7fb2f0;--code:#1b1e24;--stripe:#181b20;--figbg:#f4f4f4}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);margin:0;font-size:17px;line-height:1.62;
+font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+main{max-width:46rem;margin:0 auto;padding:3rem 1.2rem 6rem}
+h1{font-size:2.05rem;line-height:1.2;margin:0 0 .8rem}
+h2{font-size:1.42rem;margin:2.6rem 0 .7rem;padding-bottom:.3rem;border-bottom:1px solid var(--rule)}
+h3{font-size:1.12rem;margin:1.9rem 0 .5rem}
+p{margin:0 0 1rem}a{color:var(--accent)}
+blockquote{margin:1.2rem 0;padding:.7rem 1rem;border-left:3px solid var(--accent);
+background:var(--code);border-radius:0 4px 4px 0}
+code,pre{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:.87em}
+code{background:var(--code);padding:.12em .35em;border-radius:3px}
+pre{background:var(--code);padding:.9rem 1rem;border-radius:6px;overflow-x:auto}
+pre code{background:none;padding:0}
+figure{margin:2rem 0;text-align:center}
+img{max-width:100%;height:auto;border-radius:6px;background:var(--figbg);padding:6px}
+.tw{overflow-x:auto;margin:1.4rem 0}
+table{border-collapse:collapse;width:100%;font-size:.86rem;
+font-family:system-ui,-apple-system,sans-serif}
+th,td{padding:.45rem .6rem;text-align:left;border-bottom:1px solid var(--rule)}
+thead th{border-bottom:2px solid var(--rule);font-weight:600;white-space:nowrap}
+tbody tr:nth-child(even){background:var(--stripe)}
+hr{border:none;border-top:1px solid var(--rule);margin:2.4rem 0}
+.banner{background:var(--code);border:1px solid var(--rule);border-radius:8px;
+padding:1rem 1.2rem;margin:1.5rem 0 2rem}
+.banner a{font-weight:600}
+.paper-head h1{margin-bottom:.5rem}
+.byline{font-size:1.05rem;color:var(--muted);margin:0 0 1.4rem}
+main p a{overflow-wrap:anywhere}
+/* --- phone width: nothing may push the page wider than the screen --- */
+html,body{overflow-x:hidden}
+main,main p,main li,main td,main th,main figcaption{overflow-wrap:anywhere}
+main code{overflow-wrap:anywhere;word-break:break-word}
+pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.math,math{max-width:100%;overflow-x:auto}
+.smallcaps{font-variant:small-caps}
+figcaption,.caption{font-family:system-ui,-apple-system,sans-serif;font-size:.86rem;color:var(--muted);text-align:left;margin:.4rem 0}
+.refs{padding-left:0;list-style:none;font-size:.93rem}
+.refs li{display:grid;grid-template-columns:2.6rem minmax(0,1fr);margin:0 0 .55rem}
+.refs .n{color:var(--muted)}
+.note{color:var(--muted);font-size:.92rem}
+@media (max-width:30rem){body{font-size:16px}h1{font-size:1.6rem}.layout{padding:1.4rem 16px 4rem}.toc{columns:1}}
+
+/* --- section navigation, generated from the paper's own headings --- */
+.layout{display:grid;grid-template-columns:15.5rem minmax(0,46rem);gap:2.6rem;
+justify-content:center;padding:2.4rem 1.2rem 6rem}
+.toc{position:sticky;top:2rem;align-self:start;max-height:calc(100vh - 4rem);
+overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+font-size:.83rem;line-height:1.45;border-right:1px solid var(--rule);padding-right:1.1rem}
+.toc h2{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+margin:0 0 .7rem;border:0;padding:0}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{margin:.12rem 0}
+.toc li.sub{padding-left:.85rem;font-size:.79rem}
+.toc a{display:block;padding:.2rem .35rem;border-radius:3px;color:var(--muted);
+text-decoration:none;border-left:2px solid transparent}
+.toc a:hover{color:var(--fg);background:var(--stripe)}
+.toc a.here{color:var(--accent);border-left-color:var(--accent);background:var(--stripe)}
+.toc .sec{color:var(--fg)}
+main{max-width:none;margin:0;padding:0;min-width:0}
+html{scroll-behavior:smooth}
+:target{scroll-margin-top:1.5rem}
+h2,h3{scroll-margin-top:1.5rem}
+@media (max-width:62rem){
+  .layout{display:block;max-width:46rem;margin:0 auto}
+  .toc{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--rule);
+  padding:0 0 1rem;margin-bottom:2rem;columns:2;column-gap:1.6rem}
+  .toc li.sub{display:none}
+}
+@media print{.toc{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Contents"><h2>Contents</h2><ol><li class=""><a class="sec" href="#i.-introduction">I. Introduction</a></li><li class=""><a class="sec" href="#ii.-gap-classes-and-checks">II. Gap Classes and Checks</a></li><li class=""><a class="sec" href="#sec:impl">III. Implementation</a></li><li class=""><a class="sec" href="#iv.-evaluation">IV. Evaluation</a></li><li class="sub"><a class="" href="#a.-rq1-gold-set-accuracy">A. RQ1: Gold-set accuracy</a></li><li class="sub"><a class="" href="#b.-rq2-rule-baselines-and-llms">B. RQ2: Rule baselines and LLMs</a></li><li class="sub"><a class="" href="#sec:rq3">C. RQ3: Corpus study with validated findings</a></li><li class=""><a class="sec" href="#v.-threats-to-validity">V. Threats to Validity</a></li><li class=""><a class="sec" href="#vi.-related-work">VI. Related Work</a></li><li class=""><a class="sec" href="#vii.-conclusion-and-remaining-work">VII. Conclusion and Remaining Work</a></li><li class=""><a class="sec" href="#references">References</a></li><li class=""><a class="sec" href="#cite">Cite this paper</a></li></ol></nav>
+<main>
+<header class="paper-head">
+<h1>Checking Failure-Path Telemetry in the Data a Project Already Emits</h1>
+<p class="byline">Halley Young &middot; October 2026 &middot; preprint, not peer reviewed</p>
+</header>
+<div class="banner">Paper: <a href="paper/tool_paper.pdf">PDF</a> &middot; <a href="paper/tool_paper.tex">LaTeX</a> &middot; <a href="https://github.com/thehalleyyoung/telemetry-contract-semantics">code &amp; data</a></div>
+<h2 id="abstract">Abstract</h2>
+<p>When a request fails in production, responders need the emitted telemetry to say which request failed and why. We present <span class="smallcaps">telemetry-contracts</span>, a pure-Python command-line tool that checks this property against logs, traces and metrics a project already has. It needs no contract written in advance and no instrumentation convention. It defines six gap classes with written definitions: failure without correlation id, failure without error evidence, span without duration, raw sensitive value, unclassified identifier, and unbounded metric label. Each check is a deterministic function of the events. Our claim is that the two failure-path classes can be checked usefully in this setting. On 60 findings sampled from a scan of 58 public repositories (116,420 events), the failure-path checks matched their definitions in 13/15 and 12/15 cases. The privacy checks did worse, at 9/15 and 1/15 (10/15 counting borderline session-id cases). Only 21 of the 60 sampled findings came from logs the project itself wrote, and 7 were judged worth fixing. An LLM, not a human expert, labelled this sample. On a 112-item gold set written by the tool’s author, the tool reaches F1 0.953. Two zero-shot LLMs given the same class definitions reach 0.991 (Claude Haiku 4.5) and 0.952 (GPT-4.1-mini), and neither difference is significant. The tool’s advantage over the LLMs is therefore operational. It runs offline and deterministically at no cost per event, and it has no accuracy advantage on this set. All prompts, raw model outputs, corpus findings and labels are released.</p>
+
+<h2 id="i.-introduction">I. Introduction</h2>
+<p>Logging research has long studied whether code logs enough to diagnose failures. It has measured logging practice <a href="#ref-yuan2012characterizing">[1]</a>, <a href="#ref-chen2017replication">[2]</a>, <a href="#ref-zeng2019mobile">[3]</a>, added diagnostic variables to existing log statements <a href="#ref-yuan2011logenhancer">[4]</a>, added log statements on error paths <a href="#ref-yuan2012conservative">[5]</a>, and predicted where developers should log <a href="#ref-fu2014where">[6]</a>, <a href="#ref-zhu2015learning">[7]</a>, <a href="#ref-li2020where">[8]</a>. These approaches act on source code. They answer the question “should this code location log?”</p>
+<p>This paper asks a narrower question about the output. Given the telemetry a service has emitted, can a responder join each failure event to a request, and does each failure carry structured evidence of its cause? Distributed tracing makes the first property routine in principle <a href="#ref-sigelman2010dapper">[9]</a>. In practice teams emit heterogeneous JSON logs, logfmt lines and OTLP exports, under field names that follow no single convention. The OpenTelemetry semantic conventions <a href="#ref-otel-semconv">[10]</a> standardise names but only help teams that have adopted them.</p>
+<p><span class="smallcaps">telemetry-contracts</span> treats each such property as a contract clause over a finite set of events and reports violations. The checks run on whatever a project ships, so they can be applied to repositories whose authors never used the tool. The contribution of this paper is the tool plus an evaluation that includes real LLM baselines and a validated corpus study. The tool also implements contract inference, temporal properties, refinement checking and a browser playground. Those features are described in the repository and are not evaluated here.</p>
+<p>We address three questions:</p>
+<ul>
+<li><p><strong>RQ1.</strong> How accurate are the checks on a labelled set of telemetry samples?</p></li>
+<li><p><strong>RQ2.</strong> How do they compare with rule baselines and with zero-shot LLMs given the same definitions?</p></li>
+<li><p><strong>RQ3.</strong> When run on public repositories, how often are the findings correct and worth fixing?</p></li>
+</ul>
+<h2 id="ii.-gap-classes-and-checks">II. Gap Classes and Checks</h2>
+<p>An <em>event</em> is a JSON object after format normalisation (Section <a href="#sec:impl">III</a>). A <em>failure event</em> has severity error, critical or fatal, or a status/outcome field whose value denotes failure. The checks are:</p>
+<ul>
+<li><p><strong>missing-correlation</strong>: A failure event with no correlation identifier (<code>trace_id</code>, <code>traceId</code>, <code>request_id</code>, <code>span_id</code> or a recognised alias).</p></li>
+<li><p><strong>missing-error-evidence</strong>: A failure event with no error code, exception type or status field.</p></li>
+<li><p><strong>missing-duration</strong>: A span event with no duration or latency measure.</p></li>
+<li><p><strong>sensitive-values</strong>: A scalar value matching a raw-secret or PII pattern: email, bearer token, JWT, password assignment, or a card or phone number in a field with a card or phone name.</p></li>
+<li><p><strong>unclassified-sensitive</strong>: A field whose name denotes a tenant, customer, account or user identifier, or another sensitive attribute, emitted without redaction, hashing or a privacy classification.</p></li>
+<li><p><strong>unbounded-cardinality</strong>: A metric label whose distinct-value count is high relative to the sample, reported only above a minimum sample size.</p></li>
+</ul>
+<p>The first three checks are presence checks over field names. A reported absence is only as good as the alias table. A correlation id under an unrecognised key causes a false positive, and Section <a href="#sec:rq3">IV-C</a> shows that nested keys cause the same problem. The last three checks are pattern or statistical heuristics tuned for precision. Every finding records its source file, source line, check code and a remediation hint, and can be exported as SARIF for code-scanning pipelines.</p>
+<h2 id="sec:impl">III. Implementation</h2>
+<p><span class="smallcaps">telemetry-contracts</span> is a standard-library-only Python package with a command-line interface and a GitHub Action. Adapters read JSONL, JSON arrays, logfmt and OTLP/JSON collector exports. They map common aliases (<code>level</code>/<code>severity</code>, <code>msg</code>/<code>message</code>, <code>service.name</code>, <code>traceId</code>) and infer the signal kind with a confidence score. The <code>scan-repo</code> command clones a repository at a commit, discovers candidate telemetry files with a bounded walk that skips configuration, lock files and vendored directories, and checks each file. For each check code it keeps at most 25 example findings per file, so per-file counts are lower bounds. The <code>corpus-run</code> command scans a pinned-commit manifest with a content-addressed cache. Every aggregate uses integer or fixed-point arithmetic, so a rerun on the same inputs is byte-identical. The repository’s CI checks this against a SHA-256 manifest of 13 generated artifacts.</p>
+<h2 id="iv.-evaluation">IV. Evaluation</h2>
+<p>All numbers below are regenerated by the commands in <code>REPRODUCE.md</code>. Raw outputs are under <code>results/</code> and <code>reports/</code>.</p>
+<h3 id="a.-rq1-gold-set-accuracy">A. RQ1: Gold-set accuracy</h3>
+<p><strong>Setup.</strong> The gold set (<code>benchmarks/ground_truth/curated.jsonl</code>) has 112 (sample, class) pairs, 54 positive and 58 negative, covering all six classes. Each label records whether the class is present according to the meaning of its definition, independent of the detector’s field lists. Five <em>hard</em> items were written to probe known blind spots, such as a correlation id under the key <code>correlationGuid</code> and a base64-encoded credential. <em>All labels were written by one person, the tool’s author.</em> An earlier version of the set carried 17 “second labels”, but the same author had written them in the generator script, so they did not measure agreement. We removed them, and we report no inter-rater agreement.</p>
+<p><strong>Results.</strong> The tool scores precision 0.962 (51/53, Wilson 95% CI 0.87–0.99), recall 0.944 (51/54, 0.85–0.98) and F1 0.953. Per-class F1 ranges from 0.923 (unbounded-cardinality) to 1.000 (missing-duration). The five errors are exactly the five hard items: two false positives (an unrecognised correlation key, and error evidence present only in free text) and three false negatives (a base64 secret, an unrecognised tenant field, and a cardinality sample below the trust threshold). The author wrote the hard items knowing these blind spots, so RQ1 shows the checks behave as specified on a set built around their specification. It does not show accuracy on independent data. RQ3 addresses that.</p>
+<h3 id="b.-rq2-rule-baselines-and-llms">B. RQ2: Rule baselines and LLMs</h3>
+<p><strong>Setup.</strong> Every method receives only the events and the class name, never the label, and is scored by the same code. <em>rule-light</em> checks only for obvious field names. <em>semconv-only</em> flags missing OpenTelemetry convention fields, and its three classes without a convention field are reported out of scope. For the LLM rows we sent each item once through OpenRouter to <code>anthropic/claude-haiku-4.5</code> and <code>openai/gpt-4.1-mini</code>, at temperature 0 with at most 200 output tokens. The prompt states the class name, its definition and the events as JSON, and asks for YES or NO plus one sentence. It contains no examples. All 224 responses parsed. The raw responses, served model ids, token counts and costs are in <code>results/llm_baseline/</code>. Both runs together cost US$0.077. The comparison replays the recorded verdicts offline. Significance is an exact two-sided McNemar test on the paired per-item outcomes.</p>
+<div id="tab:rq2">
+<div class="tw"><table>
+<caption>Table I. Gold set (n = 112). Covered-class F1 excludes classes a method cannot express. Discordant pairs are counted against the tool: items only the tool gets right / items only the baseline gets right.</caption>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">P</th>
+<th style="text-align: center;">R</th>
+<th style="text-align: center;">F1</th>
+<th style="text-align: center;">Cov. F1</th>
+<th style="text-align: center;">Disc. (<em>p</em>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="smallcaps">telemetry-contracts</span></td>
+<td style="text-align: center;">.962</td>
+<td style="text-align: center;">.944</td>
+<td style="text-align: center;">.953</td>
+<td style="text-align: center;">.953</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">rule-light</td>
+<td style="text-align: center;">.857</td>
+<td style="text-align: center;">.667</td>
+<td style="text-align: center;">.750</td>
+<td style="text-align: center;">.809</td>
+<td style="text-align: center;">20/1 (&lt;.001)</td>
+</tr>
+<tr>
+<td style="text-align: left;">semconv-only</td>
+<td style="text-align: center;">.628</td>
+<td style="text-align: center;">.500</td>
+<td style="text-align: center;">.557</td>
+<td style="text-align: center;">.771</td>
+<td style="text-align: center;">38/0 (&lt;.001)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Claude Haiku 4.5</td>
+<td style="text-align: center;">.982</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">.991</td>
+<td style="text-align: center;">.991</td>
+<td style="text-align: center;">0/4 (.125)</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPT-4.1-mini</td>
+<td style="text-align: center;">.980</td>
+<td style="text-align: center;">.926</td>
+<td style="text-align: center;">.952</td>
+<td style="text-align: center;">.952</td>
+<td style="text-align: center;">3/3 (1.00)</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p><strong>Results.</strong> Table <a href="#tab:rq2">I</a> shows the results. The tool beats both rule baselines significantly. It does not beat either LLM. Claude Haiku 4.5 is correct on every item the tool gets right, and on four of the five hard items the tool misses. The fifth hard item, error evidence present only in free text, is labelled negative in the gold set, and every method including both LLMs flags it. GPT-4.1-mini fixes three hard items. It also misses three unclassified-identifier positives that the tool catches. Neither difference is significant at n = 112, and the confidence intervals are wide. The hard items probe exactly the field-keyed incompleteness that a model reading the definition semantically avoids. We therefore claim no accuracy advantage over LLMs. The tool’s remaining advantages are operational. It runs offline with no API key, gives the same output on every run, and has no per-item cost. On a repository scan it would otherwise need one model call per (event sample, class) pair: about 300 prompt tokens per item on this set, before any batching.</p>
+<h3 id="sec:rq3">C. RQ3: Corpus study with validated findings</h3>
+<p><strong>Setup.</strong> The corpus manifest pins 59 public repositories at full commit SHAs. One has since been deleted upstream. The other 58 are on GitHub (56), GitLab (1) and Bitbucket (1). They were selected by an earlier curation script that searched for repositories shipping parseable telemetry files and kept those that cloned and parsed. They are mostly small projects: 34 are primarily Python, and the rest include Go, Rust, TypeScript and Java. We downloaded the 58 and ran <code>corpus-run</code>, which took 8.5 minutes on a laptop. We then extracted all 2,269 findings with their source events. From these we drew a stratified sample of 15 findings per class that fired, with at most two per (repository, class), ordered by a hash.</p>
+<p><strong>Validation procedure.</strong> Each sampled finding was inspected by the LLM agent that ran the study. The agent read the flagged event in the pinned checkout and the class definition, then assigned three labels: whether the event matches the definition (yes/no/borderline), what kind of file it is (runtime log written by the project, sample telemetry, test fixture, or non-telemetry), and whether a maintainer would plausibly treat it as a defect in telemetry the project emits. <em>This is LLM-assisted inspection with a single rater. It is not human expert review.</em> The labels and a one-line rationale for each are in <code>results/rq3/validation_labels.csv</code>. A blinded packet for an independent human rater is in <code>docs/evaluation/annotation/</code>.</p>
+<div id="tab:rq3">
+<div class="tw"><table>
+<caption>Table II. RQ3: corpus prevalence over 56 telemetry-bearing repositories, and validated precision on 15 sampled findings per class (Wilson 95% CI). Borderline (session-id) cases count as incorrect in the strict column.</caption>
+<thead>
+<tr>
+<th style="text-align: left;">Class</th>
+<th style="text-align: right;">Repos</th>
+<th style="text-align: right;">Findings</th>
+<th style="text-align: center;">Matches def. </th>
+<th style="text-align: center;">Worth fixing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">missing-correlation</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">171</td>
+<td style="text-align: center;">13/15 (.62–.96)</td>
+<td style="text-align: center;">2/15</td>
+</tr>
+<tr>
+<td style="text-align: left;">missing-error-ev.</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: center;">12/15 (.55–.93)</td>
+<td style="text-align: center;">4/15</td>
+</tr>
+<tr>
+<td style="text-align: left;">sensitive-values</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: center;">9/15 (.36–.80)</td>
+<td style="text-align: center;">1/15</td>
+</tr>
+<tr>
+<td style="text-align: left;">unclassified-sens.</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">1,861</td>
+<td style="text-align: center;">1/15 (+9 bord.)</td>
+<td style="text-align: center;">0/15</td>
+</tr>
+<tr>
+<td style="text-align: left;">All sampled</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">35/60 (.46–.70)</td>
+<td style="text-align: center;">7/60</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p><strong>Results.</strong> Table <a href="#tab:rq3">II</a> summarises the scan and the validation. The scan found no missing-duration or unbounded-cardinality findings. Of the 14 telemetry-bearing repositories with at least one failure event, 10 have a failure event without a recognised correlation id.</p>
+<p>The failure-path checks were mostly correct by their definitions: 25 of 30 sampled findings matched. The five errors fall into three patterns. Three come from Java logback events that hold <code>trace_id</code> under a nested <code>mdc</code> object (one finding) or the exception class under a nested <code>throwable</code> object (two findings). One is an OTLP record carrying the convention attribute <code>error.type</code>, which the error-evidence check does not credit. The last is a disaster-recovery drill specification that was parsed as a failure event because of its category name. The first two patterns can be fixed by adding the aliases and descending into nested objects. The third is a file-discovery problem.</p>
+<p>The privacy checks were weak on this corpus. Six of the 15 sensitive-value findings came from regexes firing on prose: “Change Password:”, “opaque-bearer shortcuts”, and placeholder credentials in code-review datasets. Five of the 15 unclassified-identifier findings were token <em>counts</em> that matched the <code>token</code> name heuristic, and nine were <code>session_id</code> fields whose sensitivity depends on context.</p>
+<p>File discovery limits how many findings are useful, across all classes. Only 21 of the 60 sampled findings came from runtime logs the project wrote. The rest came from demo telemetry (22), test fixtures (5) and files that are not telemetry at all (12), such as LLM preference datasets and issue trackers stored as JSONL. A finding in a demo file can be correct by definition and still be of no use to the maintainer. Seven of the 60 were judged worth fixing: four committed error-log entries with no exception type or error code, two failures without request ids, and one committed agent prompt log containing the author’s personal email address.</p>
+<p><strong>Answer.</strong> On real repositories the failure-path checks are usable as written (25/30 sampled findings correct), with two fixable alias gaps. The privacy name heuristics and the file-discovery step are not yet precise enough to report as defects without review. The repository counts in Table <a href="#tab:rq3">II</a> include false positives and non-runtime files, and the finding counts are capped at 25 per check per file, so neither column is a prevalence estimate.</p>
+<h2 id="v.-threats-to-validity">V. Threats to Validity</h2>
+<p><strong>Labels.</strong> RQ1 and RQ2 use one author’s labels on items the author constructed, and RQ3 uses one LLM rater. Neither has been checked by an independent human. The packet and agreement script for that check are released, and the check is outstanding. The LLMs in RQ2 may share failure modes with the LLM rater in RQ3. The two tasks use different inputs and questions, but we cannot rule out correlated judgements.</p>
+<p><strong>Sample sizes.</strong> With 15 findings per class, the intervals in Table <a href="#tab:rq3">II</a> are 0.34 to 0.44 wide. The McNemar tests in RQ2 have little power at n = 112 with few discordant pairs.</p>
+<p><strong>LLM baseline.</strong> We used one zero-shot prompt per model with no tuning, and a single recorded sample. Re-querying at temperature 0 may give different answers. The committed log is the record of this run.</p>
+<p><strong>Corpus.</strong> The corpus was selected for parseable telemetry, not as a random sample of software projects. It is dominated by small Python projects and contains many demo and fixture files, so prevalence does not generalise.</p>
+<h2 id="vi.-related-work">VI. Related Work</h2>
+<p><strong>Logging practice and log enhancement.</strong> Empirical studies characterise how and where developers log in C/C++, Java, industrial and mobile code <a href="#ref-yuan2012characterizing">[1]</a>, <a href="#ref-chen2017replication">[2]</a>, <a href="#ref-fu2014where">[6]</a>, <a href="#ref-zeng2019mobile">[3]</a>, and what logging costs and buys <a href="#ref-li2021qualitative">[11]</a>. LogEnhancer adds causally relevant variables to existing log statements <a href="#ref-yuan2011logenhancer">[4]</a>. Errlog inserts log statements at exception and error sites <a href="#ref-yuan2012conservative">[5]</a>. Learning-based approaches recommend where to log <a href="#ref-zhu2015learning">[7]</a>, <a href="#ref-li2020where">[8]</a>, and LLM-based approaches generate the statements themselves <a href="#ref-xu2024unilog">[12]</a>, <a href="#ref-li2023llmlogging">[13]</a>. Chen and Jiang detect anti-patterns in logging code <a href="#ref-chen2017antipatterns">[14]</a>. All of these analyse or change source code. <span class="smallcaps">telemetry-contracts</span> examines the emitted output instead, so it can check repositories in any language without building them. It cannot say which code location should have logged.</p>
+<p><strong>Log analysis.</strong> Automated log analysis parses, mines and detects anomalies in logs once they exist <a href="#ref-he2021survey">[15]</a>, <a href="#ref-zhu2019parsing">[16]</a>, and Loghub provides datasets for that work <a href="#ref-zhu2023loghub">[17]</a>. These techniques assume the logs are adequate. <span class="smallcaps">telemetry-contracts</span> checks whether they are adequate for specific incident questions. Loghub contains raw system logs without labels for the gap classes used here, so it does not provide independent ground truth for RQ1.</p>
+<p><strong>Specification mining and runtime verification.</strong> Specification miners infer temporal or invariant specifications from traces <a href="#ref-ammons2002mining">[18]</a>, <a href="#ref-ernst2007daikon">[19]</a>, <a href="#ref-legoues2009specmining">[20]</a>. Runtime verification checks traces against temporal-logic specifications <a href="#ref-leucker2009brief">[21]</a>, <a href="#ref-bauer2011ltl">[22]</a>, and hyperproperties capture information-flow requirements over sets of traces <a href="#ref-clarkson2010hyperproperties">[23]</a>. <span class="smallcaps">telemetry-contracts</span>’s contract inference and temporal clauses build on these ideas, but the checks evaluated here are simpler per-event properties. We do not evaluate the inference.</p>
+<p><strong>Conventions and scanners.</strong> The OpenTelemetry semantic conventions <a href="#ref-otel-semconv">[10]</a> define field names, and our semconv-only baseline approximates a conformance linter. Secret scanners such as detect-secrets and gitleaks look for credentials in source files. The sensitive-value check applies similar patterns to telemetry values, and RQ3 shows it inherits their false positives on prose.</p>
+<h2 id="vii.-conclusion-and-remaining-work">VII. Conclusion and Remaining Work</h2>
+<p><span class="smallcaps">telemetry-contracts</span> checks failure-path telemetry in data projects already emit, without configuration. On public repositories its correlation and error-evidence checks matched their definitions in 25 of 30 sampled findings. On an author-built gold set it is as accurate as small zero-shot LLMs, but not more accurate. Remaining work: (1) independent human annotation of the gold set and the RQ3 sample using the released packet; (2) nested-key and <code>error.type</code> support, then a re-run of RQ3; (3) restricting file discovery to runtime telemetry, or reporting artifact kind, so findings in fixtures and datasets are separated; (4) reporting at least one finding upstream and recording the maintainers’ responses.</p>
+<h2 class="unnumbered" id="artifact-availability">Artifact Availability</h2>
+<p>Source, gold set, corpus manifest, LLM prompts and raw outputs, corpus findings and validation labels: <a href="https://github.com/thehalleyyoung/telemetry-contract-semantics" class="uri">https://github.com/thehalleyyoung/telemetry-contract-semantics</a>. See <code>REPRODUCE.md</code>.</p>
+<h2 id="references">References</h2>
+<ol class="refs">
+<li id="ref-yuan2012characterizing"><span class="n">[1]</span><span>D. Yuan, S. Park, and Y. Zhou, “Characterizing logging practices in open-source software,” in <em>Proceedings of the 34th International Conference on Software Engineering (ICSE)</em>, 2012, pp. 102–112.</span></li>
+<li id="ref-chen2017replication"><span class="n">[2]</span><span>B. Chen and Z. M. J. Jiang, “Characterizing logging practices in <span>Java</span>-based open source software projects – a replication study in <span>Apache Software Foundation</span>,” <em>Empirical Software Engineering</em>, vol. 22, no. 1, pp. 330–374, 2017.</span></li>
+<li id="ref-zeng2019mobile"><span class="n">[3]</span><span>Y. Zeng, J. Chen, W. Shang, and T.-H. P. Chen, “Studying the characteristics of logging practices in mobile apps: A case study on <span>F-Droid</span>,” <em>Empirical Software Engineering</em>, vol. 24, no. 6, pp. 3394–3434, 2019.</span></li>
+<li id="ref-yuan2011logenhancer"><span class="n">[4]</span><span>D. Yuan, J. Zheng, S. Park, Y. Zhou, and S. Savage, “Improving software diagnosability via log enhancement,” in <em>Proceedings of the 16th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)</em>, 2011, pp. 3–14.</span></li>
+<li id="ref-yuan2012conservative"><span class="n">[5]</span><span>D. Yuan, S. Park, P. Huang, Y. Liu, M. M. Lee, X. Tang, Y. Zhou, and S. Savage, “Be conservative: Enhancing failure diagnosis with proactive logging,” in <em>10th USENIX Symposium on Operating Systems Design and Implementation (OSDI)</em>, 2012, pp. 293–306.</span></li>
+<li id="ref-fu2014where"><span class="n">[6]</span><span>Q. Fu, J. Zhu, W. Hu, J.-G. Lou, R. Ding, Q. Lin, D. Zhang, and T. Xie, “Where do developers log? <span>An</span> empirical study on logging practices in industry,” in <em>Companion Proceedings of the 36th International Conference on Software Engineering (ICSE Companion)</em>, 2014, pp. 24–33.</span></li>
+<li id="ref-zhu2015learning"><span class="n">[7]</span><span>J. Zhu, P. He, Q. Fu, H. Zhang, M. R. Lyu, and D. Zhang, “Learning to log: Helping developers make informed logging decisions,” in <em>Proceedings of the 37th IEEE/ACM International Conference on Software Engineering (ICSE)</em>, 2015, pp. 415–425.</span></li>
+<li id="ref-li2020where"><span class="n">[8]</span><span>Z. Li, T.-H. P. Chen, and W. Shang, “Where shall we log? <span>Studying</span> and suggesting logging locations in code blocks,” in <em>Proceedings of the 35th IEEE/ACM International Conference on Automated Software Engineering (ASE)</em>, 2020, pp. 361–372.</span></li>
+<li id="ref-sigelman2010dapper"><span class="n">[9]</span><span>B. H. Sigelman, L. A. Barroso, M. Burrows, P. Stephenson, M. Plakal, D. Beaver, S. Jaspan, and C. Shanbhag, “Dapper, a large-scale distributed systems tracing infrastructure,” Google, Inc., Tech. Rep. dapper-2010-1, 2010.</span></li>
+<li id="ref-otel-semconv"><span class="n">[10]</span><span><span>OpenTelemetry Authors</span>, “<span>OpenTelemetry</span> semantic conventions,” <a href="https://opentelemetry.io/docs/specs/semconv/">https://opentelemetry.io/docs/specs/semconv/</a>, accessed 2026-10-06.</span></li>
+<li id="ref-li2021qualitative"><span class="n">[11]</span><span>H. Li, W. Shang, B. Adams, M. Sayagh, and A. E. Hassan, “A qualitative study of the benefits and costs of logging from developers’ perspectives,” <em>IEEE Transactions on Software Engineering</em>, vol. 47, no. 12, pp. 2858–2873, 2021.</span></li>
+<li id="ref-xu2024unilog"><span class="n">[12]</span><span>J. Xu, Z. Cui, Y. Zhao, X. Zhang, S. He, P. He, L. Li, Y. Kang, Q. Lin, Y. Dang, S. Rajmohan, and D. Zhang, “<span>UniLog</span>: Automatic logging via <span>LLM</span> and in-context learning,” in <em>Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE)</em>, 2024, pp. 14:1–14:12.</span></li>
+<li id="ref-li2023llmlogging"><span class="n">[13]</span><span>Y. Li, Y. Huo, Z. Jiang, R. Zhong, P. He, Y. Su, L. Briand, and M. R. Lyu, “Exploring the effectiveness of <span>LLMs</span> in automated logging generation: An empirical study,” 2023.</span></li>
+<li id="ref-chen2017antipatterns"><span class="n">[14]</span><span>B. Chen and Z. M. J. Jiang, “Characterizing and detecting anti-patterns in the logging code,” in <em>Proceedings of the 39th IEEE/ACM International Conference on Software Engineering (ICSE)</em>, 2017, pp. 71–81.</span></li>
+<li id="ref-he2021survey"><span class="n">[15]</span><span>S. He, P. He, Z. Chen, T. Yang, Y. Su, and M. R. Lyu, “A survey on automated log analysis for reliability engineering,” <em>ACM Computing Surveys</em>, vol. 54, no. 6, pp. 130:1–130:37, 2021.</span></li>
+<li id="ref-zhu2019parsing"><span class="n">[16]</span><span>J. Zhu, S. He, J. Liu, P. He, Q. Xie, Z. Zheng, and M. R. Lyu, “Tools and benchmarks for automated log parsing,” in <em>Proceedings of the 41st International Conference on Software Engineering: Software Engineering in Practice (ICSE-SEIP)</em>, 2019, pp. 121–130.</span></li>
+<li id="ref-zhu2023loghub"><span class="n">[17]</span><span>J. Zhu, S. He, P. He, J. Liu, and M. R. Lyu, “Loghub: A large collection of system log datasets for <span>AI</span>-driven log analytics,” in <em>Proceedings of the 34th IEEE International Symposium on Software Reliability Engineering (ISSRE)</em>, 2023, pp. 355–366.</span></li>
+<li id="ref-ammons2002mining"><span class="n">[18]</span><span>G. Ammons, R. Bod<span>í</span>k, and J. R. Larus, “Mining specifications,” in <em>Proceedings of the 29th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL)</em>, 2002, pp. 4–16.</span></li>
+<li id="ref-ernst2007daikon"><span class="n">[19]</span><span>M. D. Ernst, J. H. Perkins, P. J. Guo, S. McCamant, C. Pacheco, M. S. Tschantz, and C. Xiao, “The <span>Daikon</span> system for dynamic detection of likely invariants,” <em>Science of Computer Programming</em>, vol. 69, no. 1–3, pp. 35–45, 2007.</span></li>
+<li id="ref-legoues2009specmining"><span class="n">[20]</span><span>C. L. Goues and W. Weimer, “Specification mining with few false positives,” in <em>Tools and Algorithms for the Construction and Analysis of Systems (TACAS)</em>, ser. LNCS, vol. 5505, 2009, pp. 292–306.</span></li>
+<li id="ref-leucker2009brief"><span class="n">[21]</span><span>M. Leucker and C. Schallhart, “A brief account of runtime verification,” <em>The Journal of Logic and Algebraic Programming</em>, vol. 78, no. 5, pp. 293–303, 2009.</span></li>
+<li id="ref-bauer2011ltl"><span class="n">[22]</span><span>A. Bauer, M. Leucker, and C. Schallhart, “Runtime verification for <span>LTL</span> and <span>TLTL</span>,” <em>ACM Transactions on Software Engineering and Methodology</em>, vol. 20, no. 4, pp. 14:1–14:64, 2011.</span></li>
+<li id="ref-clarkson2010hyperproperties"><span class="n">[23]</span><span>M. R. Clarkson and F. B. Schneider, “Hyperproperties,” <em>Journal of Computer Security</em>, vol. 18, no. 6, pp. 1157–1210, 2010.</span></li>
+</ol>
+<h2 id="cite">Cite this paper</h2>
+<p>Young, H. (2026). <em>Checking Failure-Path Telemetry in the Data a Project Already Emits</em>. Preprint, not peer reviewed. <a href="https://thehalleyyoung.github.io/telemetry-contract-semantics/">https://thehalleyyoung.github.io/telemetry-contract-semantics/</a>.</p>
+<pre><code>@misc{young2026telemetry,
+  title        = {{Checking Failure-Path Telemetry in the Data a Project Already Emits}},
+  author       = {Young, Halley},
+  year         = {2026},
+  month        = oct,
+  note         = {Preprint, not peer reviewed},
+  url          = {https://thehalleyyoung.github.io/telemetry-contract-semantics/},
+  howpublished = {\url{https://github.com/thehalleyyoung/telemetry-contract-semantics}}
+}</code></pre>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var links = [].slice.call(document.querySelectorAll('.toc a'));
+  var targets = links.map(function (a) {
+    return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));
+  });
+  var current = -1;
+  function mark() {
+    var best = 0;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i] && targets[i].getBoundingClientRect().top <= 90) best = i;
+    }
+    if (best === current) return;
+    if (current >= 0) links[current].classList.remove('here');
+    links[best].classList.add('here');
+    current = best;
+  }
+  addEventListener('scroll', mark, {passive: true});
+  addEventListener('resize', mark, {passive: true});
+  addEventListener('load', mark);
+  mark();
+})();
+</script>
+</body>
+</html>
