@@ -2,10 +2,13 @@
 
 ![observability](./observability.svg)
 
+**Paper:** [Checking Failure-Path Telemetry in the Data a Project Already Emits](https://thehalleyyoung.github.io/telemetry-contract-semantics/)
+(Halley Young, preprint, not peer reviewed; [PDF](https://thehalleyyoung.github.io/telemetry-contract-semantics/paper/tool_paper.pdf)).
+
 **Point it at the telemetry you already have and get value in one command — no contract to write first, no relabeling, no semantic-convention adoption required.**
 
 > 🔭 **Try it in your browser — zero install.** Paste the logs/traces you already
-> have and see your observability score instantly (runs entirely client-side via
+> have and see your observability score (runs entirely client-side via
 > Pyodide; nothing is uploaded). See [`docs/playground.md`](docs/playground.md).
 
 ![scan-repo finding real gaps in a public repo](docs/launch/demo.svg)
@@ -41,7 +44,7 @@ python3 -m telemetry_contracts.cli infer-contract --events your-logs.jsonl --ser
 python3 -m telemetry_contracts.cli validate --contract telemetry-contract.json --events your-logs.jsonl --events-format auto
 ```
 
-`analyze` and `infer-contract` accept the shapes teams actually have: arbitrary
+`analyze` and `infer-contract` accept the shapes teams already have: arbitrary
 JSON/JSONL log lines (Python `logging`, logrus, zap, pino, winston), a single
 JSON array, logfmt (`key=value`) lines, Datadog-style `dd.trace_id` fields, the
 native JSONL shape, and OTLP collector exports. Field aliases
@@ -158,11 +161,11 @@ python3 -m telemetry_contracts.cli diagnose --path .
 python3 -m telemetry_contracts.cli diagnose --events your-logs.jsonl --fail-under 80
 ```
 
-`pipeline` runs the full staged loop end to end: characterize the repo →
-first-pass analysis → diagnose incident-readiness → produce a high-impact,
+`pipeline` runs the full staged loop end to end. It characterizes the repo,
+runs a first-pass analysis, diagnoses incident-readiness, and produces an
 LLM-fillable instrumentation plan (privacy-sensitive changes are held back for
-review, never auto-applied) → apply the missing fields → re-analyze
-differentially → repeat until the marginal impact converges. It works on a local
+review, never auto-applied). It then applies the missing fields, re-analyzes
+differentially, and repeats until the marginal impact converges. It works on a local
 path or clones a GitHub repo directly:
 
 ```bash
@@ -171,12 +174,12 @@ python3 -m telemetry_contracts.cli pipeline --repo owner/name
 ```
 
 Every round keeps an impact ledger (predicted vs. realized diagnosability gain)
-so you can see whether each change actually paid off on your real data. Each
+so you can see whether each change paid off on your real data. Each
 proposed change is scored by a written [high-impact filter](docs/high_impact_filter.md)
 (analytic signal gained ÷ added surface area) and ships with a reviewable
 companion patch generated against the exact cloned commit and verified with
-`git apply --check`. Analysis deepens progressively across rounds — correlation →
-ordering → temporal → privacy — as the data actually gets richer. Add
+`git apply --check`. Analysis deepens across rounds, in the order correlation, ordering,
+temporal, privacy, as the data gets richer. Add
 `--out-dir DIR` to persist every stage as a SHA-keyed, provenance-carrying
 artifact; `--format sarif` for a CI-ready differential; and
 `--fail-on-regression` to exit non-zero if any round would regress safety. See
@@ -184,8 +187,8 @@ artifact; `--format sarif` for a CI-ready differential; and
 
 ## Optional: observability as a correctness property
 
-A service is not merely correct when it returns the right response; for
-production systems it should also emit the traces, metrics, logs, fields, and
+Returning the right response is only part of a service's correctness. A
+production system should also emit the traces, metrics, logs, fields, and
 retention/sampling assumptions needed to diagnose failures later. The optional
 contract layer turns that thesis into executable checks: runtime validation,
 static source analysis, semantic-convention linting, temporal/hyperproperty
@@ -284,12 +287,12 @@ keys with optional `owner`/`expires_at`/`justification`; expired entries fail.
 ## Docs
 
 - `docs/operational_scorecards.md` — workload scorecards, privacy-safe examples, anti-patterns, CI/SARIF integration, OTLP limits.
-- `docs/staged_pipeline.md` — the characterize → diagnose → plan → apply → differential loop, with a worked example on a public repo and every intermediate artifact.
+- `docs/staged_pipeline.md` — the characterize, diagnose, plan, apply, differential loop, with a worked example on a public repo and every intermediate artifact.
 - `docs/formal_model.md` — the semantic guarantees (refinement order, monotonicity, termination, assume-guarantee, abstract-domain soundness, transformation preservation), each discharged by a deterministic executable witness (`python3 -m telemetry_contracts.cli formal-model`).
 - `docs/execution_proof.md` — safe runtime evidence that the tool's own generated instrumentation compiles, loads, and emits its promised fields, run in a hardened isolated subprocess that never touches the target repo's code (`python3 -m telemetry_contracts.cli execute-proposals`).
 - `docs/github_action.md` — the **Observability Report Card** GitHub Action: add observability scanning to PR checks in three lines of YAML, with a configurable score-floor + severity gate, SARIF upload to the Security tab, and a PR comment.
 - `docs/scorecard_badge.md` — render a byte-deterministic **observability score badge** (shields-style SVG or a live shields.io endpoint JSON) and a richer **scorecard** card from any scan (`python3 -m telemetry_contracts.cli scorecard-badge`).
-- `docs/playground.md` — a zero-install **browser playground** that runs the pure-stdlib engine entirely client-side under Pyodide: paste the telemetry you already have and instantly see your diagnosability score and gaps, with shareable URLs and one-click examples.
+- `docs/playground.md` — a zero-install **browser playground** that runs the pure-stdlib engine entirely client-side under Pyodide: paste the telemetry you already have and see your diagnosability score and gaps, with shareable URLs and one-click examples.
 - `docs/launch/` — launch material: a reproducible [blog post](docs/launch/blog_post.md) built around the corpus headline statistic, a [Show HN narrative](docs/launch/show_hn.md), and deterministic demo/social assets regenerated by `docs/launch/build.py`.
 - `docs/high_impact_filter.md` — the written rubric (analytic signal ÷ surface area) used to score every proposed change and re-score applied changes after the fact.
 - `docs/tutorials/` — fixing a broken service; mapping SLO debugging questions to contract clauses.
@@ -311,7 +314,7 @@ All numbers below come from committed raw outputs. The commands are in
 | vs rule baselines | rule-light F1 0.750, OTel-convention F1 0.557; tool better on both (McNemar p < 0.001) | `reports/baseline_comparison.json` |
 | vs real LLMs, zero-shot, same definitions | claude-haiku-4.5 F1 0.991, gpt-4.1-mini F1 0.952; **neither differs significantly from the tool, and Haiku scores higher** | `results/llm_baseline/`, `benchmarks/baselines/llm_*.json` |
 | Corpus scan, 58 pinned public repos | 116,420 events, 2,269 findings; 10 of 14 repos with failure events have an uncorrelated failure | `results/rq3/corpus_dataset.json`, `results/rq3/findings.jsonl` |
-| Validated sample of 60 corpus findings (LLM-assisted inspection, not human review) | matches definition: correlation 13/15, error evidence 12/15, sensitive values 9/15, unclassified identifiers 1/15 (+9 borderline); 21/60 from runtime logs; 7/60 actionable | `results/rq3/validation_labels.csv`, `results/rq3/validation_summary.json` |
+| Validated sample of 60 corpus findings (LLM-assisted inspection, not human review) | matches definition: correlation 13/15, error evidence 12/15, sensitive values 9/15, unclassified identifiers 1/15 (+9 borderline); 21/60 from runtime logs; 7/60 worth fixing | `results/rq3/validation_labels.csv`, `results/rq3/validation_summary.json` |
 
 What this supports: the failure-path checks (correlation, error evidence) are
 mostly correct on real repositories. What it does not support: an accuracy

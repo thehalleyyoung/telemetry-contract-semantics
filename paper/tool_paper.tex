@@ -14,13 +14,13 @@
 
 \title{Checking Failure-Path Telemetry in the Data a Project Already Emits}
 
-\author{\IEEEauthorblockN{The telemetry-contracts authors}
+\author{\IEEEauthorblockN{Halley Young}
 \IEEEauthorblockA{Preprint, October 2026. Not peer reviewed.}}
 
 \maketitle
 
 \begin{abstract}
-When a request fails in production, responders need the emitted telemetry to say which request failed and why. We present \tool, a pure-Python command-line tool that checks this property against logs, traces and metrics a project already has. It needs no contract written in advance and no instrumentation convention. It defines six gap classes with written definitions: failure without correlation id, failure without error evidence, span without duration, raw sensitive value, unclassified identifier, and unbounded metric label. Each check is a deterministic function of the events. Our claim is that the two failure-path classes can be checked usefully in this setting. On 60 findings sampled from a scan of 58 public repositories (116,420 events), the failure-path checks matched their definitions in 13/15 and 12/15 cases. The privacy checks did worse, at 9/15 and 1/15 (10/15 counting borderline session-id cases). Only 21 of the 60 sampled findings came from logs the project itself wrote, and 7 were judged actionable. An LLM, not a human expert, labelled this sample. On a 112-item gold set written by the tool's author, the tool reaches F1 0.953. Two zero-shot LLMs given the same class definitions reach 0.991 (Claude Haiku 4.5) and 0.952 (GPT-4.1-mini), and neither difference is significant. The tool's advantage over the LLMs is therefore operational: it is offline, deterministic and costs nothing per event. It has no accuracy advantage on this set. All prompts, raw model outputs, corpus findings and labels are released.
+When a request fails in production, responders need the emitted telemetry to say which request failed and why. We present \tool, a pure-Python command-line tool that checks this property against logs, traces and metrics a project already has. It needs no contract written in advance and no instrumentation convention. It defines six gap classes with written definitions: failure without correlation id, failure without error evidence, span without duration, raw sensitive value, unclassified identifier, and unbounded metric label. Each check is a deterministic function of the events. Our claim is that the two failure-path classes can be checked usefully in this setting. On 60 findings sampled from a scan of 58 public repositories (116,420 events), the failure-path checks matched their definitions in 13/15 and 12/15 cases. The privacy checks did worse, at 9/15 and 1/15 (10/15 counting borderline session-id cases). Only 21 of the 60 sampled findings came from logs the project itself wrote, and 7 were judged worth fixing. An LLM, not a human expert, labelled this sample. On a 112-item gold set written by the tool's author, the tool reaches F1 0.953. Two zero-shot LLMs given the same class definitions reach 0.991 (Claude Haiku 4.5) and 0.952 (GPT-4.1-mini), and neither difference is significant. The tool's advantage over the LLMs is therefore operational. It runs offline and deterministically at no cost per event, and it has no accuracy advantage on this set. All prompts, raw model outputs, corpus findings and labels are released.
 \end{abstract}
 
 \section{Introduction}
@@ -35,7 +35,7 @@ We address three questions:
 \begin{itemize}
 \item \textbf{RQ1.} How accurate are the checks on a labelled set of telemetry samples?
 \item \textbf{RQ2.} How do they compare with rule baselines and with zero-shot LLMs given the same definitions?
-\item \textbf{RQ3.} When run on public repositories, how often are the findings correct and actionable?
+\item \textbf{RQ3.} When run on public repositories, how often are the findings correct and worth fixing?
 \end{itemize}
 
 \section{Gap Classes and Checks}
@@ -104,7 +104,7 @@ GPT-4.1-mini & .980 & .926 & .952 & .952 & 3/3 (1.00) \\
 \footnotesize\setlength{\tabcolsep}{3pt}
 \begin{tabular}{lrrcc}
 \toprule
-Class & Repos & Findings & Matches def.\ & Actionable \\
+Class & Repos & Findings & Matches def.\ & Worth fixing \\
 \midrule
 missing-correlation & 10 & 171 & 13/15 (.62--.96) & 2/15 \\
 missing-error-ev. & 10 & 127 & 12/15 (.55--.93) & 4/15 \\
@@ -122,7 +122,7 @@ The failure-path checks were mostly correct by their definitions: 25 of 30 sampl
 
 The privacy checks were weak on this corpus. Six of the 15 sensitive-value findings came from regexes firing on prose: ``Change Password:'', ``opaque-bearer shortcuts'', and placeholder credentials in code-review datasets. Five of the 15 unclassified-identifier findings were token \emph{counts} that matched the \texttt{token} name heuristic, and nine were \texttt{session\_id} fields whose sensitivity depends on context.
 
-File discovery limits actionability across all classes. Only 21 of the 60 sampled findings came from runtime logs the project wrote. The rest came from demo telemetry (22), test fixtures (5) and files that are not telemetry at all (12), such as LLM preference datasets and issue trackers stored as JSONL. A finding in a demo file can be correct by definition and still be of no use to the maintainer. Seven of the 60 were judged actionable: four committed error-log entries with no exception type or error code, two failures without request ids, and one committed agent prompt log containing the author's personal email address.
+File discovery limits how many findings are useful, across all classes. Only 21 of the 60 sampled findings came from runtime logs the project wrote. The rest came from demo telemetry (22), test fixtures (5) and files that are not telemetry at all (12), such as LLM preference datasets and issue trackers stored as JSONL. A finding in a demo file can be correct by definition and still be of no use to the maintainer. Seven of the 60 were judged worth fixing: four committed error-log entries with no exception type or error code, two failures without request ids, and one committed agent prompt log containing the author's personal email address.
 
 \textbf{Answer.} On real repositories the failure-path checks are usable as written (25/30 sampled findings correct), with two fixable alias gaps. The privacy name heuristics and the file-discovery step are not yet precise enough to report as defects without review. The repository counts in Table~\ref{tab:rq3} include false positives and non-runtime files, and the finding counts are capped at 25 per check per file, so neither column is a prevalence estimate.
 
