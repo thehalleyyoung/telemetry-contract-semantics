@@ -41,7 +41,7 @@ REPO_URL = "https://github.com/thehalleyyoung/telemetry-contract-semantics"
 # (bare form, e.g. "10.5281/zenodo.1234567") and rerun this script. When set,
 # it adds a citation_doi tag, a DOI line in the citation block, and a doi field
 # in the BibTeX. While empty, none of those are emitted.
-DOI = ""
+DOI = "10.5281/zenodo.23200254"
 # ---------------------------------------------------------------------------
 
 # One-paragraph summary for search snippets (meta description, og:description).

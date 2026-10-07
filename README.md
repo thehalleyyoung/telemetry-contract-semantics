@@ -4,6 +4,7 @@
 
 **Paper:** [Checking Failure-Path Telemetry in the Data a Project Already Emits](https://thehalleyyoung.github.io/telemetry-contract-semantics/)
 (Halley Young, preprint; [PDF](https://thehalleyyoung.github.io/telemetry-contract-semantics/paper/tool_paper.pdf)).
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23200254.svg)](https://doi.org/10.5281/zenodo.23200254)
 
 **Point it at the telemetry you already have and get value in one command — no contract to write first, no relabeling, no semantic-convention adoption required.**
 
@@ -324,8 +325,7 @@ blinded annotation packet for independent raters is in
 ## Cite
 
 Halley Young. *Checking Failure-Path Telemetry in the Data a Project Already
-Emits*. Preprint, 2026.
-<https://thehalleyyoung.github.io/telemetry-contract-semantics/>
+Emits*. Preprint, Zenodo, 2026. <https://doi.org/10.5281/zenodo.23200254>
 
 ```bibtex
 @misc{young2026telemetry,
@@ -333,6 +333,9 @@ Emits*. Preprint, 2026.
   author       = {Young, Halley},
   year         = {2026},
   month        = oct,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.23200254},
+  url          = {https://doi.org/10.5281/zenodo.23200254},
   note         = {Preprint},
   url          = {https://thehalleyyoung.github.io/telemetry-contract-semantics/},
   howpublished = {\url{https://github.com/thehalleyyoung/telemetry-contract-semantics}}

@@ -35,3 +35,11 @@ preferred-citation:
   status: preprint
   url: "https://thehalleyyoung.github.io/telemetry-contract-semantics/"
   repository-code: "https://github.com/thehalleyyoung/telemetry-contract-semantics"
+doi: 10.5281/zenodo.23200254
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23200254
+    description: Concept DOI (all versions)
+  - type: doi
+    value: 10.5281/zenodo.23200255
+    description: Version 1.0.0
