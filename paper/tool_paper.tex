@@ -66,7 +66,7 @@ An \emph{event} is a JSON object after format normalisation (Section~\ref{sec:im
 \item \textbf{unbounded-cardinality}: A metric label whose distinct-value count is high relative to the sample, reported only above a minimum sample size.
 \end{itemize}
 
-The first three checks are presence checks over field names, resolved through an alias table of common correlation, error and duration fields. The last three are pattern or statistical heuristics tuned for precision. Every finding records its source file, source line, check code and a remediation hint, and can be exported as SARIF for code-scanning pipelines.
+The first three checks are presence checks over field names, resolved through an alias table of common field names. The last three are pattern or statistical heuristics tuned for precision. Every finding records its source file, source line, check code and a remediation hint, and can be exported as SARIF for code-scanning pipelines.
 
 \section{Implementation}\label{sec:impl}
 

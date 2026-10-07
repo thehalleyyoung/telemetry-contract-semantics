@@ -152,9 +152,9 @@ local checkout or a GitHub clone:
 python3 -m telemetry_contracts.cli characterize --path .
 ```
 
-`diagnose` scores how answerable common incident questions are with the data you
-already emit ("which request failed?", "what was the error?", "how long did it
-take?", "are we leaking sensitive values?"), and names the concrete gaps:
+`diagnose` scores how well the data you already emit answers common incident
+questions (which request failed, what the error was, how long it took, whether
+sensitive values leak), and names the concrete gaps:
 
 ```bash
 python3 -m telemetry_contracts.cli diagnose --path .
